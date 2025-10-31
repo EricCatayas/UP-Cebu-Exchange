@@ -6,7 +6,6 @@ export interface Artwork {
   medium: string; // e.g., "Oil on Canvas", "Watercolor"
   heightCm: number;
   widthCm: number;
-  isAvailable: boolean;
   createdAt: Date;
   updatedAt: Date;
 }

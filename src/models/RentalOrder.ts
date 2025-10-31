@@ -7,6 +7,4 @@ export interface RentalOrder {
   status: "Pending" | "Confirmed" | "Cancelled" | "Completed";
   createdAt: Date;
   updatedAt: Date;
-
-  // getTotalRentalFee() : number;
 }
