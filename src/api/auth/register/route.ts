@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { User, Role } from '@/models/sequelize';
 import { hashPassword, generateToken, setAuthCookie } from '@/lib/auth';
 
+// TODO: Test API
 export async function POST(request: NextRequest) {
   try {
     const { email, password, fullName } = await request.json();
