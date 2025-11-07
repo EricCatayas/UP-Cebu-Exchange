@@ -6,7 +6,7 @@ interface ArtworkAttributes {
   id: number;
   title: string;
   artistId?: number;
-  description: string;
+  description?: string;
   medium: string;
   heightCm: number;
   widthCm: number;
@@ -16,7 +16,7 @@ interface ArtworkAttributes {
 }
 
 // Define creation attributes
-interface ArtworkCreationAttributes extends Optional<ArtworkAttributes, 'id' | 'artistId' | 'isAvailable' | 'createdAt' | 'updatedAt'> {}
+interface ArtworkCreationAttributes extends Optional<ArtworkAttributes, 'id' | 'artistId' | 'description' | 'isAvailable' | 'createdAt' | 'updatedAt'> {}
 
 // Define the Artwork model class
 class Artwork extends Model<ArtworkAttributes, ArtworkCreationAttributes> implements ArtworkAttributes {
@@ -54,7 +54,7 @@ Artwork.init(
     },
     description: {
       type: DataTypes.TEXT,
-      allowNull: false,
+      allowNull: true,
     },
     medium: {
       type: DataTypes.STRING(100),
