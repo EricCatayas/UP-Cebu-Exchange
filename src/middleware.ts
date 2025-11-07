@@ -1,18 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyToken, JWTPayload } from '@/lib/auth';
 
-// Define protected routes and their required roles
 const protectedRoutes = {
   admin: ['/admin'],
   customer: ['/customer'],
   authenticated: ['/api/auth/session'] // Routes that require any authenticated user
 };
 
-// Public routes that don't require authentication
 const publicRoutes = [
   '/',
   '/about',
-  '/admin-login',
   '/artworks',
   '/forgot-password',
   '/login',
@@ -26,10 +23,20 @@ const publicRoutes = [
   '/api/auth/logout'
 ];
 
+const adminRoutes = [
+  '/admin-login',
+  '/dashboard',
+  '/inventory',
+  '/notifications',
+  '/orders',
+  '/reports',
+  '/themes',
+  '/users',
+];
+
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
-  // Skip middleware for static files, API routes (except auth), and Next.js internals
   if (
     pathname.startsWith('/_next') ||
     pathname.startsWith('/static') ||
@@ -39,7 +46,6 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
   
-  // Check if route is public
   const isPublicRoute = publicRoutes.some(route => 
     pathname === route || pathname.startsWith(route + '/')
   );
@@ -62,7 +68,7 @@ export function middleware(request: NextRequest) {
   }
   
   // Check role-based access
-  if (pathname.startsWith('/admin')) {
+  if (isAdminRoute(pathname)) {
     if (user.roleName?.toLowerCase() !== 'admin') {
       // Redirect non-admin users to customer area
       return NextResponse.redirect(new URL('/customer', request.url));
@@ -89,14 +95,19 @@ export function middleware(request: NextRequest) {
 }
 
 function redirectToLogin(request: NextRequest, pathname: string) {
-  const isAdminRoute = pathname.startsWith('/admin');
-  const loginUrl = isAdminRoute ? '/admin/auth/login' : '/customer/auth/login';
+  const loginUrl = isAdminRoute(pathname) ? '/admin-login' : '/login';
   
   // Store the original URL to redirect after login
   const redirectUrl = new URL(loginUrl, request.url);
   redirectUrl.searchParams.set('callbackUrl', pathname);
   
   return NextResponse.redirect(redirectUrl);
+}
+
+function isAdminRoute(pathname: string): boolean {
+  return adminRoutes.some(route => 
+    pathname === route || pathname.startsWith(route + '/')
+  );
 }
 
 export const config = {
