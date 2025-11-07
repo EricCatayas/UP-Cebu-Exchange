@@ -1,13 +1,17 @@
-export default function DashboardLayout({
+import React from "react";
+import Navbar from "@/components/navbar";
+import Footer from "@/components/footer";
+
+export default function CustomerLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body>
-        <main>{children}</main>
-      </body>
-    </html>
+    <>
+      <Navbar />
+      {children}
+      <Footer />
+    </>
   );
 }
