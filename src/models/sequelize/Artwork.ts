@@ -10,13 +10,13 @@ interface ArtworkAttributes {
   medium: string;
   heightCm: number;
   widthCm: number;
-  isAvailable: boolean;
+  status: string;
   createdAt: Date;
   updatedAt: Date; 
 }
 
 // Define creation attributes
-interface ArtworkCreationAttributes extends Optional<ArtworkAttributes, 'id' | 'artistId' | 'description' | 'isAvailable' | 'createdAt' | 'updatedAt'> {}
+interface ArtworkCreationAttributes extends Optional<ArtworkAttributes, 'id' | 'artistId' | 'description' | 'status' | 'createdAt' | 'updatedAt'> {}
 
 // Define the Artwork model class
 class Artwork extends Model<ArtworkAttributes, ArtworkCreationAttributes> implements ArtworkAttributes {
@@ -27,7 +27,7 @@ class Artwork extends Model<ArtworkAttributes, ArtworkCreationAttributes> implem
   public medium!: string;
   public heightCm!: number;
   public widthCm!: number;
-  public isAvailable!: boolean;
+  public status!: string;
   public createdAt!: Date;
   public updatedAt!: Date;
 }
@@ -68,10 +68,10 @@ Artwork.init(
       type: DataTypes.DECIMAL(8, 2),
       allowNull: false,
     },
-    isAvailable: {
-      type: DataTypes.BOOLEAN,
+    status: {
+      type: DataTypes.STRING(20),
       allowNull: false,
-      defaultValue: true,
+      defaultValue: 'available',
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -94,7 +94,7 @@ Artwork.init(
         fields: ['artistId'],
       },
       {
-        fields: ['isAvailable'],
+        fields: ['status'],
       },
     ],
   }
