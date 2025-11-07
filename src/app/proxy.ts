@@ -1,11 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyToken, JWTPayload } from '@/lib/auth';
-
-const protectedRoutes = {
-  admin: ['/admin'],
-  customer: ['/customer'],
-  authenticated: ['/api/auth/session'] // Routes that require any authenticated user
-};
+import { verifyToken } from '@/lib/auth';
 
 const publicRoutes = [
   '/',
@@ -33,6 +27,21 @@ const adminRoutes = [
   '/themes',
   '/users',
 ];
+
+function isAdminRoute(pathname: string): boolean {
+  return adminRoutes.some(route => 
+    pathname === route || pathname.startsWith(route + '/')
+  );
+}
+
+function redirectToLogin(request: NextRequest, pathname: string) {
+  const loginUrl = isAdminRoute(pathname) ? '/admin-login' : '/login';
+  // Store the original URL to redirect after login
+  const searchParams = new URLSearchParams({
+    callbackUrl: pathname,
+  });
+  return NextResponse.redirect(new URL(`${loginUrl}?${searchParams}`, request.url));
+}
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -94,31 +103,15 @@ export function middleware(request: NextRequest) {
   });
 }
 
-function redirectToLogin(request: NextRequest, pathname: string) {
-  const loginUrl = isAdminRoute(pathname) ? '/admin-login' : '/login';
-  
-  // Store the original URL to redirect after login
-  const redirectUrl = new URL(loginUrl, request.url);
-  redirectUrl.searchParams.set('callbackUrl', pathname);
-  
-  return NextResponse.redirect(redirectUrl);
-}
-
-function isAdminRoute(pathname: string): boolean {
-  return adminRoutes.some(route => 
-    pathname === route || pathname.startsWith(route + '/')
-  );
-}
-
 export const config = {
   matcher: [
     /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
+     * Match all request paths except:
+     * 1. /api/auth/* (authentication routes)
+     * 2. /_next/static (static files)
+     * 3. /_next/image (image optimization files)
+     * 4. /favicon.ico (favicon file)
      */
-    '/((?!_next/static|_next/image|favicon.ico).*)',
+    '/((?!api/auth|_next/static|_next/image|favicon.ico).*)',
   ],
 };
