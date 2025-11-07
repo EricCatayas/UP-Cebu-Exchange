@@ -17,6 +17,7 @@ import RentalPlan from './RentalPlan';
 import RentalPlanSnapshot from './RentalPlanSnapshot';
 import RentalOrder from './RentalOrder';
 import RentalOrderItem from './RentalOrderItem';
+import Payment from './Payment';
 
 // Define associations
 const initializeAssociations = () => {
@@ -211,6 +212,30 @@ const initializeAssociations = () => {
     foreignKey: 'rentalOrderItemId',
     as: 'rentalOrderItem',
   });
+
+  // RentalOrder has one Payment
+  RentalOrder.hasOne(Payment, {
+    foreignKey: 'rentalOrderId',
+    as: 'payment',
+  });
+
+  // Payment belongs to RentalOrder
+  Payment.belongsTo(RentalOrder, {
+    foreignKey: 'rentalOrderId',
+    as: 'rentalOrder',
+  });
+
+  // User has many Payments
+  User.hasMany(Payment, {
+    foreignKey: 'userId',
+    as: 'payments',
+  });
+
+  // Payment belongs to User
+  Payment.belongsTo(User, {
+    foreignKey: 'userId',
+    as: 'user',
+  });
 };
 
 // Initialize associations
@@ -233,9 +258,11 @@ export {
   Wishlist,
   WishlistItem,
   ArtworkImage,
-  RentalPlan,
   RentalOrder,
   RentalOrderItem,
+  RentalPlan,
+  RentalPlanSnapshot,
+  Payment,
 };
 
 export default {
@@ -254,7 +281,9 @@ export default {
   Wishlist,
   WishlistItem,
   ArtworkImage,
-  RentalPlan,
   RentalOrder,
   RentalOrderItem,
+  RentalPlan,
+  RentalPlanSnapshot,
+  Payment,
 };

@@ -4,6 +4,6 @@ export interface Payment {
   rentalOrderId: number;
   amount: number;
   status: "Pending" | "Completed" | "Failed";
-  paymentMethod: "CreditCard" | "PayPal";
+  paymentMethod: "Cash" | "CreditCard" | "PayPal";
   createdAt: Date;
 }
