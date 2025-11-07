@@ -4,7 +4,7 @@ import sequelize from '@/config/database';
 // Define the Artwork attributes interface
 interface ArtworkAttributes {
   id: number;
-  title: string;
+  title?: string;
   artistId?: number;
   description?: string;
   medium: string;
@@ -16,7 +16,7 @@ interface ArtworkAttributes {
 }
 
 // Define creation attributes
-interface ArtworkCreationAttributes extends Optional<ArtworkAttributes, 'id' | 'artistId' | 'description' | 'status' | 'createdAt' | 'updatedAt'> {}
+interface ArtworkCreationAttributes extends Optional<ArtworkAttributes, 'id' | 'artistId' | 'title' | 'description' | 'status' | 'createdAt' | 'updatedAt'> {}
 
 // Define the Artwork model class
 class Artwork extends Model<ArtworkAttributes, ArtworkCreationAttributes> implements ArtworkAttributes {
@@ -42,7 +42,7 @@ Artwork.init(
     },
     title: {
       type: DataTypes.STRING(255),
-      allowNull: false,
+      allowNull: true,
     },
     artistId: {
       type: DataTypes.INTEGER,
