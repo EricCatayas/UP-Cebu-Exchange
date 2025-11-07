@@ -12,8 +12,13 @@
     "db:reset": "tsx src/scripts/reset-db.ts"
   },
   "dependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "bcryptjs": "^3.0.3",
+    "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.15.3",
     "next": "16.0.0",
+    "next-auth": "^4.24.13",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "sequelize": "^6.37.7"
