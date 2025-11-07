@@ -33,7 +33,7 @@ project-root/
 │ │
 │ ├── (customer)/ # CUSTOMER-facing routes
 │ │ ├── layout.tsx # Layout for customer-facing pages
-│ │ ├── page.tsx # Home page (optional)
+│ │ ├── page.tsx # Home page
 │ │ │
 │ │ ├── artworks/
 │ │ │ ├── page.tsx # All Artworks
@@ -54,12 +54,11 @@ project-root/
 │ │ │ ├── wishlist/page.tsx # My Wishlist
 │ │ │ ├── rentals/page.tsx # My Rentals
 │ │ │
-│ │ ├── auth/
-│ │ │ ├── login/page.tsx # Login
-│ │ │ ├── register/page.tsx # Register
-│ │ │ ├── forgot-password/page.tsx# Forgot Password
-│ │ │ ├── reset-password/page.tsx # Reset Password
-│ │ │ └── verify-email/page.tsx # Verify Email
+│ │ ├── login/page.tsx # Login
+│ │ ├── register/page.tsx # Register
+│ │ ├── forgot-password/page.tsx# Forgot Password
+│ │ ├── reset-password/page.tsx # Reset Password
+│ │ └── verify-email/page.tsx # Verify Email
 │ │ │
 │ │ ├── checkout/
 │ │ │ ├── page.tsx # Checkout
@@ -103,45 +102,10 @@ project-root/
 │ │ └── payments/route.ts
 │
 ├── components/ # Shared UI components
-│ ├── ui/ # Buttons, modals, inputs, etc.
-│ ├── layouts/ # Shared layouts for customer/admin
-│ ├── cards/ # Artwork cards, product cards
-│ ├── tables/ # Data tables for admin
-│ ├── forms/ # Form components (input groups, validators)
-│ ├── navigation/ # Navbars, sidebars, breadcrumbs
-│ └── feedback/ # Toasts, alerts, notifications
 │
 ├── lib/ # Utility logic
-│ ├── api.ts # Fetch wrapper for API calls
-│ ├── auth.ts # Auth helpers (JWT, session, etc.)
-│ ├── validation.ts # Zod/Yup schemas
-│ ├── helpers.ts # Misc helpers (formatPrice, etc.)
-│ ├── recommendation.ts # Recommendation Engine logic
-│ └── constants.ts # Static constants
 │
-├── hooks/ # Reusable React hooks
-│ ├── useAuth.ts
-│ ├── useFetch.ts
-│ ├── useWishlist.ts
-│ └── useRecommendation.ts
-│
-├── store/ # State management (Zustand/Redux)
-│ ├── userStore.ts
-│ ├── wishlistStore.ts
-│ ├── rentalStore.ts
-│ └── themeStore.ts
-│
-├── types/ # TypeScript interfaces
-│ ├── rental.ts
-│ ├── artwork.ts
-│ ├── user.ts
-│ ├── payment.ts
-│ ├── recommendation.ts
-│ └── index.ts
-│
-├── styles/ # Global and module styles
-│ ├── globals.css
-│ └── tailwind.css
+├── store/ # State management
 │
 ├── public/ # Static assets
 │ ├── images/

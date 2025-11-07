@@ -11,18 +11,19 @@ const protectedRoutes = {
 // Public routes that don't require authentication
 const publicRoutes = [
   '/',
+  '/about',
+  '/admin-login',
+  '/artworks',
+  '/forgot-password',
+  '/login',
+  '/privacy-policy',
+  '/register',
+  '/reset-password',
+  '/terms-and-conditions',
+  // API routes
   '/api/auth/login',
   '/api/auth/register',
-  '/api/auth/logout',
-  '/customer/auth/login',
-  '/customer/auth/register',
-  '/customer/auth/forgot-password',
-  '/customer/auth/reset-password',
-  '/customer/artworks',
-  '/customer/about',
-  '/customer/privacy-policy',
-  '/customer/terms-and-conditions',
-  '/admin/auth/login'
+  '/api/auth/logout'
 ];
 
 export function middleware(request: NextRequest) {
