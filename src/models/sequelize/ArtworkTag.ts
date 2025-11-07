@@ -1,0 +1,57 @@
+import { DataTypes, Model } from 'sequelize';
+import sequelize from '@/config/database';
+
+interface ArtworkTagAttributes {
+  artworkId: number;
+  tagId: number;
+}
+
+class ArtworkTag extends Model<ArtworkTagAttributes> implements ArtworkTagAttributes {
+  public artworkId!: number;
+  public tagId!: number;
+}
+
+ArtworkTag.init(
+  {
+    artworkId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'artworks',
+        key: 'id',
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
+    },
+    tagId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'tags',
+        key: 'id',
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
+    },
+  },
+  {
+    sequelize,
+    modelName: 'ArtworkTag',
+    tableName: 'artwork_tags',
+    timestamps: false,
+    indexes: [
+      {
+        unique: true,
+        fields: ['artworkId', 'tagId'],
+      },
+      {
+        fields: ['artworkId'],
+      },
+      {
+        fields: ['tagId'],
+      },
+    ],
+  }
+);
+
+export default ArtworkTag;

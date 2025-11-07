@@ -1,0 +1,83 @@
+import { DataTypes, Model, Optional } from 'sequelize';
+import sequelize from '@/config/database';
+
+interface RentalPlanAttributes {
+  id: number;
+  artworkId: number;
+  durationMonths: number;
+  rentalFee: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface RentalPlanCreationAttributes extends Optional<RentalPlanAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
+
+class RentalPlan extends Model<RentalPlanAttributes, RentalPlanCreationAttributes> implements RentalPlanAttributes {
+  public id!: number;
+  public artworkId!: number;
+  public durationMonths!: number;
+  public rentalFee!: number;
+  public createdAt!: Date;
+  public updatedAt!: Date;
+}
+
+RentalPlan.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    artworkId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'artworks',
+        key: 'id',
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
+    },
+    durationMonths: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        isIn: [[3, 6, 12]],
+      },
+    },
+    rentalFee: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+      validate: {
+        min: 0,
+      },
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+    },
+  },
+  {
+    sequelize,
+    modelName: 'RentalPlan',
+    tableName: 'rental_plans',
+    timestamps: true,
+    indexes: [
+      {
+        fields: ['artworkId'],
+      },
+      {
+        unique: true,
+        fields: ['artworkId', 'durationMonths'],
+      },
+    ],
+  }
+);
+
+export default RentalPlan;
