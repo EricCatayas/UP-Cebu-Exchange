@@ -22,7 +22,7 @@ const artwork = await Artwork.create({
 
 // Associate artwork with styles
 // Sequelize generates methods like addStyles(), removeStyles(), hasStyles(), etc.
-await artwork.addStyles([modernStyle, realismStyle]); 
+// await artwork.addStyles([modernStyle, realismStyle]); 
 // Or individually: await artwork.addStyle(modernStyle);
 
 // Alternative: Direct junction table creation
