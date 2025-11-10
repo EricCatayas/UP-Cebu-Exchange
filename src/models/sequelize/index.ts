@@ -69,19 +69,15 @@ const initializeAssociations = () => {
     as: 'artwork',
   });
 
-  // Many-to-Many: Artwork belongsToMany Style through ArtworkStyle
-  Artwork.belongsToMany(Style, {
-    through: ArtworkStyle,
-    foreignKey: 'artworkId',
-    otherKey: 'styleId',
-    as: 'styles',
+  // Artwork belongs to Style
+  Artwork.belongsTo(Style, {
+    foreignKey: 'styleId',
+    as: 'style',
   });
 
-  // Many-to-Many: Style belongsToMany Artwork through ArtworkStyle
-  Style.belongsToMany(Artwork, {
-    through: ArtworkStyle,
+  // Style has many Artworks
+  Style.hasMany(Artwork, {
     foreignKey: 'styleId',
-    otherKey: 'artworkId',
     as: 'artworks',
   });
 

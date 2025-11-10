@@ -8,6 +8,7 @@ interface ArtworkAttributes {
   artistId?: number;
   description?: string;
   medium: string;
+  styleId?: number;
   heightCm?: number;
   widthCm?: number;
   status: string;
@@ -16,7 +17,7 @@ interface ArtworkAttributes {
 }
 
 // Define creation attributes
-interface ArtworkCreationAttributes extends Optional<ArtworkAttributes, 'id' | 'artistId' | 'title' | 'description' | 'status' | 'createdAt' | 'updatedAt'> {}
+interface ArtworkCreationAttributes extends Optional<ArtworkAttributes, 'id' | 'artistId' | 'title' | 'description' | 'styleId' | 'heightCm' | 'widthCm' | 'status' | 'createdAt' | 'updatedAt'> {}
 
 // Define the Artwork model class
 class Artwork extends Model<ArtworkAttributes, ArtworkCreationAttributes> implements ArtworkAttributes {
@@ -25,6 +26,7 @@ class Artwork extends Model<ArtworkAttributes, ArtworkCreationAttributes> implem
   public artistId!: number;
   public description!: string;
   public medium!: string;
+  public styleId!: number;
   public heightCm!: number;
   public widthCm!: number;
   public status!: string;
@@ -59,6 +61,14 @@ Artwork.init(
     medium: {
       type: DataTypes.STRING(100),
       allowNull: false,
+    },
+    styleId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'Style',
+        key: 'id',
+      },
     },
     heightCm: {
       type: DataTypes.DECIMAL(8, 2),
@@ -95,6 +105,9 @@ Artwork.init(
       },
       {
         fields: ['status'],
+      },
+      {
+        fields: ['styleId'],
       },
     ],
   }
