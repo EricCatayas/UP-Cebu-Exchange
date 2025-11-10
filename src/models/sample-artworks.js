@@ -19,7 +19,7 @@ const sample_artworks = [{
         }        
     ],
     tags: ["sunset", "cebu", "painting"],
-    styles: ["impressionism"],
+    style: "impressionism",
     rentalPlans: [
       { durationMonths: 3, rentalFee: 1500.00 },
       { durationMonths: 6, rentalFee: 2800.00 },
@@ -55,7 +55,7 @@ const sample_artworks = [{
         }
     ],
     tags: ["manila", "bay", "abstract", "citylife"],
-    styles: ["abstract"],
+    style: "abstract",
     rentalPlans: [
       { durationMonths: 3, rentalFee: 2000.00 },
       { durationMonths: 6, rentalFee: 3700.00 },
@@ -81,7 +81,7 @@ const sample_artworks = [{
         }
     ],
     tags: ["banaue", "rice terraces", "landscape", "heritage"],
-    styles: ["realism"],
+    style: "realism",
     rentalPlans: [
       { durationMonths: 3, rentalFee: 1200.00 },
       { durationMonths: 6, rentalFee: 2200.00 },
@@ -107,7 +107,7 @@ const sample_artworks = [{
         }
     ],
     tags: ["urban", "contemporary", "street", "modern"],
-    styles: ["contemporary"],
+    style: "contemporary",
     rentalPlans: [
       { durationMonths: 3, rentalFee: 2500.00 },
       { durationMonths: 6, rentalFee: 4600.00 },
@@ -133,7 +133,7 @@ const sample_artworks = [{
         }
     ],
     tags: ["fisherman", "dawn", "sea", "traditional"],
-    styles: ["realism"],
+    style: "realism",
     rentalPlans: [
       { durationMonths: 3, rentalFee: 1800.00 },
       { durationMonths: 6, rentalFee: 3300.00 },
@@ -159,7 +159,7 @@ const sample_artworks = [{
         }
     ],
     tags: ["monsoon", "tropical", "storm", "nature"],
-    styles: ["expressionism"],
+    style: "expressionism",
     rentalPlans: [
       { durationMonths: 3, rentalFee: 2200.00 },
       { durationMonths: 6, rentalFee: 4000.00 },
@@ -185,7 +185,7 @@ const sample_artworks = [{
         }
     ],
     tags: ["mindanao", "highlands", "landscape", "pastoral"],
-    styles: ["impressionism"],
+    style: "impressionism",
     rentalPlans: [
       { durationMonths: 3, rentalFee: 1000.00 },
       { durationMonths: 6, rentalFee: 1800.00 },
@@ -211,7 +211,7 @@ const sample_artworks = [{
         }
     ],
     tags: ["jeepney", "culture", "transportation", "colorful"],
-    styles: ["pop art"],
+    style: "pop art",
     rentalPlans: [
       { durationMonths: 3, rentalFee: 1900.00 },
       { durationMonths: 6, rentalFee: 3500.00 },
@@ -237,7 +237,7 @@ const sample_artworks = [{
         }
     ],
     tags: ["tarsier", "wildlife", "portrait", "conservation"],
-    styles: ["realism"],
+    style: "realism",
     rentalPlans: [
       { durationMonths: 3, rentalFee: 800.00 },
       { durationMonths: 6, rentalFee: 1400.00 },
@@ -263,7 +263,7 @@ const sample_artworks = [{
         }
     ],
     tags: ["cordillera", "spirits", "ancestral", "mystical"],
-    styles: ["surrealism"],
+    style: "surrealism",
     rentalPlans: [
       { durationMonths: 3, rentalFee: 3000.00 },
       { durationMonths: 6, rentalFee: 5500.00 },
@@ -289,7 +289,7 @@ const sample_artworks = [{
         }
     ],
     tags: ["boracay", "beach", "seascape", "peaceful"],
-    styles: ["impressionism"],
+    style: "impressionism",
     rentalPlans: [
       { durationMonths: 3, rentalFee: 1400.00 },
       { durationMonths: 6, rentalFee: 2500.00 },
@@ -315,7 +315,7 @@ const sample_artworks = [{
         }
     ],
     tags: ["vigan", "heritage", "colonial", "architecture"],
-    styles: ["realism"],
+    style: "realism",
     rentalPlans: [
       { durationMonths: 3, rentalFee: 1700.00 },
       { durationMonths: 6, rentalFee: 3100.00 },
@@ -341,7 +341,7 @@ const sample_artworks = [{
         }
     ],
     tags: ["kalinga", "textile", "traditional", "patterns"],
-    styles: ["folk art"],
+    style: "folk art",
     rentalPlans: [
       { durationMonths: 3, rentalFee: 1600.00 },
       { durationMonths: 6, rentalFee: 2900.00 },
@@ -367,7 +367,7 @@ const sample_artworks = [{
         }
     ],
     tags: ["metro manila", "rush", "urban", "dynamic"],
-    styles: ["abstract expressionism"],
+    style: "abstract expressionism",
     rentalPlans: [
       { durationMonths: 3, rentalFee: 2800.00 },
       { durationMonths: 6, rentalFee: 5100.00 },
@@ -393,7 +393,7 @@ const sample_artworks = [{
         }
     ],
     tags: ["sagada", "caves", "mystery", "limestone"],
-    styles: ["gothic"],
+    style: "gothic",
     rentalPlans: [
       { durationMonths: 3, rentalFee: 1300.00 },
       { durationMonths: 6, rentalFee: 2400.00 },
