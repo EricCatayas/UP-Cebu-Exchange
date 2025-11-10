@@ -8,8 +8,8 @@ interface ArtworkAttributes {
   artistId?: number;
   description?: string;
   medium: string;
-  heightCm: number;
-  widthCm: number;
+  heightCm?: number;
+  widthCm?: number;
   status: string;
   createdAt: Date;
   updatedAt: Date; 
@@ -62,11 +62,11 @@ Artwork.init(
     },
     heightCm: {
       type: DataTypes.DECIMAL(8, 2),
-      allowNull: false,
+      allowNull: true,
     },
     widthCm: {
       type: DataTypes.DECIMAL(8, 2),
-      allowNull: false,
+      allowNull: true,
     },
     status: {
       type: DataTypes.STRING(20),
