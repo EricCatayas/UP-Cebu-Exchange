@@ -1,6 +1,6 @@
 import React from "react";
-import Navbar from "@/components/navbar";
-import Footer from "@/components/footer";
+import Navbar from "@/components/customer/Navbar";
+import Footer from "@/components/customer/Footer";
 
 export default function CustomerLayout({
   children,
