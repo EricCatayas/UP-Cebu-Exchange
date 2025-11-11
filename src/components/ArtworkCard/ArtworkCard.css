@@ -1,6 +1,5 @@
 .artwork-card {
   position: relative;
-  width: 300px;
   font-family: system-ui, sans-serif;
   display: flex;
   flex-direction: column;
