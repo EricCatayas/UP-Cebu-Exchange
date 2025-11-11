@@ -4,6 +4,7 @@ import ArtworkCard from "@/components/ArtworkCard/ArtworkCard";
 import { sample_artworks } from "@/models/sample-artworks";
 
 function Artworks() {
+  // TODO: Replace with real data
   const allArtworks = sample_artworks;
 
   return (
@@ -17,7 +18,7 @@ function Artworks() {
       <button>Latest</button>
       <br />
       {/* Line break here */}
-      <div className="columns-1 md:columns-2 lg:columns-3 gap-6 mt-6 space-y-6">
+      <div className="columns-1 md:columns-2 lg:columns-3 gap-2 mt-6 space-y-6">
         {allArtworks.map((artwork) => (
           <div key={artwork.id} className="break-inside-avoid mb-6">
             <ArtworkCard artwork={artwork} />
