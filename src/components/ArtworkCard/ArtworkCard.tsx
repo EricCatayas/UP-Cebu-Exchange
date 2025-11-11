@@ -1,4 +1,7 @@
+"use client";
 import React from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import "./ArtworkCard.css";
 
 export default function ArtworkCard({
@@ -17,17 +20,40 @@ export default function ArtworkCard({
     : null;
   const dimension = `${artwork.heightCm}cm × ${artwork.widthCm}cm`;
 
+  const router = useRouter();
+  const NavigateToArtwork = () => router.push(`/artworks/${artwork.id}`);
+  const NavigateToArtist = () => router.push(`/artists/${artwork.artist?.id}`);
+
   return (
     <div className={`artwork-card status-${artwork.status}`}>
       {artwork.status === "rented" && <div className="ribbon">Rented</div>}
-      <div className="image-wrapper">
+      <button
+        type="button"
+        className="image-wrapper"
+        onClick={NavigateToArtwork}
+        aria-label={`View ${artwork.title}`}
+      >
         <img src={primaryImage?.imageUrl} alt={artwork.title} loading="lazy" />
-      </div>
+      </button>
       {displayInfo && (
         <div className="info-row">
           <div className="left">
-            <div className="title">{artwork.title}</div>
-            <div className="artist">{artwork.artist?.name}</div>
+            <button
+              type="button"
+              onClick={NavigateToArtwork}
+              className="title text-left cursor-pointer"
+            >
+              {artwork.title}
+            </button>
+            {artwork.artist && (
+              <button
+                type="button"
+                onClick={NavigateToArtist}
+                className="artist text-left cursor-pointer"
+              >
+                {artwork.artist?.name}
+              </button>
+            )}
             {lowestPlan && (
               <div className="price">
                 as low as: ₱ {lowestPlan.rentalFee.toLocaleString()}
@@ -37,7 +63,12 @@ export default function ArtworkCard({
           <div className="right">
             <div className="dimension">{dimension}</div>
             <div className="flex gap-2">
-              <button className="wishlist-btn" title="Add to wishlist">
+              <button
+                className="wishlist-btn"
+                title="Add to wishlist"
+                type="button"
+              >
+                {/* ...existing SVG... */}
                 <svg
                   width="22"
                   height="22"
@@ -50,7 +81,7 @@ export default function ArtworkCard({
                   />
                 </svg>
               </button>
-              <button className="cart-btn" title="Add to cart">
+              <button className="cart-btn" title="Add to cart" type="button">
                 <svg
                   width="22"
                   height="22"
