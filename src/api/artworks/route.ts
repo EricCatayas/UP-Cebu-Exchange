@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Op } from 'sequelize';
-import { Artwork, Artist } from '@/models/sequelize';
+import { Artwork, Artist, RentalPlan } from '@/models/sequelize';
 import { getCurrentUser, isAdmin } from '@/lib/auth';
 
 // TODO: Test API
@@ -8,14 +8,14 @@ export async function POST(request: NextRequest) {
   try {
     // Check authentication and admin authorization
     const currentUser = await getCurrentUser();
-    
+
     if (!currentUser) {
       return NextResponse.json(
         { error: 'Authentication required' },
         { status: 401 }
       );
     }
-    
+
     if (!isAdmin(currentUser)) {
       return NextResponse.json(
         { error: 'Admin access required' },
@@ -26,8 +26,9 @@ export async function POST(request: NextRequest) {
     // TODO: handle image uploads
 
     // Parse request body
-    const { title, artistId, description, medium, heightCm, widthCm, status } = await request.json();
-    
+    const { title, artistId, description, medium, heightCm, widthCm, status } =
+      await request.json();
+
     // Validate required fields
     if (!medium || !heightCm || !widthCm) {
       return NextResponse.json(
@@ -83,33 +84,44 @@ export async function POST(request: NextRequest) {
 
     // Fetch the created artwork with artist information
     const createdArtwork = await Artwork.findByPk(newArtwork.id, {
-      include: [{
-        model: Artist,
-        as: 'artist',
-        attributes: ['id', 'name', 'bio'],
-      }],
+      include: [
+        {
+          model: Artist,
+          as: 'artist',
+          attributes: ['id', 'name', 'bio'],
+        },
+      ],
     });
 
-    return NextResponse.json({
-      message: 'Artwork created successfully',
-      artwork: {
-        id: createdArtwork!.id,
-        title: createdArtwork!.title,
-        artistId: createdArtwork!.artistId,
-        artist: (createdArtwork as any).artist || null,
-        description: createdArtwork!.description,
-        medium: createdArtwork!.medium,
-        heightCm: createdArtwork!.heightCm,
-        widthCm: createdArtwork!.widthCm,
-        status: createdArtwork!.status,
-        createdAt: createdArtwork!.createdAt,
-        updatedAt: createdArtwork!.updatedAt,
-      }
-    }, { status: 201 });
+    // Create rental plan months 3,6,12
+    await RentalPlan.bulkCreate([
+      { artworkId: createdArtwork!.id, durationMonths: 3, rentalFee: 0 },
+      { artworkId: createdArtwork!.id, durationMonths: 6, rentalFee: 0 },
+      { artworkId: createdArtwork!.id, durationMonths: 12, rentalFee: 0 },
+    ]);
 
+    return NextResponse.json(
+      {
+        message: 'Artwork created successfully',
+        artwork: {
+          id: createdArtwork!.id,
+          title: createdArtwork!.title,
+          artistId: createdArtwork!.artistId,
+          artist: (createdArtwork as any).artist || null,
+          description: createdArtwork!.description,
+          medium: createdArtwork!.medium,
+          heightCm: createdArtwork!.heightCm,
+          widthCm: createdArtwork!.widthCm,
+          status: createdArtwork!.status,
+          createdAt: createdArtwork!.createdAt,
+          updatedAt: createdArtwork!.updatedAt,
+        },
+      },
+      { status: 201 }
+    );
   } catch (error) {
     console.error('Artwork creation error:', error);
-    
+
     // Handle Sequelize validation errors
     if (error instanceof Error && error.name === 'SequelizeValidationError') {
       return NextResponse.json(
@@ -117,15 +129,18 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    
+
     // Handle Sequelize foreign key constraint errors
-    if (error instanceof Error && error.name === 'SequelizeForeignKeyConstraintError') {
+    if (
+      error instanceof Error &&
+      error.name === 'SequelizeForeignKeyConstraintError'
+    ) {
       return NextResponse.json(
         { error: 'Invalid artist reference' },
         { status: 400 }
       );
     }
-    
+
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -147,7 +162,10 @@ export async function GET(request: NextRequest) {
     // Validate pagination parameters
     if (page < 1 || limit < 1 || limit > 100) {
       return NextResponse.json(
-        { error: 'Invalid pagination parameters. Page must be >= 1 and limit must be between 1 and 100' },
+        {
+          error:
+            'Invalid pagination parameters. Page must be >= 1 and limit must be between 1 and 100',
+        },
         { status: 400 }
       );
     }
@@ -158,16 +176,16 @@ export async function GET(request: NextRequest) {
     if (status !== null && status !== undefined) {
       whereClause.status = status === 'true' ? 'available' : 'unavailable';
     }
-    
+
     if (artistId) {
       whereClause.artistId = parseInt(artistId);
     }
-    
+
     if (search) {
       whereClause[Op.or] = [
         { title: { [Op.iLike]: `%${search}%` } },
         { description: { [Op.iLike]: `%${search}%` } },
-        { medium: { [Op.iLike]: `%${search}%` } }
+        { medium: { [Op.iLike]: `%${search}%` } },
       ];
     }
 
@@ -177,11 +195,13 @@ export async function GET(request: NextRequest) {
     // Fetch artworks with pagination
     const { count, rows: artworks } = await Artwork.findAndCountAll({
       where: whereClause,
-      include: [{
-        model: Artist,
-        as: 'artist',
-        attributes: ['id', 'name', 'bio'],
-      }],
+      include: [
+        {
+          model: Artist,
+          as: 'artist',
+          attributes: ['id', 'name', 'bio'],
+        },
+      ],
       limit,
       offset,
       order: [['createdAt', 'DESC']],
@@ -193,7 +213,7 @@ export async function GET(request: NextRequest) {
     const hasPrevPage = page > 1;
 
     return NextResponse.json({
-      artworks: artworks.map(artwork => ({
+      artworks: artworks.map((artwork) => ({
         id: artwork.id,
         title: artwork.title,
         artistId: artwork.artistId,
@@ -213,9 +233,8 @@ export async function GET(request: NextRequest) {
         itemsPerPage: limit,
         hasNextPage,
         hasPrevPage,
-      }
+      },
     });
-
   } catch (error) {
     console.error('Artworks fetch error:', error);
     return NextResponse.json(
@@ -231,13 +250,13 @@ export async function DELETE(request: NextRequest) {
     // Check authentication and admin authorization
     const currentUser = await getCurrentUser();
     if (!currentUser) {
-        return NextResponse.json(
+      return NextResponse.json(
         { error: 'Authentication required' },
         { status: 401 }
       );
     }
     if (!isAdmin(currentUser)) {
-        return NextResponse.json(
+      return NextResponse.json(
         { error: 'Admin access required' },
         { status: 403 }
       );
@@ -253,21 +272,17 @@ export async function DELETE(request: NextRequest) {
     // Find the artwork
     const artwork = await Artwork.findByPk(artworkId);
     if (!artwork) {
-      return NextResponse.json(
-        { error: 'Artwork not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Artwork not found' }, { status: 404 });
     }
 
     // TODO: handle deletion of associated images
 
     // Delete the artwork
     await artwork.destroy();
-    return NextResponse.json( 
+    return NextResponse.json(
       { message: 'Artwork deleted successfully' },
       { status: 200 }
     );
-
   } catch (error) {
     console.error('Artwork deletion error:', error);
     return NextResponse.json(
