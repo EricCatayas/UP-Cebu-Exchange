@@ -9,7 +9,6 @@
 
 .image-wrapper {
   width: 100%;
-  aspect-ratio: 3/4;
   background: #f4f4f4;
   overflow: hidden;
 }

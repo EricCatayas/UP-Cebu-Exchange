@@ -10,20 +10,20 @@ export default function Page() {
       description:
         "A beautiful painting capturing the essence of a Cebu sunset.",
       medium: "oil on canvas",
-      heightCm: 60,
-      widthCm: 80,
+      heightCm: 90,
+      widthCm: 120,
       images: [
         {
           id: 1,
           isPrimary: true,
           imageUrl:
-            "https://unlimitedworks.blob.core.windows.net/up-cebu-exchange/placeholder-portrait.png",
+            "https://unlimitedworks.blob.core.windows.net/up-cebu-exchange/placeholder-img-4x3.png",
         },
         {
           id: 16,
           isPrimary: false,
           imageUrl:
-            "https://unlimitedworks.blob.core.windows.net/up-cebu-exchange/placeholder-portrait.png",
+            "https://unlimitedworks.blob.core.windows.net/up-cebu-exchange/placeholder-img-4x3.png",
         },
       ],
       tags: ["sunset", "cebu", "painting"],
@@ -45,25 +45,25 @@ export default function Page() {
         "An abstract representation of the bustling life around Manila Bay.",
       medium: "acrylic on canvas",
       heightCm: 90,
-      widthCm: 120,
+      widthCm: 60,
       images: [
         {
           id: 2,
           isPrimary: true,
           imageUrl:
-            "https://unlimitedworks.blob.core.windows.net/up-cebu-exchange/placeholder-portrait.png",
+            "https://unlimitedworks.blob.core.windows.net/up-cebu-exchange/placeholder-img-3x2.png",
         },
         {
           id: 17,
           isPrimary: false,
           imageUrl:
-            "https://unlimitedworks.blob.core.windows.net/up-cebu-exchange/placeholder-portrait.png",
+            "https://unlimitedworks.blob.core.windows.net/up-cebu-exchange/placeholder-img-3x2.png",
         },
         {
           id: 18,
           isPrimary: false,
           imageUrl:
-            "https://unlimitedworks.blob.core.windows.net/up-cebu-exchange/placeholder-portrait.png",
+            "https://unlimitedworks.blob.core.windows.net/up-cebu-exchange/placeholder-img-3x2.png",
         },
       ],
       tags: ["manila", "bay", "abstract", "citylife"],
@@ -84,14 +84,14 @@ export default function Page() {
       description:
         "A detailed landscape painting of the iconic Banaue Rice Terraces.",
       medium: "watercolor",
-      heightCm: 45,
-      widthCm: 65,
+      heightCm: 60,
+      widthCm: 120,
       images: [
         {
           id: 3,
           isPrimary: true,
           imageUrl:
-            "https://unlimitedworks.blob.core.windows.net/up-cebu-exchange/placeholder-portrait.png",
+            "https://unlimitedworks.blob.core.windows.net/up-cebu-exchange/placeholder-img-2x1.png",
         },
       ],
       tags: ["banaue", "rice terraces", "landscape", "heritage"],
@@ -121,7 +121,13 @@ export default function Page() {
           id: 4,
           isPrimary: true,
           imageUrl:
-            "https://unlimitedworks.blob.core.windows.net/up-cebu-exchange/placeholder-portrait.png",
+            "https://unlimitedworks.blob.core.windows.net/up-cebu-exchange/placeholder-img-4x5.png",
+        },
+        {
+          id: 19,
+          isPrimary: false,
+          imageUrl:
+            "https://unlimitedworks.blob.core.windows.net/up-cebu-exchange/placeholder-img-4x5.png",
         },
       ],
       tags: ["urban", "contemporary", "street", "modern"],
@@ -142,14 +148,14 @@ export default function Page() {
       description:
         "A serene portrayal of fishermen preparing their nets at dawn.",
       medium: "oil on canvas",
-      heightCm: 70,
-      widthCm: 100,
+      heightCm: 50,
+      widthCm: 70,
       images: [
         {
           id: 5,
           isPrimary: true,
           imageUrl:
-            "https://unlimitedworks.blob.core.windows.net/up-cebu-exchange/placeholder-portrait.png",
+            "https://unlimitedworks.blob.core.windows.net/up-cebu-exchange/placeholder-img-7x5.png",
         },
       ],
       tags: ["fisherman", "dawn", "sea", "traditional"],
@@ -177,7 +183,7 @@ export default function Page() {
           id: 6,
           isPrimary: true,
           imageUrl:
-            "https://unlimitedworks.blob.core.windows.net/up-cebu-exchange/placeholder-portrait.png",
+            "https://unlimitedworks.blob.core.windows.net/up-cebu-exchange/placeholder-img-3x4.png",
         },
       ],
       tags: ["monsoon", "tropical", "storm", "nature"],
