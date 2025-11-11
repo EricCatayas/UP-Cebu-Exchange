@@ -1,4 +1,4 @@
-const sample_artworks = [
+export const sample_artworks = [
   {
     id: 1,
     title: "Sunset Over Cebu",
@@ -400,7 +400,7 @@ const sample_artworks = [
         id: 14,
         isPrimary: true,
         imageUrl:
-          "https://unlimitedworks.blob.core.windows.net/up-cebu-exchange/placeholder-img-4xx.png",
+          "https://unlimitedworks.blob.core.windows.net/up-cebu-exchange/placeholder-img-4x3.png",
       },
     ],
     tags: ["metro manila", "rush", "urban", "dynamic"],
