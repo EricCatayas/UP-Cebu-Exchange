@@ -2,6 +2,7 @@ import ArtworkCard from "@/components/ArtworkCard/ArtworkCard";
 import CategoryGrid from "@/components/CategoryGrid/CategoryGrid";
 
 export default function Page() {
+  // TODO: Replace with real data
   const favorite_artworks = [
     {
       id: 1,
@@ -106,6 +107,8 @@ export default function Page() {
       updatedAt: "2024-02-12T11:20:00Z",
     },
   ];
+
+  // TODO: Replace with real data
   const recommended_artworks = [
     {
       id: 4,
