@@ -14,10 +14,16 @@ interface UserAttributes {
 }
 
 // Define creation attributes (optional fields during creation)
-interface UserCreationAttributes extends Optional<UserAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
+type UserCreationAttributes = Optional<
+  UserAttributes,
+  'id' | 'createdAt' | 'updatedAt'
+>;
 
 // Define the User model class
-class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
+class User
+  extends Model<UserAttributes, UserCreationAttributes>
+  implements UserAttributes
+{
   public id!: number;
   public email!: string;
   public password!: string;
@@ -63,7 +69,7 @@ User.init(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'Role',
+        model: 'roles',
         key: 'id',
       },
     },

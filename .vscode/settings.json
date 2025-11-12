@@ -1,0 +1,20 @@
+{
+  "sqltools.connections": [
+    {
+      "mysqlOptions": {
+        "authProtocol": "xprotocol",
+        "enableSsl": "Disabled"
+      },
+      "ssh": "Disabled",
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 33060,
+      "driver": "MySQL",
+      "name": "Local instance MySQL80",
+      "username": "root",
+      "database": "up_cebu_exchange",
+      "password": "Jomar143!",
+      "connectionTimeout": 30
+    }
+  ]
+}

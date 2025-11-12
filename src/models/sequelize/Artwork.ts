@@ -13,14 +13,29 @@ interface ArtworkAttributes {
   widthCm?: number;
   status: string;
   createdAt: Date;
-  updatedAt: Date; 
+  updatedAt: Date;
 }
 
 // Define creation attributes
-interface ArtworkCreationAttributes extends Optional<ArtworkAttributes, 'id' | 'artistId' | 'title' | 'description' | 'styleId' | 'heightCm' | 'widthCm' | 'status' | 'createdAt' | 'updatedAt'> {}
+type ArtworkCreationAttributes = Optional<
+  ArtworkAttributes,
+  | 'id'
+  | 'artistId'
+  | 'title'
+  | 'description'
+  | 'styleId'
+  | 'heightCm'
+  | 'widthCm'
+  | 'status'
+  | 'createdAt'
+  | 'updatedAt'
+>;
 
 // Define the Artwork model class
-class Artwork extends Model<ArtworkAttributes, ArtworkCreationAttributes> implements ArtworkAttributes {
+class Artwork
+  extends Model<ArtworkAttributes, ArtworkCreationAttributes>
+  implements ArtworkAttributes
+{
   public id!: number;
   public title!: string;
   public artistId!: number;
@@ -50,7 +65,7 @@ Artwork.init(
       type: DataTypes.INTEGER,
       allowNull: true,
       references: {
-        model: 'Artist',
+        model: 'artists',
         key: 'id',
       },
     },
@@ -66,7 +81,7 @@ Artwork.init(
       type: DataTypes.INTEGER,
       allowNull: true,
       references: {
-        model: 'Style',
+        model: 'styles',
         key: 'id',
       },
     },
