@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/contexts/CartContext';
+import { useOrder } from '@/contexts/OrderContext';
 import {
   DURATION_OPTIONS,
   DELIVERY_FEE,
@@ -18,22 +19,27 @@ function Checkout() {
     toggleAllCartItems,
     removeFromCart,
   } = useCart();
-  const [selectedDuration, setSelectedDuration] = useState<number>(12);
-  const [startDate, setStartDate] = useState<string>('2025-10-09');
-  const [deliveryMethod, setDeliveryMethod] = useState<string>('Delivery');
-  const [paymentMethod, setPaymentMethod] = useState<string>('Cash');
+
+  const {
+    selectedDuration,
+    setSelectedDuration,
+    startDate,
+    endDate,
+    setStartDate,
+    deliveryMethod,
+    setDeliveryMethod,
+    paymentMethod,
+    setPaymentMethod,
+    contractSigned,
+    setContractSigned,
+    subtotal,
+    total,
+  } = useOrder();
 
   const router = useRouter();
 
   const deliveryMethods = DELIVERY_METHODS;
   const paymentMethods = PAYMENT_METHODS;
-
-  const endDate = useMemo(() => {
-    if (!startDate) return '';
-    const date = new Date(startDate);
-    date.setMonth(date.getMonth() + selectedDuration);
-    return date.toISOString().split('T')[0];
-  }, [startDate, selectedDuration]);
 
   // Format date for display
   const formatDate = (dateString: string) => {
@@ -50,18 +56,9 @@ function Checkout() {
     router.push(`/artworks/${artworkId}`);
   };
 
-  const subtotal = useMemo(() => {
-    return cartItems
-      .filter((item) => selectedCartItemIds.has(item.id))
-      .reduce((sum, item) => {
-        const plan = item.rentalPlans.find(
-          (p) => p.durationMonths === selectedDuration
-        );
-        return sum + (plan?.rentalFee || 0);
-      }, 0);
-  }, [cartItems, selectedCartItemIds, selectedDuration]);
-
-  const total = subtotal + (deliveryMethod === 'Delivery' ? DELIVERY_FEE : 0);
+  const navigateToContract = () => {
+    router.push('/checkout/rental-agreement');
+  };
 
   const getRentalFee = (item: any) => {
     const plan = item.rentalPlans.find(
@@ -71,6 +68,7 @@ function Checkout() {
   };
 
   const handleCheckout = () => {
+    // TODO: post order data to backend
     console.log('Checkout:', {
       selectedDuration,
       startDate,
@@ -112,7 +110,6 @@ function Checkout() {
                 </select>
               </div>
 
-              {/* Date inputs */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Start Date */}
                 <div>
@@ -149,7 +146,7 @@ function Checkout() {
               Select Artworks from Cart
             </h2>
 
-            {/* Select All Header */}
+            {/* Select All */}
             <div className="flex justify-between items-center mb-4 pb-2 border-b">
               <label className="flex items-center space-x-2 cursor-pointer">
                 <input
@@ -329,14 +326,25 @@ function Checkout() {
               </div>
             </div>
 
-            <button
-              onClick={handleCheckout}
-              disabled={selectedCartItemIds.size === 0}
-              className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-lg transition-colors flex items-center justify-center space-x-2"
-            >
-              <span>SIGN CONTRACT</span>
-              <span>→</span>
-            </button>
+            {contractSigned ? (
+              <button
+                onClick={handleCheckout}
+                disabled={selectedCartItemIds.size === 0}
+                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-lg transition-colors flex items-center justify-center space-x-2"
+              >
+                <span>CHECKOUT</span>
+                <span>→</span>
+              </button>
+            ) : (
+              <button
+                onClick={navigateToContract}
+                disabled={selectedCartItemIds.size === 0}
+                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-lg transition-colors flex items-center justify-center space-x-2"
+              >
+                <span>SIGN CONTRACT</span>
+                <span>→</span>
+              </button>
+            )}
           </div>
         </div>
       </div>
