@@ -13,6 +13,17 @@ module.exports = {
         secondary: '#FF6F00',
         tertiary: '#FAAF40',
       },
+      fontFamily: {
+        playfair: ['Playfair Display', 'serif'],
+        poppins: ['Poppins', 'sans-serif'],
+        rajdhani: ['Rajdhani', 'sans-serif'],
+      },
+      fontWeight: {
+        light: '300',
+        normal: '400',
+        medium: '500',
+        semibold: '600',
+      },
     },
   },
   plugins: [],
