@@ -77,7 +77,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [selectedCartItemIds, setSelectedCartItemIds] = useState<Set<number>>(
     new Set([1, 2])
   );
-
   const toggleCartItem = (id: number) => {
     setSelectedCartItemIds((prev) => {
       const next = new Set(prev);
