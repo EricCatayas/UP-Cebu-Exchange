@@ -4,4 +4,4 @@ export const DELIVERY_METHODS = ['Delivery', 'Pickup'];
 
 export const DURATION_OPTIONS = [3, 6, 12];
 
-export const PAYMENT_METHODS = ['Credit Card', 'PayPal', 'Bank Transfer'];
+export const PAYMENT_METHODS = ['Cash', 'Credit Card', 'Bank Transfer'];
