@@ -3,13 +3,12 @@ import User from './User';
 import Role from './Role';
 import Artist from './Artist';
 import Artwork from './Artwork';
-import Address from './Address';
-import Style from './Style';
-import ArtworkStyle from './ArtworkStyle';
+import ArtworkTag from './ArtworkTag';
+import Tag from './Tag';
 
-// Artwork Styles
-const modernStyle = await Style.create({ name: 'Modern' });
-const realismStyle = await Style.create({ name: 'Realism' });
+// Artwork Tags
+const modernTag = await Tag.create({ name: 'Modern' });
+const realismTag = await Tag.create({ name: 'Realism' });
 
 // Create artwork
 const artwork = await Artwork.create({
@@ -20,24 +19,19 @@ const artwork = await Artwork.create({
   widthCm: 70,
 });
 
-// Associate artwork with styles
-// Sequelize generates methods like addStyles(), removeStyles(), hasStyles(), etc.
-// await artwork.addStyles([modernStyle, realismStyle]); 
-// Or individually: await artwork.addStyle(modernStyle);
-
 // Alternative: Direct junction table creation
-await ArtworkStyle.create({
+await ArtworkTag.create({
   artworkId: artwork.id,
-  styleId: modernStyle.id
+  tagId: modernTag.id,
 });
 
-await ArtworkStyle.create({
+await ArtworkTag.create({
   artworkId: artwork.id,
-  styleId: realismStyle.id
+  tagId: realismTag.id,
 });
 
 // Or bulk create for multiple associations
-await ArtworkStyle.bulkCreate([
-  { artworkId: artwork.id, styleId: modernStyle.id },
-  { artworkId: artwork.id, styleId: realismStyle.id }
+await ArtworkTag.bulkCreate([
+  { artworkId: artwork.id, tagId: modernTag.id },
+  { artworkId: artwork.id, tagId: realismTag.id },
 ]);
