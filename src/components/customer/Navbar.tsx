@@ -1,5 +1,5 @@
-import Link from "next/link";
-import React from "react";
+import Link from 'next/link';
+import React from 'react';
 
 // TODO: Navigation links
 //      if signed in:  Cart, My Rentals, Account
@@ -20,7 +20,7 @@ const Navbar: React.FC = () => {
           <h1 className="text-2xl font-bold text-black">UP Cebu Exchange</h1>
         </div>
         <div className="flex items-center space-x-4">
-          <Link href="/cart" className="text-black hover:text-gray-700">
+          <Link href="/checkout" className="text-black hover:text-gray-700">
             Cart
           </Link>
           <Link
