@@ -5,7 +5,6 @@ import Artist from './Artist';
 import Artwork from './Artwork';
 import Address from './Address';
 import ArtworkImage from './ArtworkImage';
-import ArtworkStyle from './ArtworkStyle';
 import ArtworkTag from './ArtworkTag';
 import Style from './Style';
 import Tag from './Tag';
@@ -26,7 +25,7 @@ const initializeAssociations = () => {
     foreignKey: 'roleId',
     as: 'role',
   });
-  
+
   // Role has many Users
   Role.hasMany(User, {
     foreignKey: 'roleId',
@@ -50,7 +49,7 @@ const initializeAssociations = () => {
     foreignKey: 'artistId',
     as: 'artworks',
   });
-  
+
   // Artwork belongs to Artist
   Artwork.belongsTo(Artist, {
     foreignKey: 'artistId',
@@ -97,7 +96,7 @@ const initializeAssociations = () => {
     as: 'artworks',
   });
 
-    // Artwork has many RentalPlans
+  // Artwork has many RentalPlans
   Artwork.hasMany(RentalPlan, {
     foreignKey: 'artworkId',
     as: 'rentalPlans',
@@ -246,7 +245,6 @@ export {
   Artwork,
   Address,
   Style,
-  ArtworkStyle,
   Tag,
   ArtworkTag,
   Cart,
@@ -269,7 +267,6 @@ export default {
   Artwork,
   Address,
   Style,
-  ArtworkStyle,
   Tag,
   ArtworkTag,
   Cart,
