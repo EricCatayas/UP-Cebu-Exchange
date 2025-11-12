@@ -9,11 +9,11 @@ module.exports = {
     extend: {
       // TODO: change styling configuration
       colors: {
-        primary: '#1E40AF', 
-        secondary: '#F59E0B',
+        primary: '#8E1537',
+        secondary: '#FF6F00',
+        tertiary: '#FAAF40',
       },
     },
   },
   plugins: [],
-}
-
+};

@@ -323,7 +323,7 @@ function Checkout() {
             <div className="border-t pt-4 mb-6">
               <div className="flex justify-between items-center">
                 <span className="font-bold text-lg">Total Rental Cost</span>
-                <span className="font-bold text-2xl text-blue-600">
+                <span className="font-bold text-2xl text-primary">
                   ₱{total}
                 </span>
               </div>
@@ -333,7 +333,7 @@ function Checkout() {
               <button
                 onClick={handleCheckout}
                 disabled={selectedCartItemIds.size === 0}
-                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-lg transition-colors flex items-center justify-center space-x-2"
+                className="w-full bg-primary hover:bg-primary-dark disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-lg transition-colors flex items-center justify-center space-x-2"
               >
                 <span>CHECKOUT</span>
                 <span>→</span>
@@ -342,7 +342,7 @@ function Checkout() {
               <button
                 onClick={navigateToContract}
                 disabled={selectedCartItemIds.size === 0}
-                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-lg transition-colors flex items-center justify-center space-x-2"
+                className="w-full bg-primary hover:bg-primary-dark disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-lg transition-colors flex items-center justify-center space-x-2"
               >
                 <span>SIGN CONTRACT</span>
                 <span>→</span>

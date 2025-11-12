@@ -104,7 +104,7 @@ async function ArtworkDetails({ params }: { params: { id: string } }) {
 
           {/* Action Buttons */}
           <div className="flex gap-4 mb-6">
-            <button className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-6 rounded-lg flex items-center justify-center gap-2 transition">
+            <button className="flex-1 bg-secondary text-white font-semibold py-3 px-6 rounded-lg flex items-center justify-center gap-2 transition">
               <svg
                 width="22"
                 height="22"
@@ -115,7 +115,7 @@ async function ArtworkDetails({ params }: { params: { id: string } }) {
               </svg>
               Add to Cart
             </button>
-            <button className="flex-1 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold py-3 px-6 rounded-lg flex items-center justify-center gap-2 transition">
+            <button className="flex-1 bg-tertiary text-white font-semibold py-3 px-6 rounded-lg flex items-center justify-center gap-2 transition">
               <svg
                 width="22"
                 height="22"
