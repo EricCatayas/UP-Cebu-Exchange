@@ -273,8 +273,8 @@ export default function Page() {
           </button>
         </div>
       </section>
-      <section>
-        <h2>A Few of our Favorites</h2>
+      <section className="py-12">
+        <h2 className="text-3xl font-bold mb-6">A Few of our Favorites</h2>
         <div
           style={{
             display: 'grid',
@@ -287,8 +287,8 @@ export default function Page() {
           ))}
         </div>
       </section>
-      <section>
-        <h2>Curated for You</h2>
+      <section className="py-12">
+        <h2 className="text-3xl font-bold mb-6">Curated for You</h2>
         <div
           style={{
             display: 'grid',
@@ -301,19 +301,27 @@ export default function Page() {
           ))}
         </div>
       </section>
-      <section>
-        <h2>Explore by Category</h2>
+      <section className="py-12">
+        <h2 className="text-3xl font-bold mb-6">Explore by Category</h2>
         <CategoryGrid categories={categories} />
       </section>
-      <section>
-        <h2>Bring Art to your space</h2>
-        <p>
+      <section className="py-12">
+        <h2 className="text-3xl mb-6">Bring Art to your space</h2>
+        <p className="mb-4">
           Receive updates on the latest artwork rentals perfect for business
           displays, events, and creative spaces. Sign up to discover new
-          collections from UP Cebu’s emerging artists.
+          collections from UP Cebu's emerging artists.
         </p>
-        <input type="email" placeholder="Enter your email" />
-        <button>Join our Mailing List</button>
+        <div className="flex gap-2">
+          <input
+            type="email"
+            placeholder="Enter your email"
+            className="flex-1 px-4 py-2 border rounded"
+          />
+          <button className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800 transition-colors">
+            Join our Mailing List
+          </button>
+        </div>
       </section>
     </div>
   );
