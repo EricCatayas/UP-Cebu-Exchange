@@ -1,8 +1,9 @@
-"use client";
-import React from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import "./ArtworkCard.css";
+'use client';
+import React from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { getDimension } from '@/lib/artwork';
+import './ArtworkCard.css';
 
 export default function ArtworkCard({
   artwork,
@@ -18,7 +19,6 @@ export default function ArtworkCard({
   const lowestPlan = artwork.rentalPlans
     ? [...artwork.rentalPlans].sort((a, b) => a.rentalFee - b.rentalFee)[0]
     : null;
-  const dimension = `${artwork.heightCm}cm × ${artwork.widthCm}cm`;
 
   const router = useRouter();
   const NavigateToArtwork = () => router.push(`/artworks/${artwork.id}`);
@@ -26,7 +26,7 @@ export default function ArtworkCard({
 
   return (
     <div className={`artwork-card status-${artwork.status}`}>
-      {artwork.status === "rented" && <div className="ribbon">Rented</div>}
+      {artwork.status === 'rented' && <div className="ribbon">Rented</div>}
       <button
         type="button"
         className="image-wrapper"
@@ -61,7 +61,7 @@ export default function ArtworkCard({
             )}
           </div>
           <div className="right">
-            <div className="dimension">{dimension}</div>
+            <div className="dimension">{getDimension(artwork)}</div>
             <div className="flex gap-2">
               <button
                 className="wishlist-btn"

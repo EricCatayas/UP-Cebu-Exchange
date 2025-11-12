@@ -10,6 +10,7 @@ import {
   DELIVERY_METHODS,
   PAYMENT_METHODS,
 } from '@/lib/constants';
+import { getDimension } from '@/lib/artwork';
 
 function Checkout() {
   const {
@@ -190,7 +191,9 @@ function Checkout() {
                       onClick={() => navigateToArtwork(item.artworkId)}
                     >
                       <h3 className="font-semibold">{item.artwork.title}</h3>
-                      <p className="text-sm text-gray-600">{`${item.artwork.heightCm}cm × ${item.artwork.widthCm}cm`}</p>
+                      <p className="text-sm text-gray-600">
+                        {getDimension(item.artwork)}
+                      </p>
                     </div>
                   </div>
                   <div className="font-semibold text-lg mr-4">
