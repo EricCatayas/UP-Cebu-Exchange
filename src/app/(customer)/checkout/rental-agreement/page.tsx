@@ -2,7 +2,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/contexts/CartContext';
-import { useOrder } from '@/contexts/OrderContext';
+import { useRentalOrder } from '@/contexts/RentalOrderContext';
 import { DELIVERY_FEE } from '@/lib/constants';
 
 function RentalAgreement() {
@@ -17,7 +17,7 @@ function RentalAgreement() {
     subtotal,
     total,
     setContractSigned,
-  } = useOrder();
+  } = useRentalOrder();
 
   const router = useRouter();
 

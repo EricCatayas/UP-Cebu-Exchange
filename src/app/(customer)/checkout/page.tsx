@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/contexts/CartContext';
-import { useOrder } from '@/contexts/OrderContext';
+import { useRentalOrder } from '@/contexts/RentalOrderContext';
 import {
   DURATION_OPTIONS,
   DELIVERY_FEE,
@@ -35,7 +35,7 @@ function Checkout() {
     setContractSigned,
     subtotal,
     total,
-  } = useOrder();
+  } = useRentalOrder();
 
   const router = useRouter();
 

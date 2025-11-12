@@ -10,7 +10,7 @@ import React, {
 import { useCart } from '@/contexts/CartContext';
 import { DELIVERY_FEE } from '@/lib/constants';
 
-interface OrderContextType {
+interface RentalOrderContextType {
   selectedDuration: number;
   setSelectedDuration: (duration: number) => void;
   startDate: string;
@@ -26,9 +26,15 @@ interface OrderContextType {
   total: number;
 }
 
-const OrderContext = createContext<OrderContextType | undefined>(undefined);
+const RentalOrderContext = createContext<RentalOrderContextType | undefined>(
+  undefined
+);
 
-export function OrderProvider({ children }: { children: React.ReactNode }) {
+export function RentalOrderProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const { cartItems, selectedCartItemIds } = useCart();
 
   const [selectedDuration, setSelectedDuration] = useState<number>(12);
@@ -70,7 +76,7 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
   const total = subtotal + (deliveryMethod === 'Delivery' ? DELIVERY_FEE : 0);
 
   return (
-    <OrderContext.Provider
+    <RentalOrderContext.Provider
       value={{
         selectedDuration,
         setSelectedDuration,
@@ -88,12 +94,13 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
       }}
     >
       {children}
-    </OrderContext.Provider>
+    </RentalOrderContext.Provider>
   );
 }
 
-export function useOrder() {
-  const ctx = useContext(OrderContext);
-  if (!ctx) throw new Error('useOrder must be used within OrderProvider');
+export function useRentalOrder() {
+  const ctx = useContext(RentalOrderContext);
+  if (!ctx)
+    throw new Error('useRentalOrder must be used within RentalOrderProvider');
   return ctx;
 }
