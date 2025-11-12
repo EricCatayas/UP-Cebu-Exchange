@@ -1,0 +1,12 @@
+The file `/up-cebu-exchange/up-cebu-exchange/public/fonts/poppins/Poppins-Regular.ttf` is a font file and cannot be generated as text content. You need to download the Poppins Regular font file from a font provider (like Google Fonts) and place it in the specified directory.
+
+To download and integrate the Poppins Regular font, follow these steps:
+
+1. Go to [Google Fonts](https://fonts.google.com/).
+2. Search for "Poppins".
+3. Select the "Regular 400" style.
+4. Download the font files.
+5. Extract the downloaded files and locate `Poppins-Regular.ttf`.
+6. Move `Poppins-Regular.ttf` to the directory `up-cebu-exchange/up-cebu-exchange/public/fonts/poppins/`.
+
+After placing the font file in the correct directory, you can proceed with the configuration and usage as described in the previous instructions.

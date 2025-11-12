@@ -1,0 +1,9 @@
+The file `/up-cebu-exchange/up-cebu-exchange/public/fonts/poppins/Poppins-Medium.ttf` is a binary font file and cannot be generated as text content. You will need to download the Poppins Medium font file from a font provider or repository and place it in the specified directory.
+
+To integrate the font into your project, follow these steps:
+
+1. **Download the Font**: Obtain the Poppins Medium font file (Poppins-Medium.ttf) from a reliable source, such as Google Fonts or a font repository.
+
+2. **Place the Font File**: Move the downloaded `Poppins-Medium.ttf` file into the directory `up-cebu-exchange/up-cebu-exchange/public/fonts/poppins/`.
+
+After placing the font file in the correct directory, you can proceed with the configuration steps outlined in your previous instructions to use the font in your Next.js and Tailwind CSS project.
