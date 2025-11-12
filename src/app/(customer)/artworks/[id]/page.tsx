@@ -1,13 +1,17 @@
-import React from "react";
-import ArtworkGallery from "@/components/ArtworkGallery/ArtworkGallery";
-import ArtistLink from "@/components/ArtistLink/ArtistLink";
-import { sample_artworks } from "@/models/sample-artworks";
-import Link from "next/link";
+import React from 'react';
+import ArtworkCarousel from '@/components/ArtworkCarousel/ArtworkCarousel';
+import ArtworkGallery from '@/components/ArtworkGallery/ArtworkGallery';
+import ArtworkGrid from '@/components/ArtworkGrid/ArtworkGrid';
+import ArtistLink from '@/components/ArtistLink/ArtistLink';
+import { sample_artworks } from '@/models/sample-artworks';
+import Link from 'next/link';
 
 async function ArtworkDetails({ params }: { params: { id: string } }) {
   const id = (await params).id;
   // TODO: Replace with real data
   const artwork = sample_artworks.find((art) => art.id === parseInt(id));
+  const artworksFromArtist = sample_artworks.slice(0, 6);
+  const similarArtworks = sample_artworks.slice(6, 12);
 
   if (!artwork) {
     return (
@@ -31,7 +35,7 @@ async function ArtworkDetails({ params }: { params: { id: string } }) {
             <Link href="/" className="hover:underline">
               Home
             </Link>
-            {" / "}
+            {' / '}
             <Link href="/artworks" className="hover:underline">
               All Artworks
             </Link>
@@ -167,9 +171,21 @@ async function ArtworkDetails({ params }: { params: { id: string } }) {
             </svg>
           </summary>
           <div className="mt-4 text-gray-700 leading-relaxed">
-            <p>{artwork.description || "No description available."}</p>
+            <p>{artwork.description || 'No description available.'}</p>
           </div>
         </details>
+      </div>
+
+      {/* More from the Artist */}
+      <div className="mt-12">
+        <h2 className="text-2xl font-bold mb-6">More from the Artist</h2>
+        <ArtworkCarousel artworks={artworksFromArtist} />
+      </div>
+
+      {/* Similar Artworks */}
+      <div className="mt-12">
+        <h2 className="text-2xl font-bold mb-6">Similar Artworks</h2>
+        <ArtworkGrid artworks={similarArtworks} />
       </div>
     </div>
   );
