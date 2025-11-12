@@ -14,10 +14,14 @@ interface AddressAttributes {
 }
 
 // Define creation attributes (optional fields during creation)
-interface AddressCreationAttributes extends Optional<AddressAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
+interface AddressCreationAttributes
+  extends Optional<AddressAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
 
 // Define the Address model class
-class Address extends Model<AddressAttributes, AddressCreationAttributes> implements AddressAttributes {
+class Address
+  extends Model<AddressAttributes, AddressCreationAttributes>
+  implements AddressAttributes
+{
   public id!: number;
   public userId!: number;
   public street!: string;
@@ -41,7 +45,6 @@ Address.init(
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      unique: true, // Ensures one-to-one relationship
       references: {
         model: 'users',
         key: 'id',
