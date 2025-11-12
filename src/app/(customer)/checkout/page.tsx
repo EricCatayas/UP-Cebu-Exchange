@@ -1,6 +1,13 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
+import {
+  DURATION_OPTIONS,
+  DELIVERY_FEE,
+  DELIVERY_METHODS,
+  PAYMENT_METHODS,
+} from '@/lib/constants';
 
 // Mock data types - adjust these based on your actual data structure
 interface RentalPlan {
@@ -9,14 +16,15 @@ interface RentalPlan {
 }
 
 interface Artwork {
-  id: string;
+  id: number;
   title: string;
   artist: string;
   imageUrl: string;
 }
 
 interface CartItem {
-  id: string;
+  id: number;
+  artworkId: number;
   title: string;
   heightCm: number;
   widthCm: number;
@@ -27,7 +35,8 @@ interface CartItem {
 // Mock cart data - replace with actual cart data from your store/context
 const mockCartItems: CartItem[] = [
   {
-    id: '1',
+    id: 1,
+    artworkId: 1,
     title: 'Painting 1',
     heightCm: 100,
     widthCm: 80,
@@ -40,7 +49,8 @@ const mockCartItems: CartItem[] = [
     ],
   },
   {
-    id: '2',
+    id: 2,
+    artworkId: 2,
     title: 'Painting 2',
     heightCm: 60,
     widthCm: 120,
@@ -53,7 +63,8 @@ const mockCartItems: CartItem[] = [
     ],
   },
   {
-    id: '3',
+    id: 3,
+    artworkId: 3,
     title: 'Painting 3',
     heightCm: 50,
     widthCm: 50,
@@ -67,17 +78,18 @@ const mockCartItems: CartItem[] = [
   },
 ];
 
-const DURATION_OPTIONS = [3, 6, 12];
-const DELIVERY_FEE = 50;
-
 function Checkout() {
   const [selectedDuration, setSelectedDuration] = useState<number>(12);
   const [startDate, setStartDate] = useState<string>('2025-10-09');
-  const [selectedArtworks, setSelectedArtworks] = useState<Set<string>>(
-    new Set(['1', '2'])
+  const [selectedArtworks, setSelectedArtworks] = useState<Set<number>>(
+    new Set([1, 2])
   );
   const [deliveryMethod, setDeliveryMethod] = useState<string>('Delivery');
   const [paymentMethod, setPaymentMethod] = useState<string>('Cash');
+
+  const router = useRouter();
+  const deliveryMethods = DELIVERY_METHODS;
+  const paymentMethods = PAYMENT_METHODS;
 
   // Calculate end date based on start date and duration
   const endDate = useMemo(() => {
@@ -99,7 +111,7 @@ function Checkout() {
   };
 
   // Toggle artwork selection
-  const toggleArtwork = (id: string) => {
+  const toggleArtwork = (id: number) => {
     const newSelected = new Set(selectedArtworks);
     if (newSelected.has(id)) {
       newSelected.delete(id);
@@ -116,6 +128,10 @@ function Checkout() {
     } else {
       setSelectedArtworks(new Set(mockCartItems.map((item) => item.id)));
     }
+  };
+
+  const navigateToArtwork = (artworkId: number) => {
+    router.push(`/artworks/${artworkId}`);
   };
 
   // Calculate subtotal
@@ -139,6 +155,10 @@ function Checkout() {
       (p) => p.durationMonths === selectedDuration
     );
     return plan?.rentalFee || 0;
+  };
+
+  const removeFromCart = (id: number) => {
+    console.log('Remove from cart', id);
   };
 
   const handleCheckout = () => {
@@ -217,7 +237,9 @@ function Checkout() {
 
           {/* Select Artworks */}
           <div className="bg-white border-2 border-gray-300 rounded-lg p-6 shadow-sm">
-            <h2 className="text-xl font-bold mb-4">Select Artworks</h2>
+            <h2 className="text-xl font-bold mb-4">
+              Select Artworks from Cart
+            </h2>
 
             {/* Select All Header */}
             <div className="flex justify-between items-center mb-4 pb-2 border-b">
@@ -230,7 +252,7 @@ function Checkout() {
                 />
                 <span className="font-semibold">Select All</span>
               </label>
-              <span className="font-semibold">Charge</span>
+              <span className="font-semibold mr-4">Charge</span>
             </div>
 
             {/* Artwork List */}
@@ -247,20 +269,33 @@ function Checkout() {
                       onChange={() => toggleArtwork(item.id)}
                       className="w-5 h-5 rounded border-gray-300 cursor-pointer"
                     />
-                    <div className="w-20 h-20 bg-gray-200 rounded-md flex-shrink-0">
+                    <div
+                      className="w-20 h-20 bg-gray-200 rounded-md flex-shrink-0"
+                      onClick={() => navigateToArtwork(item.artworkId)}
+                    >
                       {/* Placeholder for artwork image */}
-                      <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
+                      <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs cursor-pointer">
                         Image
                       </div>
                     </div>
-                    <div className="flex-1">
+                    <div
+                      className="flex-1 cursor-pointer"
+                      onClick={() => navigateToArtwork(item.artworkId)}
+                    >
                       <h3 className="font-semibold">{item.title}</h3>
-                      <p className="text-sm text-gray-600">{item.artist}</p>
+                      <p className="text-sm text-gray-600">{`${item.heightCm}cm × ${item.widthCm}cm`}</p>
                     </div>
                   </div>
-                  <div className="font-semibold text-lg">
+                  <div className="font-semibold text-lg mr-4">
                     ₱{getRentalFee(item)}
                   </div>
+                  {/* button remove from cart - trashcan icon */}
+                  <button
+                    onClick={() => removeFromCart(item.id)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    🗑️
+                  </button>
                 </div>
               ))}
             </div>
@@ -276,7 +311,7 @@ function Checkout() {
           <div className="bg-white border-2 border-gray-300 rounded-lg p-6 shadow-sm">
             <h2 className="text-xl font-bold mb-4">Delivery Method</h2>
             <div className="flex gap-6">
-              {['Delivery', 'Pickup'].map((method) => (
+              {deliveryMethods.map((method) => (
                 <label
                   key={method}
                   className="flex items-center space-x-2 cursor-pointer"
@@ -307,7 +342,7 @@ function Checkout() {
           <div className="bg-white border-2 border-gray-300 rounded-lg p-6 shadow-sm">
             <h2 className="text-xl font-bold mb-4">Payment Method</h2>
             <div className="flex gap-6">
-              {['Cash', 'Credit Card'].map((method) => (
+              {paymentMethods.map((method) => (
                 <label
                   key={method}
                   className="flex items-center space-x-2 cursor-pointer"
