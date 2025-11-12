@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
+import { useCart } from '@/contexts/CartContext';
 import {
   DURATION_OPTIONS,
   DELIVERY_FEE,
@@ -9,89 +10,24 @@ import {
   PAYMENT_METHODS,
 } from '@/lib/constants';
 
-// Mock data types - adjust these based on your actual data structure
-interface RentalPlan {
-  durationMonths: number;
-  rentalFee: number;
-}
-
-interface Artwork {
-  id: number;
-  title: string;
-  artist: string;
-  imageUrl: string;
-}
-
-interface CartItem {
-  id: number;
-  artworkId: number;
-  title: string;
-  heightCm: number;
-  widthCm: number;
-  imageUrl: string;
-  rentalPlans: RentalPlan[];
-}
-
-// Mock cart data - replace with actual cart data from your store/context
-const mockCartItems: CartItem[] = [
-  {
-    id: 1,
-    artworkId: 1,
-    title: 'Painting 1',
-    heightCm: 100,
-    widthCm: 80,
-    imageUrl:
-      'https://unlimitedworks.blob.core.windows.net/up-cebu-exchange/placeholder-img-4x5.png',
-    rentalPlans: [
-      { durationMonths: 3, rentalFee: 200 },
-      { durationMonths: 6, rentalFee: 250 },
-      { durationMonths: 12, rentalFee: 300 },
-    ],
-  },
-  {
-    id: 2,
-    artworkId: 2,
-    title: 'Painting 2',
-    heightCm: 60,
-    widthCm: 120,
-    imageUrl:
-      'https://unlimitedworks.blob.core.windows.net/up-cebu-exchange/placeholder-img-2x1.png',
-    rentalPlans: [
-      { durationMonths: 3, rentalFee: 800 },
-      { durationMonths: 6, rentalFee: 900 },
-      { durationMonths: 12, rentalFee: 1000 },
-    ],
-  },
-  {
-    id: 3,
-    artworkId: 3,
-    title: 'Painting 3',
-    heightCm: 50,
-    widthCm: 50,
-    imageUrl:
-      'https://unlimitedworks.blob.core.windows.net/up-cebu-exchange/placeholder-img-1x1.png',
-    rentalPlans: [
-      { durationMonths: 3, rentalFee: 1500 },
-      { durationMonths: 6, rentalFee: 1800 },
-      { durationMonths: 12, rentalFee: 2000 },
-    ],
-  },
-];
-
 function Checkout() {
+  const {
+    cartItems,
+    selectedCartItemIds,
+    toggleCartItem,
+    toggleAllCartItems,
+    removeFromCart,
+  } = useCart();
   const [selectedDuration, setSelectedDuration] = useState<number>(12);
   const [startDate, setStartDate] = useState<string>('2025-10-09');
-  const [selectedArtworks, setSelectedArtworks] = useState<Set<number>>(
-    new Set([1, 2])
-  );
   const [deliveryMethod, setDeliveryMethod] = useState<string>('Delivery');
   const [paymentMethod, setPaymentMethod] = useState<string>('Cash');
 
   const router = useRouter();
+
   const deliveryMethods = DELIVERY_METHODS;
   const paymentMethods = PAYMENT_METHODS;
 
-  // Calculate end date based on start date and duration
   const endDate = useMemo(() => {
     if (!startDate) return '';
     const date = new Date(startDate);
@@ -110,64 +46,36 @@ function Checkout() {
     });
   };
 
-  // Toggle artwork selection
-  const toggleArtwork = (id: number) => {
-    const newSelected = new Set(selectedArtworks);
-    if (newSelected.has(id)) {
-      newSelected.delete(id);
-    } else {
-      newSelected.add(id);
-    }
-    setSelectedArtworks(newSelected);
-  };
-
-  // Toggle all artworks
-  const toggleAll = () => {
-    if (selectedArtworks.size === mockCartItems.length) {
-      setSelectedArtworks(new Set());
-    } else {
-      setSelectedArtworks(new Set(mockCartItems.map((item) => item.id)));
-    }
-  };
-
   const navigateToArtwork = (artworkId: number) => {
     router.push(`/artworks/${artworkId}`);
   };
 
-  // Calculate subtotal
   const subtotal = useMemo(() => {
-    return mockCartItems
-      .filter((item) => selectedArtworks.has(item.id))
+    return cartItems
+      .filter((item) => selectedCartItemIds.has(item.id))
       .reduce((sum, item) => {
         const plan = item.rentalPlans.find(
           (p) => p.durationMonths === selectedDuration
         );
         return sum + (plan?.rentalFee || 0);
       }, 0);
-  }, [selectedArtworks, selectedDuration]);
+  }, [cartItems, selectedCartItemIds, selectedDuration]);
 
-  // Calculate total
   const total = subtotal + (deliveryMethod === 'Delivery' ? DELIVERY_FEE : 0);
 
-  // Get rental fee for an item
-  const getRentalFee = (item: CartItem) => {
+  const getRentalFee = (item: any) => {
     const plan = item.rentalPlans.find(
-      (p) => p.durationMonths === selectedDuration
+      (p: any) => p.durationMonths === selectedDuration
     );
     return plan?.rentalFee || 0;
   };
 
-  const removeFromCart = (id: number) => {
-    console.log('Remove from cart', id);
-  };
-
   const handleCheckout = () => {
-    // Implement checkout logic here
     console.log('Checkout:', {
       selectedDuration,
       startDate,
       endDate,
-      selectedArtworks: Array.from(selectedArtworks),
+      selectedArtworks: Array.from(selectedCartItemIds),
       deliveryMethod,
       paymentMethod,
       total,
@@ -246,8 +154,11 @@ function Checkout() {
               <label className="flex items-center space-x-2 cursor-pointer">
                 <input
                   type="checkbox"
-                  checked={selectedArtworks.size === mockCartItems.length}
-                  onChange={toggleAll}
+                  checked={
+                    selectedCartItemIds.size === cartItems.length &&
+                    cartItems.length > 0
+                  }
+                  onChange={toggleAllCartItems}
                   className="w-5 h-5 rounded border-gray-300 cursor-pointer"
                 />
                 <span className="font-semibold">Select All</span>
@@ -257,7 +168,7 @@ function Checkout() {
 
             {/* Artwork List */}
             <div className="space-y-3">
-              {mockCartItems.map((item) => (
+              {cartItems.map((item) => (
                 <div
                   key={item.id}
                   className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50"
@@ -265,15 +176,14 @@ function Checkout() {
                   <div className="flex items-center space-x-4 flex-1">
                     <input
                       type="checkbox"
-                      checked={selectedArtworks.has(item.id)}
-                      onChange={() => toggleArtwork(item.id)}
+                      checked={selectedCartItemIds.has(item.id)}
+                      onChange={() => toggleCartItem(item.id)}
                       className="w-5 h-5 rounded border-gray-300 cursor-pointer"
                     />
                     <div
                       className="w-20 h-20 bg-gray-200 rounded-md flex-shrink-0"
                       onClick={() => navigateToArtwork(item.artworkId)}
                     >
-                      {/* Placeholder for artwork image */}
                       <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs cursor-pointer">
                         Image
                       </div>
@@ -282,14 +192,13 @@ function Checkout() {
                       className="flex-1 cursor-pointer"
                       onClick={() => navigateToArtwork(item.artworkId)}
                     >
-                      <h3 className="font-semibold">{item.title}</h3>
-                      <p className="text-sm text-gray-600">{`${item.heightCm}cm × ${item.widthCm}cm`}</p>
+                      <h3 className="font-semibold">{item.artwork.title}</h3>
+                      <p className="text-sm text-gray-600">{`${item.artwork.heightCm}cm × ${item.artwork.widthCm}cm`}</p>
                     </div>
                   </div>
                   <div className="font-semibold text-lg mr-4">
                     ₱{getRentalFee(item)}
                   </div>
-                  {/* button remove from cart - trashcan icon */}
                   <button
                     onClick={() => removeFromCart(item.id)}
                     className="text-red-500 hover:text-red-700"
@@ -389,11 +298,13 @@ function Checkout() {
               </div>
 
               <div className="border-t pt-3 mt-3">
-                {mockCartItems
-                  .filter((item) => selectedArtworks.has(item.id))
+                {cartItems
+                  .filter((item) => selectedCartItemIds.has(item.id))
                   .map((item) => (
                     <div key={item.id} className="flex justify-between mb-2">
-                      <span className="text-gray-600">{item.title}</span>
+                      <span className="text-gray-600">
+                        {item.artwork.title}
+                      </span>
                       <span className="font-semibold">
                         ₱{getRentalFee(item)}
                       </span>
@@ -420,7 +331,7 @@ function Checkout() {
 
             <button
               onClick={handleCheckout}
-              disabled={selectedArtworks.size === 0}
+              disabled={selectedCartItemIds.size === 0}
               className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-lg transition-colors flex items-center justify-center space-x-2"
             >
               <span>SIGN CONTRACT</span>
