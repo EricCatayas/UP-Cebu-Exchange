@@ -1,5 +1,6 @@
 import ArtworkCard from '@/components/ArtworkCard/ArtworkCard';
 import CategoryGrid from '@/components/CategoryGrid/CategoryGrid';
+import Image from 'next/image';
 
 export default function Page() {
   // TODO: Replace with real data
@@ -242,15 +243,35 @@ export default function Page() {
   ];
 
   return (
-    <div className="container">
-      <section>
-        <h1 className="font-playfair">Discover Art</h1>
-        <h1 className="font-poppins">from UP Cebu</h1>
-        <p className="font-rajdhani">
-          We offer painting rentals crafted by the next generation of Filipino
-          artists from the University of the Philippines Cebu
-        </p>
-        <button>Explore Paintings</button>
+    <div>
+      {/* Landing Page */}
+      <section className="relative min-h-[600px] flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="/Landing-page-bg.png"
+            alt="Landing Page Background"
+            fill
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-white/40" />
+        </div>
+
+        <div className="relative z-10 container px-4 text-black text-left">
+          <h1 className="font-playfair text-5xl md:text-7xl font-medium mb-2">
+            Discover Art
+          </h1>
+          <h1 className="font-poppins text-4xl md:text-6xl font-regular mb-6">
+            from UP Cebu
+          </h1>
+          <p className="font-poppins text-lg md:text-xl mb-8 max-w-2xl font-regular">
+            We offer painting rentals crafted by the next generation of Filipino
+            artists from the University of the Philippines Cebu
+          </p>
+          <button className="bg-secondary text-white px-8 py-3 rounded-full font-semibold transition-colors">
+            Explore Paintings
+          </button>
+        </div>
       </section>
       <section>
         <h2>A Few of our Favorites</h2>
