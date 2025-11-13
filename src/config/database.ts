@@ -1,3 +1,9 @@
+import { config } from 'dotenv';
+import { resolve } from 'path';
+
+// Load .env.local file BEFORE importing anything else
+config({ path: resolve(process.cwd(), '.env.local') });
+
 import { Sequelize } from 'sequelize';
 
 const sequelize = new Sequelize({
