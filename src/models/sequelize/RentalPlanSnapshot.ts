@@ -12,7 +12,10 @@ interface RentalPlanSnapshotAttributes {
 
 interface RentalPlanSnapshotCreationAttributes extends Optional<RentalPlanSnapshotAttributes, 'id' | 'createdAt'> {}
 
-class RentalPlanSnapshot extends Model<RentalPlanSnapshotAttributes, RentalPlanSnapshotCreationAttributes> implements RentalPlanSnapshotAttributes {
+class RentalPlanSnapshot
+  extends Model<RentalPlanSnapshotAttributes, RentalPlanSnapshotCreationAttributes>
+  implements RentalPlanSnapshotAttributes
+{
   public id!: number;
   public originalRentalPlanId!: number;
   public rentalOrderItemId!: number;
@@ -59,8 +62,9 @@ RentalPlanSnapshot.init(
   {
     sequelize,
     modelName: 'RentalPlanSnapshot',
-    tableName: 'rental_plans',
+    tableName: 'rental_plan_snapshots',
     timestamps: true,
+    updatedAt: false,
   }
 );
 
