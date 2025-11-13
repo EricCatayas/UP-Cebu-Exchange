@@ -4,21 +4,20 @@ import sequelize from '@/config/database';
 interface PaymentAttributes {
   id: number;
   userId: number;
-  rentalOrderId: number;
   amount: number;
-  status: "Pending" | "Completed" | "Failed";
+  status: 'Pending' | 'Completed' | 'Failed';
   paymentMethod: string;
   createdAt: Date;
+  updatedAt?: Date;
 }
 
-interface PaymentCreationAttributes extends Optional<PaymentAttributes, 'id' | 'status' | 'createdAt'> {}
+interface PaymentCreationAttributes extends Optional<PaymentAttributes, 'id' | 'status' | 'createdAt' | 'updatedAt'> {}
 
 class Payment extends Model<PaymentAttributes, PaymentCreationAttributes> implements PaymentAttributes {
   public id!: number;
   public userId!: number;
-  public rentalOrderId!: number;
   public amount!: number;
-  public status!: "Pending" | "Completed" | "Failed";
+  public status!: 'Pending' | 'Completed' | 'Failed';
   public paymentMethod!: string;
   public createdAt!: Date;
 }
@@ -35,17 +34,6 @@ Payment.init(
       allowNull: false,
       references: {
         model: 'users',
-        key: 'id',
-      },
-      onUpdate: 'CASCADE',
-      onDelete: 'CASCADE',
-    },
-    rentalOrderId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      unique: true,
-      references: {
-        model: 'rental_orders',
         key: 'id',
       },
       onUpdate: 'CASCADE',
@@ -84,10 +72,6 @@ Payment.init(
       },
       {
         fields: ['status'],
-      },
-      {
-        unique: true,
-        fields: ['rentalOrderId'],
       },
     ],
   }

@@ -209,15 +209,9 @@ const initializeAssociations = () => {
   });
 
   // RentalOrder has one Payment
-  RentalOrder.hasOne(Payment, {
-    foreignKey: 'rentalOrderId',
+  RentalOrder.belongsTo(Payment, {
+    foreignKey: 'paymentId',
     as: 'payment',
-  });
-
-  // Payment belongs to RentalOrder
-  Payment.belongsTo(RentalOrder, {
-    foreignKey: 'rentalOrderId',
-    as: 'rentalOrder',
   });
 
   // User has many Payments

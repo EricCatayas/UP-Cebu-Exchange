@@ -4,23 +4,26 @@ import sequelize from '@/config/database';
 interface RentalOrderAttributes {
   id: number;
   userId: number;
+  paymentId?: number;
   startDate: Date;
   endDate: Date;
   durationMonths: number;
-  status: "Pending" | "Confirmed" | "Cancelled" | "Completed";
+  status: 'Pending' | 'Confirmed' | 'Cancelled' | 'Completed';
   createdAt: Date;
   updatedAt: Date;
 }
 
-interface RentalOrderCreationAttributes extends Optional<RentalOrderAttributes, 'id' | 'status' | 'createdAt' | 'updatedAt'> {}
+interface RentalOrderCreationAttributes
+  extends Optional<RentalOrderAttributes, 'id' | 'status' | 'createdAt' | 'updatedAt'> {}
 
 class RentalOrder extends Model<RentalOrderAttributes, RentalOrderCreationAttributes> implements RentalOrderAttributes {
   public id!: number;
   public userId!: number;
+  public paymentId!: number;
   public startDate!: Date;
   public endDate!: Date;
   public durationMonths!: number;
-  public status!: "Pending" | "Confirmed" | "Cancelled" | "Completed";
+  public status!: 'Pending' | 'Confirmed' | 'Cancelled' | 'Completed';
   public createdAt!: Date;
   public updatedAt!: Date;
 
@@ -46,9 +49,9 @@ class RentalOrder extends Model<RentalOrderAttributes, RentalOrderCreationAttrib
       where: {
         status: 'Confirmed',
         endDate: {
-          [Op.gte]: new Date()
-        }
-      }
+          [Op.gte]: new Date(),
+        },
+      },
     });
   }
 }
@@ -69,6 +72,16 @@ RentalOrder.init(
       },
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE',
+    },
+    paymentId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'payments',
+        key: 'id',
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'SET NULL',
     },
     startDate: {
       type: DataTypes.DATE,
@@ -115,10 +128,8 @@ RentalOrder.init(
         fields: ['status'],
       },
       {
-        fields: ['startDate'],
-      },
-      {
-        fields: ['endDate'],
+        fields: ['paymentId'],
+        unique: true,
       },
     ],
   }
