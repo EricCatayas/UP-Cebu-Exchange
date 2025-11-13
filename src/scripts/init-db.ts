@@ -1,5 +1,6 @@
 import { config } from 'dotenv';
 import { resolve } from 'path';
+import { seedDatabase } from './seed';
 
 // Load .env.local file BEFORE importing anything else
 config({ path: resolve(process.cwd(), '.env.local') });
@@ -21,6 +22,9 @@ async function initializeDatabase() {
 
     // Seed default roles
     await seedDefaultRoles();
+
+    // Await seed database
+    await seedDatabase();
 
     console.log('✅ Database initialization completed successfully!');
   } catch (error) {

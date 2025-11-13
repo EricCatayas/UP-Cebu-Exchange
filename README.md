@@ -23,7 +23,8 @@ DB_DIALECT=mysql
 Create the database in MySQL
 
 ```sql
-CREATE DATABASE up_cebu_exchange;
+    DROP DATABASE IF EXISTS up_cebu_exchange;
+    CREATE DATABASE up_cebu_exchange;
 ```
 
 Initialize Database
