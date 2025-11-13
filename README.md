@@ -1,26 +1,43 @@
 ## Setup
 
 After cloning the git repository, run gitbash command:
+
 ```bash
 npm run install
 ```
+
 ## Setup database:
-Update your .env.local with your actual MySQL credentials:
+
+Create .env.local file in root folder, set the following config values:
+
 ```bash
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=up_cebu_exchange
+DB_USERNAME=root
+DB_USER=root
 DB_PASSWORD=your_mysql_password
+DB_DIALECT=mysql
 ```
+
 Create the database in MySQL
+
 ```sql
 CREATE DATABASE up_cebu_exchange;
 ```
+
 Initialize Database
+
 ```bash
 npm run db:init
 ```
+
 ## Run the development server:
+
 ```bash
 npm run dev
 ```
+
 Phase 1: Database & Authentication
 Phase 2: Core Backend APIs
 Phase 3: UI Foundation
