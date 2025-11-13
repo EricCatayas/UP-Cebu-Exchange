@@ -78,7 +78,40 @@
 }
 
 .month-cell.covered {
-  background: #86efac;
+  background: #86efac; /* Default green */
+}
+
+.month-cell.status-confirmed {
+  background: #86efac; /* Green - confirmed */
+}
+
+.month-cell.status-pending {
+  background: #fde047; /* Yellow - pending */
+}
+
+.month-cell.status-completed {
+  background: #93c5fd; /* Blue - completed */
+}
+
+.month-cell.status-cancelled {
+  background: #fca5a5; /* Red - cancelled */
+}
+
+/* Adjust label colors for better contrast */
+.month-cell.status-confirmed .coverage-label {
+  color: #166534; /* Dark green */
+}
+
+.month-cell.status-pending .coverage-label {
+  color: #854d0e; /* Dark yellow/brown */
+}
+
+.month-cell.status-completed .coverage-label {
+  color: #1e3a8a; /* Dark blue */
+}
+
+.month-cell.status-cancelled .coverage-label {
+  color: #991b1b; /* Dark red */
 }
 
 .coverage-label {

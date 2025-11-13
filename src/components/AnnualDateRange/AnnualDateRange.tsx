@@ -1,24 +1,16 @@
 'use client';
 import React, { useState } from 'react';
 import { MONTHS } from '@/lib/constants';
+import { OrderDateRange } from '@/types/OrderDateRange';
 import './AnnualDateRange.css';
 
-interface DateRange {
-  startDate: Date;
-  endDate: Date;
-}
-
 interface AnnualDateRangeProps {
-  dateRanges: DateRange[];
-  initialYear?: number;
+  dateRanges: OrderDateRange[];
   onYearChange?: (year: number) => void;
 }
 
-export default function AnnualDateRange({
-  dateRanges,
-  initialYear = new Date().getFullYear(),
-  onYearChange,
-}: AnnualDateRangeProps) {
+export default function AnnualDateRange({ dateRanges, onYearChange }: AnnualDateRangeProps) {
+  const initialYear = new Date().getFullYear();
   const [currentYear, setCurrentYear] = useState(initialYear);
 
   const handlePreviousYear = () => {
@@ -31,13 +23,6 @@ export default function AnnualDateRange({
     const newYear = currentYear + 1;
     setCurrentYear(newYear);
     onYearChange?.(newYear);
-  };
-
-  const handleToday = () => {
-    const today = new Date();
-    const todayYear = today.getFullYear();
-    setCurrentYear(todayYear);
-    onYearChange?.(todayYear);
   };
 
   // Filter date ranges for the current year
@@ -54,6 +39,8 @@ export default function AnnualDateRange({
     const range = dateRanges[rangeIndex];
     const rangeStart = range.startDate;
     const rangeEnd = range.endDate;
+    const remainingDays = range.remainingDays;
+    const status = range.status;
 
     // Check if this month overlaps with the range
     if (rangeStart <= monthEnd && rangeEnd >= monthStart) {
@@ -61,30 +48,14 @@ export default function AnnualDateRange({
       const startDay = rangeStart > monthStart ? rangeStart.getDate() : 1;
       const endDay = rangeEnd < monthEnd ? rangeEnd.getDate() : totalDays;
 
-      console.log('----------------------------');
-      console.log('monthStart', monthStart);
-      console.log('monthEnd', monthEnd);
-      console.log('rangeStart', rangeStart);
-      console.log('rangeEnd', rangeEnd);
-
       let label = '';
-      // if start day is in month and year, show start day
+      // if start day is within month and year, show start day
       if (rangeStart.getMonth() === monthIndex && rangeStart.getFullYear() === currentYear) {
         label = rangeStart.toLocaleDateString();
       }
-      // if end day is in month and year, show end day
+      // if end day is within month and year, show end day
       if (rangeEnd.getMonth() === monthIndex && rangeEnd.getFullYear() === currentYear) {
         label = `${rangeEnd.toLocaleDateString()}`;
-      }
-
-      // if both start and end are in the month and year, show both
-      if (
-        rangeStart.getMonth() === monthIndex &&
-        rangeStart.getFullYear() === currentYear &&
-        rangeEnd.getMonth() === monthIndex &&
-        rangeEnd.getFullYear() === currentYear
-      ) {
-        label = `${rangeStart.toLocaleDateString()} - ${rangeEnd.toLocaleDateString()}`;
       }
 
       return {
@@ -93,6 +64,8 @@ export default function AnnualDateRange({
         endDay,
         totalDays,
         label,
+        status,
+        remainingDays,
       };
     }
     return { covered: false };
@@ -132,7 +105,12 @@ export default function AnnualDateRange({
             MONTHS.map((month, monthIdx) => {
               const coverage = getMonthCoverageInRange(index, monthIdx);
               return (
-                <div key={`${month}-${index}-cell`} className={`month-cell ${coverage.covered ? 'covered' : ''}`}>
+                <div
+                  key={`${month}-${index}-cell`}
+                  className={`month-cell ${coverage.covered ? 'covered' : ''} ${
+                    coverage.covered ? `status-${coverage.status?.toLowerCase()}` : ''
+                  }`}
+                >
                   {coverage.covered && <div className="coverage-label">{coverage.label}</div>}
                 </div>
               );
