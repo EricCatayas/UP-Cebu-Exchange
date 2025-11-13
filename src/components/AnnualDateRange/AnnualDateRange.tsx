@@ -108,7 +108,7 @@ export default function AnnualDateRange({ dateRanges, onYearChange }: AnnualDate
                 <div
                   key={`${month}-${index}-cell`}
                   className={`month-cell ${coverage.covered ? 'covered' : ''} ${
-                    coverage.covered ? `status-${coverage.status?.toLowerCase()}` : ''
+                    coverage.covered ? `bg-${coverage.status?.toLowerCase()}` : ''
                   }`}
                 >
                   {coverage.covered && <div className="coverage-label">{coverage.label}</div>}

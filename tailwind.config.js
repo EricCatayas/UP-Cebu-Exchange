@@ -12,6 +12,10 @@ module.exports = {
         primary: '#8E1537',
         secondary: '#FF6F00',
         tertiary: '#FAAF40',
+        confirmed: '#94FFAB',
+        pending: '#fde047',
+        completed: '#93c5fd',
+        cancelled: '#fca5a5',
       },
       fontFamily: {
         playfair: ['Playfair Display', 'serif'],
@@ -26,5 +30,15 @@ module.exports = {
       },
     },
   },
+  safelist: [
+    'bg-completed',
+    'text-completed',
+    'bg-pending',
+    'text-pending',
+    'bg-confirmed',
+    'text-confirmed',
+    'bg-cancelled',
+    'text-cancelled',
+  ],
   plugins: [],
 };

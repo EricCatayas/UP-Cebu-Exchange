@@ -69,7 +69,9 @@ function Rentals() {
           return (
             <div key={order.id} className="rounded-xl border border-gray-200 bg-white shadow-sm">
               {/* Header */}
-              <div className="py-2 px-4 mb-4 flex items-center justify-between border-b border-b-gray-200">
+              <div
+                className={`rounded-t-xl py-2 px-4 mb-4 flex items-center justify-between border-b border-b-gray-200 bg-${order.status.toLowerCase()}`}
+              >
                 <span className="text-sm text-gray-600">Order ID: {order.id}</span>
                 <span className="text-sm font-medium text-gray-800">{daysLeft} days left</span>
               </div>
