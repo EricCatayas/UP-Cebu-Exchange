@@ -13,7 +13,7 @@ interface ArtworkAttributes {
   widthCm?: number;
   status: string;
   createdAt: Date;
-  updatedAt: Date; 
+  updatedAt: Date;
 }
 
 // Define creation attributes
@@ -50,7 +50,7 @@ Artwork.init(
       type: DataTypes.INTEGER,
       allowNull: true,
       references: {
-        model: 'Artist',
+        model: 'artists',
         key: 'id',
       },
     },
@@ -66,7 +66,7 @@ Artwork.init(
       type: DataTypes.INTEGER,
       allowNull: true,
       references: {
-        model: 'Style',
+        model: 'styles',
         key: 'id',
       },
     },
