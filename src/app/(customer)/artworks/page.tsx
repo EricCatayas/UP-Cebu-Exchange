@@ -19,6 +19,7 @@ function Artworks() {
       <br />
       {/* Line break here */}
       <ArtworkGrid artworks={allArtworks} />
+      {/* Todo: Pagination */}
     </div>
   );
 }
