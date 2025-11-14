@@ -9,10 +9,13 @@ interface RentalOrderItemAttributes {
 
 interface RentalOrderItemCreationAttributes extends Optional<RentalOrderItemAttributes, 'id'> {}
 
-class RentalOrderItem extends Model<RentalOrderItemAttributes, RentalOrderItemCreationAttributes> implements RentalOrderItemAttributes {
-  public id!: number;
-  public rentalOrderId!: number;
-  public artworkId!: number;
+class RentalOrderItem
+  extends Model<RentalOrderItemAttributes, RentalOrderItemCreationAttributes>
+  implements RentalOrderItemAttributes
+{
+  declare id: number;
+  declare rentalOrderId: number;
+  declare artworkId: number;
 }
 
 RentalOrderItem.init(

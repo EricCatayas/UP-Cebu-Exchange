@@ -12,8 +12,8 @@ interface StyleCreationAttributes extends Optional<StyleAttributes, 'id'> {}
 
 // Define the Style model class
 class Style extends Model<StyleAttributes, StyleCreationAttributes> implements StyleAttributes {
-  public id!: number;
-  public name!: string;
+  declare id: number;
+  declare name: string;
 }
 
 // Initialize the Style model

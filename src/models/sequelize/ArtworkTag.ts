@@ -7,8 +7,8 @@ interface ArtworkTagAttributes {
 }
 
 class ArtworkTag extends Model<ArtworkTagAttributes> implements ArtworkTagAttributes {
-  public artworkId!: number;
-  public tagId!: number;
+  declare artworkId: number;
+  declare tagId: number;
 }
 
 ArtworkTag.init(

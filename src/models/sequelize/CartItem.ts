@@ -11,10 +11,10 @@ interface CartItemAttributes {
 interface CartItemCreationAttributes extends Optional<CartItemAttributes, 'id' | 'createdAt'> {}
 
 class CartItem extends Model<CartItemAttributes, CartItemCreationAttributes> implements CartItemAttributes {
-  public id!: number;
-  public cartId!: number;
-  public artworkId!: number;
-  public createdAt!: Date;
+  declare id: number;
+  declare cartId: number;
+  declare artworkId: number;
+  declare createdAt: Date;
 }
 
 CartItem.init(

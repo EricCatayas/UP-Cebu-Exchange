@@ -14,12 +14,12 @@ interface PaymentAttributes {
 interface PaymentCreationAttributes extends Optional<PaymentAttributes, 'id' | 'status' | 'createdAt' | 'updatedAt'> {}
 
 class Payment extends Model<PaymentAttributes, PaymentCreationAttributes> implements PaymentAttributes {
-  public id!: number;
-  public userId!: number;
-  public amount!: number;
-  public status!: 'Pending' | 'Completed' | 'Failed';
-  public paymentMethod!: string;
-  public createdAt!: Date;
+  declare id: number;
+  declare userId: number;
+  declare amount: number;
+  declare status: 'Pending' | 'Completed' | 'Failed';
+  declare paymentMethod: string;
+  declare createdAt: Date;
 }
 
 Payment.init(

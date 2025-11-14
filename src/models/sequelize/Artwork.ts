@@ -17,21 +17,34 @@ interface ArtworkAttributes {
 }
 
 // Define creation attributes
-interface ArtworkCreationAttributes extends Optional<ArtworkAttributes, 'id' | 'artistId' | 'title' | 'description' | 'styleId' | 'heightCm' | 'widthCm' | 'status' | 'createdAt' | 'updatedAt'> {}
+interface ArtworkCreationAttributes
+  extends Optional<
+    ArtworkAttributes,
+    | 'id'
+    | 'artistId'
+    | 'title'
+    | 'description'
+    | 'styleId'
+    | 'heightCm'
+    | 'widthCm'
+    | 'status'
+    | 'createdAt'
+    | 'updatedAt'
+  > {}
 
 // Define the Artwork model class
 class Artwork extends Model<ArtworkAttributes, ArtworkCreationAttributes> implements ArtworkAttributes {
-  public id!: number;
-  public title!: string;
-  public artistId!: number;
-  public description!: string;
-  public medium!: string;
-  public styleId!: number;
-  public heightCm!: number;
-  public widthCm!: number;
-  public status!: string;
-  public createdAt!: Date;
-  public updatedAt!: Date;
+  declare id: number;
+  declare title: string;
+  declare artistId: number;
+  declare description: string;
+  declare medium: string;
+  declare styleId: number;
+  declare heightCm: number;
+  declare widthCm: number;
+  declare status: string;
+  declare createdAt: Date;
+  declare updatedAt: Date;
 }
 
 // Initialize the Artwork model

@@ -9,8 +9,8 @@ interface CartAttributes {
 interface CartCreationAttributes extends Optional<CartAttributes, 'id'> {}
 
 class Cart extends Model<CartAttributes, CartCreationAttributes> implements CartAttributes {
-  public id!: number;
-  public userId!: number;
+  declare id: number;
+  declare userId: number;
 }
 
 Cart.init(

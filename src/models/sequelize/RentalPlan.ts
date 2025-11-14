@@ -13,12 +13,12 @@ interface RentalPlanAttributes {
 interface RentalPlanCreationAttributes extends Optional<RentalPlanAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
 
 class RentalPlan extends Model<RentalPlanAttributes, RentalPlanCreationAttributes> implements RentalPlanAttributes {
-  public id!: number;
-  public artworkId!: number;
-  public durationMonths!: number;
-  public rentalFee!: number;
-  public createdAt!: Date;
-  public updatedAt!: Date;
+  declare id: number;
+  declare artworkId: number;
+  declare durationMonths: number;
+  declare rentalFee: number;
+  declare createdAt: Date;
+  declare updatedAt: Date;
 }
 
 RentalPlan.init(

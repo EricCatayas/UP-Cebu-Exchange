@@ -9,8 +9,8 @@ interface WishlistAttributes {
 interface WishlistCreationAttributes extends Optional<WishlistAttributes, 'id'> {}
 
 class Wishlist extends Model<WishlistAttributes, WishlistCreationAttributes> implements WishlistAttributes {
-  public id!: number;
-  public userId!: number;
+  declare id: number;
+  declare userId: number;
 }
 
 Wishlist.init(

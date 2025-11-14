@@ -15,11 +15,11 @@ interface RoleCreationAttributes extends Optional<RoleAttributes, 'id' | 'descri
 
 // Define the Role model class
 class Role extends Model<RoleAttributes, RoleCreationAttributes> implements RoleAttributes {
-  public id!: number;
-  public name!: string;
-  public description!: string;
-  public createdAt!: Date;
-  public updatedAt!: Date;
+  declare id: number;
+  declare name: string;
+  declare description: string;
+  declare createdAt: Date;
+  declare updatedAt: Date;
 }
 
 // Initialize the Role model

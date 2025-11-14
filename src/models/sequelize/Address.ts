@@ -14,22 +14,18 @@ interface AddressAttributes {
 }
 
 // Define creation attributes (optional fields during creation)
-interface AddressCreationAttributes
-  extends Optional<AddressAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
+interface AddressCreationAttributes extends Optional<AddressAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
 
 // Define the Address model class
-class Address
-  extends Model<AddressAttributes, AddressCreationAttributes>
-  implements AddressAttributes
-{
-  public id!: number;
-  public userId!: number;
-  public street!: string;
-  public city!: string;
-  public province!: string;
-  public postalCode!: string;
-  public createdAt!: Date;
-  public updatedAt!: Date;
+class Address extends Model<AddressAttributes, AddressCreationAttributes> implements AddressAttributes {
+  declare id: number;
+  declare userId: number;
+  declare street: string;
+  declare city: string;
+  declare province: string;
+  declare postalCode: string;
+  declare createdAt: Date;
+  declare updatedAt: Date;
 
   // Association methods will be added here later
 }

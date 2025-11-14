@@ -14,11 +14,11 @@ interface ArtistCreationAttributes extends Optional<ArtistAttributes, 'id' | 'bi
 
 // Define the Artist model class
 class Artist extends Model<ArtistAttributes, ArtistCreationAttributes> implements ArtistAttributes {
-  public id!: number;
-  public name!: string;
-  public biography!: string;
-  public createdAt!: Date;
-  public updatedAt!: Date;
+  declare id: number;
+  declare name: string;
+  declare biography: string;
+  declare createdAt: Date;
+  declare updatedAt: Date;
 }
 
 // Initialize the Artist model

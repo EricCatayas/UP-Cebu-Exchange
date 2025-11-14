@@ -11,12 +11,15 @@ interface ArtworkImageAttributes {
 
 interface ArtworkImageCreationAttributes extends Optional<ArtworkImageAttributes, 'id' | 'isPrimary' | 'createdAt'> {}
 
-class ArtworkImage extends Model<ArtworkImageAttributes, ArtworkImageCreationAttributes> implements ArtworkImageAttributes {
-  public id!: number;
-  public artworkId!: number;
-  public imageUrl!: string;
-  public isPrimary!: boolean;
-  public createdAt!: Date;
+class ArtworkImage
+  extends Model<ArtworkImageAttributes, ArtworkImageCreationAttributes>
+  implements ArtworkImageAttributes
+{
+  declare id: number;
+  declare artworkId: number;
+  declare imageUrl: string;
+  declare isPrimary: boolean;
+  declare createdAt: Date;
 }
 
 ArtworkImage.init(

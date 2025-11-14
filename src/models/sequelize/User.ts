@@ -18,14 +18,14 @@ interface UserCreationAttributes extends Optional<UserAttributes, 'id' | 'create
 
 // Define the User model class
 class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
-  public id!: number;
-  public email!: string;
-  public password!: string;
-  public fullName!: string;
-  public status!: 'Active' | 'Pending' | 'Inactive' | 'Banned';
-  public createdAt!: Date;
-  public updatedAt!: Date;
-  public roleId!: number;
+  declare id: number;
+  declare email: string;
+  declare password: string;
+  declare fullName: string;
+  declare status: 'Active' | 'Pending' | 'Inactive' | 'Banned';
+  declare createdAt: Date;
+  declare updatedAt: Date;
+  declare roleId: number;
 
   // Association methods will be added here later
 }

@@ -17,15 +17,15 @@ interface RentalOrderCreationAttributes
   extends Optional<RentalOrderAttributes, 'id' | 'status' | 'createdAt' | 'updatedAt'> {}
 
 class RentalOrder extends Model<RentalOrderAttributes, RentalOrderCreationAttributes> implements RentalOrderAttributes {
-  public id!: number;
-  public userId!: number;
-  public paymentId!: number;
-  public startDate!: Date;
-  public endDate!: Date;
-  public durationMonths!: number;
-  public status!: 'Pending' | 'Confirmed' | 'Cancelled' | 'Completed';
-  public createdAt!: Date;
-  public updatedAt!: Date;
+  declare id: number;
+  declare userId: number;
+  declare paymentId: number;
+  declare startDate: Date;
+  declare endDate: Date;
+  declare durationMonths: number;
+  declare status: 'Pending' | 'Confirmed' | 'Cancelled' | 'Completed';
+  declare createdAt: Date;
+  declare updatedAt: Date;
 
   // Instance methods
   public isActive(): boolean {

@@ -16,12 +16,12 @@ class RentalPlanSnapshot
   extends Model<RentalPlanSnapshotAttributes, RentalPlanSnapshotCreationAttributes>
   implements RentalPlanSnapshotAttributes
 {
-  public id!: number;
-  public originalRentalPlanId!: number;
-  public rentalOrderItemId!: number;
-  public durationMonths!: number;
-  public rentalFee!: number;
-  public createdAt!: Date;
+  declare id: number;
+  declare originalRentalPlanId: number;
+  declare rentalOrderItemId: number;
+  declare durationMonths: number;
+  declare rentalFee: number;
+  declare createdAt: Date;
 }
 
 RentalPlanSnapshot.init(
