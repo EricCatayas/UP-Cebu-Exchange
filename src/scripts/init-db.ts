@@ -1,6 +1,6 @@
 import { config } from 'dotenv';
 import { resolve } from 'path';
-import { seedDatabase } from './seed';
+import { seedDefaultRoles, seedDatabase } from './seed';
 
 // Load .env.local file BEFORE importing anything else
 config({ path: resolve(process.cwd(), '.env.local') });
@@ -30,34 +30,6 @@ async function initializeDatabase() {
   } catch (error) {
     console.error('❌ Database initialization failed:', error);
     process.exit(1);
-  }
-}
-
-async function seedDefaultRoles() {
-  try {
-    console.log('🌱 Seeding default roles...');
-
-    const defaultRoles = [
-      { name: 'head', description: 'Administrator with read-only access' },
-      { name: 'staff', description: 'Staff who can modify content' },
-      { name: 'customer', description: 'Customer who can rent artworks' },
-    ];
-
-    for (const roleData of defaultRoles) {
-      const [role, created] = await Role.findOrCreate({
-        where: { name: roleData.name },
-        defaults: roleData,
-      });
-
-      if (created) {
-        console.log(`✅ Created role: ${role.name}`);
-      } else {
-        console.log(`ℹ️  Role already exists: ${role.name}`);
-      }
-    }
-  } catch (error) {
-    console.error('❌ Error seeding roles:', error);
-    throw error;
   }
 }
 

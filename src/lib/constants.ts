@@ -43,3 +43,10 @@ export const ORDER_STATUSES = [
 ];
 
 export const PAYMENT_METHODS = ['Cash', 'Credit Card', 'Bank Transfer'];
+
+export enum USER_ROLE {
+  // ADMIN = 'admin',
+  HEAD = 'head',
+  STAFF = 'staff',
+  CUSTOMER = 'customer',
+}
