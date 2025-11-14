@@ -1,12 +1,13 @@
 import { config } from 'dotenv';
 import { resolve } from 'path';
-import { seedDefaultRoles, seedDatabase } from './seed';
 
-// Load .env.local file BEFORE importing anything else
 config({ path: resolve(process.cwd(), '.env.local') });
 
+import '@/models/sequelize';
+
 import DatabaseService from '@/lib/database';
-import { Role } from '@/models/sequelize';
+
+import { seedDefaultRoles, seedDatabase } from './seed';
 
 async function initializeDatabase() {
   try {
@@ -19,6 +20,8 @@ async function initializeDatabase() {
 
     // Sync all models (create tables)
     await dbService.sync({ force: false }); // Set to true to drop existing tables
+
+    console.log('✅ All tables created successfully!');
 
     // Seed default roles
     await seedDefaultRoles();

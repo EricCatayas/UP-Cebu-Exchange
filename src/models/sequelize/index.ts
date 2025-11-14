@@ -1,21 +1,23 @@
 import sequelize from '@/config/database';
+
+// Import all models (this triggers their Model.init() calls)
 import User from './User';
 import Role from './Role';
 import Artist from './Artist';
 import Artwork from './Artwork';
 import Address from './Address';
-import ArtworkImage from './ArtworkImage';
-import ArtworkTag from './ArtworkTag';
 import Style from './Style';
 import Tag from './Tag';
+import ArtworkTag from './ArtworkTag';
 import Cart from './Cart';
 import CartItem from './CartItem';
 import Wishlist from './Wishlist';
 import WishlistItem from './WishlistItem';
-import RentalPlan from './RentalPlan';
-import RentalPlanSnapshot from './RentalPlanSnapshot';
+import ArtworkImage from './ArtworkImage';
 import RentalOrder from './RentalOrder';
 import RentalOrderItem from './RentalOrderItem';
+import RentalPlan from './RentalPlan';
+import RentalPlanSnapshot from './RentalPlanSnapshot';
 import Payment from './Payment';
 
 // Define associations
