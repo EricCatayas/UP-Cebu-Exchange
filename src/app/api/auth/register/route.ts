@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { User, Role } from '@/models/sequelize';
-import { hashPassword, generateToken, setAuthCookie } from '@/lib/auth';
+import { hashPassword } from '@/lib/auth';
 import { USER_ROLE } from '@/lib/constants';
 
 // TODO: Test API
@@ -55,17 +55,6 @@ export async function POST(request: NextRequest) {
     });
 
     // TODO: Send verification email
-
-    // Generate JWT token
-    const token = generateToken({
-      userId: newUser.id,
-      email: newUser.email,
-      roleId: newUser.roleId,
-      roleName: customerRole.name,
-    });
-
-    // Set auth cookie
-    await setAuthCookie(token);
 
     return NextResponse.json(
       {
