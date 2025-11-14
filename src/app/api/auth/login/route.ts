@@ -5,7 +5,7 @@ import { verifyPassword, generateToken, setAuthCookie } from '@/lib/auth';
 // TODO: Test API
 export async function POST(request: NextRequest) {
   try {
-    const { email, password } = await request.json();
+    const { email, password, remember } = await request.json();
 
     // Validate input
     if (!email || !password) {
@@ -40,15 +40,18 @@ export async function POST(request: NextRequest) {
     }
 
     // Generate JWT token
-    const token = generateToken({
-      userId: user.id,
-      email: user.email,
-      roleId: user.roleId,
-      roleName: (user as any).role.name,
-    });
+    const token = generateToken(
+      {
+        userId: user.id,
+        email: user.email,
+        roleId: user.roleId,
+        roleName: (user as any).role.name,
+      },
+      remember
+    );
 
     // Set auth cookie
-    await setAuthCookie(token);
+    await setAuthCookie(token, remember);
 
     return NextResponse.json({
       message: 'Login successful',

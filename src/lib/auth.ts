@@ -16,8 +16,9 @@ export const verifyPassword = async (password: string, hashedPassword: string): 
   return await bcrypt.compare(password, hashedPassword);
 };
 
-export const generateToken = (payload: Omit<JWTPayload, 'exp'>): string => {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
+export const generateToken = (payload: Omit<JWTPayload, 'exp'>, rememberMe: boolean = false): string => {
+  const expiresIn = rememberMe ? '30d' : '7d';
+  return jwt.sign(payload, JWT_SECRET, { expiresIn });
 };
 
 export const verifyToken = (token: string): JWTPayload | null => {
@@ -37,13 +38,13 @@ export const verifyToken = (token: string): JWTPayload | null => {
     Better for server-side rendering (Next.js App Router)
     Client need not manually store and access token in localStorage
  */
-export const setAuthCookie = async (token: string) => {
+export const setAuthCookie = async (token: string, rememberMe: boolean = false) => {
   const cookieStore = await cookies();
   cookieStore.set('auth-token', token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
-    maxAge: 7 * 24 * 60 * 60, // 7 days
+    maxAge: rememberMe ? 30 * 24 * 60 * 60 : 7 * 24 * 60 * 60, // 30 days or 7 days
     path: '/',
   });
 };
