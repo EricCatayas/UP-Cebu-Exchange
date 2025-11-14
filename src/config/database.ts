@@ -5,6 +5,7 @@ import { resolve } from 'path';
 config({ path: resolve(process.cwd(), '.env.local') });
 
 import { Sequelize } from 'sequelize';
+import mysql2 from 'mysql2';
 
 const sequelize = new Sequelize({
   database: process.env.DB_NAME || 'up_cebu_exchange',
@@ -13,6 +14,7 @@ const sequelize = new Sequelize({
   host: process.env.DB_HOST || 'localhost',
   port: parseInt(process.env.DB_PORT || '3306'),
   dialect: 'mysql',
+  dialectModule: mysql2,
   logging: process.env.NODE_ENV === 'development' ? console.log : false,
   pool: {
     max: 10,
