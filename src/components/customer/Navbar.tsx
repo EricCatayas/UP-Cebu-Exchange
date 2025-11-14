@@ -2,8 +2,12 @@
 
 import Link from 'next/link';
 import React, { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Navbar: React.FC = () => {
+  const { user, isLoggedIn, logout } = useAuth();
+  const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
   const accountRef = useRef<HTMLDivElement>(null);
@@ -32,8 +36,10 @@ const Navbar: React.FC = () => {
     };
   }, []);
 
-  const handleLogout = () => {
-    // TODO: Implement logout functionality
+  const handleLogout = async () => {
+    await logout();
+    setAccountOpen(false);
+    router.push('/');
   };
 
   return (
@@ -52,45 +58,62 @@ const Navbar: React.FC = () => {
           </h1>
         </div>
         <div className="flex items-center space-x-4">
-          <Link href="/checkout" className="font-light hover:text-gray-700">
-            Cart
-          </Link>
-          <Link href="/account/rentals" className="font-light hover:text-gray-700">
-            My Rentals
-          </Link>
+          {/* If logged in */}
+          {isLoggedIn ? (
+            <>
+              <Link href="/checkout" className="font-light hover:text-gray-700">
+                Cart
+              </Link>
+              <Link href="/account/rentals" className="font-light hover:text-gray-700">
+                My Rentals
+              </Link>
 
-          {/* Account dropdown */}
-          <div className="relative" ref={accountRef}>
-            <button
-              type="button"
-              aria-haspopup="menu"
-              aria-expanded={accountOpen}
-              onClick={() => setAccountOpen((o) => !o)}
-              className="font-light hover:text-gray-700 flex items-center"
-            >
-              Account <span className="ml-1">▾</span>
-            </button>
-            {accountOpen && (
-              <div
-                role="menu"
-                className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg ring-1 ring-black/5 py-1 z-50"
-              >
-                <Link href="/account/profile" role="menuitem" className="block px-4 py-2 text-sm hover:bg-gray-50">
-                  Profile
-                </Link>
-                <Link href="/account/wishlist" role="menuitem" className="block px-4 py-2 text-sm hover:bg-gray-50">
-                  Wishlist
-                </Link>
+              {/* Account dropdown */}
+              <div className="relative" ref={accountRef}>
                 <button
-                  onClick={handleLogout}
-                  role="menuitem"
-                  className="block px-4 py-2 text-sm text-red-600 hover:bg-gray-50"
+                  type="button"
+                  aria-haspopup="menu"
+                  aria-expanded={accountOpen}
+                  onClick={() => setAccountOpen((o) => !o)}
+                  className="font-light hover:text-gray-700 flex items-center"
                 >
-                  Sign Out
+                  Account <span className="ml-1">▾</span>
                 </button>
+                {accountOpen && (
+                  <div
+                    role="menu"
+                    className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg ring-1 ring-black/5 py-1 z-50"
+                  >
+                    <Link href="/account/profile" role="menuitem" className="block px-4 py-2 text-sm hover:bg-gray-50">
+                      Profile
+                    </Link>
+                    <Link href="/account/wishlist" role="menuitem" className="block px-4 py-2 text-sm hover:bg-gray-50">
+                      Wishlist
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      role="menuitem"
+                      className="block px-4 py-2 text-sm text-red-600 hover:bg-gray-50"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+            </>
+          ) : (
+            <>
+              <Link href="/login" className="font-light hover:text-gray-700">
+                Login
+              </Link>
+              <Link
+                href="/register"
+                className="px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark transition"
+              >
+                Sign Up
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </nav>
