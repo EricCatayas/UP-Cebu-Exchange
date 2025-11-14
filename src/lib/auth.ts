@@ -1,6 +1,8 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { cookies } from 'next/headers';
+import { JWTPayload, User } from '@/types/auth';
+import { ADMIN_ROLES, USER_ROLE } from './constants';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-key';
 const SALT_ROUNDS = 12;
@@ -14,15 +16,6 @@ export const verifyPassword = async (password: string, hashedPassword: string): 
   return await bcrypt.compare(password, hashedPassword);
 };
 
-// JWT token utilities
-export interface JWTPayload {
-  userId: number;
-  email: string;
-  roleId: number;
-  roleName: string;
-  exp?: number;
-}
-
 export const generateToken = (payload: Omit<JWTPayload, 'exp'>): string => {
   return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
 };
@@ -35,7 +28,15 @@ export const verifyToken = (token: string): JWTPayload | null => {
   }
 };
 
-// Session management utilities
+/**
+ * 
+ * Cookie-based Auth (Current Approach) ✅
+    Token is automatically sent with every request via cookies
+    Protected from XSS attacks (JavaScript can't access it)
+    Automatically handled by the browser
+    Better for server-side rendering (Next.js App Router)
+    Client need not manually store and access token in localStorage
+ */
 export const setAuthCookie = async (token: string) => {
   const cookieStore = await cookies();
   cookieStore.set('auth-token', token, {
@@ -61,19 +62,15 @@ export const getAuthToken = async (): Promise<string | null> => {
 export const getCurrentUser = async (): Promise<JWTPayload | null> => {
   const token = await getAuthToken();
   if (!token) return null;
-  
+
   return verifyToken(token);
 };
 
 // Role checking utilities
-export const isAdmin = (user: JWTPayload | null): boolean => {
-  return user?.roleName?.toLowerCase() === 'admin';
+export const isAdmin = (user: JWTPayload | User | null): boolean => {
+  return ADMIN_ROLES.includes(user?.roleName?.toLowerCase() || '');
 };
 
-export const isCustomer = (user: JWTPayload | null): boolean => {
-  return user?.roleName?.toLowerCase() === 'customer';
-};
-
-export const hasRole = (user: JWTPayload | null, roleName: string): boolean => {
-  return user?.roleName?.toLowerCase() === roleName.toLowerCase();
+export const isCustomer = (user: JWTPayload | User | null): boolean => {
+  return user?.roleName?.toLowerCase() === USER_ROLE.CUSTOMER.toLowerCase();
 };

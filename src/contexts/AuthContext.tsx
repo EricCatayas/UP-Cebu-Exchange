@@ -1,17 +1,13 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
-
-interface User {
-  id: number;
-  email: string;
-  roleId: number;
-  role: string;
-}
+import React, { createContext, useContext, useEffect, useState, useMemo } from 'react';
+import { User } from '@/types/auth';
+import { USER_ROLE } from '@/lib/constants';
 
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
+  isLoggedIn: boolean;
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   register: (email: string, password: string, fullName: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
@@ -28,6 +24,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     checkSession();
   }, []);
+
+  const isLoggedIn = useMemo(() => !!user, [user]);
 
   const checkSession = async () => {
     try {
@@ -98,19 +96,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       await fetch('/api/auth/logout', { method: 'POST' });
       setUser(null);
-      // Redirect to home page
-      window.location.href = '/';
     } catch (error) {
       console.error('Logout failed:', error);
       // Even if logout fails, clear local state
       setUser(null);
-      window.location.href = '/';
     }
   };
 
   const value = {
     user,
     isLoading,
+    isLoggedIn,
     login,
     register,
     logout,

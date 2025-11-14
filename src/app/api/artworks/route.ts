@@ -10,64 +10,42 @@ export async function POST(request: NextRequest) {
     const currentUser = await getCurrentUser();
 
     if (!currentUser) {
-      return NextResponse.json(
-        { error: 'Authentication required' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
     }
 
     if (!isAdmin(currentUser)) {
-      return NextResponse.json(
-        { error: 'Admin access required' },
-        { status: 403 }
-      );
+      return NextResponse.json({ error: 'Admin access required' }, { status: 403 });
     }
 
     // TODO: handle image uploads
 
     // Parse request body
-    const { title, artistId, description, medium, heightCm, widthCm, status } =
-      await request.json();
+    const { title, artistId, description, medium, heightCm, widthCm, status } = await request.json();
 
     // Validate required fields
     if (!medium || !heightCm || !widthCm) {
-      return NextResponse.json(
-        { error: 'Medium, height, and width are required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Medium, height, and width are required' }, { status: 400 });
     }
 
     // Validate numeric fields
     if (isNaN(Number(heightCm)) || isNaN(Number(widthCm))) {
-      return NextResponse.json(
-        { error: 'Height and width must be valid numbers' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Height and width must be valid numbers' }, { status: 400 });
     }
 
     if (Number(heightCm) <= 0 || Number(widthCm) <= 0) {
-      return NextResponse.json(
-        { error: 'Height and width must be positive numbers' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Height and width must be positive numbers' }, { status: 400 });
     }
 
     // Validate artistId if provided
     if (artistId !== undefined && artistId !== null) {
       if (isNaN(Number(artistId))) {
-        return NextResponse.json(
-          { error: 'Artist ID must be a valid number' },
-          { status: 400 }
-        );
+        return NextResponse.json({ error: 'Artist ID must be a valid number' }, { status: 400 });
       }
 
       // Check if artist exists
       const artist = await Artist.findByPk(artistId);
       if (!artist) {
-        return NextResponse.json(
-          { error: 'Artist not found' },
-          { status: 404 }
-        );
+        return NextResponse.json({ error: 'Artist not found' }, { status: 404 });
       }
     }
 
@@ -124,27 +102,15 @@ export async function POST(request: NextRequest) {
 
     // Handle Sequelize validation errors
     if (error instanceof Error && error.name === 'SequelizeValidationError') {
-      return NextResponse.json(
-        { error: 'Validation error: ' + error.message },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Validation error: ' + error.message }, { status: 400 });
     }
 
     // Handle Sequelize foreign key constraint errors
-    if (
-      error instanceof Error &&
-      error.name === 'SequelizeForeignKeyConstraintError'
-    ) {
-      return NextResponse.json(
-        { error: 'Invalid artist reference' },
-        { status: 400 }
-      );
+    if (error instanceof Error && error.name === 'SequelizeForeignKeyConstraintError') {
+      return NextResponse.json({ error: 'Invalid artist reference' }, { status: 400 });
     }
 
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
 
@@ -163,8 +129,7 @@ export async function GET(request: NextRequest) {
     if (page < 1 || limit < 1 || limit > 100) {
       return NextResponse.json(
         {
-          error:
-            'Invalid pagination parameters. Page must be >= 1 and limit must be between 1 and 100',
+          error: 'Invalid pagination parameters. Page must be >= 1 and limit must be between 1 and 100',
         },
         { status: 400 }
       );
@@ -237,10 +202,7 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error('Artworks fetch error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
 
@@ -250,24 +212,15 @@ export async function DELETE(request: NextRequest) {
     // Check authentication and admin authorization
     const currentUser = await getCurrentUser();
     if (!currentUser) {
-      return NextResponse.json(
-        { error: 'Authentication required' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
     }
     if (!isAdmin(currentUser)) {
-      return NextResponse.json(
-        { error: 'Admin access required' },
-        { status: 403 }
-      );
+      return NextResponse.json({ error: 'Admin access required' }, { status: 403 });
     }
     // Parse request body
     const { artworkId } = await request.json();
     if (!artworkId || isNaN(Number(artworkId))) {
-      return NextResponse.json(
-        { error: 'Valid artworkId is required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Valid artworkId is required' }, { status: 400 });
     }
     // Find the artwork
     const artwork = await Artwork.findByPk(artworkId);
@@ -279,15 +232,9 @@ export async function DELETE(request: NextRequest) {
 
     // Delete the artwork
     await artwork.destroy();
-    return NextResponse.json(
-      { message: 'Artwork deleted successfully' },
-      { status: 200 }
-    );
+    return NextResponse.json({ message: 'Artwork deleted successfully' }, { status: 200 });
   } catch (error) {
     console.error('Artwork deletion error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
