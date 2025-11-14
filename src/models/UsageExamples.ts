@@ -1,10 +1,10 @@
 import sequelize from '@/config/database';
-import User from './User';
-import Role from './Role';
-import Artist from './Artist';
-import Artwork from './Artwork';
-import ArtworkTag from './ArtworkTag';
-import Tag from './Tag';
+import User from '@/models/sequelize/User';
+import Role from '@/models/sequelize/Role';
+import Artist from '@/models/sequelize/Artist';
+import Artwork from '@/models/sequelize/Artwork';
+import ArtworkTag from '@/models/sequelize/ArtworkTag';
+import Tag from '@/models/sequelize/Tag';
 
 // Artwork Tags
 const modernTag = await Tag.create({ name: 'Modern' });
