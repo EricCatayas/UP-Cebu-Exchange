@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { cookies } from 'next/headers';
+import { jwtVerify } from 'jose';
 import { JWTPayload, User } from '@/types/auth';
 import { ADMIN_ROLES, USER_ROLE } from './constants';
 
@@ -21,13 +22,25 @@ export const generateToken = (payload: Omit<JWTPayload, 'exp'>, rememberMe: bool
   return jwt.sign(payload, JWT_SECRET, { expiresIn });
 };
 
-export const verifyToken = (token: string): JWTPayload | null => {
+// export const verifyToken = (token: string): JWTPayload | null => {
+//   try {
+//     return jwt.verify(token, JWT_SECRET) as JWTPayload;
+//   } catch (error) {
+//     return null;
+//   }
+// };
+
+// Edge browser compatible token verification
+// Todo: Test in other web browsers
+export async function verifyToken(token: string): Promise<JWTPayload | null> {
   try {
-    return jwt.verify(token, JWT_SECRET) as JWTPayload;
-  } catch (error) {
+    const secret = new TextEncoder().encode(JWT_SECRET);
+    const { payload } = await jwtVerify(token, secret);
+    return payload as any; // cast to JWTPayload
+  } catch {
     return null;
   }
-};
+}
 
 /**
  * 
