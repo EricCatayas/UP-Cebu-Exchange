@@ -7,9 +7,13 @@ interface RentalOrderItemAttributes {
   artworkId: number;
 }
 
-interface RentalOrderItemCreationAttributes extends Optional<RentalOrderItemAttributes, 'id'> {}
+interface RentalOrderItemCreationAttributes
+  extends Optional<RentalOrderItemAttributes, 'id'> {}
 
-class RentalOrderItem extends Model<RentalOrderItemAttributes, RentalOrderItemCreationAttributes> implements RentalOrderItemAttributes {
+class RentalOrderItem
+  extends Model<RentalOrderItemAttributes, RentalOrderItemCreationAttributes>
+  implements RentalOrderItemAttributes
+{
   public id!: number;
   public rentalOrderId!: number;
   public artworkId!: number;
