@@ -23,7 +23,6 @@ DB_DIALECT=mysql
 Create the database in MySQL
 
 ```sql
-    DROP DATABASE IF EXISTS up_cebu_exchange;
     CREATE DATABASE up_cebu_exchange;
 ```
 
@@ -38,6 +37,11 @@ npm run db:init
 ```bash
 npm run dev
 ```
+
+## Test Accounts:
+
+customer: user1@test.com, password: user123
+admin: admin@test.com, password: admin123
 
 Phase 1: Database & Authentication
 Phase 2: Core Backend APIs
