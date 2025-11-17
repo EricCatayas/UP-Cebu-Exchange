@@ -7,7 +7,7 @@ import '@/models/sequelize';
 
 import DatabaseService from '@/lib/database';
 
-import { seedDefaultRoles, seedDatabase } from './seed';
+import { seedDefaultRoles, seedUsers, seedDatabase } from './seed';
 
 async function initializeDatabase() {
   try {
@@ -25,6 +25,9 @@ async function initializeDatabase() {
 
     // Seed default roles
     await seedDefaultRoles();
+
+    // Seed test accounts
+    await seedUsers();
 
     // Await seed database
     await seedDatabase();

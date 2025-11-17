@@ -9,7 +9,7 @@ import RentalPlan from '@/models/sequelize/RentalPlan';
 import Style from '@/models/sequelize/Style';
 import Tag from '@/models/sequelize/Tag';
 import { ARTWORK_MEDIUM, ARTWORK_STATUS, USER_ROLE } from '@/lib/constants';
-import { v2 as cloudinary } from 'cloudinary';
+import { hashPassword } from '@/lib/auth';
 
 export async function seedDefaultRoles() {
   try {
@@ -35,6 +35,45 @@ export async function seedDefaultRoles() {
     }
   } catch (error) {
     console.error('❌ Error seeding roles:', error);
+    throw error;
+  }
+}
+
+export async function seedUsers() {
+  try {
+    const customerRole = await Role.findOne({
+      where: { name: USER_ROLE.CUSTOMER },
+    });
+    const adminRole = await Role.findOne({
+      where: { name: USER_ROLE.STAFF },
+    });
+
+    // customer account
+    const userPassword = await hashPassword('user123');
+    await User.findOrCreate({
+      where: { email: 'user1@test.com' },
+      defaults: {
+        email: 'user1@test.com',
+        fullName: 'User One',
+        password: userPassword,
+        roleId: customerRole.id,
+        status: 'Active',
+      },
+    });
+    // admin account
+    const adminPassword = await hashPassword('admin123');
+    await User.findOrCreate({
+      where: { email: 'admin@test.com' },
+      defaults: {
+        email: 'admin@test.com',
+        fullName: 'Admin User',
+        password: adminPassword,
+        roleId: adminRole.id,
+        status: 'Active',
+      },
+    });
+  } catch (error) {
+    console.error('❌ Error seeding users:', error);
     throw error;
   }
 }
