@@ -6,3 +6,5 @@ export interface RentalPlanAttributes {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface RentalPlanDTO extends RentalPlanAttributes {}

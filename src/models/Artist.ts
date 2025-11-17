@@ -5,3 +5,5 @@ export interface ArtistAttributes {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface ArtistDTO extends ArtistAttributes {}

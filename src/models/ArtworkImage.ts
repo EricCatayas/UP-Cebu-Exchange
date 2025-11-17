@@ -5,3 +5,5 @@ export interface ArtworkImageAttributes {
   isPrimary: boolean;
   createdAt: Date;
 }
+
+export interface ArtworkImageDTO extends ArtworkImageAttributes {}
