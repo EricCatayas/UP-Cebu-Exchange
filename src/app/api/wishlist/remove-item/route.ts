@@ -8,11 +8,11 @@ export async function POST(request: NextRequest) {
     if (!currentUser) {
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
     }
-    const { artworkId } = await request.json();
-    if (!artworkId || isNaN(Number(artworkId))) {
-      return NextResponse.json({ error: 'Valid artworkId is required' }, { status: 400 });
+    const { wishlistItemId } = await request.json();
+    if (!wishlistItemId || isNaN(Number(wishlistItemId))) {
+      return NextResponse.json({ error: 'Valid wishlistItemId is required' }, { status: 400 });
     }
-    await WishlistService.removeItem(currentUser.userId, Number(artworkId));
+    await WishlistService.removeItem(currentUser.userId, Number(wishlistItemId));
     return NextResponse.json({ message: 'Artwork removed from wishlist' }, { status: 200 });
   } catch (error) {
     console.error('Error removing artwork from wishlist:', error);

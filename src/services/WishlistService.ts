@@ -1,4 +1,4 @@
-import { Artwork, Wishlist, WishlistItem, RentalPlan } from '@/models/sequelize';
+import { Artwork, Wishlist, WishlistItem, RentalPlan, ArtworkImage } from '@/models/sequelize';
 
 class WishlistService {
   async addItem(userId: number, artworkId: number) {
@@ -14,13 +14,13 @@ class WishlistService {
     }
   }
 
-  async removeItem(userId: number, artworkId: number) {
+  async removeItem(userId: number, wishlistItemId: number) {
     const wishlist = await Wishlist.findOne({ where: { userId } });
     if (!wishlist) {
       throw new Error('Wishlist not found for user');
     }
     const wishlistItem = await WishlistItem.findOne({
-      where: { wishlistId: wishlist.id, artworkId },
+      where: { wishlistId: wishlist.id, id: wishlistItemId },
     });
     if (!wishlistItem) {
       throw new Error('Item not found in wishlist');
@@ -50,6 +50,16 @@ class WishlistService {
             {
               model: Artwork,
               as: 'artwork',
+              include: [
+                {
+                  model: RentalPlan,
+                  as: 'rentalPlans',
+                },
+                {
+                  model: ArtworkImage,
+                  as: 'images',
+                },
+              ],
             },
           ],
         },
