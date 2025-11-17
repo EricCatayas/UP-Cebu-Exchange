@@ -30,7 +30,6 @@ function ArtworkDetails({
       body: JSON.stringify({ artworkId: artwork.id }),
     })
       .then((response) => {
-        console.log('Add to cart response:', response);
         if (!response.ok) {
           throw new Error('Failed to add item to cart');
         }
@@ -51,7 +50,6 @@ function ArtworkDetails({
       body: JSON.stringify({ artworkId: artwork.id }),
     })
       .then((response) => {
-        console.log('Add to wishlist response:', response);
         if (!response.ok) {
           throw new Error('Failed to add item to wishlist');
         }
