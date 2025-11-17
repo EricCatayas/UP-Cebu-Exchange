@@ -56,6 +56,7 @@ const initializeAssociations = () => {
   Artwork.belongsTo(Artist, {
     foreignKey: 'artistId',
     as: 'artist',
+    constraints: false,
   });
 
   // Artwork has many ArtworkImages
@@ -68,6 +69,7 @@ const initializeAssociations = () => {
   ArtworkImage.belongsTo(Artwork, {
     foreignKey: 'artworkId',
     as: 'artwork',
+    constraints: false,
   });
 
   // Artwork belongs to Style
@@ -108,6 +110,7 @@ const initializeAssociations = () => {
   RentalPlan.belongsTo(Artwork, {
     foreignKey: 'artworkId',
     as: 'artwork',
+    constraints: false,
   });
 
   // User has one Cart
