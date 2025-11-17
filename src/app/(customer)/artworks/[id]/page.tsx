@@ -3,7 +3,7 @@ import ArtworkCarousel from '@/components/ArtworkCarousel/ArtworkCarousel';
 import ArtworkGallery from '@/components/ArtworkGallery/ArtworkGallery';
 import ArtworkGrid from '@/components/ArtworkGrid/ArtworkGrid';
 import ArtistLink from '@/components/ArtistLink/ArtistLink';
-import ArtworkService from '@/app/services/ArtworkService';
+import ArtworkService from '@/services/ArtworkService';
 import Link from 'next/link';
 import { getDimension } from '@/lib/artwork';
 
@@ -40,6 +40,16 @@ async function ArtworkDetails({ params }: { params: { id: string } }) {
   }
 
   const dimension = getDimension(artwork);
+
+  const handleAddToCart = () => {
+    // TODO: Implement add to cart functionality
+    console.log('Add to cart clicked');
+  };
+
+  const handleAddToWishlist = () => {
+    // TODO: Implement add to wishlist functionality
+    console.log('Add to wishlist clicked');
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -116,13 +126,19 @@ async function ArtworkDetails({ params }: { params: { id: string } }) {
 
           {/* Action Buttons */}
           <div className="flex gap-4 mb-6">
-            <button className="flex-1 bg-secondary text-white font-semibold py-3 px-6 rounded-lg flex items-center justify-center gap-2 transition">
+            <button
+              onClick={handleAddToCart}
+              className="flex-1 bg-secondary text-white font-semibold py-3 px-6 rounded-lg flex items-center justify-center gap-2 transition"
+            >
               <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M7 4h-2l-1 2v2h2l3.6 7.59-1.35 2.41A2 2 0 0 0 10 20h10v-2H10l1.1-2h7.45a2 2 0 0 0 1.79-1.11L22 9H6.21l-.94-2H7V4Zm3 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm8 1a1 1 0 1 1 2 0 1 1 0 0 1-2 0Z" />
               </svg>
               Add to Cart
             </button>
-            <button className="flex-1 bg-tertiary text-white font-semibold py-3 px-6 rounded-lg flex items-center justify-center gap-2 transition">
+            <button
+              onClick={handleAddToWishlist}
+              className="flex-1 bg-tertiary text-white font-semibold py-3 px-6 rounded-lg flex items-center justify-center gap-2 transition"
+            >
               <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
               </svg>

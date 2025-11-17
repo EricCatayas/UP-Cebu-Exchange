@@ -1,7 +1,7 @@
 // All Artworks
 import React from 'react';
 import ArtworkGrid from '@/components/ArtworkGrid/ArtworkGrid';
-import ArtworkService from '@/app/services/ArtworkService';
+import ArtworkService from '@/services/ArtworkService';
 async function Artworks() {
   // TODO: Pagination, Filtering, Sorting
   const allArtworks = await ArtworkService.getAllArtworks();
