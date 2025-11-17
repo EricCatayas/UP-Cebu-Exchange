@@ -1,11 +1,14 @@
-// All Artworks
 import React from 'react';
 import ArtworkGrid from '@/components/ArtworkGrid/ArtworkGrid';
 import ArtworkService from '@/services/ArtworkService';
 import PageHeader from '@/components/PageHeader/PageHeader';
+import { getCurrentUser } from '@/lib/auth';
+
 async function Artworks() {
   // TODO: Pagination, Filtering, Sorting
-  const allArtworks = await ArtworkService.getAllArtworks();
+  const currentUser = await getCurrentUser();
+  const artworkService = new ArtworkService(currentUser?.userId);
+  const allArtworks = await artworkService.getAllArtworks();
 
   return (
     <>
