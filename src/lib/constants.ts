@@ -22,7 +22,12 @@ export const CURRENCY_SYMBOL = '₱';
 
 export const DELIVERY_FEE = 50;
 
-export const DELIVERY_METHODS = ['Delivery', 'Pickup'];
+export enum DELIVERY_METHOD {
+  DELIVERY = 'Delivery',
+  PICKUP = 'Pickup',
+}
+
+export const DELIVERY_METHODS = [DELIVERY_METHOD.DELIVERY, DELIVERY_METHOD.PICKUP];
 
 export const DURATION_OPTIONS = [3, 6, 12];
 
@@ -42,7 +47,13 @@ export const ORDER_STATUSES = [
   ORDER_STATUS.CANCELLED,
 ];
 
-export const PAYMENT_METHODS = ['Cash', 'Credit Card', 'Bank Transfer'];
+export enum PAYMENT_METHOD {
+  CASH = 'Cash',
+  CREDIT_CARD = 'Credit Card',
+  BANK_TRANSFER = 'Bank Transfer',
+}
+
+export const PAYMENT_METHODS = [PAYMENT_METHOD.CASH, PAYMENT_METHOD.CREDIT_CARD, PAYMENT_METHOD.BANK_TRANSFER];
 
 export enum USER_ROLE {
   // ADMIN = 'admin',

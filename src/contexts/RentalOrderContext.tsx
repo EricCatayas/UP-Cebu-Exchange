@@ -1,14 +1,9 @@
 'use client';
 
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  useMemo,
-} from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { useCart } from '@/contexts/CartContext';
-import { DELIVERY_FEE } from '@/lib/constants';
+import { DELIVERY_FEE, DELIVERY_METHOD, PAYMENT_METHOD } from '@/lib/constants';
+import { getRentalFee } from '@/lib/artwork';
 
 interface RentalOrderContextType {
   selectedDuration: number;
@@ -26,21 +21,15 @@ interface RentalOrderContextType {
   total: number;
 }
 
-const RentalOrderContext = createContext<RentalOrderContextType | undefined>(
-  undefined
-);
+const RentalOrderContext = createContext<RentalOrderContextType | undefined>(undefined);
 
-export function RentalOrderProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export function RentalOrderProvider({ children }: { children: React.ReactNode }) {
   const { cartItems, selectedCartItemIds } = useCart();
 
   const [selectedDuration, setSelectedDuration] = useState<number>(12);
-  const [startDate, setStartDate] = useState<string>('2025-10-09');
-  const [deliveryMethod, setDeliveryMethod] = useState<string>('Delivery');
-  const [paymentMethod, setPaymentMethod] = useState<string>('Credit Card');
+  const [startDate, setStartDate] = useState<string>(new Date().toISOString().split('T')[0]);
+  const [deliveryMethod, setDeliveryMethod] = useState<string>(DELIVERY_METHOD.PICKUP);
+  const [paymentMethod, setPaymentMethod] = useState<string>(PAYMENT_METHOD.CASH);
   const [contractSigned, setContractSigned] = useState<boolean>(false);
 
   const endDate = useMemo(() => {
@@ -66,10 +55,7 @@ export function RentalOrderProvider({
     return cartItems
       .filter((item) => selectedCartItemIds.has(item.id))
       .reduce((sum, item) => {
-        const plan = item.rentalPlans.find(
-          (p) => p.durationMonths === selectedDuration
-        );
-        return sum + (plan?.rentalFee || 0);
+        return sum + getRentalFee(item.artwork, selectedDuration);
       }, 0);
   }, [cartItems, selectedCartItemIds, selectedDuration]);
 
@@ -100,7 +86,6 @@ export function RentalOrderProvider({
 
 export function useRentalOrder() {
   const ctx = useContext(RentalOrderContext);
-  if (!ctx)
-    throw new Error('useRentalOrder must be used within RentalOrderProvider');
+  if (!ctx) throw new Error('useRentalOrder must be used within RentalOrderProvider');
   return ctx;
 }

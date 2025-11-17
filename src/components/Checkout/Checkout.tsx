@@ -5,10 +5,12 @@ import { useRouter } from 'next/navigation';
 import { useCart } from '@/contexts/CartContext';
 import { useRentalOrder } from '@/contexts/RentalOrderContext';
 import { DURATION_OPTIONS, DELIVERY_FEE, DELIVERY_METHODS, PAYMENT_METHODS } from '@/lib/constants';
+import { SelectCartItems } from '@/components/SelectCartItems/SelectCartItems';
 import { getDimension, getRentalFee } from '@/lib/artwork';
 
-function Checkout() {
-  const { cartItems, selectedCartItemIds, toggleCartItem, toggleAllCartItems, removeFromCart } = useCart();
+function Checkout({ cartItemsFromServer }: { cartItemsFromServer: any[] }) {
+  const { cartItems, setCartItems, selectedCartItemIds, toggleCartItem, toggleAllCartItems, removeFromCart } =
+    useCart();
 
   const {
     selectedDuration,
@@ -48,10 +50,6 @@ function Checkout() {
 
   const navigateToContract = () => {
     router.push('/checkout/rental-agreement');
-  };
-
-  const getRentalPlanFee = (item: any) => {
-    return getRentalFee(item.artwork, selectedDuration);
   };
 
   const handleCheckout = () => {
@@ -166,7 +164,7 @@ function Checkout() {
                       <p className="text-sm text-gray-600">{getDimension(item.artwork)}</p>
                     </div>
                   </div>
-                  <div className="font-semibold text-lg mr-4">₱{getRentalPlanFee(item)}</div>
+                  <div className="font-semibold text-lg mr-4">₱{getRentalFee(item)}</div>
                   <button onClick={() => removeFromCart(item.id)} className="text-red-500 hover:text-red-700">
                     🗑️
                   </button>
@@ -261,7 +259,7 @@ function Checkout() {
                   .map((item) => (
                     <div key={item.id} className="flex justify-between mb-2">
                       <span className="text-gray-600">{item.artwork.title}</span>
-                      <span className="font-semibold">₱{getRentalPlanFee(item)}</span>
+                      <span className="font-semibold">₱{getRentalFee(item)}</span>
                     </div>
                   ))}
               </div>
