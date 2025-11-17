@@ -14,13 +14,13 @@ class WishlistService {
     }
   }
 
-  async removeItem(userId: number, wishlistItemId: number) {
+  async removeItem(userId: number, artworkId: number) {
     const wishlist = await Wishlist.findOne({ where: { userId } });
     if (!wishlist) {
       throw new Error('Wishlist not found for user');
     }
     const wishlistItem = await WishlistItem.findOne({
-      where: { wishlistId: wishlist.id, id: wishlistItemId },
+      where: { wishlistId: wishlist.id, artworkId },
     });
     if (!wishlistItem) {
       throw new Error('Item not found in wishlist');
