@@ -16,6 +16,9 @@ const publicRoutes = [
   '/api/auth/login',
   '/api/auth/register',
   '/api/auth/logout',
+  '/api/auth/forgot-password',
+  '/api/auth/reset-password',
+  '/api/auth/session',
 ];
 
 const adminRoutes = [
@@ -55,10 +58,22 @@ export async function middleware(request: NextRequest) {
   if (isPublicRoute) return NextResponse.next();
 
   const token = request.cookies.get('auth-token')?.value;
-  if (!token) return redirectToLogin(request, pathname);
+  if (!token) {
+    if (pathname.startsWith('/api/')) {
+      return NextResponse.json({ error: 'Unauthorized', message: 'Authentication required' }, { status: 401 });
+    }
+    return redirectToLogin(request, pathname);
+  }
 
   const user = await verifyToken(token);
-  if (!user) return redirectToLogin(request, pathname);
+
+  if (!user) {
+    if (pathname.startsWith('/api/')) {
+      return NextResponse.json({ error: 'Unauthorized', message: 'Authentication required' }, { status: 401 });
+    }
+
+    return redirectToLogin(request, pathname);
+  }
 
   if (isAdminRoute(pathname) && user.roleName?.toLowerCase() !== 'admin') {
     return NextResponse.redirect(new URL('/customer', request.url));
