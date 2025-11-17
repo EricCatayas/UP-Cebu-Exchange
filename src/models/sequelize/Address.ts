@@ -1,17 +1,6 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '@/config/database';
-
-// Define the Address attributes interface
-interface AddressAttributes {
-  id: number;
-  userId: number;
-  street: string;
-  city: string;
-  province: string;
-  postalCode: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import { AddressAttributes } from '@/models/Address';
 
 // Define creation attributes (optional fields during creation)
 interface AddressCreationAttributes extends Optional<AddressAttributes, 'id' | 'createdAt' | 'updatedAt'> {}

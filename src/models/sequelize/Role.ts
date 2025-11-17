@@ -1,14 +1,6 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '@/config/database';
-
-// Define the Role attributes interface
-interface RoleAttributes {
-  id: number;
-  name: string;
-  description?: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import { RoleAttributes } from '@/models/Role';
 
 // Define creation attributes
 interface RoleCreationAttributes extends Optional<RoleAttributes, 'id' | 'description' | 'createdAt' | 'updatedAt'> {}

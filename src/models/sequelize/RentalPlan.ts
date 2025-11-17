@@ -1,14 +1,6 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '@/config/database';
-
-interface RentalPlanAttributes {
-  id: number;
-  artworkId: number;
-  durationMonths: number;
-  rentalFee: number;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import { RentalPlanAttributes } from '@/models/RentalPlan';
 
 interface RentalPlanCreationAttributes extends Optional<RentalPlanAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
 

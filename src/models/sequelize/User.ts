@@ -1,17 +1,6 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '@/config/database';
-
-// Define the User attributes interface
-interface UserAttributes {
-  id: number;
-  email: string;
-  password: string;
-  fullName: string;
-  status: 'Active' | 'Pending' | 'Inactive' | 'Banned';
-  createdAt: Date;
-  updatedAt: Date;
-  roleId: number;
-}
+import { UserAttributes } from '@/models/User';
 
 // Define creation attributes (optional fields during creation)
 interface UserCreationAttributes extends Optional<UserAttributes, 'id' | 'createdAt' | 'updatedAt'> {}

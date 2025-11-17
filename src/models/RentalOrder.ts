@@ -1,10 +1,11 @@
-export interface RentalOrder {
+export interface RentalOrderAttributes {
   id: number;
   userId: number;
+  paymentId?: number;
   startDate: Date;
   endDate: Date;
-  durationMonths: number; // e.g., 3, 6, 12
-  status: "Pending" | "Confirmed" | "Cancelled" | "Completed";
+  durationMonths: number;
+  status: 'Pending' | 'Confirmed' | 'Cancelled' | 'Completed';
   createdAt: Date;
   updatedAt: Date;
 }

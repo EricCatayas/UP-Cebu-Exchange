@@ -1,12 +1,6 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '@/config/database';
-
-interface CartItemAttributes {
-  id: number;
-  cartId: number;
-  artworkId: number;
-  createdAt: Date;
-}
+import { CartItemAttributes } from '@/models/CartItem';
 
 interface CartItemCreationAttributes extends Optional<CartItemAttributes, 'id' | 'createdAt'> {}
 

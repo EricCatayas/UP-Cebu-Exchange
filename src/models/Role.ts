@@ -1,4 +1,7 @@
-export interface Role {
+export interface RoleAttributes {
   id: number;
-  name: "Head" | "Staff" | "Customer";
+  name: string;
+  description?: string;
+  createdAt: Date;
+  updatedAt: Date;
 }

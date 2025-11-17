@@ -1,7 +1,8 @@
-export interface RentalPlanSnapshot {
+export interface RentalPlanSnapshotAttributes {
   id: number;
   originalRentalPlanId: number;
-  durationMonths: number; // e.g., 3, 6, 12
+  rentalOrderItemId: number;
+  durationMonths: number;
   rentalFee: number;
-  createdAt: number;
+  createdAt: Date;
 }

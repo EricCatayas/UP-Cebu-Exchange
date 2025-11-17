@@ -1,11 +1,6 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '@/config/database';
-
-interface WishlistItemAttributes {
-  id: number;
-  wishlistId: number;
-  artworkId: number;
-}
+import { WishlistItemAttributes } from '@/models/WishlistItem';
 
 interface WishlistItemCreationAttributes extends Optional<WishlistItemAttributes, 'id'> {}
 

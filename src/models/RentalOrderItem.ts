@@ -1,6 +1,5 @@
-export interface RentalOrderItem {
+export interface RentalOrderItemAttributes {
   id: number;
   rentalOrderId: number;
-  rentalPlanSnapshotId: number;
   artworkId: number;
 }

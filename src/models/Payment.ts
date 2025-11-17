@@ -1,9 +1,9 @@
-export interface Payment {
+export interface PaymentAttributes {
   id: number;
   userId: number;
-  rentalOrderId: number;
   amount: number;
-  status: "Pending" | "Completed" | "Failed";
-  paymentMethod: "Cash" | "CreditCard" | "PayPal";
+  status: 'Pending' | 'Completed' | 'Failed';
+  paymentMethod: string;
   createdAt: Date;
+  updatedAt?: Date;
 }

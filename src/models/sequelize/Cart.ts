@@ -1,10 +1,6 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '@/config/database';
-
-interface CartAttributes {
-  id: number;
-  userId: number;
-}
+import { CartAttributes } from '@/models/Cart';
 
 interface CartCreationAttributes extends Optional<CartAttributes, 'id'> {}
 

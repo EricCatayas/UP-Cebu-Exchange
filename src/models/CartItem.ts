@@ -1,4 +1,4 @@
-export interface CartItem {
+export interface CartItemAttributes {
   id: number;
   cartId: number;
   artworkId: number;

@@ -1,13 +1,6 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '@/config/database';
-
-interface ArtworkImageAttributes {
-  id: number;
-  artworkId: number;
-  imageUrl: string;
-  isPrimary: boolean;
-  createdAt: Date;
-}
+import { ArtworkImageAttributes } from '@/models/ArtworkImage';
 
 interface ArtworkImageCreationAttributes extends Optional<ArtworkImageAttributes, 'id' | 'isPrimary' | 'createdAt'> {}
 

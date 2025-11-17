@@ -1,17 +1,6 @@
 import { DataTypes, Model, Optional, Op } from 'sequelize';
 import sequelize from '@/config/database';
-
-interface RentalOrderAttributes {
-  id: number;
-  userId: number;
-  paymentId?: number;
-  startDate: Date;
-  endDate: Date;
-  durationMonths: number;
-  status: 'Pending' | 'Confirmed' | 'Cancelled' | 'Completed';
-  createdAt: Date;
-  updatedAt: Date;
-}
+import { RentalOrderAttributes } from '@/models/RentalOrder';
 
 interface RentalOrderCreationAttributes
   extends Optional<RentalOrderAttributes, 'id' | 'status' | 'createdAt' | 'updatedAt'> {}

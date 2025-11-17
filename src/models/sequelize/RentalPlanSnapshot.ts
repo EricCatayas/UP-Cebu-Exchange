@@ -1,14 +1,6 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '@/config/database';
-
-interface RentalPlanSnapshotAttributes {
-  id: number;
-  originalRentalPlanId: number;
-  rentalOrderItemId: number;
-  durationMonths: number;
-  rentalFee: number;
-  createdAt: Date;
-}
+import { RentalPlanSnapshotAttributes } from '@/models/RentalPlanSnapshot';
 
 interface RentalPlanSnapshotCreationAttributes extends Optional<RentalPlanSnapshotAttributes, 'id' | 'createdAt'> {}
 
@@ -63,8 +55,7 @@ RentalPlanSnapshot.init(
     sequelize,
     modelName: 'RentalPlanSnapshot',
     tableName: 'rental_plan_snapshots',
-    timestamps: true,
-    updatedAt: false,
+    timestamps: false,
   }
 );
 

@@ -1,4 +1,4 @@
-export interface Address {
+export interface AddressAttributes {
   id: number;
   userId: number;
   street: string;

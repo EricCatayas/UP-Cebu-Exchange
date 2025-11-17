@@ -1,11 +1,13 @@
-export interface Artwork {
+export interface ArtworkAttributes {
   id: number;
-  title: string;
+  title?: string;
   artistId?: number;
-  description: string;
-  medium: string; // e.g., "Oil on Canvas", "Watercolor"
-  heightCm: number;
-  widthCm: number;
+  description?: string;
+  medium: string;
+  styleId?: number;
+  heightCm?: number;
+  widthCm?: number;
+  status: string;
   createdAt: Date;
   updatedAt: Date;
 }

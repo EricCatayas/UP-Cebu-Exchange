@@ -1,4 +1,4 @@
-export interface Tag {
+export interface TagAttributes {
   id: number;
-  name: string; // e.g., "Modern", "Minimalist", "Landscape"
+  name: string;
 }

@@ -1,20 +1,6 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '@/config/database';
-
-// Define the Artwork attributes interface
-interface ArtworkAttributes {
-  id: number;
-  title?: string;
-  artistId?: number;
-  description?: string;
-  medium: string;
-  styleId?: number;
-  heightCm?: number;
-  widthCm?: number;
-  status: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import { ArtworkAttributes } from '@/models/Artwork';
 
 // Define creation attributes
 interface ArtworkCreationAttributes

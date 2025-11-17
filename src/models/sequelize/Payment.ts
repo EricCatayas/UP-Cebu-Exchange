@@ -1,15 +1,6 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '@/config/database';
-
-interface PaymentAttributes {
-  id: number;
-  userId: number;
-  amount: number;
-  status: 'Pending' | 'Completed' | 'Failed';
-  paymentMethod: string;
-  createdAt: Date;
-  updatedAt?: Date;
-}
+import { PaymentAttributes } from '@/models/Payment';
 
 interface PaymentCreationAttributes extends Optional<PaymentAttributes, 'id' | 'status' | 'createdAt' | 'updatedAt'> {}
 

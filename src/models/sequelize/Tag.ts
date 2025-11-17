@@ -1,10 +1,6 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '@/config/database';
-
-interface TagAttributes {
-  id: number;
-  name: string;
-}
+import { TagAttributes } from '@/models/Tag';
 
 interface TagCreationAttributes extends Optional<TagAttributes, 'id'> {}
 

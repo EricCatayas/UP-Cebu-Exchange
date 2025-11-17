@@ -1,8 +1,8 @@
-export interface RentalPlan {
+export interface RentalPlanAttributes {
   id: number;
   artworkId: number;
-  durationMonths: number; // e.g., 3, 6, 12
+  durationMonths: number;
   rentalFee: number;
-  createdAt: number;
-  updatedAt: number;
+  createdAt: Date;
+  updatedAt: Date;
 }

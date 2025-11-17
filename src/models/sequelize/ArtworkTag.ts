@@ -1,10 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '@/config/database';
-
-interface ArtworkTagAttributes {
-  artworkId: number;
-  tagId: number;
-}
+import { ArtworkTagAttributes } from '@/models/ArtworkTag';
 
 class ArtworkTag extends Model<ArtworkTagAttributes> implements ArtworkTagAttributes {
   declare artworkId: number;

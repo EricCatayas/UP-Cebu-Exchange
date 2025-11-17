@@ -1,13 +1,6 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '@/config/database';
-
-interface ArtistAttributes {
-  id: number;
-  name: string;
-  biography?: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import { ArtistAttributes } from '@/models/Artist';
 
 // Define creation attributes
 interface ArtistCreationAttributes extends Optional<ArtistAttributes, 'id' | 'biography' | 'createdAt' | 'updatedAt'> {}

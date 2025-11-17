@@ -1,9 +1,10 @@
-export interface User {
+export interface UserAttributes {
   id: number;
   email: string;
   password: string;
   fullName: string;
-  status: "Active" | "Pending" | "Inactive" | "Banned";
+  status: 'Active' | 'Pending' | 'Inactive' | 'Banned';
   createdAt: Date;
+  updatedAt: Date;
   roleId: number;
 }

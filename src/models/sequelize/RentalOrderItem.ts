@@ -1,11 +1,6 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '@/config/database';
-
-interface RentalOrderItemAttributes {
-  id: number;
-  rentalOrderId: number;
-  artworkId: number;
-}
+import { RentalOrderItemAttributes } from '@/models/RentalOrderItem';
 
 interface RentalOrderItemCreationAttributes extends Optional<RentalOrderItemAttributes, 'id'> {}
 

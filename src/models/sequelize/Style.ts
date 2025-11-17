@@ -1,11 +1,6 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '@/config/database';
-
-// Define the Style attributes interface
-interface StyleAttributes {
-  id: number;
-  name: string;
-}
+import { StyleAttributes } from '@/models/Style';
 
 // Define creation attributes
 interface StyleCreationAttributes extends Optional<StyleAttributes, 'id'> {}
