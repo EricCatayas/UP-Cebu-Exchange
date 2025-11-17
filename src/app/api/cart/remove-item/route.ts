@@ -7,12 +7,12 @@ export async function POST(request: Request) {
     if (!currentUser) {
       return new Response(JSON.stringify({ error: 'Authentication required' }), { status: 401 });
     }
-    const { artworkId } = await request.json();
-    if (!artworkId || isNaN(Number(artworkId))) {
-      return new Response(JSON.stringify({ error: 'Valid artworkId is required' }), { status: 400 });
+    const { cartItemId } = await request.json();
+    if (!cartItemId || isNaN(Number(cartItemId))) {
+      return new Response(JSON.stringify({ error: 'Valid cartItemId is required' }), { status: 400 });
     }
 
-    await CartService.removeItem(currentUser.userId, Number(artworkId));
+    await CartService.removeItem(currentUser.userId, Number(cartItemId));
 
     return new Response(JSON.stringify({ success: true }), { status: 201 });
   } catch (error) {

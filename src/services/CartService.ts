@@ -1,4 +1,4 @@
-import { Artwork, Cart, CartItem, RentalPlan } from '@/models/sequelize';
+import { Artwork, ArtworkImage, Cart, CartItem, RentalPlan } from '@/models/sequelize';
 
 class CartService {
   async addItem(userId: number, artworkId: number) {
@@ -12,12 +12,12 @@ class CartService {
     }
   }
 
-  async removeItem(userId: number, artworkId: number) {
+  async removeItem(userId: number, cartItemId: number) {
     const cart = await Cart.findOne({ where: { userId } });
     if (!cart) {
       throw new Error('Cart not found for user');
     }
-    const cartItem = await CartItem.findOne({ where: { cartId: cart.id, artworkId } });
+    const cartItem = await CartItem.findOne({ where: { cartId: cart.id, id: cartItemId } });
     if (!cartItem) {
       throw new Error('Item not found in cart');
     }
@@ -48,6 +48,10 @@ class CartService {
                 {
                   model: RentalPlan,
                   as: 'rentalPlans',
+                },
+                {
+                  model: ArtworkImage,
+                  as: 'images',
                 },
               ],
             },
