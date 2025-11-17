@@ -12,12 +12,12 @@ class CartService {
     }
   }
 
-  async removeItem(userId: number, cartItemId: number) {
+  async removeItem(userId: number, artworkId: number) {
     const cart = await Cart.findOne({ where: { userId } });
     if (!cart) {
       throw new Error('Cart not found for user');
     }
-    const cartItem = await CartItem.findOne({ where: { cartId: cart.id, id: cartItemId } });
+    const cartItem = await CartItem.findOne({ where: { cartId: cart.id, artworkId } });
     if (!cartItem) {
       throw new Error('Item not found in cart');
     }
