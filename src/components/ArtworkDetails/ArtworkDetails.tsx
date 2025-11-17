@@ -1,64 +1,38 @@
 'use client';
 import Link from 'next/link';
+import HeartIcon from '../HeartIcon/HeartIcon';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { ArtworkDTO } from '@/models/Artwork';
 import { getDimension } from '@/lib/artwork';
+import { cartApi } from '@/lib/api/cart';
+import { wishlistApi } from '@/lib/api/wishlist';
 
-function ArtworkDetails({
-  artwork,
-  isInCart,
-  isInWishlist,
-}: {
-  artwork: any;
-  isInCart: boolean;
-  isInWishlist: boolean;
-}) {
+function ArtworkDetails({ artwork }: { artwork: ArtworkDTO }) {
   const router = useRouter();
 
   const artist = artwork.artist;
-  const [inCart, setInCart] = useState(isInCart);
-  const [inWishlist, setInWishlist] = useState(isInWishlist);
+  const [inCart, setInCart] = useState(artwork.isInCart);
+  const [inWishlist, setInWishlist] = useState(artwork.isInWishlist);
 
   const handleNavigateToArtist = () => router.push(`/artists/${artist.id}`);
 
   const handleAddToCart = async () => {
-    fetch('/api/cart/add-item', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ artworkId: artwork.id }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Failed to add item to cart');
-        }
-        console.log('Item added to cart');
-        setInCart(true);
-      })
-      .catch((error) => {
-        console.error('Error adding item to cart:', error);
-      });
+    try {
+      await cartApi.addItem(artwork.id);
+      setInCart(true);
+    } catch (error) {
+      console.error('Error adding item to cart:', error);
+    }
   };
 
   const handleAddToWishlist = async () => {
-    fetch('/api/wishlist/add-item', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ artworkId: artwork.id }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Failed to add item to wishlist');
-        }
-        console.log('Item added to wishlist');
-        setInWishlist(true);
-      })
-      .catch((error) => {
-        console.error('Error adding item to wishlist:', error);
-      });
+    try {
+      await wishlistApi.addItem(artwork.id);
+      setInWishlist(true);
+    } catch (error) {
+      console.error('Error adding item to wishlist:', error);
+    }
   };
 
   return (
@@ -78,7 +52,7 @@ function ArtworkDetails({
       <h1 className="text-4xl font-bold mb-2">{artwork.title}</h1>
 
       {/* Artist */}
-      {artwork.artist && (
+      {artist && (
         <p className="text-lg mb-4">
           By:{' '}
           <span className="font-medium cursor-pointer" onClick={handleNavigateToArtist}>
@@ -159,9 +133,7 @@ function ArtworkDetails({
       {/* Stats */}
       <div className="space-y-3 text-gray-600">
         <div className="flex items-center gap-3">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="red">
-            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-          </svg>
+          <HeartIcon filled={true} />
           <span>125 people have this on their Wishlist</span>
         </div>
         <div className="flex items-center gap-3">
