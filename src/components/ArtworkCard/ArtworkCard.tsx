@@ -1,9 +1,13 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getDimension, getImageUrl } from '@/lib/artwork';
 import './ArtworkCard.css';
+import HeartIcon from '../HeartIcon/HeartIcon';
+import CartIcon from '../CartIcon/CartIcon';
+import { cartApi } from '@/lib/api/cart';
+import { wishlistApi } from '@/lib/api/wishlist';
 
 export default function ArtworkCard({ artwork, displayInfo = true }: { artwork: any; displayInfo?: boolean }) {
   if (!artwork) return null;
@@ -11,9 +15,41 @@ export default function ArtworkCard({ artwork, displayInfo = true }: { artwork: 
   const primaryImageUrl = getImageUrl(artwork);
   const lowestPlan = artwork.rentalPlans ? [...artwork.rentalPlans].sort((a, b) => a.rentalFee - b.rentalFee)[0] : null;
 
+  const [inCart, setInCart] = useState(artwork.isInCart);
+  const [inWishlist, setInWishlist] = useState(artwork.isInWishlist);
+
   const router = useRouter();
+
   const NavigateToArtwork = () => router.push(`/artworks/${artwork.id}`);
   const NavigateToArtist = () => router.push(`/artists/${artwork.artist?.id}`);
+
+  const handleToggleCart = async () => {
+    try {
+      if (inCart) {
+        await cartApi.removeItem(artwork.id);
+        setInCart(false);
+      } else {
+        await cartApi.addItem(artwork.id);
+        setInCart(true);
+      }
+    } catch (error) {
+      console.error('Error toggling cart item:', error);
+    }
+  };
+
+  const handleToggleWishlist = async () => {
+    try {
+      if (inWishlist) {
+        await wishlistApi.removeItem(artwork.id);
+        setInWishlist(false);
+      } else {
+        await wishlistApi.addItem(artwork.id);
+        setInWishlist(true);
+      }
+    } catch (error) {
+      console.error('Error toggling wishlist item:', error);
+    }
+  };
 
   return (
     <div className={`artwork-card status-${artwork.status}`}>
@@ -37,22 +73,11 @@ export default function ArtworkCard({ artwork, displayInfo = true }: { artwork: 
           <div className="right">
             <div className="dimension">{getDimension(artwork)}</div>
             <div className="flex gap-2">
-              <button className="wishlist-btn" title="Add to wishlist" type="button">
-                {/* ...existing SVG... */}
-                <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
-                  <path
-                    fill="currentColor"
-                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-                  />
-                </svg>
+              <button onClick={handleToggleWishlist} title="Add to wishlist" type="button">
+                <HeartIcon filled={inWishlist} />
               </button>
-              <button className="cart-btn" title="Add to cart" type="button">
-                <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
-                  <path
-                    fill="currentColor"
-                    d="M7 4h-2l-1 2v2h2l3.6 7.59-1.35 2.41A2 2 0 0 0 10 20h10v-2H10l1.1-2h7.45a2 2 0 0 0 1.79-1.11L22 9H6.21l-.94-2H7V4Zm3 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm8 1a1 1 0 1 1 2 0 1 1 0 0 1-2 0Z"
-                  />
-                </svg>
+              <button onClick={handleToggleCart} title="Add to cart" type="button">
+                <CartIcon filled={inCart} />
               </button>
             </div>
           </div>
