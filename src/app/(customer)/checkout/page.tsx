@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useCart } from '@/contexts/CartContext';
 import { useRentalOrder } from '@/contexts/RentalOrderContext';
 import { DURATION_OPTIONS, DELIVERY_FEE, DELIVERY_METHODS, PAYMENT_METHODS } from '@/lib/constants';
-import { getDimension, getRentalFee } from '@/lib/artwork';
+import { getDimension, getImageUrl, getRentalFee } from '@/lib/artwork';
 
 function Checkout() {
   const { cartItems, selectedCartItemIds, toggleCartItem, toggleAllCartItems, removeFromCart } = useCart();
@@ -52,6 +52,26 @@ function Checkout() {
 
   const getRentalPlanFee = (item: any) => {
     return getRentalFee(item.artwork, selectedDuration);
+  };
+
+  const handleRemoveCartItem = async (id: number) => {
+    fetch('/api/cart/remove-item', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ cartItemId: id }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Failed to remove item from cart');
+        }
+        console.log('Item removed from cart');
+        removeFromCart(id);
+      })
+      .catch((error) => {
+        console.error('Error removing item from cart:', error);
+      });
   };
 
   const handleCheckout = () => {
@@ -122,64 +142,86 @@ function Checkout() {
           </div>
 
           {/* Select Artworks */}
-          <div className="bg-white border-2 border-gray-300 rounded-lg p-6 shadow-sm">
-            <h2 className="text-xl font-bold mb-4">Select Artworks from Cart</h2>
+          {cartItems.length > 0 ? (
+            <div className="bg-white border-2 border-gray-300 rounded-lg p-6 shadow-sm">
+              <h2 className="text-xl font-bold mb-4">Select Artworks from Cart</h2>
 
-            {/* Select All */}
-            <div className="flex justify-between items-center mb-4 pb-2 border-b">
-              <label className="flex items-center space-x-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={selectedCartItemIds.size === cartItems.length && cartItems.length > 0}
-                  onChange={toggleAllCartItems}
-                  className="w-5 h-5 rounded border-gray-300 cursor-pointer"
-                />
-                <span className="font-semibold">Select All</span>
-              </label>
-              <span className="font-semibold mr-4">Charge</span>
-            </div>
+              {/* Select All */}
+              <div className="flex justify-between items-center mb-4 pb-2 border-b">
+                <label className="flex items-center space-x-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={selectedCartItemIds.size === cartItems.length && cartItems.length > 0}
+                    onChange={toggleAllCartItems}
+                    className="w-5 h-5 rounded border-gray-300 cursor-pointer"
+                  />
+                  <span className="font-semibold">Select All</span>
+                </label>
+                <span className="font-semibold mr-4">Charge</span>
+              </div>
 
-            {/* Artwork List */}
-            <div className="space-y-3">
-              {cartItems.map((item) => (
-                <div
-                  key={item.id}
-                  className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50"
-                >
-                  <div className="flex items-center space-x-4 flex-1">
-                    <input
-                      type="checkbox"
-                      checked={selectedCartItemIds.has(item.id)}
-                      onChange={() => toggleCartItem(item.id)}
-                      className="w-5 h-5 rounded border-gray-300 cursor-pointer"
-                    />
-                    <div
-                      className="w-20 h-20 bg-gray-200 rounded-md flex-shrink-0"
-                      onClick={() => navigateToArtwork(item.artworkId)}
-                    >
-                      <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs cursor-pointer">
-                        Image
+              {/* Artwork List */}
+              <div className="space-y-3">
+                {cartItems.map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50"
+                  >
+                    <div className="flex items-center space-x-4 flex-1">
+                      <input
+                        type="checkbox"
+                        checked={selectedCartItemIds.has(item.id)}
+                        onChange={() => toggleCartItem(item.id)}
+                        className="w-5 h-5 rounded border-gray-300 cursor-pointer"
+                      />
+                      <div
+                        className="w-20 h-20 bg-gray-200 rounded-md flex-shrink-0"
+                        onClick={() => navigateToArtwork(item.artworkId)}
+                      >
+                        {item.artwork.images && item.artwork.images.length > 0 ? (
+                          <img
+                            src={getImageUrl(item.artwork)}
+                            alt={item.artwork.title}
+                            className="w-full h-full object-cover rounded-md cursor-pointer"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs cursor-pointer">
+                            Image
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex-1 cursor-pointer" onClick={() => navigateToArtwork(item.artworkId)}>
+                        <h3 className="font-semibold">{item.artwork.title}</h3>
+                        <p className="text-sm text-gray-600">{getDimension(item.artwork)}</p>
                       </div>
                     </div>
-                    <div className="flex-1 cursor-pointer" onClick={() => navigateToArtwork(item.artworkId)}>
-                      <h3 className="font-semibold">{item.artwork.title}</h3>
-                      <p className="text-sm text-gray-600">{getDimension(item.artwork)}</p>
-                    </div>
+                    <div className="font-semibold text-lg mr-4">₱{getRentalPlanFee(item)}</div>
+                    <button onClick={() => handleRemoveCartItem(item.id)} className="text-red-500 hover:text-red-700">
+                      🗑️
+                    </button>
                   </div>
-                  <div className="font-semibold text-lg mr-4">₱{getRentalPlanFee(item)}</div>
-                  <button onClick={() => removeFromCart(item.id)} className="text-red-500 hover:text-red-700">
-                    🗑️
-                  </button>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
 
-            {/* Subtotal */}
-            <div className="flex justify-between items-center mt-6 pt-4 border-t">
-              <span className="font-semibold text-lg">Subtotal:</span>
-              <span className="font-bold text-xl">₱{subtotal}</span>
+              {/* Subtotal */}
+              <div className="flex justify-between items-center mt-6 pt-4 border-t">
+                <span className="font-semibold text-lg">Subtotal:</span>
+                <span className="font-bold text-xl">₱{subtotal}</span>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="bg-white border-2 border-gray-300 rounded-lg p-6 shadow-sm">
+              <h2 className="text-xl font-bold mb-4">Your cart is empty.</h2>
+              <div className="mt-4">
+                <button
+                  onClick={() => router.push('/artworks')}
+                  className="bg-primary hover:bg-primary-dark text-white font-bold py-2 px-4 rounded-lg transition-colors"
+                >
+                  Browse Artworks
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Delivery Method */}
           <div className="bg-white border-2 border-gray-300 rounded-lg p-6 shadow-sm">
