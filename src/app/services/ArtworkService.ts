@@ -18,6 +18,7 @@ class ArtworkService {
     return await ArtworkRepository.findAll({ offset, limit });
   }
 
+  // TODO:
   async getSimilarArtworks(artworkId: number) {
     return await ArtworkRepository.findAll({ limit: 6 });
   }

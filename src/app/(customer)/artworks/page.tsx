@@ -1,11 +1,10 @@
 // All Artworks
 import React from 'react';
 import ArtworkGrid from '@/components/ArtworkGrid/ArtworkGrid';
-import { sample_artworks } from '@/models/sample-artworks';
-
-function Artworks() {
-  // TODO: Replace with real data
-  const allArtworks = sample_artworks;
+import ArtworkService from '@/app/services/ArtworkService';
+async function Artworks() {
+  // TODO: Pagination, Filtering, Sorting
+  const allArtworks = await ArtworkService.getAllArtworks();
 
   return (
     <div className="container mx-auto px-4 py-8">
