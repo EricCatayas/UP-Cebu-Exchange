@@ -10,8 +10,10 @@ import { getCurrentUser } from '@/lib/auth';
 
 async function ArtworkDetailsPage({ params }: { params: { id: string } }) {
   const id = parseInt((await params).id);
-  // TODO: Replace with real data
-  const artwork = await ArtworkService.getArtworkById(id);
+
+  const currentUser = await getCurrentUser();
+  const artworkService = new ArtworkService(currentUser?.userId);
+  const artwork = await artworkService.getArtworkById(id);
 
   if (!artwork) {
     return (
@@ -21,17 +23,13 @@ async function ArtworkDetailsPage({ params }: { params: { id: string } }) {
     );
   }
 
-  const currentUser = await getCurrentUser();
-  const isInCart = currentUser ? await CartService.isItemInCart(currentUser.userId, id) : false;
-  const isInWishlist = currentUser ? await WishlistService.isItemInWishlist(currentUser.userId, id) : false;
-
-  const artworksFromArtist = await ArtworkService.getArtworksFromArtist(artwork?.artistId || 0);
+  const artworksFromArtist = await artworkService.getArtworksFromArtist(artwork?.artistId || 0);
   const index = artworksFromArtist.findIndex((a) => a.id === artwork.id);
   if (index !== -1) {
     artworksFromArtist.splice(index, 1);
   }
 
-  const similarArtworks = await ArtworkService.getSimilarArtworks(artwork.id);
+  const similarArtworks = await artworkService.getSimilarArtworks(artwork.id);
 
   console.log('Artwork Details:', artwork);
   console.log('Artworks from Artist:', artworksFromArtist);
@@ -50,7 +48,7 @@ async function ArtworkDetailsPage({ params }: { params: { id: string } }) {
         {/* Left Column - Image Gallery */}
         <ArtworkGallery artwork={artwork} />
         {/* Right Column - Details */}
-        <ArtworkDetails artwork={artwork} isInCart={isInCart} isInWishlist={isInWishlist} />
+        <ArtworkDetails artwork={artwork} />
       </div>
 
       {/* Description Section */}
