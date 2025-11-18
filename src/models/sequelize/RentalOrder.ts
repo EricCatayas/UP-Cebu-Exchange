@@ -11,6 +11,7 @@ class RentalOrder extends Model<RentalOrderAttributes, RentalOrderCreationAttrib
   declare paymentId: number;
   declare startDate: Date;
   declare endDate: Date;
+  declare deliveryMethod?: string;
   declare durationMonths: number;
   declare status: 'Pending' | 'Confirmed' | 'Cancelled' | 'Completed';
   declare createdAt: Date;
@@ -78,6 +79,10 @@ RentalOrder.init(
     },
     endDate: {
       type: DataTypes.DATE,
+      allowNull: false,
+    },
+    deliveryMethod: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
     durationMonths: {
