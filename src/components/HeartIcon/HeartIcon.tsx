@@ -12,8 +12,8 @@ export default function HeartIcon({ filled = false, size = 24, className = '' }:
       width={size}
       height={size}
       viewBox="0 0 24 24"
-      fill={filled ? 'red' : 'none'}
-      stroke={filled ? 'red' : 'currentColor'}
+      fill={filled ? '#8E1537' : 'none'}
+      stroke={filled ? '#8E1537' : 'currentColor'}
       strokeWidth={filled ? 0 : 2}
       className={className}
       aria-hidden="true"

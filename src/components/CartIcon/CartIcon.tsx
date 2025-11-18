@@ -12,7 +12,7 @@ export default function CartIcon({ filled = false, size = 24, className = '' }: 
       width={size}
       height={size}
       viewBox="0 0 24 24"
-      fill={filled ? 'red' : 'none'}
+      fill={filled ? '#8E1537' : 'none'}
       stroke={filled ? 'none' : 'currentColor'}
       strokeWidth={2}
       className={className}
