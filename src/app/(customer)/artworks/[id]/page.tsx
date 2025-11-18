@@ -4,8 +4,7 @@ import ArtworkDetails from '@/components/ArtworkDetails/ArtworkDetails';
 import ArtworkGallery from '@/components/ArtworkGallery/ArtworkGallery';
 import ArtworkGrid from '@/components/ArtworkGrid/ArtworkGrid';
 import ArtworkService from '@/services/ArtworkService';
-import CartService from '@/services/CartService';
-import WishlistService from '@/services/WishlistService';
+import HeroBackground from '@/components/HeroBackground/HeroBackground';
 import { getCurrentUser } from '@/lib/auth';
 
 async function ArtworkDetailsPage({ params }: { params: { id: string } }) {
@@ -43,14 +42,17 @@ async function ArtworkDetailsPage({ params }: { params: { id: string } }) {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8 mb-8">
-        {/* Left Column - Image Gallery */}
-        <ArtworkGallery artwork={artwork} />
-        {/* Right Column - Details */}
-        <ArtworkDetails artwork={artwork} />
-      </div>
-
+    <div>
+      <HeroBackground>
+        <div className="container mx-auto px-4 pt-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8 mb-8">
+            {/* Left Column - Image Gallery */}
+            <ArtworkGallery artwork={artwork} />
+            {/* Right Column - Details */}
+            <ArtworkDetails artwork={artwork} />
+          </div>
+        </div>
+      </HeroBackground>
       {/* Description Section */}
       <div className="border-t pt-6">
         <details className="group" open>
