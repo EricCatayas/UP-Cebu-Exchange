@@ -4,7 +4,7 @@ export type RentalOrder = {
   startDate: Date;
   endDate: Date;
   durationMonths: number;
-  status: "Pending" | "Confirmed" | "Cancelled" | "Completed";
+  status: 'Pending' | 'Confirmed' | 'Cancelled' | 'Completed';
   createdAt: Date;
   updatedAt: Date;
 
@@ -18,5 +18,5 @@ export type RentalOrderItem = {
   rentalOrderId: number;
   artworkId: number;
   getRentalFee(): number;
-  getRentalPlan(): number; // if pending { Artwork.RentalPlans.First(r => r.durationMonths === RentalOrder.durationMonths) } else { Where (id === RentalPlanSnapshot.rentalOrderItem) }
+  getRentalPlan(): number;
 };

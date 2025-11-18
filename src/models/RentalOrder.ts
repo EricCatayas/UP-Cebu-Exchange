@@ -10,3 +10,13 @@ export interface RentalOrderAttributes {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface RentalOrderCreateDTO {
+  cartItemIds: number[];
+  durationMonths: number;
+  startDate: string;
+  endDate: string;
+  totalAmount: number;
+  deliveryMethod: string;
+  paymentMethod: string;
+}

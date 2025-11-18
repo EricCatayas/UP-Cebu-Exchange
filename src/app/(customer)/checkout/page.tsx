@@ -6,6 +6,7 @@ import { useCart } from '@/contexts/CartContext';
 import { useRentalOrder } from '@/contexts/RentalOrderContext';
 import { DURATION_OPTIONS, DELIVERY_FEE, DELIVERY_METHODS, PAYMENT_METHODS } from '@/lib/constants';
 import { getDimension, getImageUrl, getRentalFee } from '@/lib/artwork';
+import { rentalOrderApi } from '@/lib/api/rentalOrder';
 
 function Checkout() {
   const { cartItems, selectedCartItemIds, toggleCartItem, toggleAllCartItems, removeFromCart } = useCart();
@@ -74,17 +75,24 @@ function Checkout() {
       });
   };
 
-  const handleCheckout = () => {
-    // TODO: post order data to backend
-    console.log('Checkout:', {
-      selectedDuration,
+  const handleCheckout = async () => {
+    // TODO: post order data to api/rental-order
+    const rentalOrder = {
+      durationMonths: selectedDuration,
       startDate,
       endDate,
-      selectedArtworks: Array.from(selectedCartItemIds),
+      cartItemIds: Array.from(selectedCartItemIds),
       deliveryMethod,
       paymentMethod,
-      total,
-    });
+      totalAmount: total,
+    };
+
+    try {
+      await rentalOrderApi.createRentalOrder(rentalOrder);
+      router.push('/checkout/success');
+    } catch (error) {
+      console.error('Error during checkout:', error);
+    }
   };
 
   return (
@@ -122,6 +130,7 @@ function Checkout() {
                   <input
                     type="date"
                     value={startDate}
+                    min={new Date().toISOString().split('T')[0]}
                     onChange={(e) => setStartDate(e.target.value)}
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
