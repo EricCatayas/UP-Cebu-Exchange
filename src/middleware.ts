@@ -1,6 +1,6 @@
 // ...existing code...
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyToken } from '@/lib/auth';
+import { isAdmin, verifyToken } from '@/lib/auth';
 
 const publicRoutes = [
   '/',
@@ -75,8 +75,8 @@ export async function middleware(request: NextRequest) {
     return redirectToLogin(request, pathname);
   }
 
-  if (isAdminRoute(pathname) && user.roleName?.toLowerCase() !== 'admin') {
-    return NextResponse.redirect(new URL('/customer', request.url));
+  if (isAdminRoute(pathname) && !isAdmin(user)) {
+    return NextResponse.redirect(new URL('/', request.url));
   }
 
   const requestHeaders = new Headers(request.headers);
