@@ -1,25 +1,15 @@
 'use client';
 
 import React, { createContext, useContext, useState } from 'react';
-
-interface RentalPlan {
-  durationMonths: number;
-  rentalFee: number;
-}
-
-interface Artwork {
-  id: number;
-  title: string;
-  heightCm: number;
-  widthCm: number;
-}
+import { ArtworkDTO } from '@/models/Artwork';
+import { RentalPlanDTO } from '@/models/RentalPlan';
 
 export interface CartItem {
   id: number;
   artworkId: number;
-  artwork: Artwork;
+  artwork: ArtworkDTO;
   imageUrl: string;
-  rentalPlans: RentalPlan[];
+  rentalPlans: RentalPlanDTO[];
 }
 
 interface CartContextType {
