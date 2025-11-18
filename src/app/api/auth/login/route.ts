@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { User, Role } from '@/models/sequelize';
-import { verifyPassword, generateToken, setAuthCookie } from '@/lib/auth';
+import { isAdmin, verifyPassword, generateToken, setAuthCookie } from '@/lib/auth';
 
 // TODO: Test API
 export async function POST(request: NextRequest) {
@@ -39,13 +39,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
     }
 
+    const roleName = (user as any).role.name;
+
     // Generate JWT token
     const token = generateToken(
       {
         userId: user.id,
         email: user.email,
         roleId: user.roleId,
-        roleName: (user as any).role.name,
+        roleName: roleName,
       },
       remember
     );
@@ -53,14 +55,35 @@ export async function POST(request: NextRequest) {
     // Set auth cookie
     await setAuthCookie(token, remember);
 
+    let callbackUrl = '/';
+
+    if (isAdmin(user)) {
+      callbackUrl = '/dashboard';
+    } else {
+      // Check for callbackUrl in referer header
+      const referer = request.headers.get('referer');
+      if (referer) {
+        try {
+          const refererUrl = new URL(referer);
+          const refererCallback = refererUrl.searchParams.get('callbackUrl');
+          if (refererCallback) {
+            callbackUrl = refererCallback;
+          }
+        } catch (e) {
+          // Invalid referer URL, ignore
+        }
+      }
+    }
+
     return NextResponse.json({
       message: 'Login successful',
       user: {
         id: user.id,
         email: user.email,
         fullName: user.fullName,
-        roleName: (user as any).role.name,
+        roleName: roleName,
       },
+      callbackUrl,
     });
   } catch (error) {
     console.error('Login error:', error);

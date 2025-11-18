@@ -14,14 +14,13 @@ function Login() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const { success, error } = await login(email, password, remember);
+      const { success, error, callbackUrl } = await login(email, password, remember);
       if (!success) {
         alert(error || 'Login failed');
         return;
       }
-      const rawCallback = searchParams.get('callbackUrl');
-      const callbackUrl = rawCallback && rawCallback.startsWith('/') ? rawCallback : '/';
-      router.push(callbackUrl);
+
+      router.push(callbackUrl || '/');
     } catch (error) {
       console.error('Login failed:', error);
     }

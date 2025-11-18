@@ -58,7 +58,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (response.ok) {
         setUser(data.user);
-        return { success: true };
+        return { success: true, callbackUrl: data.callbackUrl };
       } else {
         return { success: false, error: data.error };
       }
