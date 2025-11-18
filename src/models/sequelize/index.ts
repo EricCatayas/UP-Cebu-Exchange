@@ -42,6 +42,12 @@ const initializeAssociations = () => {
     as: 'addresses',
   });
 
+  // UserAddress belongs to Address
+  UserAddress.belongsTo(Address, {
+    foreignKey: 'addressId',
+    as: 'address',
+  });
+
   // Artist has many Artworks
   Artist.hasMany(Artwork, {
     foreignKey: 'artistId',
