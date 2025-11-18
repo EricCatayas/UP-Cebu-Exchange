@@ -1,7 +1,8 @@
 export interface RentalOrderAttributes {
   id: number;
   userId: number;
-  paymentId?: number;
+  addressId?: number;
+  paymentId: number;
   startDate: Date;
   endDate: Date;
   deliveryMethod?: string;
@@ -19,4 +20,5 @@ export interface RentalOrderCreateDTO {
   totalAmount: number;
   deliveryMethod: string;
   paymentMethod: string;
+  addressId?: number;
 }

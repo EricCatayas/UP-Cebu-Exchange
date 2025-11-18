@@ -512,8 +512,6 @@ export async function seedDatabase() {
         { artworkId: artwork.id, durationMonths: 6, rentalFee: 2000 },
         { artworkId: artwork.id, durationMonths: 12, rentalFee: 3500 },
       ]);
-
-      console.log(`🎨 Created Artwork: ${data.title}`);
     }
   } catch (error) {
     console.error('❌ Error seeding roles:', error);

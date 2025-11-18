@@ -1,23 +1,24 @@
 import sequelize from '@/config/database';
 
 // Import all models (this triggers their Model.init() calls)
-import User from './User';
-import Role from './Role';
+import Address from './Address';
 import Artist from './Artist';
 import Artwork from './Artwork';
-import Address from './Address';
-import Style from './Style';
-import Tag from './Tag';
+import ArtworkImage from './ArtworkImage';
 import ArtworkTag from './ArtworkTag';
 import Cart from './Cart';
 import CartItem from './CartItem';
-import Wishlist from './Wishlist';
-import WishlistItem from './WishlistItem';
-import ArtworkImage from './ArtworkImage';
+import Payment from './Payment';
 import RentalOrder from './RentalOrder';
 import RentalOrderItem from './RentalOrderItem';
 import RentalPlan from './RentalPlan';
-import Payment from './Payment';
+import Role from './Role';
+import Style from './Style';
+import Tag from './Tag';
+import User from './User';
+import UserAddress from './UserAddress';
+import Wishlist from './Wishlist';
+import WishlistItem from './WishlistItem';
 
 // Define associations
 const initializeAssociations = () => {
@@ -33,16 +34,12 @@ const initializeAssociations = () => {
     as: 'users',
   });
 
-  // User has one Address (optional)
-  User.hasOne(Address, {
+  // User has many Address (optional)
+  User.belongsToMany(Address, {
+    through: UserAddress,
     foreignKey: 'userId',
-    as: 'address',
-  });
-
-  // Address belongs to User
-  Address.belongsTo(User, {
-    foreignKey: 'userId',
-    as: 'user',
+    otherKey: 'addressId',
+    as: 'addresses',
   });
 
   // Artist has many Artworks
@@ -184,6 +181,18 @@ const initializeAssociations = () => {
     as: 'user',
   });
 
+  // RentalOrder has one Payment
+  RentalOrder.belongsTo(Payment, {
+    foreignKey: 'paymentId',
+    as: 'payment',
+  });
+
+  // RentalOrder belongs to Address
+  RentalOrder.belongsTo(Address, {
+    foreignKey: 'addressId',
+    as: 'address',
+  });
+
   // RentalOrder has many RentalOrderItems
   RentalOrder.hasMany(RentalOrderItem, {
     foreignKey: 'rentalOrderId',
@@ -200,12 +209,6 @@ const initializeAssociations = () => {
   RentalOrderItem.belongsTo(Artwork, {
     foreignKey: 'artworkId',
     as: 'artwork',
-  });
-
-  // RentalOrder has one Payment
-  RentalOrder.belongsTo(Payment, {
-    foreignKey: 'paymentId',
-    as: 'payment',
   });
 
   // User has many Payments
@@ -227,42 +230,44 @@ initializeAssociations();
 // Export models and sequelize instance
 export {
   sequelize,
-  User,
-  Role,
+  Address,
   Artist,
   Artwork,
-  Address,
-  Style,
-  Tag,
+  ArtworkImage,
   ArtworkTag,
   Cart,
   CartItem,
-  Wishlist,
-  WishlistItem,
-  ArtworkImage,
+  Payment,
   RentalOrder,
   RentalOrderItem,
   RentalPlan,
-  Payment,
+  Role,
+  Style,
+  Tag,
+  User,
+  UserAddress,
+  Wishlist,
+  WishlistItem,
 };
 
 export default {
   sequelize,
-  User,
-  Role,
+  Address,
   Artist,
   Artwork,
-  Address,
-  Style,
-  Tag,
+  ArtworkImage,
   ArtworkTag,
   Cart,
   CartItem,
-  Wishlist,
-  WishlistItem,
-  ArtworkImage,
+  Payment,
   RentalOrder,
   RentalOrderItem,
   RentalPlan,
-  Payment,
+  Role,
+  Style,
+  Tag,
+  User,
+  UserAddress,
+  Wishlist,
+  WishlistItem,
 };

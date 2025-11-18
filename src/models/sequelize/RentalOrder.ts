@@ -3,11 +3,12 @@ import sequelize from '@/config/database';
 import { RentalOrderAttributes } from '@/models/RentalOrder';
 
 interface RentalOrderCreationAttributes
-  extends Optional<RentalOrderAttributes, 'id' | 'status' | 'createdAt' | 'updatedAt'> {}
+  extends Optional<RentalOrderAttributes, 'id' | 'status' | 'addressId' | 'createdAt' | 'updatedAt'> {}
 
 class RentalOrder extends Model<RentalOrderAttributes, RentalOrderCreationAttributes> implements RentalOrderAttributes {
   declare id: number;
   declare userId: number;
+  declare addressId?: number;
   declare paymentId: number;
   declare startDate: Date;
   declare endDate: Date;
@@ -63,15 +64,25 @@ RentalOrder.init(
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE',
     },
-    paymentId: {
+    addressId: {
       type: DataTypes.INTEGER,
       allowNull: true,
+      references: {
+        model: 'addresses',
+        key: 'id',
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'SET NULL',
+    },
+    paymentId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
       references: {
         model: 'payments',
         key: 'id',
       },
       onUpdate: 'CASCADE',
-      onDelete: 'SET NULL',
+      onDelete: 'CASCADE',
     },
     startDate: {
       type: DataTypes.DATE,

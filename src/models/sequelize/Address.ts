@@ -8,15 +8,13 @@ interface AddressCreationAttributes extends Optional<AddressAttributes, 'id' | '
 // Define the Address model class
 class Address extends Model<AddressAttributes, AddressCreationAttributes> implements AddressAttributes {
   declare id: number;
-  declare userId: number;
-  declare street: string;
   declare city: string;
   declare province: string;
   declare postalCode: string;
+  declare addressLine1: string;
+  declare addressLine2?: string;
   declare createdAt: Date;
   declare updatedAt: Date;
-
-  // Association methods will be added here later
 }
 
 // Initialize the Address model
@@ -26,20 +24,6 @@ Address.init(
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
-    },
-    userId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'users',
-        key: 'id',
-      },
-      onUpdate: 'CASCADE',
-      onDelete: 'CASCADE',
-    },
-    street: {
-      type: DataTypes.STRING(255),
-      allowNull: false,
     },
     city: {
       type: DataTypes.STRING(100),
@@ -52,6 +36,14 @@ Address.init(
     postalCode: {
       type: DataTypes.STRING(20),
       allowNull: false,
+    },
+    addressLine1: {
+      type: DataTypes.STRING(255),
+      allowNull: false,
+    },
+    addressLine2: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -69,12 +61,6 @@ Address.init(
     modelName: 'Address',
     tableName: 'addresses',
     timestamps: true,
-    indexes: [
-      {
-        unique: true,
-        fields: ['userId'], // Ensures one address per user
-      },
-    ],
   }
 );
 
