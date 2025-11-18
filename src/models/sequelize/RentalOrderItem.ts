@@ -11,6 +11,7 @@ class RentalOrderItem
   declare id: number;
   declare rentalOrderId: number;
   declare artworkId: number;
+  declare amount: number;
 }
 
 RentalOrderItem.init(
@@ -39,6 +40,10 @@ RentalOrderItem.init(
       },
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE',
+    },
+    amount: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
     },
   },
   {
