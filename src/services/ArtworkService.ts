@@ -1,4 +1,5 @@
 import ArtworkRepository from '@/repositories/ArtworkRepository';
+import WishlistService from './WishlistService';
 import { Cart, CartItem, Wishlist, WishlistItem } from '@/models/sequelize';
 import { ArtworkDTO } from '@/models/Artwork';
 
@@ -12,23 +13,8 @@ class ArtworkService {
   async getAllArtworks(): Promise<ArtworkDTO[]> {
     const allArtworks = await ArtworkRepository.findAll();
 
-    let cartArtworkIds: number[] = [];
-    let wishlistArtworkIds: number[] = [];
-
-    if (this.userId) {
-      // Map to include isInCart and isInWishlist
-      const cart = await Cart.findOne({
-        where: { userId: this.userId },
-        include: [{ model: CartItem, as: 'cartItems' }],
-      });
-      const wishlist = await Wishlist.findOne({
-        where: { userId: this.userId },
-        include: [{ model: WishlistItem, as: 'wishlistItems' }],
-      });
-
-      cartArtworkIds = cart ? cart.cartItems.map((item) => item.artworkId) : [];
-      wishlistArtworkIds = wishlist ? wishlist.wishlistItems.map((item) => item.artworkId) : [];
-    }
+    const cartArtworkIds = await this.getUserCartArtworkIds();
+    const wishlistArtworkIds = await this.getUserWishlistArtworkIds();
 
     return allArtworks.map((artwork) => {
       const artworkDTO: ArtworkDTO = {
@@ -42,21 +28,13 @@ class ArtworkService {
 
   async getArtworkById(id: number): Promise<ArtworkDTO | null> {
     const artwork = await ArtworkRepository.findById(id);
-    let cartArtworkIds: number[] = [];
-    let wishlistArtworkIds: number[] = [];
 
-    if (this.userId && artwork) {
-      const cart = await Cart.findOne({
-        where: { userId: this.userId },
-        include: [{ model: CartItem, as: 'cartItems' }],
-      });
-      const wishlist = await Wishlist.findOne({
-        where: { userId: this.userId },
-        include: [{ model: WishlistItem, as: 'wishlistItems' }],
-      });
-      cartArtworkIds = cart ? cart.cartItems.map((item) => item.artworkId) : [];
-      wishlistArtworkIds = wishlist ? wishlist.wishlistItems.map((item) => item.artworkId) : [];
+    if (!artwork) {
+      return null;
     }
+
+    const cartArtworkIds = await this.getUserCartArtworkIds();
+    const wishlistArtworkIds = await this.getUserWishlistArtworkIds();
 
     return artwork
       ? ({
@@ -71,6 +49,26 @@ class ArtworkService {
     return await ArtworkRepository.findAll({ where: { artistId } });
   }
 
+  async getUserWishlistArtworks(): Promise<ArtworkDTO[]> {
+    if (!this.userId) {
+      return [];
+    }
+
+    const wishlistItems = await WishlistService.getWishlistItems(this.userId);
+
+    const cartArtworkIds = await this.getUserCartArtworkIds();
+
+    return wishlistItems.map((item) => {
+      const artwork = {
+        ...item.artwork,
+        isInCart: cartArtworkIds.includes(item.artwork.id),
+        isInWishlist: true,
+      } as ArtworkDTO;
+
+      return artwork;
+    });
+  }
+
   async getPaginatedArtworks(page: number, limit: number) {
     const offset = (page - 1) * limit;
     return await ArtworkRepository.findAll({ offset, limit });
@@ -79,6 +77,24 @@ class ArtworkService {
   // TODO:
   async getSimilarArtworks(artworkId: number) {
     return await ArtworkRepository.findAll({ limit: 6 });
+  }
+
+  private async getUserCartArtworkIds() {
+    if (!this.userId) return [];
+    const cart = await Cart.findOne({
+      where: { userId: this.userId },
+      include: [{ model: CartItem, as: 'cartItems' }],
+    });
+    return cart ? cart.cartItems.map((item) => item.artworkId) : [];
+  }
+
+  private async getUserWishlistArtworkIds() {
+    if (!this.userId) return [];
+    const wishlist = await Wishlist.findOne({
+      where: { userId: this.userId },
+      include: [{ model: WishlistItem, as: 'wishlistItems' }],
+    });
+    return wishlist ? wishlist.wishlistItems.map((item) => item.artworkId) : [];
   }
 }
 

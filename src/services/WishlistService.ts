@@ -50,16 +50,7 @@ class WishlistService {
             {
               model: Artwork,
               as: 'artwork',
-              include: [
-                {
-                  model: RentalPlan,
-                  as: 'rentalPlans',
-                },
-                {
-                  model: ArtworkImage,
-                  as: 'images',
-                },
-              ],
+              include: ['artist', 'tags', 'style', 'rentalPlans', 'images'],
             },
           ],
         },
