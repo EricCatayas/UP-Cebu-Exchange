@@ -80,11 +80,12 @@ export const getCurrentUser = async (): Promise<JWTPayload | null> => {
   return verifyToken(token);
 };
 
-// Role checking utilities
 export const isAdmin = (user: JWTPayload | User | null): boolean => {
-  return ADMIN_ROLES.includes(user?.roleName?.toLowerCase() || '');
+  const roleName = user?.roleName?.toLowerCase() || user?.role?.name?.toLowerCase();
+  return ADMIN_ROLES.includes(roleName || '');
 };
 
 export const isCustomer = (user: JWTPayload | User | null): boolean => {
-  return user?.roleName?.toLowerCase() === USER_ROLE.CUSTOMER.toLowerCase();
+  const roleName = user?.roleName?.toLowerCase() || user?.role?.name?.toLowerCase();
+  return roleName === USER_ROLE.CUSTOMER.toLowerCase();
 };
