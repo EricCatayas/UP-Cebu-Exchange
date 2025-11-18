@@ -8,3 +8,5 @@ export interface AddressAttributes {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface AddressDTO extends AddressAttributes {}
