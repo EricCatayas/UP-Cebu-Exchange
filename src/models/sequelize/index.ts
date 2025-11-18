@@ -17,7 +17,6 @@ import ArtworkImage from './ArtworkImage';
 import RentalOrder from './RentalOrder';
 import RentalOrderItem from './RentalOrderItem';
 import RentalPlan from './RentalPlan';
-import RentalPlanSnapshot from './RentalPlanSnapshot';
 import Payment from './Payment';
 
 // Define associations
@@ -203,16 +202,6 @@ const initializeAssociations = () => {
     as: 'artwork',
   });
 
-  RentalOrderItem.hasOne(RentalPlanSnapshot, {
-    foreignKey: 'rentalOrderItemId',
-    as: 'rentalPlanSnapshot',
-  });
-
-  RentalPlanSnapshot.belongsTo(RentalOrderItem, {
-    foreignKey: 'rentalOrderItemId',
-    as: 'rentalOrderItem',
-  });
-
   // RentalOrder has one Payment
   RentalOrder.belongsTo(Payment, {
     foreignKey: 'paymentId',
@@ -254,7 +243,6 @@ export {
   RentalOrder,
   RentalOrderItem,
   RentalPlan,
-  RentalPlanSnapshot,
   Payment,
 };
 
@@ -276,6 +264,5 @@ export default {
   RentalOrder,
   RentalOrderItem,
   RentalPlan,
-  RentalPlanSnapshot,
   Payment,
 };
