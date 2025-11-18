@@ -9,7 +9,7 @@ class Payment extends Model<PaymentAttributes, PaymentCreationAttributes> implem
   declare userId: number;
   declare amount: number;
   declare status: 'Pending' | 'Completed' | 'Failed';
-  declare paymentMethod: string;
+  declare method: string;
   declare createdAt: Date;
 }
 
@@ -42,7 +42,7 @@ Payment.init(
       allowNull: false,
       defaultValue: 'Pending',
     },
-    paymentMethod: {
+    method: {
       type: DataTypes.STRING(50),
       allowNull: false,
     },

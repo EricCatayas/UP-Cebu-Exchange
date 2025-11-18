@@ -3,7 +3,7 @@ export interface PaymentAttributes {
   userId: number;
   amount: number;
   status: 'Pending' | 'Completed' | 'Failed';
-  paymentMethod: string;
+  method: string;
   createdAt: Date;
   updatedAt?: Date;
 }
