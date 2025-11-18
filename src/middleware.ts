@@ -6,12 +6,14 @@ const publicRoutes = [
   '/',
   '/about',
   '/artworks',
+  '/artists',
   '/forgot-password',
   '/login',
   '/privacy-policy',
   '/register',
   '/reset-password',
   '/terms-and-conditions',
+  '/verify-email',
   // api routes
   '/api/auth/login',
   '/api/auth/register',
@@ -21,16 +23,7 @@ const publicRoutes = [
   '/api/auth/session',
 ];
 
-const adminRoutes = [
-  '/admin-login',
-  '/dashboard',
-  '/inventory',
-  '/notifications',
-  '/orders',
-  '/reports',
-  '/themes',
-  '/users',
-];
+const adminRoutes = ['/dashboard', '/inventory', '/notifications', '/orders', '/reports', '/themes', '/users'];
 
 function isAdminRoute(pathname: string): boolean {
   return adminRoutes.some((route) => pathname === route || pathname.startsWith(route + '/'));
