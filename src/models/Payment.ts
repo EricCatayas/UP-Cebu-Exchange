@@ -7,3 +7,5 @@ export interface PaymentAttributes {
   createdAt: Date;
   updatedAt?: Date;
 }
+
+export interface PaymentDTO extends PaymentAttributes {}

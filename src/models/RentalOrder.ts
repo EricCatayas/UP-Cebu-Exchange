@@ -1,3 +1,8 @@
+import { AddressDTO } from '@/models/Address';
+import { PaymentDTO } from '@/models/Payment';
+import { RentalOrderItemDTO } from '@/models/RentalOrderItem';
+import { UserDTO } from '@/models/User';
+
 export interface RentalOrderAttributes {
   id: number;
   userId: number;
@@ -10,6 +15,13 @@ export interface RentalOrderAttributes {
   status: 'Pending' | 'Confirmed' | 'Cancelled' | 'Completed';
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface RentalOrderDTO extends RentalOrderAttributes {
+  address?: AddressDTO;
+  payment?: PaymentDTO;
+  user?: UserDTO;
+  rentalOrderItems?: RentalOrderItemDTO[];
 }
 
 export interface RentalOrderCreateDTO {

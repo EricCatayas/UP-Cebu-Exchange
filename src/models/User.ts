@@ -8,3 +8,5 @@ export interface UserAttributes {
   updatedAt: Date;
   roleId: number;
 }
+
+export interface UserDTO extends Omit<UserAttributes, 'password'> {}
