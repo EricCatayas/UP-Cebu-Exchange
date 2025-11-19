@@ -92,13 +92,16 @@ export async function seedDatabase() {
         widthCm: 60,
         tags: ['Light', 'Soft Tones', 'Minimalism', 'Calm'],
         imageUrls: [
-          { url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274796/artwork2_exnb9a.png', isPrimary: true },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274796/artwork2_exnb9a.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518590/whispersofdawn_szpx02.jpg',
+            isPrimary: true,
+          },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518590/whispersofdawn_szpx02.jpg',
             isPrimary: false,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274796/artwork2_exnb9a.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518590/whispersofdawn_szpx02.jpg',
             isPrimary: false,
           },
         ],
@@ -116,15 +119,15 @@ export async function seedDatabase() {
         tags: ['Landscape', 'Fields', 'Sunset', 'Warm Colors'],
         imageUrls: [
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274804/artwork13_ppj9q3.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518590/goldenfields_egmfck.jpg',
             isPrimary: true,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274804/artwork13_ppj9q3.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518590/goldenfields_egmfck.jpg',
             isPrimary: false,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274804/artwork13_ppj9q3.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518590/goldenfields_egmfck.jpg',
             isPrimary: false,
           },
         ],
@@ -141,9 +144,18 @@ export async function seedDatabase() {
         widthCm: 70,
         tags: ['Abstract', 'Blue Palette', 'Emotion', 'Texture'],
         imageUrls: [
-          { url: 'https://res.cloudinary.com/placeholder/melany1_primary.jpg', isPrimary: true },
-          { url: 'https://res.cloudinary.com/placeholder/melany1_img2.jpg', isPrimary: false },
-          { url: 'https://res.cloudinary.com/placeholder/melany1_img3.jpg', isPrimary: false },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518589/echoesinblue_zkavxf.png',
+            isPrimary: true,
+          },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518589/echoesinblue_zkavxf.png',
+            isPrimary: false,
+          },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518589/echoesinblue_zkavxf.png',
+            isPrimary: false,
+          },
         ],
       },
 
@@ -159,15 +171,15 @@ export async function seedDatabase() {
         tags: ['Expressionism', 'Urban Life', 'Bold Colors', 'Humanity'],
         imageUrls: [
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274802/artwork12_ldawhy.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518589/voicesofthestreet_uz4fkt.png',
             isPrimary: true,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274802/artwork12_ldawhy.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518589/voicesofthestreet_uz4fkt.png',
             isPrimary: false,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274802/artwork12_ldawhy.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518589/voicesofthestreet_uz4fkt.png',
             isPrimary: false,
           },
         ],
@@ -185,15 +197,15 @@ export async function seedDatabase() {
         tags: ['Watercolor', 'Nature', 'Lake', 'Tranquil'],
         imageUrls: [
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274801/artwork11_ff3ilz.pngjpg',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518588/stillwaters_xfzp4h.png',
             isPrimary: true,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274801/artwork11_ff3ilz.pngjpg',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518588/stillwaters_xfzp4h.png',
             isPrimary: false,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274801/artwork11_ff3ilz.pngjpg',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518588/stillwaters_xfzp4h.png',
             isPrimary: false,
           },
         ],
@@ -211,15 +223,15 @@ export async function seedDatabase() {
         tags: ['Neon', 'Cityscape', 'Modern', 'Color Pop'],
         imageUrls: [
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274801/artwork10_pbptsq.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518590/electricmirage_ca9knb.jpg',
             isPrimary: true,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274801/artwork10_pbptsq.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518590/electricmirage_ca9knb.jpg',
             isPrimary: false,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274801/artwork10_pbptsq.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518590/electricmirage_ca9knb.jpg',
             isPrimary: false,
           },
         ],
@@ -236,13 +248,16 @@ export async function seedDatabase() {
         widthCm: 50,
         tags: ['Flowers', 'Botanical', 'Realism', 'Spring'],
         imageUrls: [
-          { url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274801/artwork9_usefgq.png', isPrimary: true },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274801/artwork9_usefgq.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518591/petalsofspring_jce7mr.jpg',
+            isPrimary: true,
+          },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518591/petalsofspring_jce7mr.jpg',
             isPrimary: false,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274801/artwork9_usefgq.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518591/petalsofspring_jce7mr.jpg',
             isPrimary: false,
           },
         ],
@@ -259,13 +274,16 @@ export async function seedDatabase() {
         widthCm: 80,
         tags: ['Surreal', 'Dreamlike', 'Sky', 'Fantasy'],
         imageUrls: [
-          { url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274800/artwork8_aqwm1m.png', isPrimary: true },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274800/artwork8_aqwm1m.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518590/betweentwoworlds_n7mjg6.png',
+            isPrimary: true,
+          },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518590/betweentwoworlds_n7mjg6.png',
             isPrimary: false,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274800/artwork8_aqwm1m.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518590/betweentwoworlds_n7mjg6.png',
             isPrimary: false,
           },
         ],
@@ -282,13 +300,13 @@ export async function seedDatabase() {
         widthCm: 40,
         tags: ['Minimalism', 'Line Art', 'Soft Tones', 'Modern'],
         imageUrls: [
-          { url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274797/artwork7_xnda0x.png', isPrimary: true },
+          { url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518589/quiet_hciqmo.png', isPrimary: true },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274797/artwork7_xnda0x.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518589/quiet_hciqmo.png',
             isPrimary: false,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274797/artwork7_xnda0x.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518589/quiet_hciqmo.png',
             isPrimary: false,
           },
         ],
@@ -305,13 +323,16 @@ export async function seedDatabase() {
         widthCm: 55,
         tags: ['Culture', 'Symbolism', 'Filipino', 'Heritage'],
         imageUrls: [
-          { url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274797/artwork7_xnda0x.png', isPrimary: true },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274797/artwork7_xnda0x.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518589/rootsofhome_m3fkmi.png',
+            isPrimary: true,
+          },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518589/rootsofhome_m3fkmi.png',
             isPrimary: false,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274797/artwork7_xnda0x.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518589/rootsofhome_m3fkmi.png',
             isPrimary: false,
           },
         ],
@@ -328,13 +349,16 @@ export async function seedDatabase() {
         widthCm: 60,
         tags: ['Wildlife', 'Animals', 'Realism', 'Nature'],
         imageUrls: [
-          { url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274797/artwork5_dpdghu.png', isPrimary: true },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274797/artwork5_dpdghu.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518590/graceofthewild_z74ycn.png',
+            isPrimary: true,
+          },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518590/graceofthewild_z74ycn.png',
             isPrimary: false,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274797/artwork5_dpdghu.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518590/graceofthewild_z74ycn.png',
             isPrimary: false,
           },
         ],
@@ -374,13 +398,16 @@ export async function seedDatabase() {
         widthCm: 45,
         tags: ['Whimsical', 'Pastel', 'Illustration', 'Meadow'],
         imageUrls: [
-          { url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274797/artwork6_rqftrl.png', isPrimary: true },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274797/artwork6_rqftrl.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518588/dreamtimemeadow_fceyuu.png',
+            isPrimary: true,
+          },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518588/dreamtimemeadow_fceyuu.png',
             isPrimary: false,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274797/artwork6_rqftrl.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518588/dreamtimemeadow_fceyuu.png',
             isPrimary: false,
           },
         ],
@@ -397,13 +424,16 @@ export async function seedDatabase() {
         widthCm: 75,
         tags: ['Storm', 'Sky', 'Landscape', 'Drama'],
         imageUrls: [
-          { url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274797/artwork1_p8nfna.png', isPrimary: true },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274797/artwork1_p8nfna.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518590/tempestrising_qszt26.png',
+            isPrimary: true,
+          },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518590/tempestrising_qszt26.png',
             isPrimary: false,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274797/artwork1_p8nfna.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518590/tempestrising_qszt26.png',
             isPrimary: false,
           },
         ],
@@ -420,15 +450,15 @@ export async function seedDatabase() {
         tags: ['Minimalist', 'Calm', 'Soft Tones', 'Abstract'],
         imageUrls: [
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274796/artwork14_sd65hi.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518589/quiethorizon_jqisy2.png',
             isPrimary: true,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274796/artwork14_sd65hi.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518589/quiethorizon_jqisy2.png',
             isPrimary: false,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274796/artwork14_sd65hi.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518589/quiethorizon_jqisy2.png',
             isPrimary: false,
           },
         ],
@@ -444,13 +474,16 @@ export async function seedDatabase() {
         widthCm: 70,
         tags: ['Surreal', 'Dreamscape', 'Fantasy', 'Conceptual'],
         imageUrls: [
-          { url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274796/artwork3_ysropz.png', isPrimary: true },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274796/artwork3_ysropz.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518589/sleepinggarden_vca3ph.png',
+            isPrimary: true,
+          },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518589/sleepinggarden_vca3ph.png',
             isPrimary: false,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274796/artwork3_ysropz.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518589/sleepinggarden_vca3ph.png',
             isPrimary: false,
           },
         ],
