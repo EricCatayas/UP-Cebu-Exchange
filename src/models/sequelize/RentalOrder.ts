@@ -3,7 +3,7 @@ import sequelize from '@/config/database';
 import { RentalOrderAttributes } from '@/models/RentalOrder';
 
 interface RentalOrderCreationAttributes
-  extends Optional<RentalOrderAttributes, 'id' | 'status' | 'addressId' | 'createdAt' | 'updatedAt'> {}
+  extends Optional<RentalOrderAttributes, 'id' | 'status' | 'createdAt' | 'updatedAt'> {}
 
 class RentalOrder extends Model<RentalOrderAttributes, RentalOrderCreationAttributes> implements RentalOrderAttributes {
   declare id: number;

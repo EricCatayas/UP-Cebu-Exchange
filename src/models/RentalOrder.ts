@@ -32,5 +32,5 @@ export interface RentalOrderCreateDTO {
   totalAmount: number;
   deliveryMethod: string;
   paymentMethod: string;
-  addressId?: number;
+  addressId: number;
 }

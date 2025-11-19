@@ -13,7 +13,6 @@ import { rentalOrderApi } from '@/lib/api/rentalOrder';
 function Checkout() {
   const { cartItems, selectedCartItemIds, toggleCartItem, toggleAllCartItems, removeFromCart } = useCart();
   const { address } = useUserAddress();
-  const [orderAddress, setOrderAddress] = useState<AddressDTO | undefined>(address);
 
   const {
     selectedDuration,
@@ -30,15 +29,6 @@ function Checkout() {
     subtotal,
     total,
   } = useRentalOrder();
-
-  useEffect(() => {
-    if (deliveryMethod === DELIVERY_METHOD.DELIVERY) {
-      setOrderAddress(address);
-    } else if (deliveryMethod === DELIVERY_METHOD.PICKUP) {
-      setOrderAddress(undefined);
-      return;
-    }
-  }, [deliveryMethod, address]);
 
   const router = useRouter();
 
@@ -57,15 +47,13 @@ function Checkout() {
   };
 
   const canCheckout = useMemo(() => {
-    return selectedCartItemIds.size > 0 || !contractSigned;
+    return selectedCartItemIds.size > 0 && contractSigned;
   }, [selectedCartItemIds, contractSigned]);
 
   const canSignContract = useMemo(() => {
-    if (deliveryMethod === DELIVERY_METHOD.DELIVERY && !orderAddress) {
-      return false;
-    }
-    return selectedCartItemIds.size > 0;
-  }, [selectedCartItemIds, deliveryMethod, orderAddress]);
+    return selectedCartItemIds.size > 0 && address !== null && address !== undefined;
+  }, [selectedCartItemIds, address]);
+
   const navigateToArtwork = (artworkId: number) => {
     router.push(`/artworks/${artworkId}`);
   };
@@ -103,7 +91,6 @@ function Checkout() {
   };
 
   const handleCheckout = async () => {
-    // TODO: post order data to api/rental-order
     const rentalOrder = {
       durationMonths: selectedDuration,
       startDate,
@@ -112,7 +99,7 @@ function Checkout() {
       deliveryMethod,
       paymentMethod,
       totalAmount: total,
-      addressId: orderAddress?.id,
+      addressId: address?.id,
     };
 
     try {
@@ -285,32 +272,30 @@ function Checkout() {
                 corporis minus!
               </p>
             </div>
-            {deliveryMethod === DELIVERY_METHOD.DELIVERY && address && (
-              <div className="mt-6 pt-4 border-t">
-                <span className="font-semibold text-lg">Delivery Address:</span>
-                <div className="mt-2 text-gray-700">
-                  <p>{address.addressLine1}</p>
-                  {address.addressLine2 && <p>{address.addressLine2}</p>}
-                  <p>
-                    {address.city}, {address.province}, {address.postalCode}
-                  </p>
-                  <button onClick={navigateToAddress} className="text-blue-600 hover:underline mt-2">
-                    Edit Address
-                  </button>
-                </div>
+            <div className="mt-6 pt-4 border-t">
+              <span className="font-semibold text-lg">Customer Address:</span>
+              <div className="mt-2 text-gray-700">
+                {address ? (
+                  <>
+                    <p>{address.addressLine1}</p>
+                    {address.addressLine2 && <p>{address.addressLine2}</p>}
+                    <p>
+                      {address.city}, {address.province}, {address.postalCode}
+                    </p>
+                    <button onClick={navigateToAddress} className="text-blue-600 hover:underline mt-2">
+                      Edit Address
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <p>Address is required</p>
+                    <button onClick={navigateToAddress} className="text-blue-600 hover:underline mt-2">
+                      Add Address
+                    </button>
+                  </>
+                )}
               </div>
-            )}
-            {deliveryMethod === DELIVERY_METHOD.DELIVERY && !address && (
-              <div className="mt-6 pt-4 border-t">
-                <span className="font-semibold text-lg">Delivery Address:</span>
-                <div className="mt-2 text-gray-700">
-                  <p>No address found.</p>
-                  <button onClick={navigateToAddress} className="text-blue-600 hover:underline mt-2">
-                    Add Address
-                  </button>
-                </div>
-              </div>
-            )}
+            </div>
           </div>
 
           {/* Payment Method */}
