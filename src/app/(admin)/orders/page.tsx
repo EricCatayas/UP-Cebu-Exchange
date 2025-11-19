@@ -8,16 +8,16 @@ async function OrdersPage() {
   const formattedOrders = orders.map((order) => ({
     id: order.id,
     userId: order.userId,
-    userName: (order as any).user?.fullName || 'N/A',
-    userEmail: (order as any).user?.email || 'N/A',
+    userName: order.user?.fullName || 'N/A',
+    userEmail: order.user?.email || 'N/A',
     status: order.status,
     startDate: order.startDate,
     endDate: order.endDate,
     deliveryMethod: order.deliveryMethod || 'N/A',
     durationMonths: order.durationMonths,
-    paymentAmount: (order as any).payment?.amount || '0.00',
-    paymentStatus: (order as any).payment?.status || 'Pending',
-    paymentMethod: (order as any).payment?.method || 'N/A',
+    paymentAmount: order.payment?.amount || '0.00',
+    paymentStatus: order.payment?.status || 'Pending',
+    paymentMethod: order.payment?.method || 'N/A',
     createdAt: order.createdAt,
   }));
 

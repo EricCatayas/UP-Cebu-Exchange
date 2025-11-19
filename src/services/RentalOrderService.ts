@@ -1,7 +1,8 @@
+import { RentalOrderDTO } from '@/models/RentalOrder';
 import { Address, Artwork, RentalOrder, RentalOrderItem, User, Payment, ArtworkImage } from '@/models/sequelize';
 
 export default class RentalOrderService {
-  async getAllOrders() {
+  async getAllOrders(): Promise<RentalOrderDTO[]> {
     const orders = await RentalOrder.findAll({
       include: [
         {
@@ -20,7 +21,7 @@ export default class RentalOrderService {
     return orders.map((order) => order.toJSON());
   }
 
-  async getOrderDetails(orderId: number) {
+  async getOrderDetails(orderId: number): Promise<RentalOrderDTO | null> {
     const order = await RentalOrder.findOne({
       where: { id: orderId },
       include: [
