@@ -11,7 +11,7 @@ class AddressService {
         },
       ],
     });
-    return userAddress?.address;
+    return userAddress?.toJSON().address;
   }
 }
 
