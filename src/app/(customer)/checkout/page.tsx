@@ -70,20 +70,21 @@ function Checkout() {
     return getRentalFee(item.artwork, selectedDuration);
   };
 
-  const handleRemoveCartItem = async (id: number) => {
-    fetch('/api/cart/remove-item', {
-      method: 'POST',
+  const handleRemoveCartItem = async (cartItem: any) => {
+    const artworkId = cartItem.artworkId;
+    fetch('/api/cart', {
+      method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ cartItemId: id }),
+      body: JSON.stringify({ artworkId }),
     })
       .then((response) => {
         if (!response.ok) {
           throw new Error('Failed to remove item from cart');
         }
         console.log('Item removed from cart');
-        removeFromCart(id);
+        removeFromCart(cartItem.id);
       })
       .catch((error) => {
         console.error('Error removing item from cart:', error);
@@ -103,8 +104,8 @@ function Checkout() {
     };
 
     try {
-      await rentalOrderApi.createRentalOrder(rentalOrder);
-      router.push('/checkout/success');
+      const orderId = await rentalOrderApi.createRentalOrder(rentalOrder);
+      router.push(`/checkout/success/${orderId}`);
     } catch (error) {
       console.error('Error during checkout:', error);
     }
@@ -220,7 +221,7 @@ function Checkout() {
                       </div>
                     </div>
                     <div className="font-semibold text-lg mr-4">₱{getRentalPlanFee(item)}</div>
-                    <button onClick={() => handleRemoveCartItem(item.id)} className="text-red-500 hover:text-red-700">
+                    <button onClick={() => handleRemoveCartItem(item)} className="text-red-500 hover:text-red-700">
                       🗑️
                     </button>
                   </div>
