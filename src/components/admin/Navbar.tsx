@@ -37,7 +37,7 @@ const Navbar: React.FC = () => {
   return (
     <nav className="sticky top-0 left-0 right-0 z-50 bg-white shadow-sm">
       <div className="container mx-auto px-4 py-2 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Admin Panel</h1>
+        <h1 className="text-2xl font-bold">{''}</h1>
         <div className="relative" ref={accountRef}>
           <button
             type="button"
