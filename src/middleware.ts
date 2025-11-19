@@ -23,7 +23,16 @@ const publicRoutes = [
   '/api/auth/session',
 ];
 
-const adminRoutes = ['/dashboard', '/inventory', '/notifications', '/orders', '/reports', '/themes', '/users'];
+const adminRoutes = [
+  '/login',
+  '/dashboard',
+  '/inventory',
+  '/notifications',
+  '/orders',
+  '/reports',
+  '/themes',
+  '/users',
+];
 
 function isAdminRoute(pathname: string): boolean {
   return adminRoutes.some((route) => pathname === route || pathname.startsWith(route + '/'));
@@ -70,6 +79,10 @@ export async function middleware(request: NextRequest) {
 
   if (isAdminRoute(pathname) && !isAdmin(user)) {
     return NextResponse.redirect(new URL('/', request.url));
+  }
+
+  if (isAdmin(user) && !isAdminRoute(pathname)) {
+    return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
   const requestHeaders = new Headers(request.headers);
