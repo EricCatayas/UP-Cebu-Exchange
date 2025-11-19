@@ -4,12 +4,16 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/contexts/CartContext';
 import { useRentalOrder } from '@/contexts/RentalOrderContext';
-import { DURATION_OPTIONS, DELIVERY_FEE, DELIVERY_METHODS, PAYMENT_METHODS } from '@/lib/constants';
+import { useUserAddress } from '@/contexts/UserAddressContext';
+import { AddressDTO } from '@/models/Address';
+import { DURATION_OPTIONS, DELIVERY_FEE, DELIVERY_METHODS, PAYMENT_METHODS, DELIVERY_METHOD } from '@/lib/constants';
 import { getDimension, getImageUrl, getRentalFee } from '@/lib/artwork';
 import { rentalOrderApi } from '@/lib/api/rentalOrder';
 
 function Checkout() {
   const { cartItems, selectedCartItemIds, toggleCartItem, toggleAllCartItems, removeFromCart } = useCart();
+  const { address } = useUserAddress();
+  const [orderAddress, setOrderAddress] = useState<AddressDTO | undefined>(address);
 
   const {
     selectedDuration,
@@ -27,6 +31,15 @@ function Checkout() {
     total,
   } = useRentalOrder();
 
+  useEffect(() => {
+    if (deliveryMethod === DELIVERY_METHOD.DELIVERY) {
+      setOrderAddress(address);
+    } else if (deliveryMethod === DELIVERY_METHOD.PICKUP) {
+      setOrderAddress(undefined);
+      return;
+    }
+  }, [deliveryMethod, address]);
+
   const router = useRouter();
 
   const deliveryMethods = DELIVERY_METHODS;
@@ -43,12 +56,26 @@ function Checkout() {
     });
   };
 
+  const canCheckout = useMemo(() => {
+    return selectedCartItemIds.size > 0 || !contractSigned;
+  }, [selectedCartItemIds, contractSigned]);
+
+  const canSignContract = useMemo(() => {
+    if (deliveryMethod === DELIVERY_METHOD.DELIVERY && !orderAddress) {
+      return false;
+    }
+    return selectedCartItemIds.size > 0;
+  }, [selectedCartItemIds, deliveryMethod, orderAddress]);
   const navigateToArtwork = (artworkId: number) => {
     router.push(`/artworks/${artworkId}`);
   };
 
   const navigateToContract = () => {
     router.push('/checkout/rental-agreement');
+  };
+
+  const navigateToAddress = () => {
+    router.push('/checkout/address');
   };
 
   const getRentalPlanFee = (item: any) => {
@@ -85,6 +112,7 @@ function Checkout() {
       deliveryMethod,
       paymentMethod,
       totalAmount: total,
+      addressId: orderAddress?.id,
     };
 
     try {
@@ -257,6 +285,32 @@ function Checkout() {
                 corporis minus!
               </p>
             </div>
+            {deliveryMethod === DELIVERY_METHOD.DELIVERY && address && (
+              <div className="mt-6 pt-4 border-t">
+                <span className="font-semibold text-lg">Delivery Address:</span>
+                <div className="mt-2 text-gray-700">
+                  <p>{address.addressLine1}</p>
+                  {address.addressLine2 && <p>{address.addressLine2}</p>}
+                  <p>
+                    {address.city}, {address.province}, {address.postalCode}
+                  </p>
+                  <button onClick={navigateToAddress} className="text-blue-600 hover:underline mt-2">
+                    Edit Address
+                  </button>
+                </div>
+              </div>
+            )}
+            {deliveryMethod === DELIVERY_METHOD.DELIVERY && !address && (
+              <div className="mt-6 pt-4 border-t">
+                <span className="font-semibold text-lg">Delivery Address:</span>
+                <div className="mt-2 text-gray-700">
+                  <p>No address found.</p>
+                  <button onClick={navigateToAddress} className="text-blue-600 hover:underline mt-2">
+                    Add Address
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Payment Method */}
@@ -335,7 +389,7 @@ function Checkout() {
             {contractSigned ? (
               <button
                 onClick={handleCheckout}
-                disabled={selectedCartItemIds.size === 0}
+                disabled={!canCheckout}
                 className="w-full bg-primary hover:bg-primary-dark disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-lg transition-colors flex items-center justify-center space-x-2"
               >
                 <span>CHECKOUT</span>
@@ -344,7 +398,7 @@ function Checkout() {
             ) : (
               <button
                 onClick={navigateToContract}
-                disabled={selectedCartItemIds.size === 0}
+                disabled={!canSignContract}
                 className="w-full bg-primary hover:bg-primary-dark disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-lg transition-colors flex items-center justify-center space-x-2"
               >
                 <span>SIGN CONTRACT</span>
