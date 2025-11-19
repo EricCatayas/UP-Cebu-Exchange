@@ -65,4 +65,48 @@ export default class RentalOrderService {
 
     return order?.toJSON() || null;
   }
+
+  async getUserOrderDetails(userId: number, orderId: number): Promise<RentalOrderDTO | null> {
+    const order = await RentalOrder.findOne({
+      where: { id: orderId, userId },
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'fullName', 'email'],
+        },
+        {
+          model: Payment,
+          as: 'payment',
+          attributes: ['id', 'amount', 'status', 'method'],
+        },
+        {
+          model: RentalOrderItem,
+          as: 'rentalOrderItems',
+          include: [
+            {
+              model: Artwork,
+              as: 'artwork',
+              attributes: ['id', 'title'],
+              include: [
+                {
+                  model: ArtworkImage,
+                  as: 'images',
+                  attributes: ['imageUrl'],
+                  where: { isPrimary: true },
+                  required: false,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          model: Address,
+          as: 'address',
+        },
+      ],
+      order: [['createdAt', 'DESC']],
+    });
+    return order?.toJSON() || null;
+  }
 }
