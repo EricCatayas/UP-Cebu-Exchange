@@ -109,7 +109,7 @@ export async function POST(request: NextRequest) {
       },
     });
     return NextResponse.json(
-      { message: 'Rental order created successfully', rentalOrderId: newRentalOrder.id },
+      { message: 'Rental order created successfully', rentalOrder: newRentalOrder },
       { status: 201 }
     );
   } catch (error) {

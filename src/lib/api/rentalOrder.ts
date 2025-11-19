@@ -1,7 +1,7 @@
-import { RentalOrderCreateDTO } from '@/models/RentalOrder';
+import { RentalOrderDTO, RentalOrderCreateDTO } from '@/models/RentalOrder';
 
 export const rentalOrderApi = {
-  createRentalOrder: async (data: RentalOrderCreateDTO) => {
+  createRentalOrder: async (data: RentalOrderCreateDTO): Promise<RentalOrderDTO> => {
     const response = await fetch('/api/rental-order', {
       method: 'POST',
       headers: {
@@ -12,6 +12,6 @@ export const rentalOrderApi = {
     if (!response.ok) {
       throw new Error('Failed to create rental order');
     }
-    return response.json();
+    return (await response.json()).rentalOrder;
   },
 };
