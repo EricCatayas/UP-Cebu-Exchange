@@ -1,56 +1,22 @@
-'use client';
 import React from 'react';
 import Link from 'next/link';
 import AnnualDateRange from '@/components/AnnualDateRange/AnnualDateRange';
 import PageHeader from '@/components/PageHeader/PageHeader';
+import RentalOrderService from '@/services/RentalOrderService';
 import { OrderDateRange } from '@/types/OrderDateRange';
 import { getDaysRemaining } from '@/lib/date';
+import { getCurrentUser } from '@/lib/auth';
 
-function Rentals() {
-  // TODO: Fetch Rental Orders
-  const rentalOrders = [
-    {
-      id: 1,
-      userId: 1,
-      startDate: new Date(2024, 9, 15),
-      endDate: new Date(2025, 9, 14),
-      durationMonths: 12,
-      status: 'Completed',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      payment: { amount: 1200, status: 'Paid', paymentMethod: 'Credit Card' },
-      orderItems: [{}, {}, {}],
-    },
-    {
-      id: 2,
-      userId: 1,
-      startDate: new Date(2025, 6, 15),
-      endDate: new Date(2026, 0, 15),
-      durationMonths: 6,
-      status: 'Confirmed',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      payment: { amount: 600, status: 'Paid', paymentMethod: 'Cash' },
-      orderItems: [{}, {}],
-    },
-    {
-      id: 3,
-      userId: 1,
-      startDate: new Date(2026, 1, 15),
-      endDate: new Date(2026, 7, 14),
-      durationMonths: 6,
-      status: 'Pending',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      payment: { amount: 1500, status: 'Unpaid', paymentMethod: 'Bank Transfer' },
-      orderItems: [{}],
-    },
-  ];
+async function RentalsPage() {
+  const user = await getCurrentUser();
+  const rentalOrderService = new RentalOrderService();
+
+  const rentalOrders = await rentalOrderService.getUserOrders(user?.userId);
 
   const dateRanges: OrderDateRange[] = rentalOrders
     .map((order) => ({
-      startDate: order.startDate,
-      endDate: order.endDate,
+      startDate: new Date(order.startDate),
+      endDate: new Date(order.endDate),
       remainingDays: getDaysRemaining(order),
       status: order.status,
     }))
@@ -63,7 +29,7 @@ function Rentals() {
       <PageHeader title="My Rentals" />
 
       <div className="container mx-auto px-4 py-4">
-        <AnnualDateRange dateRanges={dateRanges} onYearChange={(year) => console.log('Year changed to:', year)} />
+        <AnnualDateRange dateRanges={dateRanges} />
 
         <div className="mt-10 mb-10 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {rentalOrders.map((order) => {
@@ -104,11 +70,11 @@ function Rentals() {
                   </div>
                   <div className="flex justify-between">
                     <dt className="text-gray-500">Payment Method</dt>
-                    <dd className="text-gray-900">{order.payment.paymentMethod}</dd>
+                    <dd className="text-gray-900">{order.payment.method}</dd>
                   </div>
                   <div className="flex justify-between">
                     <dt className="text-gray-500">Artworks</dt>
-                    <dd className="text-gray-900">{order.orderItems.length}</dd>
+                    <dd className="text-gray-900">{order.rentalOrderItems.length}</dd>
                   </div>
                   <div className="flex justify-between">
                     <dt className="text-gray-500">Total Amount</dt>
@@ -137,4 +103,4 @@ function Rentals() {
   );
 }
 
-export default Rentals;
+export default RentalsPage;
