@@ -9,6 +9,7 @@ class RentalPlan extends Model<RentalPlanAttributes, RentalPlanCreationAttribute
   declare artworkId: number;
   declare durationMonths: number;
   declare rentalFee: number;
+  declare price: number;
   declare createdAt: Date;
   declare updatedAt: Date;
 }
@@ -38,6 +39,13 @@ RentalPlan.init(
       },
     },
     rentalFee: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+      validate: {
+        min: 0,
+      },
+    },
+    price: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
       validate: {
