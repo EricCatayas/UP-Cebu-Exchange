@@ -2,14 +2,13 @@ import ArtworkCard from '@/components/ArtworkCard/ArtworkCard';
 import CategoryGrid from '@/components/CategoryGrid/CategoryGrid';
 import ArtworkCarousel from '@/components/ArtworkCarousel/ArtworkCarousel';
 import HeroBackground from '@/components/HeroBackground/HeroBackground';
-import Image from 'next/image';
+import ArtworkService from '@/services/ArtworkService';
 import Link from 'next/link';
-import { sample_artworks } from '@/models/sample-artworks';
 
-export default function Page() {
-  // TODO: Replace with real data
-  const favorite_artworks = sample_artworks.slice(0, 3);
-  const recommended_artworks = sample_artworks.slice(3, 9);
+export default async function Page() {
+  const artworkService = new ArtworkService();
+  const favorite_artworks = await artworkService.getFavoriteArtworks();
+  const recommended_artworks = await artworkService.getRecommendedArtworks();
 
   const categories = [
     {

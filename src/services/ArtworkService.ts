@@ -76,7 +76,21 @@ class ArtworkService {
 
   // TODO:
   async getSimilarArtworks(artworkId: number) {
-    return await ArtworkRepository.findAll({ limit: 6 });
+    const artworks = await ArtworkRepository.findAll({ limit: 20 });
+    const shuffled = artworks.sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, 6);
+  }
+
+  async getFavoriteArtworks() {
+    const artworks = await ArtworkRepository.findAll({ limit: 20 });
+    const shuffled = artworks.sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, 3);
+  }
+
+  async getRecommendedArtworks() {
+    const artworks = await ArtworkRepository.findAll({ limit: 20 });
+    const shuffled = artworks.sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, 3);
   }
 
   private async getUserCartArtworkIds() {
