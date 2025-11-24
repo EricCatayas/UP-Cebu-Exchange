@@ -38,6 +38,10 @@ function isAdminRoute(pathname: string): boolean {
   return adminRoutes.some((route) => pathname === route || pathname.startsWith(route + '/'));
 }
 
+function isApiRoute(pathname: string): boolean {
+  return pathname.startsWith('/api/');
+}
+
 function redirectToLogin(request: NextRequest, pathname: string) {
   const loginUrl = isAdminRoute(pathname) ? '/admin-login' : '/login';
   const searchParams = new URLSearchParams({ callbackUrl: pathname });
@@ -61,7 +65,7 @@ export async function middleware(request: NextRequest) {
 
   const token = request.cookies.get('auth-token')?.value;
   if (!token) {
-    if (pathname.startsWith('/api/')) {
+    if (isApiRoute(pathname)) {
       return NextResponse.json({ error: 'Unauthorized', message: 'Authentication required' }, { status: 401 });
     }
     return redirectToLogin(request, pathname);
@@ -70,7 +74,7 @@ export async function middleware(request: NextRequest) {
   const user = await verifyToken(token);
 
   if (!user) {
-    if (pathname.startsWith('/api/')) {
+    if (isApiRoute(pathname)) {
       return NextResponse.json({ error: 'Unauthorized', message: 'Authentication required' }, { status: 401 });
     }
 
@@ -81,7 +85,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/', request.url));
   }
 
-  if (isAdmin(user) && !isAdminRoute(pathname)) {
+  if (isAdmin(user) && !isAdminRoute(pathname) && !isApiRoute(pathname)) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
