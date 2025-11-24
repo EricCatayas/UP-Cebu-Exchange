@@ -15,32 +15,38 @@ export default function Page() {
     {
       id: 1,
       name: 'Expressionism',
-      imageUrl: 'https://unlimitedworks.blob.core.windows.net/up-cebu-exchange/3x4.png',
+      imageUrl:
+        'https://res.cloudinary.com/dbgolykzg/image/upload/v1763961737/UP%20Cebu%20Exchange/Expressionism_3x4_v3rsvf.jpg',
     },
     {
       id: 2,
       name: 'Realism',
-      imageUrl: 'https://unlimitedworks.blob.core.windows.net/up-cebu-exchange/4x3.png',
+      imageUrl:
+        'https://res.cloudinary.com/dbgolykzg/image/upload/v1763961747/UP%20Cebu%20Exchange/Realism_4x3_yqbvq4.jpg',
     },
     {
       id: 3,
       name: 'Abstract',
-      imageUrl: 'https://unlimitedworks.blob.core.windows.net/up-cebu-exchange/1x1.png',
+      imageUrl:
+        'https://res.cloudinary.com/dbgolykzg/image/upload/v1763961736/UP%20Cebu%20Exchange/abstract_1x1_clixmp.jpg',
     },
     {
       id: 4,
       name: 'Folk Art',
-      imageUrl: 'https://unlimitedworks.blob.core.windows.net/up-cebu-exchange/1x1.png',
+      imageUrl:
+        'https://res.cloudinary.com/dbgolykzg/image/upload/v1763961737/UP%20Cebu%20Exchange/folkart_1x1_evgkmm.jpg',
     },
     {
       id: 5,
       name: 'Landscape',
-      imageUrl: 'https://unlimitedworks.blob.core.windows.net/up-cebu-exchange/2x1.png',
+      imageUrl:
+        'https://res.cloudinary.com/dbgolykzg/image/upload/v1763961740/UP%20Cebu%20Exchange/Landscape_2x1_p8hqta.jpg',
     },
     {
       id: 6,
       name: 'Contemporary',
-      imageUrl: 'https://unlimitedworks.blob.core.windows.net/up-cebu-exchange/2x3.png',
+      imageUrl:
+        'https://res.cloudinary.com/dbgolykzg/image/upload/v1763961737/UP%20Cebu%20Exchange/contemporary_2x3_u2fzsj.jpg',
     },
   ];
 
