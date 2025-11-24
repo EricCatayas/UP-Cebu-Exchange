@@ -27,3 +27,20 @@ export interface ArtworkDTO extends ArtworkAttributes {
   style?: StyleDTO;
   tags?: TagDTO[];
 }
+
+export interface ArtworkCreateDTO {
+  // todo: image uploads
+  title?: string;
+  artistId?: number;
+  artistName?: string;
+  description?: string;
+  medium: string;
+  styleId?: number;
+  heightCm?: number;
+  widthCm?: number;
+  status: string;
+  rentalFee3Months: number;
+  rentalFee6Months: number;
+  rentalFee12Months: number;
+  tags: string[];
+}

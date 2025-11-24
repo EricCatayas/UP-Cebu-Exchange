@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Op } from 'sequelize';
-import { Artwork, Artist, RentalPlan } from '@/models/sequelize';
+import { Artwork, Artist, ArtworkImage, ArtworkTag, RentalPlan, Tag } from '@/models/sequelize';
 import { getCurrentUser, isAdmin } from '@/lib/auth';
+import { ARTWORK_STATUS } from '@/lib/constants';
 
 // TODO: Test API
 export async function POST(request: NextRequest) {
@@ -17,17 +18,26 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Admin access required' }, { status: 403 });
     }
 
-    // TODO: handle image uploads
+    const {
+      title,
+      artistId,
+      artistName,
+      styleId,
+      description,
+      medium,
+      heightCm,
+      widthCm,
+      status,
+      rentalFee3Months,
+      rentalFee6Months,
+      rentalFee12Months,
+      tags,
+    } = await request.json();
 
-    // Parse request body
-    const { title, artistId, description, medium, heightCm, widthCm, status } = await request.json();
-
-    // Validate required fields
-    if (!medium || !heightCm || !widthCm) {
-      return NextResponse.json({ error: 'Medium, height, and width are required' }, { status: 400 });
+    if (!status || !medium || !heightCm || !widthCm || !rentalFee3Months || !rentalFee6Months || !rentalFee12Months) {
+      return NextResponse.json({ error: 'Medium, height, width, and rental fees are required' }, { status: 400 });
     }
 
-    // Validate numeric fields
     if (isNaN(Number(heightCm)) || isNaN(Number(widthCm))) {
       return NextResponse.json({ error: 'Height and width must be valid numbers' }, { status: 400 });
     }
@@ -36,7 +46,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Height and width must be positive numbers' }, { status: 400 });
     }
 
-    // Validate artistId if provided
+    let artworkArtistId = null;
+
     if (artistId !== undefined && artistId !== null) {
       if (isNaN(Number(artistId))) {
         return NextResponse.json({ error: 'Artist ID must be a valid number' }, { status: 400 });
@@ -46,37 +57,46 @@ export async function POST(request: NextRequest) {
       const artist = await Artist.findByPk(artistId);
       if (!artist) {
         return NextResponse.json({ error: 'Artist not found' }, { status: 404 });
+      } else {
+        artworkArtistId = artist.id;
       }
+    } else if (artistName) {
+      const newArtist = await Artist.create({ name: artistName });
+      artworkArtistId = newArtist.id;
     }
 
     // Create artwork
-    const newArtwork = await Artwork.create({
+    const createdArtwork = await Artwork.create({
       title: title.trim(),
-      artistId: artistId || null,
+      artistId: artworkArtistId || undefined,
+      styleId: styleId || undefined,
       description: description.trim(),
       medium: medium.trim(),
       heightCm: Number(heightCm),
       widthCm: Number(widthCm),
-      status: status || 'available',
+      status: status,
     });
 
-    // Fetch the created artwork with artist information
-    const createdArtwork = await Artwork.findByPk(newArtwork.id, {
-      include: [
-        {
-          model: Artist,
-          as: 'artist',
-          attributes: ['id', 'name', 'bio'],
-        },
-      ],
+    // TODO: handle image uploads
+    await ArtworkImage.create({
+      artworkId: createdArtwork!.id,
+      imageUrl:
+        'https://res.cloudinary.com/dbgolykzg/image/upload/v1763972672/UP%20Cebu%20Exchange/placeholder-img-1x1_ihvqvy.png',
+      isPrimary: true,
     });
 
-    // Create rental plan months 3,6,12
     await RentalPlan.bulkCreate([
-      { artworkId: createdArtwork!.id, durationMonths: 3, rentalFee: 0 },
-      { artworkId: createdArtwork!.id, durationMonths: 6, rentalFee: 0 },
-      { artworkId: createdArtwork!.id, durationMonths: 12, rentalFee: 0 },
+      { artworkId: createdArtwork!.id, durationMonths: 3, rentalFee: rentalFee3Months },
+      { artworkId: createdArtwork!.id, durationMonths: 6, rentalFee: rentalFee6Months },
+      { artworkId: createdArtwork!.id, durationMonths: 12, rentalFee: rentalFee12Months },
     ]);
+
+    if (tags && Array.isArray(tags)) {
+      for (const tagName of tags) {
+        let tag = await Tag.findOrCreate({ where: { name: tagName } });
+        await ArtworkTag.create({ artworkId: createdArtwork!.id, tagId: tag[0].id });
+      }
+    }
 
     return NextResponse.json(
       {
@@ -93,6 +113,7 @@ export async function POST(request: NextRequest) {
           status: createdArtwork!.status,
           createdAt: createdArtwork!.createdAt,
           updatedAt: createdArtwork!.updatedAt,
+          tags: tags || [],
         },
       },
       { status: 201 }
@@ -117,7 +138,6 @@ export async function POST(request: NextRequest) {
 // TODO: Test API
 export async function GET(request: NextRequest) {
   try {
-    // Get query parameters
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '10');
@@ -125,7 +145,6 @@ export async function GET(request: NextRequest) {
     const artistId = searchParams.get('artistId');
     const search = searchParams.get('search');
 
-    // Validate pagination parameters
     if (page < 1 || limit < 1 || limit > 100) {
       return NextResponse.json(
         {
