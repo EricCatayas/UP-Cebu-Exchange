@@ -8,7 +8,7 @@ async function Artworks() {
   // TODO: Pagination, Filtering, Sorting
   const currentUser = await getCurrentUser();
   const artworkService = new ArtworkService(currentUser?.userId);
-  const allArtworks = await artworkService.getAllArtworks();
+  const allArtworks = await artworkService.getArtworksForCustomer();
 
   return (
     <>

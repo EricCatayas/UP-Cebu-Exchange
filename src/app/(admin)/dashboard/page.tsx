@@ -1,26 +1,11 @@
-'use client';
-import React, { useState } from 'react';
 import AnalyticsCard from '@/components/AnalyticsCard/AnalyticsCard';
 
 function Dashboard() {
-  const [range, setRange] = useState('All time');
-
   return (
     <div className="px-8 py-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Overview</h1>
-        <select
-          className="border rounded-md px-3 py-2 text-sm"
-          value={range}
-          onChange={(e) => setRange(e.target.value)}
-        >
-          <option>All time</option>
-          <option>Last week</option>
-          <option>Last month</option>
-          <option>Last 3 months</option>
-          <option>This year</option>
-        </select>
       </div>
 
       <div className="mt-8 space-y-12">
@@ -49,7 +34,8 @@ function Dashboard() {
           <div className="w-28 text-gray-700 font-medium pt-2">Inventory</div>
           <div className="flex flex-wrap gap-6">
             <AnalyticsCard title="Available" value={50} />
-            <AnalyticsCard title="In Use" value={50} />
+            <AnalyticsCard title="Rented" value={50} />
+            <AnalyticsCard title="Unavailable" value={50} />
           </div>
         </section>
 

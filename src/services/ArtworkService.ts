@@ -2,6 +2,7 @@ import ArtworkRepository from '@/repositories/ArtworkRepository';
 import WishlistService from './WishlistService';
 import { Cart, CartItem, Wishlist, WishlistItem } from '@/models/sequelize';
 import { ArtworkDTO } from '@/models/Artwork';
+import { ARTWORK_STATUS } from '@/lib/constants';
 
 class ArtworkService {
   userId?: number;
@@ -10,13 +11,17 @@ class ArtworkService {
     this.userId = userId;
   }
 
-  async getAllArtworks(): Promise<ArtworkDTO[]> {
-    const allArtworks = await ArtworkRepository.findAll();
+  async getArtworksForCustomer(): Promise<ArtworkDTO[]> {
+    const artworks = await ArtworkRepository.findAll({
+      where: {
+        status: [ARTWORK_STATUS.AVAILABLE, ARTWORK_STATUS.RENTED],
+      },
+    });
 
     const cartArtworkIds = await this.getUserCartArtworkIds();
     const wishlistArtworkIds = await this.getUserWishlistArtworkIds();
 
-    return allArtworks.map((artwork) => {
+    return artworks.map((artwork) => {
       const artworkDTO: ArtworkDTO = {
         ...artwork,
         isInCart: cartArtworkIds.includes(artwork.id),
@@ -24,6 +29,12 @@ class ArtworkService {
       };
       return artworkDTO;
     });
+  }
+
+  async getAllArtworks(): Promise<ArtworkDTO[]> {
+    const allArtworks = await ArtworkRepository.findAll();
+
+    return allArtworks;
   }
 
   async getArtworkById(id: number): Promise<ArtworkDTO | null> {
