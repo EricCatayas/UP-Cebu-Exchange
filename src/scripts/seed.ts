@@ -88,46 +88,48 @@ export async function seedDatabase() {
         description: 'A gentle depiction of morning light passing through soft curtains.',
         style: 'Contemporary',
         medium: ARTWORK_MEDIUM.ACRYLIC_ON_CANVAS,
+        price: 250,
         heightCm: 80,
         widthCm: 60,
         tags: ['Light', 'Soft Tones', 'Minimalism', 'Calm'],
         imageUrls: [
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518590/whispersofdawn_szpx02.jpg',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713972/betweentwoworlds_sqwlrt.png',
             isPrimary: true,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518590/whispersofdawn_szpx02.jpg',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713972/betweentwoworlds_sqwlrt.png',
             isPrimary: false,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518590/whispersofdawn_szpx02.jpg',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713972/betweentwoworlds_sqwlrt.png',
             isPrimary: false,
           },
         ],
       },
 
       {
-        name: 'Abner Abbott',
-        biography: 'A realism painter specializing in landscapes and rural scenery.',
+        name: 'Antonella Mathis',
+        biography: 'A wildlife painter capturing animals in expressive poses.',
         title: 'Golden Fields',
         description: 'An expansive golden wheat field under the warm glow of sunset.',
         style: 'Realism',
         medium: ARTWORK_MEDIUM.OIL_ON_CANVAS,
+        price: 350,
         heightCm: 70,
         widthCm: 50,
         tags: ['Landscape', 'Fields', 'Sunset', 'Warm Colors'],
         imageUrls: [
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518590/goldenfields_egmfck.jpg',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713973/goldenfields_ttiq3i.png',
             isPrimary: true,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518590/goldenfields_egmfck.jpg',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713973/goldenfields_ttiq3i.png',
             isPrimary: false,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518590/goldenfields_egmfck.jpg',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713973/goldenfields_ttiq3i.png',
             isPrimary: false,
           },
         ],
@@ -140,20 +142,21 @@ export async function seedDatabase() {
         description: 'Layered shades of blue forming a deep emotional composition.',
         style: 'Abstract',
         medium: ARTWORK_MEDIUM.MIXED_MEDIA,
+        price: 400,
         heightCm: 90,
         widthCm: 70,
         tags: ['Abstract', 'Blue Palette', 'Emotion', 'Texture'],
         imageUrls: [
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518589/echoesinblue_zkavxf.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713973/goldenfields_ttiq3i.png',
             isPrimary: true,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518589/echoesinblue_zkavxf.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713973/goldenfields_ttiq3i.png',
             isPrimary: false,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518589/echoesinblue_zkavxf.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713973/goldenfields_ttiq3i.png',
             isPrimary: false,
           },
         ],
@@ -166,20 +169,21 @@ export async function seedDatabase() {
         description: 'A dynamic piece capturing the energy and tension of urban life.',
         style: 'Expressionism',
         medium: ARTWORK_MEDIUM.ACRYLIC_ON_CANVAS,
+        price: 400,
         heightCm: 85,
         widthCm: 65,
         tags: ['Expressionism', 'Urban Life', 'Bold Colors', 'Humanity'],
         imageUrls: [
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518589/voicesofthestreet_uz4fkt.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713973/voicesofthestreet_raq0ko.png',
             isPrimary: true,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518589/voicesofthestreet_uz4fkt.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713973/voicesofthestreet_raq0ko.png',
             isPrimary: false,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518589/voicesofthestreet_uz4fkt.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713973/voicesofthestreet_raq0ko.png',
             isPrimary: false,
           },
         ],
@@ -192,20 +196,21 @@ export async function seedDatabase() {
         description: 'A serene lakeside view painted with delicate watercolor washes.',
         style: 'Impressionism',
         medium: ARTWORK_MEDIUM.WATERCOLOR_ON_PAPER,
+        price: 250,
         heightCm: 60,
         widthCm: 45,
         tags: ['Watercolor', 'Nature', 'Lake', 'Tranquil'],
         imageUrls: [
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518588/stillwaters_xfzp4h.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713972/stillwaters_uf7sng.png',
             isPrimary: true,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518588/stillwaters_xfzp4h.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713972/stillwaters_uf7sng.png',
             isPrimary: false,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518588/stillwaters_xfzp4h.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713972/stillwaters_uf7sng.png',
             isPrimary: false,
           },
         ],
@@ -218,20 +223,21 @@ export async function seedDatabase() {
         description: 'A vibrant cityscape illuminated by surreal neon hues.',
         style: 'Contemporary',
         medium: ARTWORK_MEDIUM.MIXED_MEDIA,
+        price: 300,
         heightCm: 95,
         widthCm: 70,
         tags: ['Neon', 'Cityscape', 'Modern', 'Color Pop'],
         imageUrls: [
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518590/electricmirage_ca9knb.jpg',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713972/electricmirage_mssirc.png',
             isPrimary: true,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518590/electricmirage_ca9knb.jpg',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713972/electricmirage_mssirc.png',
             isPrimary: false,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518590/electricmirage_ca9knb.jpg',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713972/electricmirage_mssirc.png',
             isPrimary: false,
           },
         ],
@@ -244,20 +250,21 @@ export async function seedDatabase() {
         description: 'A detailed bloom study featuring soft pink petals and gold accents.',
         style: 'Realism',
         medium: ARTWORK_MEDIUM.WATERCOLOR_ON_PAPER,
+        price: 500,
         heightCm: 65,
         widthCm: 50,
         tags: ['Flowers', 'Botanical', 'Realism', 'Spring'],
         imageUrls: [
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518591/petalsofspring_jce7mr.jpg',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713972/petalsofspring_mjq65y.png',
             isPrimary: true,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518591/petalsofspring_jce7mr.jpg',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713972/petalsofspring_mjq65y.png',
             isPrimary: false,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518591/petalsofspring_jce7mr.jpg',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713972/petalsofspring_mjq65y.png',
             isPrimary: false,
           },
         ],
@@ -270,69 +277,72 @@ export async function seedDatabase() {
         description: 'Floating islands and shifting skies form an otherworldly realm.',
         style: 'Abstract',
         medium: ARTWORK_MEDIUM.OIL_ON_CANVAS,
+        price: 700,
         heightCm: 100,
         widthCm: 80,
         tags: ['Surreal', 'Dreamlike', 'Sky', 'Fantasy'],
         imageUrls: [
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518590/betweentwoworlds_n7mjg6.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713972/betweentwoworlds_sqwlrt.png',
             isPrimary: true,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518590/betweentwoworlds_n7mjg6.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713972/betweentwoworlds_sqwlrt.png',
             isPrimary: false,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518590/betweentwoworlds_n7mjg6.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713972/betweentwoworlds_sqwlrt.png',
             isPrimary: false,
           },
         ],
       },
 
       {
-        name: 'Nia York',
+        name: 'Aislinn Walter',
         biography: 'A minimalist artist who conveys emotion through simplicity.',
         title: 'Quiet',
         description: 'A single line bending gently over a muted gray background.',
         style: 'Minimalism',
         medium: ARTWORK_MEDIUM.ACRYLIC_ON_CANVAS,
+        price: 400,
         heightCm: 55,
         widthCm: 40,
         tags: ['Minimalism', 'Line Art', 'Soft Tones', 'Modern'],
         imageUrls: [
-          { url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518589/quiet_hciqmo.png', isPrimary: true },
+          { url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713971/quiet_nrva8k.png', isPrimary: true },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518589/quiet_hciqmo.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713971/quiet_nrva8k.png',
             isPrimary: false,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518589/quiet_hciqmo.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713971/quiet_nrva8k.png',
             isPrimary: false,
           },
         ],
       },
 
       {
-        name: 'Leandro Bautista',
-        biography: 'A Filipino painter focusing on cultural symbolism and heritage.',
+        name: 'Kayson Rios',
+        biography: 'A digital-to-traditional crossover artist experimenting with neon palettes.',
         title: 'Roots of Home',
         description: 'A symbolic composition of Filipino motifs and traditional patterns.',
         style: 'Contemporary',
         medium: ARTWORK_MEDIUM.MIXED_MEDIA,
+        price: 400,
         heightCm: 75,
         widthCm: 55,
         tags: ['Culture', 'Symbolism', 'Filipino', 'Heritage'],
         imageUrls: [
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518589/rootsofhome_m3fkmi.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713970/rootsofhome_r9eijc.png',
             isPrimary: true,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518589/rootsofhome_m3fkmi.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713970/rootsofhome_r9eijc.png',
             isPrimary: false,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518589/rootsofhome_m3fkmi.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713970/rootsofhome_r9eijc.png',
             isPrimary: false,
           },
         ],
@@ -345,20 +355,21 @@ export async function seedDatabase() {
         description: 'A vivid portrayal of a fox mid-leap through a snowy forest.',
         style: 'Realism',
         medium: ARTWORK_MEDIUM.OIL_ON_CANVAS,
+        price: 600,
         heightCm: 80,
         widthCm: 60,
         tags: ['Wildlife', 'Animals', 'Realism', 'Nature'],
         imageUrls: [
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518590/graceofthewild_z74ycn.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713970/graceofthewild_jq4bxm.png',
             isPrimary: true,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518590/graceofthewild_z74ycn.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713970/graceofthewild_jq4bxm.png',
             isPrimary: false,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518590/graceofthewild_z74ycn.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713970/graceofthewild_jq4bxm.png',
             isPrimary: false,
           },
         ],
@@ -371,17 +382,21 @@ export async function seedDatabase() {
         description: 'Intersecting triangles forming a complex optical pattern.',
         style: 'Abstract',
         medium: ARTWORK_MEDIUM.ACRYLIC_ON_CANVAS,
+        price: 750,
         heightCm: 90,
         widthCm: 70,
         tags: ['Geometric', 'Sharp Lines', 'Contrast', 'Modern'],
         imageUrls: [
-          { url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274797/artwork4_xpawbd.png', isPrimary: true },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274797/artwork4_xpawbd.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713970/fragmentedvision_qwgdjm.png',
+            isPrimary: true,
+          },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713970/fragmentedvision_qwgdjm.png',
             isPrimary: false,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763274797/artwork4_xpawbd.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713970/fragmentedvision_qwgdjm.png',
             isPrimary: false,
           },
         ],
@@ -394,20 +409,21 @@ export async function seedDatabase() {
         description: 'A whimsical meadow filled with pastel creatures and tiny stories.',
         style: 'Contemporary',
         medium: ARTWORK_MEDIUM.WATERCOLOR_ON_PAPER,
+        price: 800,
         heightCm: 60,
         widthCm: 45,
         tags: ['Whimsical', 'Pastel', 'Illustration', 'Meadow'],
         imageUrls: [
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518588/dreamtimemeadow_fceyuu.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713972/dreamtimemeadow_bgbn53.png',
             isPrimary: true,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518588/dreamtimemeadow_fceyuu.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713972/dreamtimemeadow_bgbn53.png',
             isPrimary: false,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518588/dreamtimemeadow_fceyuu.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713972/dreamtimemeadow_bgbn53.png',
             isPrimary: false,
           },
         ],
@@ -420,45 +436,47 @@ export async function seedDatabase() {
         description: 'A powerful depiction of storm clouds building over a cliffside.',
         style: 'Impressionism',
         medium: ARTWORK_MEDIUM.OIL_ON_CANVAS,
+        price: 600,
         heightCm: 95,
         widthCm: 75,
         tags: ['Storm', 'Sky', 'Landscape', 'Drama'],
         imageUrls: [
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518590/tempestrising_qszt26.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713971/tempestrising_cyfexl.png',
             isPrimary: true,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518590/tempestrising_qszt26.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713971/tempestrising_cyfexl.png',
             isPrimary: false,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518590/tempestrising_qszt26.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713971/tempestrising_cyfexl.png',
             isPrimary: false,
           },
         ],
       },
       {
         name: 'Aislinn Walter',
-        biography: 'A minimalist painter celebrated for serene compositions and soft tonal gradients.',
+        biography: 'A minimalist artist who conveys emotion through simplicity.',
         title: 'Quiet Horizons',
         description: 'A calm and ethereal abstract landscape blending muted tones for a peaceful atmosphere.',
         style: 'Minimalism',
         medium: ARTWORK_MEDIUM.ACRYLIC_ON_CANVAS,
+        price: 400,
         heightCm: 80,
         widthCm: 60,
         tags: ['Minimalist', 'Calm', 'Soft Tones', 'Abstract'],
         imageUrls: [
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518589/quiethorizon_jqisy2.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713971/quiethorizon_lepl8i.png',
             isPrimary: true,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518589/quiethorizon_jqisy2.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713971/quiethorizon_lepl8i.png',
             isPrimary: false,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518589/quiethorizon_jqisy2.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713971/quiethorizon_lepl8i.png',
             isPrimary: false,
           },
         ],
@@ -470,20 +488,143 @@ export async function seedDatabase() {
         description: 'A surreal dreamscape where flowers float midair and shadows distort into new forms.',
         style: 'Surrealism',
         medium: ARTWORK_MEDIUM.MIXED_MEDIA,
+        price: 850,
         heightCm: 90,
         widthCm: 70,
         tags: ['Surreal', 'Dreamscape', 'Fantasy', 'Conceptual'],
         imageUrls: [
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518589/sleepinggarden_vca3ph.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713971/sleepinggarden_c3vm02.png',
             isPrimary: true,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518589/sleepinggarden_vca3ph.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713971/sleepinggarden_c3vm02.png',
             isPrimary: false,
           },
           {
-            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763518589/sleepinggarden_vca3ph.png',
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713971/sleepinggarden_c3vm02.png',
+            isPrimary: false,
+          },
+        ],
+      },
+      {
+        name: 'Leandro Bautista',
+        biography: 'A Filipino mixed-media artist blending cultural motifs with modern symbolism.',
+        title: 'Threads of Heritage',
+        description:
+          'A vibrant piece combining geometric shapes and traditional patterns representing cultural identity.',
+        style: 'Modern Folk Art',
+        medium: ARTWORK_MEDIUM.MIXED_MEDIA,
+        price: 600,
+        heightCm: 88,
+        widthCm: 68,
+        tags: ['Culture', 'Folk Art', 'Patterns', 'Symbolism'],
+        imageUrls: [
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713971/threadsofheritage_vnncqj.png',
+            isPrimary: true,
+          },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713971/threadsofheritage_vnncqj.png',
+            isPrimary: false,
+          },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713971/threadsofheritage_vnncqj.png',
+            isPrimary: false,
+          },
+        ],
+      },
+      {
+        name: 'Mohammad Bernal',
+        biography: 'An expressionist painter focusing on social themes and human emotion.',
+        title: 'Veins of Light',
+        description: 'A dynamic abstraction using overlapping strokes that mimic flowing streams of light.',
+        style: 'Abstract Expressionism',
+        medium: ARTWORK_MEDIUM.ACRYLIC_ON_CANVAS,
+        price: 550,
+        heightCm: 92,
+        widthCm: 72,
+        tags: ['Abstract', 'Textures', 'Expressionism', 'Light'],
+        imageUrls: [
+          { url: 'https://res.cloudinary.com/placeholder/nia1_primary.jpg', isPrimary: true },
+          { url: 'https://res.cloudinary.com/placeholder/nia1_img2.jpg', isPrimary: false },
+          { url: 'https://res.cloudinary.com/placeholder/nia1_img3.jpg', isPrimary: false },
+        ],
+      },
+      {
+        name: 'Brooke Mayer',
+        biography: 'A watercolor artist specializing in botanical illustrations with soft natural tones.',
+        title: 'Whispers of Spring',
+        description: 'A delicate watercolor portrait of blooming flowers with subtle gradients and details.',
+        style: 'Botanical Art',
+        medium: ARTWORK_MEDIUM.WATERCOLOR_ON_PAPER,
+        price: 450,
+        heightCm: 65,
+        widthCm: 45,
+        tags: ['Botanical', 'Flowers', 'Watercolor', 'Nature'],
+        imageUrls: [
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713971/whispersofspring_muc0ay.png',
+            isPrimary: true,
+          },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713971/whispersofspring_muc0ay.png',
+            isPrimary: false,
+          },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713971/whispersofspring_muc0ay.png',
+            isPrimary: false,
+          },
+        ],
+      },
+      {
+        name: 'Yahir Strickland',
+        biography: 'A digital artist known for vibrant neon-inspired futuristic landscapes.',
+        title: 'Neon Pulse',
+        description: 'A cyberpunk cityscape glowing with electric lights and reflective surfaces.',
+        style: 'Digital Futurism',
+        medium: ARTWORK_MEDIUM.DIGITAL_PRINT,
+        price: 399,
+        heightCm: 80,
+        widthCm: 55,
+        tags: ['Digital', 'Futuristic', 'Neon', 'Cityscape'],
+        imageUrls: [
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713971/neonpulse_yum20q.png',
+            isPrimary: true,
+          },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713971/neonpulse_yum20q.png',
+            isPrimary: false,
+          },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713971/neonpulse_yum20q.png',
+            isPrimary: false,
+          },
+        ],
+      },
+      {
+        name: 'Kayson Rios',
+        biography: 'A charcoal sketch artist focusing on dramatic contrast and storytelling.',
+        title: 'Shadows of Memory',
+        description: 'A monochrome sketch portraying a lone figure walking through dim alleyways.',
+        style: 'Charcoal Realism',
+        medium: ARTWORK_MEDIUM.CHARCOAL_ON_PAPER,
+        price: 549,
+        heightCm: 75,
+        widthCm: 55,
+        tags: ['Charcoal', 'Monochrome', 'Realism', 'Narrative'],
+        imageUrls: [
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713970/shadowsofmemory_zgxbu8.png',
+            isPrimary: true,
+          },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713970/shadowsofmemory_zgxbu8.png',
+            isPrimary: false,
+          },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713970/shadowsofmemory_zgxbu8.png',
             isPrimary: false,
           },
         ],
@@ -515,6 +656,8 @@ export async function seedDatabase() {
         status: ARTWORK_STATUS.AVAILABLE,
         heightCm: data.heightCm,
         widthCm: data.widthCm,
+        // persist base price if provided in seed data
+        ...(typeof data.price !== 'undefined' ? { price: data.price } : {}),
       });
 
       // 4. Create Artwork Images
@@ -540,11 +683,30 @@ export async function seedDatabase() {
       }
 
       // 6. Rental Plans (same for each artwork)
-      await RentalPlan.bulkCreate([
-        { artworkId: artwork.id, durationMonths: 3, rentalFee: 1100 },
-        { artworkId: artwork.id, durationMonths: 6, rentalFee: 2000 },
-        { artworkId: artwork.id, durationMonths: 12, rentalFee: 3500 },
-      ]);
+      // If artwork base price is provided, derive rental plan price from it (example: monthly rate),
+      // otherwise fall back to rentalFee * durationMonths.
+      const basePrice = typeof data.price === 'number' ? data.price : null;
+      const monthlyRate = 0.05; // 5% of base price per month (adjust as needed)
+
+      const plans = [
+        { durationMonths: 3, rentalFee: 1100 },
+        { durationMonths: 6, rentalFee: 2000 },
+        { durationMonths: 12, rentalFee: 3500 },
+      ].map((p) => {
+        const derivedPrice =
+          basePrice !== null
+            ? parseFloat((basePrice * monthlyRate * p.durationMonths).toFixed(2))
+            : parseFloat((p.rentalFee * p.durationMonths).toFixed(2));
+
+        return {
+          artworkId: artwork.id,
+          durationMonths: p.durationMonths,
+          rentalFee: p.rentalFee,
+          price: derivedPrice,
+        };
+      });
+
+      await RentalPlan.bulkCreate(plans);
     }
   } catch (error) {
     console.error('❌ Error seeding roles:', error);
