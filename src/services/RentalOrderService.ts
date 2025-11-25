@@ -15,8 +15,28 @@ export default class RentalOrderService {
           as: 'payment',
           attributes: ['id', 'amount', 'status', 'method'],
         },
+        {
+          model: RentalOrderItem,
+          as: 'rentalOrderItems',
+          include: [
+            {
+              model: Artwork,
+              as: 'artwork',
+              attributes: ['id', 'title'],
+              include: [
+                {
+                  model: ArtworkImage,
+                  as: 'images',
+                  attributes: ['imageUrl'],
+                  where: { isPrimary: true },
+                  required: false,
+                },
+              ],
+            },
+          ],
+        },
       ],
-      order: [['createdAt', 'DESC']],
+      order: [['startDate', 'ASC']],
     });
     return orders.map((order) => order.toJSON());
   }
@@ -105,7 +125,7 @@ export default class RentalOrderService {
           as: 'address',
         },
       ],
-      order: [['createdAt', 'DESC']],
+      order: [['startDate', 'ASC']],
     });
     return orders.map((order) => order.toJSON());
   }
