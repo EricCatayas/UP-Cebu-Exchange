@@ -72,6 +72,11 @@ export enum USER_ROLE {
   CUSTOMER = 'customer',
 }
 
+export enum USER_STATUS {
+  ACTIVE = 'Active',
+  PENDING = 'Pending',
+}
+
 export const ADMIN_ROLES = [USER_ROLE.HEAD, USER_ROLE.STAFF];
 
 export const USER_ROLES = [USER_ROLE.HEAD, USER_ROLE.STAFF, USER_ROLE.CUSTOMER];
