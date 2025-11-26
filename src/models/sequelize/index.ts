@@ -199,10 +199,10 @@ const initializeAssociations = () => {
     as: 'address',
   });
 
-  // RentalOrder has many RentalOrderItems
+  // RentalOrder has many items
   RentalOrder.hasMany(RentalOrderItem, {
     foreignKey: 'rentalOrderId',
-    as: 'rentalOrderItems',
+    as: 'items',
   });
 
   // RentalOrderItem belongs to RentalOrder

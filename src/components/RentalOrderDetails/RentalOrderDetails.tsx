@@ -63,7 +63,7 @@ export default function RentalOrderDetails({
       )}
       <h3 className="text-xl font-semibold mt-6 mb-4">Items</h3>
       <ul>
-        {order.rentalOrderItems?.map((item) => (
+        {order.items?.map((item) => (
           <li key={item.id} className="mb-4 flex items-center" onClick={() => handleRentalItemClick(item)}>
             {item.artwork?.images && (
               <img

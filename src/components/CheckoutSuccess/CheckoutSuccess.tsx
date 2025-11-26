@@ -63,7 +63,7 @@ function CheckoutSuccess({ rentalOrder }: { rentalOrder: RentalOrderDTO }) {
 
             {/* Items */}
             <div className="space-y-4">
-              {rentalOrder?.rentalOrderItems?.map((item: any) => (
+              {rentalOrder?.items?.map((item: any) => (
                 <div key={item.id} className="bg-gray-50 p-4 rounded-lg border border-gray-200">
                   <div className="flex gap-4">
                     <img

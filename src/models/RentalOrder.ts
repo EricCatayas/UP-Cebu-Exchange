@@ -21,7 +21,7 @@ export interface RentalOrderDTO extends RentalOrderAttributes {
   address?: AddressDTO;
   payment?: PaymentDTO;
   user?: UserDTO;
-  rentalOrderItems?: RentalOrderItemDTO[];
+  items?: RentalOrderItemDTO[];
 }
 
 export interface RentalOrderCreateDTO {

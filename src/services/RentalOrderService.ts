@@ -17,7 +17,7 @@ export default class RentalOrderService {
         },
         {
           model: RentalOrderItem,
-          as: 'rentalOrderItems',
+          as: 'items',
           include: [
             {
               model: Artwork,
@@ -57,7 +57,7 @@ export default class RentalOrderService {
         },
         {
           model: RentalOrderItem,
-          as: 'rentalOrderItems',
+          as: 'items',
           include: [
             {
               model: Artwork,
@@ -102,7 +102,7 @@ export default class RentalOrderService {
         },
         {
           model: RentalOrderItem,
-          as: 'rentalOrderItems',
+          as: 'items',
           include: [
             {
               model: Artwork,
@@ -146,7 +146,7 @@ export default class RentalOrderService {
         },
         {
           model: RentalOrderItem,
-          as: 'rentalOrderItems',
+          as: 'items',
           include: [
             {
               model: Artwork,

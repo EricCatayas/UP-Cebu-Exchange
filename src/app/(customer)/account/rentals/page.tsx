@@ -72,7 +72,7 @@ async function RentalsPage() {
                   </div>
                   <div className="flex justify-between">
                     <dt className="text-gray-500">Artworks</dt>
-                    <dd className="text-gray-900">{order.rentalOrderItems.length}</dd>
+                    <dd className="text-gray-900">{order.items.length}</dd>
                   </div>
                   <div className="flex justify-between">
                     <dt className="text-gray-500">Total Amount</dt>
