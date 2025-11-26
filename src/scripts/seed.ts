@@ -683,26 +683,14 @@ export async function seedDatabase() {
       }
 
       // 6. Rental Plans (same for each artwork)
-      // If artwork base price is provided, derive rental plan price from it (example: monthly rate),
-      // otherwise fall back to rentalFee * durationMonths.
-      const basePrice = typeof data.price === 'number' ? data.price : null;
-      const monthlyRate = 0.05; // 5% of base price per month (adjust as needed)
+      const basePrice = data.price;
+      const monthlyDiscountRate = 0.05; // 5% discount for each additional month beyond the first
 
-      const plans = [
-        { durationMonths: 3, rentalFee: 1100 },
-        { durationMonths: 6, rentalFee: 2000 },
-        { durationMonths: 12, rentalFee: 3500 },
-      ].map((p) => {
-        const derivedPrice =
-          basePrice !== null
-            ? parseFloat((basePrice * monthlyRate * p.durationMonths).toFixed(2))
-            : parseFloat((p.rentalFee * p.durationMonths).toFixed(2));
-
+      const plans = [{ durationMonths: 3 }, { durationMonths: 6 }, { durationMonths: 12 }].map((p) => {
         return {
           artworkId: artwork.id,
           durationMonths: p.durationMonths,
-          rentalFee: p.rentalFee,
-          price: derivedPrice,
+          price: p.durationMonths * basePrice * (1 - monthlyDiscountRate * (p.durationMonths - 1)),
         };
       });
 

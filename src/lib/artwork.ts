@@ -10,5 +10,5 @@ export const getDimension = (artwork) => {
 
 export const getRentalFee = (artwork: any, duration: number) => {
   const plan = artwork.rentalPlans.find((p: any) => p.durationMonths === duration);
-  return Number(plan?.rentalFee) || 0;
+  return Number(plan?.price) || 0;
 };

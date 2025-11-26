@@ -13,7 +13,7 @@ export default function ArtworkCard({ artwork, displayInfo = true }: { artwork: 
   if (!artwork) return null;
 
   const primaryImageUrl = getImageUrl(artwork);
-  const lowestPlan = artwork.rentalPlans ? [...artwork.rentalPlans].sort((a, b) => a.rentalFee - b.rentalFee)[0] : null;
+  const lowestPlan = artwork.rentalPlans ? [...artwork.rentalPlans].sort((a, b) => a.price - b.price)[0] : null;
 
   const [inCart, setInCart] = useState(artwork.isInCart);
   const [inWishlist, setInWishlist] = useState(artwork.isInWishlist);
@@ -68,7 +68,7 @@ export default function ArtworkCard({ artwork, displayInfo = true }: { artwork: 
                 {artwork.artist?.name}
               </button>
             )}
-            {lowestPlan && <div className="price">as low as: ₱ {lowestPlan.rentalFee.toLocaleString()}</div>}
+            {lowestPlan && <div className="price">as low as: ₱ {lowestPlan.price.toLocaleString()}</div>}
           </div>
           <div className="right">
             <div className="dimension">{getDimension(artwork)}</div>

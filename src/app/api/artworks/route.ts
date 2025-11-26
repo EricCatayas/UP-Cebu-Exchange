@@ -86,9 +86,9 @@ export async function POST(request: NextRequest) {
     });
 
     await RentalPlan.bulkCreate([
-      { artworkId: createdArtwork!.id, durationMonths: 3, rentalFee: rentalFee3Months },
-      { artworkId: createdArtwork!.id, durationMonths: 6, rentalFee: rentalFee6Months },
-      { artworkId: createdArtwork!.id, durationMonths: 12, rentalFee: rentalFee12Months },
+      { artworkId: createdArtwork!.id, durationMonths: 3, price: rentalFee3Months },
+      { artworkId: createdArtwork!.id, durationMonths: 6, price: rentalFee6Months },
+      { artworkId: createdArtwork!.id, durationMonths: 12, price: rentalFee12Months },
     ]);
 
     if (tags && Array.isArray(tags)) {

@@ -83,7 +83,7 @@ function ArtworkDetails({ artwork }: { artwork: ArtworkDTO }) {
           >
             {artwork.rentalPlans.map((plan) => (
               <option key={plan.durationMonths} value={plan.durationMonths}>
-                {plan.durationMonths} months - ₱{plan.rentalFee.toLocaleString()}
+                {plan.durationMonths} months - ₱{plan.price.toLocaleString()}
               </option>
             ))}
           </select>
