@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Op } from 'sequelize';
 import { Artwork, Artist, ArtworkImage, ArtworkTag, RentalPlan, Tag } from '@/models/sequelize';
+import { ArtworkCreateDTO } from '@/models/Artwork';
 import { getCurrentUser, isAdmin } from '@/lib/auth';
 import { ARTWORK_STATUS } from '@/lib/constants';
 
@@ -18,24 +19,38 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Admin access required' }, { status: 403 });
     }
 
-    const {
-      title,
-      artistId,
-      artistName,
-      styleId,
-      description,
-      medium,
-      heightCm,
-      widthCm,
-      status,
-      rentalFee3Months,
-      rentalFee6Months,
-      rentalFee12Months,
-      tags,
-    } = await request.json();
+    const formData = await request.formData();
 
+    const images = formData.getAll('images') as File[];
+    const title = formData.get('title') as string;
+    const artistId = formData.get('artistId') ? Number(formData.get('artistId')) : undefined;
+    const artistName = formData.get('artistName') as string;
+    const styleId = formData.get('styleId') ? Number(formData.get('styleId')) : undefined;
+    const description = formData.get('description') as string;
+    const medium = formData.get('medium') as string;
+    const heightCm = formData.get('heightCm') ? Number(formData.get('heightCm')) : undefined;
+    const widthCm = formData.get('widthCm') ? Number(formData.get('widthCm')) : undefined;
+    const status = formData.get('status') as string;
+    const rentalFee3Months = Number(formData.get('rentalFee3Months'));
+    const rentalFee6Months = Number(formData.get('rentalFee6Months'));
+    const rentalFee12Months = Number(formData.get('rentalFee12Months'));
+
+    const tagsString = formData.get('tags') as string;
+    const tags = tagsString ? JSON.parse(tagsString) : [];
+
+    // Validate required fields
     if (!status || !medium || !heightCm || !widthCm || !rentalFee3Months || !rentalFee6Months || !rentalFee12Months) {
       return NextResponse.json({ error: 'Medium, height, width, and rental fees are required' }, { status: 400 });
+    }
+
+    if (images && images.length === 0) {
+      return NextResponse.json({ error: 'At least one image is required' }, { status: 400 });
+    } else {
+      for (const image of images) {
+        if (!image.type.startsWith('image/')) {
+          return NextResponse.json({ error: 'All uploaded files must be image type' }, { status: 400 });
+        }
+      }
     }
 
     if (isNaN(Number(heightCm)) || isNaN(Number(widthCm))) {
@@ -67,23 +82,31 @@ export async function POST(request: NextRequest) {
 
     // Create artwork
     const createdArtwork = await Artwork.create({
-      title: title.trim(),
+      title: title?.trim(),
       artistId: artworkArtistId || undefined,
       styleId: styleId || undefined,
-      description: description.trim(),
+      description: description?.trim(),
       medium: medium.trim(),
       heightCm: Number(heightCm),
       widthCm: Number(widthCm),
       status: status,
     });
 
-    // TODO: handle image uploads
-    await ArtworkImage.create({
-      artworkId: createdArtwork!.id,
-      imageUrl:
-        'https://res.cloudinary.com/dbgolykzg/image/upload/v1763972672/UP%20Cebu%20Exchange/placeholder-img-1x1_ihvqvy.png',
-      isPrimary: true,
-    });
+    // Handle image uploads
+    for (let i = 0; i < images.length; i++) {
+      const image = images[i];
+
+      // TODO: Upload to Cloudinary
+      // For now, using placeholder
+      const imageUrl =
+        'https://res.cloudinary.com/dbgolykzg/image/upload/v1763972672/UP%20Cebu%20Exchange/placeholder-img-1x1_ihvqvy.png';
+
+      await ArtworkImage.create({
+        artworkId: createdArtwork!.id,
+        imageUrl: imageUrl,
+        isPrimary: i === 0,
+      });
+    }
 
     await RentalPlan.bulkCreate([
       { artworkId: createdArtwork!.id, durationMonths: 3, price: rentalFee3Months },
@@ -121,12 +144,10 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Artwork creation error:', error);
 
-    // Handle Sequelize validation errors
     if (error instanceof Error && error.name === 'SequelizeValidationError') {
       return NextResponse.json({ error: 'Validation error: ' + error.message }, { status: 400 });
     }
 
-    // Handle Sequelize foreign key constraint errors
     if (error instanceof Error && error.name === 'SequelizeForeignKeyConstraintError') {
       return NextResponse.json({ error: 'Invalid artist reference' }, { status: 400 });
     }

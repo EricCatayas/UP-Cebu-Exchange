@@ -28,6 +28,8 @@ function CreateArtworkForm({ artists, styles, tags }: { artists: ArtistDTO[]; st
   });
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [isNewArtist, setIsNewArtist] = useState(false);
+  const [images, setImages] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const mediums = ARTWORK_MEDIUMS;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -66,6 +68,28 @@ function CreateArtworkForm({ artists, styles, tags }: { artists: ArtistDTO[]; st
     setSelectedTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]));
   };
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      const fileArray = Array.from(files);
+      setImages(fileArray);
+
+      // Create preview URLs
+      const previewUrls = fileArray.map((file) => URL.createObjectURL(file));
+      setImagePreviews(previewUrls);
+
+      // todo: set artwork tags based on image analysis
+    }
+  };
+
+  const handleRemoveImage = (index: number) => {
+    setImages((prev) => prev.filter((_, i) => i !== index));
+    setImagePreviews((prev) => {
+      URL.revokeObjectURL(prev[index]);
+      return prev.filter((_, i) => i !== index);
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -85,12 +109,14 @@ function CreateArtworkForm({ artists, styles, tags }: { artists: ArtistDTO[]; st
         rentalFee6Months: Number(formData.rentalFee6Months),
         rentalFee12Months: Number(formData.rentalFee12Months),
         tags: selectedTags,
+        images: images,
       };
 
       console.log('Submitting artwork data:', artworkData);
 
       await artworkApi.create(artworkData);
       alert('Artwork created successfully!');
+      router.push('/inventory');
     } catch (error) {
       console.error('Error creating artwork:', error);
       alert(error instanceof Error ? error.message : 'Failed to create artwork');
@@ -113,11 +139,54 @@ function CreateArtworkForm({ artists, styles, tags }: { artists: ArtistDTO[]; st
     }
   }, [isNewArtist]);
 
+  // Cleanup preview URLs on unmount
+  useEffect(() => {
+    return () => {
+      imagePreviews.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [imagePreviews]);
+
   return (
     <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-6 space-y-6">
       {/* Basic Information */}
       <div className="space-y-4">
         <h2 className="text-xl font-semibold">Basic Information</h2>
+
+        {/* Image Upload */}
+        <div>
+          <label htmlFor="images" className="block text-sm font-medium text-gray-700 mb-1">
+            Artwork Images
+          </label>
+          <input
+            type="file"
+            id="images"
+            name="images"
+            accept="image/*"
+            multiple
+            onChange={handleImageChange}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          {imagePreviews.length > 0 && (
+            <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+              {imagePreviews.map((preview, index) => (
+                <div key={index} className="relative">
+                  <img
+                    src={preview}
+                    alt={`Preview ${index + 1}`}
+                    className="w-full h-32 object-cover rounded-md border border-gray-300"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveImage(index)}
+                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
         <div>
           <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
@@ -373,6 +442,7 @@ function CreateArtworkForm({ artists, styles, tags }: { artists: ArtistDTO[]; st
               <span className="text-sm text-gray-700">{tag}</span>
             </label>
           ))}
+          {/* Todo: Add Tag */}
         </div>
       </div>
 

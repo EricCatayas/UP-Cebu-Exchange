@@ -29,7 +29,7 @@ export interface ArtworkDTO extends ArtworkAttributes {
 }
 
 export interface ArtworkCreateDTO {
-  // todo: image uploads
+  images: File[];
   title?: string;
   artistId?: number;
   artistName?: string;
