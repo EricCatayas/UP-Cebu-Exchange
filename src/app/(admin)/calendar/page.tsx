@@ -19,10 +19,15 @@ async function CalendarPage() {
   }));
 
   return (
-    <>
-      <PageHeader title="My Rentals" />
-
-      <div className="container mx-auto px-4 py-4">
+    <div className="px-8 py-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-semibold">Calendar</h1>
+        <Link href="/orders/create" className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+          Create New Order
+        </Link>
+      </div>
+      <div className="mt-8 space-y-12">
         <AnnualDateRange dateRanges={dateRanges} />
 
         <div className="mt-10 mb-10 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -91,7 +96,7 @@ async function CalendarPage() {
           })}
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

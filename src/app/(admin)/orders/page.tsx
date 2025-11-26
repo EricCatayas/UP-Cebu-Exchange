@@ -26,6 +26,9 @@ async function OrdersPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">Rental Orders</h1>
+      <Link href="/orders/create" className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+        Create New Order
+      </Link>
 
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <div className="overflow-x-auto">
