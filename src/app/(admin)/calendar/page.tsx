@@ -4,7 +4,7 @@ import AnnualDateRange from '@/components/AnnualDateRange/AnnualDateRange';
 import PageHeader from '@/components/PageHeader/PageHeader';
 import RentalOrderService from '@/services/RentalOrderService';
 import { OrderDateRange } from '@/types/OrderDateRange';
-import { getDaysRemaining } from '@/lib/date';
+import { fmt, getDaysRemaining } from '@/lib/date';
 
 async function CalendarPage() {
   const rentalOrderService = new RentalOrderService();
@@ -17,8 +17,6 @@ async function CalendarPage() {
     remainingDays: getDaysRemaining(order),
     status: order.status,
   }));
-
-  const fmt = (d: Date) => new Date(d).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
 
   return (
     <>

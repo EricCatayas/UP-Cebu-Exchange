@@ -8,3 +8,6 @@ export function getDaysRemaining(order: { startDate: Date; endDate: Date }): num
     return dayDiff > 0 ? Math.ceil(dayDiff / (1000 * 60 * 60 * 24)) : 0;
   }
 }
+
+export const fmt = (d: Date) =>
+  new Date(d).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
