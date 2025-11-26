@@ -4,7 +4,7 @@ import AnnualDateRange from '@/components/AnnualDateRange/AnnualDateRange';
 import PageHeader from '@/components/PageHeader/PageHeader';
 import RentalOrderService from '@/services/RentalOrderService';
 import { OrderDateRange } from '@/types/OrderDateRange';
-import { fmt, getDaysRemaining } from '@/lib/date';
+import { fmt, getDaysRemaining, getOrderStatus } from '@/lib/date';
 
 async function CalendarPage() {
   const rentalOrderService = new RentalOrderService();
@@ -69,7 +69,7 @@ async function CalendarPage() {
                   </div>
                   <div className="flex justify-between">
                     <dt className="text-gray-500">Status</dt>
-                    <dd className="text-gray-900">{order.status}</dd>
+                    <dd className="text-gray-900">{getOrderStatus(order)}</dd>
                   </div>
                   <div className="flex justify-between">
                     <dt className="text-gray-500">Payment Method</dt>

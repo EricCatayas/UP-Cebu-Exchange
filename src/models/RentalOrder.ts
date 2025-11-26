@@ -12,7 +12,7 @@ export interface RentalOrderAttributes {
   endDate: Date;
   deliveryMethod?: string;
   durationMonths: number;
-  status: 'Pending' | 'Confirmed' | 'Cancelled' | 'Completed';
+  status: string;
   createdAt: Date;
   updatedAt: Date;
 }

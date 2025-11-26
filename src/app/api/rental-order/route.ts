@@ -12,6 +12,7 @@ import {
 import { RentalOrderCreateDTO } from '@/models/RentalOrder';
 import { getCurrentUser } from '@/lib/auth';
 import { getRentalFee } from '@/lib/artwork';
+import { ORDER_STATUS, PAYMENT_STATUS } from '@/lib/constants';
 
 export async function POST(request: NextRequest) {
   try {
@@ -60,7 +61,7 @@ export async function POST(request: NextRequest) {
       userId: currentUser.userId,
       amount: totalAmount,
       method: paymentMethod,
-      status: 'Pending',
+      status: PAYMENT_STATUS.PENDING,
     });
     // Create rental order
     const newRentalOrder = await RentalOrder.create({
@@ -71,7 +72,7 @@ export async function POST(request: NextRequest) {
       deliveryMethod,
       durationMonths: durationMonths,
       addressId: newAddress.id,
-      status: 'Pending',
+      status: ORDER_STATUS.PENDING,
     });
 
     const cartItems = await CartItem.findAll({

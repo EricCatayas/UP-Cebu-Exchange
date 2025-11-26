@@ -1,6 +1,7 @@
 import { DataTypes, Model, Optional, Op } from 'sequelize';
 import sequelize from '@/config/database';
 import { RentalOrderAttributes } from '@/models/RentalOrder';
+import { ORDER_STATUS } from '@/lib/constants';
 
 interface RentalOrderCreationAttributes
   extends Optional<RentalOrderAttributes, 'id' | 'status' | 'createdAt' | 'updatedAt'> {}
@@ -14,7 +15,7 @@ class RentalOrder extends Model<RentalOrderAttributes, RentalOrderCreationAttrib
   declare endDate: Date;
   declare deliveryMethod?: string;
   declare durationMonths: number;
-  declare status: 'Pending' | 'Confirmed' | 'Cancelled' | 'Completed';
+  declare status: string;
   declare createdAt: Date;
   declare updatedAt: Date;
 
@@ -105,9 +106,9 @@ RentalOrder.init(
       },
     },
     status: {
-      type: DataTypes.ENUM('Pending', 'Confirmed', 'Cancelled', 'Completed'),
+      type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: 'Pending',
+      defaultValue: ORDER_STATUS.PENDING,
     },
     createdAt: {
       type: DataTypes.DATE,

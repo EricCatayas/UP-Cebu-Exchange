@@ -46,6 +46,9 @@ export const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', '
 export enum ORDER_STATUS {
   PENDING = 'Pending',
   CONFIRMED = 'Confirmed',
+  TORECEIVE = 'To Receive',
+  ONGOING = 'Ongoing',
+  TORETURN = 'To Return',
   COMPLETED = 'Completed',
   CANCELLED = 'Cancelled',
 }
@@ -53,9 +56,18 @@ export enum ORDER_STATUS {
 export const ORDER_STATUSES = [
   ORDER_STATUS.PENDING,
   ORDER_STATUS.CONFIRMED,
+  ORDER_STATUS.TORECEIVE,
+  ORDER_STATUS.ONGOING,
+  ORDER_STATUS.TORETURN,
   ORDER_STATUS.COMPLETED,
   ORDER_STATUS.CANCELLED,
 ];
+
+export enum PAYMENT_STATUS {
+  PENDING = 'Pending',
+  COMPLETED = 'Completed',
+  FAILED = 'Failed',
+}
 
 export enum PAYMENT_METHOD {
   CASH = 'Cash',
