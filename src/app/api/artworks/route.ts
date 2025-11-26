@@ -40,6 +40,14 @@ export async function POST(request: NextRequest) {
     const tags = tagsString ? JSON.parse(tagsString) : [];
 
     // Validate required fields
+    if (!title) {
+      return NextResponse.json({ error: 'Title is required' }, { status: 400 });
+    }
+
+    if (!medium) {
+      return NextResponse.json({ error: 'Medium is required' }, { status: 400 });
+    }
+
     if (!rentalFee3Months || !rentalFee6Months || !rentalFee12Months) {
       return NextResponse.json({ error: 'Rental fees are required' }, { status: 400 });
     }
