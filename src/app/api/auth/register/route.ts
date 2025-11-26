@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { User, Role } from '@/models/sequelize';
 import { hashPassword } from '@/lib/auth';
-import { USER_ROLE } from '@/lib/constants';
+import { USER_ROLE, USER_STATUS } from '@/lib/constants';
 
 // TODO: Test API
 export async function POST(request: NextRequest) {
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
       password: hashedPassword,
       fullName,
       roleId: customerRole.id,
-      status: 'Active', // Todo: In production, set status to 'Pending' and require email verification
+      status: USER_STATUS.ACTIVE, // Todo: In production, set status to 'Pending' and require email verification
     });
 
     // TODO: Send verification email

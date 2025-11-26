@@ -13,14 +13,12 @@ async function RentalsPage() {
 
   const rentalOrders = await rentalOrderService.getUserOrders(user?.userId);
 
-  const dateRanges: OrderDateRange[] = rentalOrders
-    .map((order) => ({
-      startDate: new Date(order.startDate),
-      endDate: new Date(order.endDate),
-      remainingDays: getDaysRemaining(order),
-      status: order.status,
-    }))
-    .sort((a, b) => a.startDate.getTime() - b.startDate.getTime());
+  const dateRanges: OrderDateRange[] = rentalOrders.map((order) => ({
+    startDate: new Date(order.startDate),
+    endDate: new Date(order.endDate),
+    remainingDays: getDaysRemaining(order),
+    status: order.status,
+  }));
 
   const fmt = (d: Date) => new Date(d).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
 
