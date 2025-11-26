@@ -105,12 +105,12 @@ function Login() {
         </form>
 
         <div style={{ marginTop: '1rem', display: 'grid', gap: '0.4rem', fontSize: '.8rem' }}>
-          <a href="#" className="text-primary" style={{ textDecoration: 'none' }}>
+          <a href="/forgot-password" className="text-primary" style={{ textDecoration: 'none' }}>
             Forgot Password
           </a>
           <div>
             Need an Account?{' '}
-            <a href="#" className="text-primary" style={{ fontWeight: 600, textDecoration: 'none' }}>
+            <a href="/register" className="text-primary" style={{ fontWeight: 600, textDecoration: 'none' }}>
               Sign Up
             </a>
           </div>

@@ -135,7 +135,7 @@ function Register() {
 
         <div style={{ marginTop: '1rem', fontSize: '.85rem' }}>
           Already have an account?{' '}
-          <a href="#" className="text-primary" style={{ fontWeight: 600, textDecoration: 'none' }}>
+          <a href="/login" className="text-primary" style={{ fontWeight: 600, textDecoration: 'none' }}>
             Login Here
           </a>
         </div>
