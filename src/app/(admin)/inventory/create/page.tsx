@@ -1,12 +1,14 @@
 import CreateArtworkForm from '@/components/admin/CreateArtworkForm';
 import ArtistService from '@/services/ArtistService';
 import StylesService from '@/services/StylesService';
+import TagsService from '@/services/TagsService';
 
 async function CreateInventory() {
   const allArtists = await ArtistService.getAllArtists();
   const artworkStyles = await StylesService.getAllStyles();
   // todo: make tags dynamic based on image upload
-  const artworkTags = ['modern', 'abstract', 'landscape', 'portrait', 'sculpture'];
+  const allTags = await TagsService.getAllTags();
+  const artworkTags = allTags.map((tag) => tag.name);
 
   return (
     <div className="container mx-auto px-4 py-8">
