@@ -36,6 +36,7 @@ export interface ArtworkCreateDTO {
   description?: string;
   medium: string;
   styleId?: number;
+  styleName?: string;
   heightCm?: number;
   widthCm?: number;
   status: string;

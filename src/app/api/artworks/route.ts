@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Op } from 'sequelize';
-import { Artwork, Artist, ArtworkImage, ArtworkTag, RentalPlan, Tag } from '@/models/sequelize';
+import { Artwork, Artist, ArtworkImage, ArtworkTag, RentalPlan, Tag, Style } from '@/models/sequelize';
 import { ArtworkCreateDTO } from '@/models/Artwork';
 import { getCurrentUser, isAdmin } from '@/lib/auth';
 import { ARTWORK_STATUS } from '@/lib/constants';
@@ -26,6 +26,7 @@ export async function POST(request: NextRequest) {
     const artistId = formData.get('artistId') ? Number(formData.get('artistId')) : undefined;
     const artistName = formData.get('artistName') as string;
     const styleId = formData.get('styleId') ? Number(formData.get('styleId')) : undefined;
+    const styleName = formData.get('styleName') as string;
     const description = formData.get('description') as string;
     const medium = formData.get('medium') as string;
     const heightCm = formData.get('heightCm') ? Number(formData.get('heightCm')) : undefined;
@@ -39,8 +40,8 @@ export async function POST(request: NextRequest) {
     const tags = tagsString ? JSON.parse(tagsString) : [];
 
     // Validate required fields
-    if (!status || !medium || !heightCm || !widthCm || !rentalFee3Months || !rentalFee6Months || !rentalFee12Months) {
-      return NextResponse.json({ error: 'Medium, height, width, and rental fees are required' }, { status: 400 });
+    if (!rentalFee3Months || !rentalFee6Months || !rentalFee12Months) {
+      return NextResponse.json({ error: 'Rental fees are required' }, { status: 400 });
     }
 
     if (images && images.length === 0) {
@@ -63,11 +64,7 @@ export async function POST(request: NextRequest) {
 
     let artworkArtistId = null;
 
-    if (artistId !== undefined && artistId !== null) {
-      if (isNaN(Number(artistId))) {
-        return NextResponse.json({ error: 'Artist ID must be a valid number' }, { status: 400 });
-      }
-
+    if (artistId) {
       // Check if artist exists
       const artist = await Artist.findByPk(artistId);
       if (!artist) {
@@ -80,11 +77,18 @@ export async function POST(request: NextRequest) {
       artworkArtistId = newArtist.id;
     }
 
+    let artworkStyleId = styleId;
+
+    if (!styleId && styleName) {
+      const newStyle = await Style.create({ name: styleName });
+      artworkStyleId = newStyle.id;
+    }
+
     // Create artwork
     const createdArtwork = await Artwork.create({
       title: title?.trim(),
       artistId: artworkArtistId || undefined,
-      styleId: styleId || undefined,
+      styleId: artworkStyleId,
       description: description?.trim(),
       medium: medium.trim(),
       heightCm: Number(heightCm),

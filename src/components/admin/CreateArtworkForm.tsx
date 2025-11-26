@@ -7,6 +7,7 @@ import { ArtworkCreateDTO } from '@/models/Artwork';
 import { StyleDTO } from '@/models/Style';
 import { artworkApi } from '@/lib/api/artwork';
 import { ARTWORK_MEDIUMS, ARTWORK_STATUSES } from '@/lib/constants';
+import { FaPlus } from 'react-icons/fa';
 
 function CreateArtworkForm({ artists, styles, tags }: { artists: ArtistDTO[]; styles: StyleDTO[]; tags: string[] }) {
   const router = useRouter();
@@ -18,6 +19,7 @@ function CreateArtworkForm({ artists, styles, tags }: { artists: ArtistDTO[]; st
     description: '',
     medium: '',
     styleId: '',
+    styleName: '',
     heightCm: '',
     widthCm: '',
     status: ARTWORK_STATUSES[0] || 'Available',
@@ -26,8 +28,12 @@ function CreateArtworkForm({ artists, styles, tags }: { artists: ArtistDTO[]; st
     rentalFee12Months: '',
     tags: [],
   });
+  const [newTag, setNewTag] = useState('');
+  const [tagOptions, setTagOptions] = useState<string[]>(tags || []);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [isNewArtist, setIsNewArtist] = useState(false);
+  const [isNewMedium, setIsNewMedium] = useState(false);
+  const [isNewStyle, setIsNewStyle] = useState(false);
   const [images, setImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const mediums = ARTWORK_MEDIUMS;
@@ -68,6 +74,19 @@ function CreateArtworkForm({ artists, styles, tags }: { artists: ArtistDTO[]; st
     setSelectedTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]));
   };
 
+  const handleTagInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewTag(e.target.value);
+  };
+
+  const handleAddTag = () => {
+    const trimmedTag = newTag.trim();
+    if (trimmedTag && !tagOptions.includes(trimmedTag)) {
+      setTagOptions((prev) => [...prev, trimmedTag]);
+      setSelectedTags((prev) => [...prev, trimmedTag]);
+      setNewTag('');
+    }
+  };
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
@@ -102,6 +121,7 @@ function CreateArtworkForm({ artists, styles, tags }: { artists: ArtistDTO[]; st
         description: formData.description || undefined,
         medium: formData.medium,
         styleId: formData.styleId ? Number(formData.styleId) : undefined,
+        styleName: formData.styleName || undefined,
         heightCm: formData.heightCm ? Number(formData.heightCm) : undefined,
         widthCm: formData.widthCm ? Number(formData.widthCm) : undefined,
         status: formData.status,
@@ -137,7 +157,18 @@ function CreateArtworkForm({ artists, styles, tags }: { artists: ArtistDTO[]; st
         artistName: '',
       }));
     }
-  }, [isNewArtist]);
+    if (isNewStyle) {
+      setFormData((prev) => ({
+        ...prev,
+        styleId: '',
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        styleName: '',
+      }));
+    }
+  }, [isNewArtist, isNewStyle]);
 
   // Cleanup preview URLs on unmount
   useEffect(() => {
@@ -220,23 +251,44 @@ function CreateArtworkForm({ artists, styles, tags }: { artists: ArtistDTO[]; st
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label htmlFor="medium" className="block text-sm font-medium text-gray-700 mb-1">
-              Medium <span className="text-red-500">*</span>
-            </label>
-            <select
-              id="medium"
-              name="medium"
-              value={formData.medium}
-              onChange={handleSelectMedium}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">Select a medium</option>
-              {mediums?.map((medium, index) => (
-                <option key={index} value={medium}>
-                  {medium}
-                </option>
-              ))}
-            </select>
+            <div className="flex justify-between">
+              <label htmlFor="medium" className="block text-sm font-medium text-gray-700 mb-1">
+                Medium <span className="text-red-500">*</span>
+              </label>
+              <button
+                type="button"
+                onClick={() => setIsNewMedium(!isNewMedium)}
+                className="text-blue-600 text-sm hover:underline"
+              >
+                {isNewMedium ? 'Select Medium' : 'Add New Medium'}
+              </button>
+            </div>
+            {isNewMedium ? (
+              <input
+                type="text"
+                id="medium"
+                name="medium"
+                value={formData.medium}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter new medium"
+              />
+            ) : (
+              <select
+                id="medium"
+                name="medium"
+                value={formData.medium}
+                onChange={handleSelectMedium}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Select a medium</option>
+                {mediums?.map((medium, index) => (
+                  <option key={index} value={medium}>
+                    {medium}
+                  </option>
+                ))}
+              </select>
+            )}
           </div>
 
           <div>
@@ -271,7 +323,7 @@ function CreateArtworkForm({ artists, styles, tags }: { artists: ArtistDTO[]; st
                 onClick={() => setIsNewArtist(!isNewArtist)}
                 className="text-blue-600 text-sm hover:underline"
               >
-                {isNewArtist ? 'Select Existing Artist' : 'Add New Artist'}
+                {isNewArtist ? 'Select Artist' : 'Add New Artist'}
               </button>
             </div>
             {isNewArtist ? (
@@ -303,23 +355,44 @@ function CreateArtworkForm({ artists, styles, tags }: { artists: ArtistDTO[]; st
           </div>
 
           <div>
-            <label htmlFor="styleId" className="block text-sm font-medium text-gray-700 mb-1">
-              Style
-            </label>
-            <select
-              id="styleId"
-              name="styleId"
-              value={formData.styleId}
-              onChange={handleSelectStyle}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">Select a style</option>
-              {styles?.map((style) => (
-                <option key={style.id} value={style.id}>
-                  {style.name}
-                </option>
-              ))}
-            </select>
+            <div className="flex justify-between">
+              <label htmlFor="styleId" className="block text-sm font-medium text-gray-700 mb-1">
+                Style
+              </label>
+              <button
+                type="button"
+                onClick={() => setIsNewStyle(!isNewStyle)}
+                className="text-blue-600 text-sm hover:underline"
+              >
+                {isNewStyle ? 'Select Style' : 'Add New Style'}
+              </button>
+            </div>
+            {isNewStyle ? (
+              <input
+                type="text"
+                id="styleName"
+                name="styleName"
+                value={formData.styleName}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter new style name"
+              />
+            ) : (
+              <select
+                id="styleId"
+                name="styleId"
+                value={formData.styleId}
+                onChange={handleSelectStyle}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Select a style</option>
+                {styles?.map((style) => (
+                  <option key={style.id} value={style.id}>
+                    {style.name}
+                  </option>
+                ))}
+              </select>
+            )}
           </div>
         </div>
       </div>
@@ -428,7 +501,7 @@ function CreateArtworkForm({ artists, styles, tags }: { artists: ArtistDTO[]; st
       <div className="space-y-4">
         <h2 className="text-xl font-semibold">Tags</h2>
         <div className="flex flex-wrap gap-3">
-          {tags?.map((tag) => (
+          {tagOptions?.map((tag) => (
             <label
               key={tag}
               className="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-md hover:bg-gray-50 cursor-pointer"
@@ -443,6 +516,18 @@ function CreateArtworkForm({ artists, styles, tags }: { artists: ArtistDTO[]; st
             </label>
           ))}
           {/* Todo: Add Tag */}
+          <label className="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-md hover:bg-gray-50 cursor-pointer">
+            <input
+              type="text"
+              value={newTag}
+              onChange={handleTagInputChange}
+              className="text-sm text-gray-700 focus:outline-none"
+              placeholder="New tag"
+            />
+            <button type="button" onClick={handleAddTag} className="text-blue-600">
+              <FaPlus />
+            </button>
+          </label>
         </div>
       </div>
 
