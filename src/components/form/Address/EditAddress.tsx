@@ -38,12 +38,13 @@ export default function EditAddress({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(editedAddress),
       });
+      const data = await res.json();
       if (res.ok) {
-        const { address: updatedAddress } = await res.json();
+        const updatedAddress = data.address;
         handleSetAddress(updatedAddress);
         setIsEditing(false);
       } else {
-        console.error('Failed to update address');
+        console.error(data.error || 'Failed to update address');
       }
     } catch (err) {
       console.error('Error updating address:', err);

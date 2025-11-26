@@ -26,8 +26,8 @@ export const artworkApi = {
     });
 
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Failed to create artwork');
+      const data = await response.json();
+      throw new Error(data.error || 'Failed to create artwork');
     }
 
     return response.json();
@@ -42,7 +42,8 @@ export const artworkApi = {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to update artwork status');
+      const data = await response.json();
+      throw new Error(data.error || 'Failed to update artwork status');
     }
 
     return response.json();
@@ -58,7 +59,8 @@ export const artworkApi = {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to delete artwork');
+      const data = await response.json();
+      throw new Error(data.error || 'Failed to delete artwork');
     }
 
     return response.json();

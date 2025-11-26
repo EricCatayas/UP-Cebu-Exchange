@@ -10,7 +10,8 @@ export const rentalOrderApi = {
       body: JSON.stringify(data),
     });
     if (!response.ok) {
-      throw new Error('Failed to create rental order');
+      const data = await response.json();
+      throw new Error(data.error || 'Failed to create rental order');
     }
     return (await response.json()).rentalOrder;
   },

@@ -16,11 +16,12 @@ export default function AddAddressForm({ handleSetAddress }: { handleSetAddress:
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ city, province, postalCode, addressLine1, addressLine2 }),
     });
+    const data = await res.json();
     if (res.ok) {
-      const { address: newAddress } = await res.json();
+      const newAddress = data.address;
       handleSetAddress(newAddress);
     } else {
-      console.error('Failed to create address');
+      console.error(data.error || 'Failed to create address');
     }
   };
 
