@@ -1,6 +1,7 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '@/config/database';
 import { PaymentAttributes } from '@/models/Payment';
+import { PAYMENT_STATUS } from '@/lib/constants';
 
 interface PaymentCreationAttributes extends Optional<PaymentAttributes, 'id' | 'status' | 'createdAt' | 'updatedAt'> {}
 
@@ -40,7 +41,7 @@ Payment.init(
     status: {
       type: DataTypes.ENUM('Pending', 'Completed', 'Failed'),
       allowNull: false,
-      defaultValue: 'Pending',
+      defaultValue: PAYMENT_STATUS.PENDING,
     },
     method: {
       type: DataTypes.STRING(50),
