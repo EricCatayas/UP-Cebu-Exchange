@@ -3,6 +3,7 @@ import Link from 'next/link';
 import HeartIcon from '../HeartIcon/HeartIcon';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
 import { ArtworkDTO } from '@/models/Artwork';
 import { getDimension } from '@/lib/artwork';
 import { cartApi } from '@/lib/api/cart';
@@ -12,6 +13,7 @@ function ArtworkDetails({ artwork }: { artwork: ArtworkDTO }) {
   const router = useRouter();
 
   const artist = artwork.artist;
+  const { user } = useAuth();
   const [inCart, setInCart] = useState(artwork.isInCart);
   const [inWishlist, setInWishlist] = useState(artwork.isInWishlist);
 
@@ -19,6 +21,10 @@ function ArtworkDetails({ artwork }: { artwork: ArtworkDTO }) {
 
   const handleAddToCart = async () => {
     try {
+      if (!user) {
+        alert('You need to be signed in to add item to cart');
+        return;
+      }
       await cartApi.addItem(artwork.id);
       setInCart(true);
     } catch (error) {
@@ -28,6 +34,10 @@ function ArtworkDetails({ artwork }: { artwork: ArtworkDTO }) {
 
   const handleAddToWishlist = async () => {
     try {
+      if (!user) {
+        alert('You need to be signed in to add item to wishlist');
+        return;
+      }
       await wishlistApi.addItem(artwork.id);
       setInWishlist(true);
     } catch (error) {

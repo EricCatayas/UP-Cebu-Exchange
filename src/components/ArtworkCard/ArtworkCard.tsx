@@ -1,15 +1,18 @@
 'use client';
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { getDimension, getImageUrl } from '@/lib/artwork';
 import HeartIcon from '../HeartIcon/HeartIcon';
 import CartIcon from '../CartIcon/CartIcon';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
+import { getDimension, getImageUrl } from '@/lib/artwork';
 import { cartApi } from '@/lib/api/cart';
 import { wishlistApi } from '@/lib/api/wishlist';
 import './ArtworkCard.css';
 
 export default function ArtworkCard({ artwork, displayInfo = true }: { artwork: any; displayInfo?: boolean }) {
   if (!artwork) return null;
+
+  const { user } = useAuth();
 
   const primaryImageUrl = getImageUrl(artwork);
   const lowestPlan = artwork.rentalPlans ? [...artwork.rentalPlans].sort((a, b) => a.price - b.price)[0] : null;
@@ -24,6 +27,10 @@ export default function ArtworkCard({ artwork, displayInfo = true }: { artwork: 
 
   const handleToggleCart = async () => {
     try {
+      if (!user) {
+        alert('You need to be signed in to add item to cart');
+        return;
+      }
       if (inCart) {
         await cartApi.removeItem(artwork.id);
         setInCart(false);
@@ -38,6 +45,10 @@ export default function ArtworkCard({ artwork, displayInfo = true }: { artwork: 
 
   const handleToggleWishlist = async () => {
     try {
+      if (!user) {
+        alert('You need to be signed in to add item to wishlist');
+        return;
+      }
       if (inWishlist) {
         await wishlistApi.removeItem(artwork.id);
         setInWishlist(false);

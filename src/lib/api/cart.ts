@@ -9,7 +9,8 @@ export const cartApi = {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to add item to cart');
+      const data = await response.json();
+      throw new Error(data.error || 'Failed to add item to cart');
     }
 
     return response.json();
@@ -25,7 +26,8 @@ export const cartApi = {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to remove item from cart');
+      const data = await response.json();
+      throw new Error(data.error || 'Failed to remove item from cart');
     }
 
     return response.json();
