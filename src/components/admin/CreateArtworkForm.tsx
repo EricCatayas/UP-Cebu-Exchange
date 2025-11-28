@@ -6,10 +6,20 @@ import { ArtistDTO } from '@/models/Artist';
 import { ArtworkCreateDTO } from '@/models/Artwork';
 import { StyleDTO } from '@/models/Style';
 import { artworkApi } from '@/lib/api/artwork';
-import { ARTWORK_MEDIUMS, ARTWORK_STATUSES } from '@/lib/constants';
+import { ARTWORK_STATUS, ARTWORK_STATUSES } from '@/lib/constants';
 import { FaPlus } from 'react-icons/fa';
 
-function CreateArtworkForm({ artists, styles, tags }: { artists: ArtistDTO[]; styles: StyleDTO[]; tags: string[] }) {
+function CreateArtworkForm({
+  artists,
+  mediums,
+  styles,
+  tags,
+}: {
+  artists: ArtistDTO[];
+  mediums: string[];
+  styles: StyleDTO[];
+  tags: string[];
+}) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -22,7 +32,7 @@ function CreateArtworkForm({ artists, styles, tags }: { artists: ArtistDTO[]; st
     styleName: '',
     heightCm: '',
     widthCm: '',
-    status: ARTWORK_STATUSES[0] || 'Available',
+    status: ARTWORK_STATUS.AVAILABLE,
     rentalFee3Months: '',
     rentalFee6Months: '',
     rentalFee12Months: '',
@@ -36,7 +46,6 @@ function CreateArtworkForm({ artists, styles, tags }: { artists: ArtistDTO[]; st
   const [isNewStyle, setIsNewStyle] = useState(false);
   const [images, setImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
-  const mediums = ARTWORK_MEDIUMS;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
