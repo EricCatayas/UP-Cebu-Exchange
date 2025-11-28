@@ -1,28 +1,22 @@
-import React from "react";
+import React from 'react';
+import Link from 'next/link';
 
 const Footer: React.FC = () => {
   return (
     <footer>
       <div className="container">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div>
-            <img
-              src="/logo-placeholder.png"
-              alt="Logo"
-              className="h-10 w-10 mb-2"
-            />
-          </div>
+          <Link href="/">
+            <img src="/logo.png" alt="Logo" className="h-20 ml-8" />
+          </Link>
           <div>
             <h3 className="text-lg font-bold mb-2">CONTACT</h3>
             <p className="text-sm">(+63) 987 654 3210</p>
             <p className="text-sm">
-              <a href="mailto:upcebuexchange@email.com">
-                upcebuexchange@email.com
-              </a>
+              <a href="mailto:upcebuexchange@email.com">upcebuexchange@email.com</a>
             </p>
             <p className="text-sm">
-              University Of The Philippines, Arts & Sciences Building, 3rd
-              Floor, Gorordo Ave, Cebu City
+              University Of The Philippines, Arts & Sciences Building, 3rd Floor, Gorordo Ave, Cebu City
             </p>
           </div>
           <div>
@@ -39,8 +33,7 @@ const Footer: React.FC = () => {
           </div>
         </div>
         <div className="text-center text-sm mt-6">
-          &copy; {new Date().getFullYear()} UP Cebu Exchange. All rights
-          reserved.
+          &copy; {new Date().getFullYear()} UP Cebu Exchange. All rights reserved.
         </div>
       </div>
     </footer>
