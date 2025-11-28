@@ -41,7 +41,7 @@ async function Users() {
 
         {/* Users Table */}
         <section>
-          <h2 className="text-xl font-semibold mb-4">Customer Users</h2>
+          <h2 className="text-xl font-semibold mb-4">Customers</h2>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse bg-white shadow-sm rounded-lg">
               <thead>
@@ -94,7 +94,7 @@ async function Users() {
 
         {/* Staff Table */}
         <section>
-          <h2 className="text-xl font-semibold mb-4">Staff Users</h2>
+          <h2 className="text-xl font-semibold mb-4">Staff Members</h2>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse bg-white shadow-sm rounded-lg">
               <thead>

@@ -3,7 +3,7 @@ import ArtworkRepository from '@/repositories/ArtworkRepository';
 import WishlistService from './WishlistService';
 import { Cart, CartItem, Wishlist, WishlistItem } from '@/models/sequelize';
 import { ArtworkDTO, PaginatedArtworks } from '@/models/Artwork';
-import { ARTWORK_STATUS } from '@/lib/constants';
+import { ARTWORK_STATUS, PAGE_SIZE } from '@/lib/constants';
 
 interface QueryParams {
   search?: string;
@@ -26,8 +26,8 @@ class ArtworkService {
     sort,
     styles,
     mediums,
-    limit,
     page = 1,
+    limit = PAGE_SIZE,
   }: QueryParams): Promise<PaginatedArtworks> {
     // Build filtering options based on params
     let options = {};
@@ -87,6 +87,17 @@ class ArtworkService {
         return artworkDTO;
       }),
     };
+  }
+
+  async getAvailableArtworks(): Promise<ArtworkDTO[]> {
+    const availableArtworks = await ArtworkRepository.findAll({
+      where: {
+        status: ARTWORK_STATUS.AVAILABLE,
+      },
+      include: ['artist', 'tags', 'style', 'rentalPlans', 'images'],
+    });
+
+    return availableArtworks;
   }
 
   async getAllArtworks(): Promise<ArtworkDTO[]> {

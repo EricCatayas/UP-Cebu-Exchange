@@ -3,7 +3,7 @@ import { UserDTO } from '@/models/User';
 
 class UserService {
   async getUserById(userId: number): Promise<UserDTO | null> {
-    const user = await User.findByPk(userId);
+    const user = await User.findByPk(userId, { include: ['role'] });
     if (!user) return null;
     return {
       id: user.id,
@@ -13,6 +13,7 @@ class UserService {
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
       roleId: user.roleId,
+      role: user.role,
     };
   }
 
@@ -28,6 +29,7 @@ class UserService {
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
       roleId: user.roleId,
+      role: roleRecord,
     }));
   }
 }

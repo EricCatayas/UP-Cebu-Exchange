@@ -234,7 +234,7 @@ function CheckoutSuccess({ rentalOrder }: { rentalOrder: RentalOrderDTO }) {
             <li className="flex items-start gap-2">
               <span className="text-blue-600 font-bold mt-1">•</span>
               <span>
-                Items will be researved, scheduled for delivery, or made available once you've completed your payment
+                Items will be reserved, scheduled for delivery, or made available once you've completed your payment
               </span>
             </li>
             <li className="flex items-start gap-2">
