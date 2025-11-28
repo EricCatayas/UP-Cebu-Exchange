@@ -65,7 +65,7 @@ async function Users() {
                 {customerUsers.map((user) => (
                   <tr key={user.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.id}</td>
-                    <td className="px-6 py-4 text-sm text-gray-900">{user.name || 'N/A'}</td>
+                    <td className="px-6 py-4 text-sm text-gray-900">{user.fullName || 'N/A'}</td>
                     <td className="px-6 py-4 text-sm text-gray-900">{user.email || 'N/A'}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       <span
@@ -110,6 +110,9 @@ async function Users() {
                     Status
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Role
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
@@ -118,7 +121,7 @@ async function Users() {
                 {staffUsers.map((user) => (
                   <tr key={user.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.id}</td>
-                    <td className="px-6 py-4 text-sm text-gray-900">{user.name || 'N/A'}</td>
+                    <td className="px-6 py-4 text-sm text-gray-900">{user.fullName || 'N/A'}</td>
                     <td className="px-6 py-4 text-sm text-gray-900">{user.email || 'N/A'}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       <span
@@ -131,6 +134,7 @@ async function Users() {
                         {user.status}
                       </span>
                     </td>
+                    <td className="px-6 py-4 text-sm text-gray-900">{user.role.name || 'N/A'}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <div className="flex gap-2">
                         <Link href={`/users/${user.id}`} className="text-blue-600 hover:text-blue-800 font-medium">
