@@ -63,6 +63,7 @@ function ArtworkDetails({ artwork }: { artwork: ArtworkDTO }) {
 
       {/* Tags */}
       <div className="flex flex-wrap gap-2 mb-6">
+        <span className="text-sm text-gray-600 italic">#{artwork.style?.name}</span>
         {artwork.tags?.map((tag, index) => (
           <span key={index} className="text-sm text-gray-600 italic">
             #{tag.name}

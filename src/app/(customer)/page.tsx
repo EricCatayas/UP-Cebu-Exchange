@@ -3,6 +3,7 @@ import CategoryGrid from '@/components/CategoryGrid/CategoryGrid';
 import ArtworkCarousel from '@/components/ArtworkCarousel/ArtworkCarousel';
 import HeroBackground from '@/components/HeroBackground/HeroBackground';
 import ArtworkService from '@/services/ArtworkService';
+import StylesService from '@/services/StylesService';
 import Link from 'next/link';
 
 export default async function Page() {
@@ -12,42 +13,44 @@ export default async function Page() {
 
   const categories = [
     {
-      id: 1,
       name: 'Expressionism',
       imageUrl:
         'https://res.cloudinary.com/dbgolykzg/image/upload/v1763961737/UP%20Cebu%20Exchange/Expressionism_3x4_v3rsvf.jpg',
     },
     {
-      id: 2,
       name: 'Realism',
       imageUrl:
         'https://res.cloudinary.com/dbgolykzg/image/upload/v1763961747/UP%20Cebu%20Exchange/Realism_4x3_yqbvq4.jpg',
     },
     {
-      id: 3,
       name: 'Abstract',
       imageUrl:
         'https://res.cloudinary.com/dbgolykzg/image/upload/v1763961736/UP%20Cebu%20Exchange/abstract_1x1_clixmp.jpg',
     },
     {
-      id: 4,
       name: 'Folk Art',
       imageUrl:
         'https://res.cloudinary.com/dbgolykzg/image/upload/v1763961737/UP%20Cebu%20Exchange/folkart_1x1_evgkmm.jpg',
     },
     {
-      id: 5,
-      name: 'Landscape',
+      name: 'Impressionism',
       imageUrl:
         'https://res.cloudinary.com/dbgolykzg/image/upload/v1763961740/UP%20Cebu%20Exchange/Landscape_2x1_p8hqta.jpg',
     },
     {
-      id: 6,
       name: 'Contemporary',
       imageUrl:
         'https://res.cloudinary.com/dbgolykzg/image/upload/v1763961737/UP%20Cebu%20Exchange/contemporary_2x3_u2fzsj.jpg',
     },
   ];
+
+  const styles = await StylesService.getStylesByNames(categories.map((c) => c.name));
+  categories.forEach((category) => {
+    const style = styles.find((s) => s.name === category.name);
+    if (style) {
+      category.id = style.id;
+    }
+  });
 
   return (
     <>
