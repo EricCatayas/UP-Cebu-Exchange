@@ -77,6 +77,8 @@ export enum PAYMENT_METHOD {
 
 export const PAYMENT_METHODS = [PAYMENT_METHOD.CASH, PAYMENT_METHOD.CREDIT_CARD, PAYMENT_METHOD.BANK_TRANSFER];
 
+export const PAGE_SIZE = 12;
+
 export enum USER_ROLE {
   // ADMIN = 'admin',
   HEAD = 'head',

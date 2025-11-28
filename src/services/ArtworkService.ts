@@ -1,8 +1,18 @@
+import { Op } from 'sequelize';
 import ArtworkRepository from '@/repositories/ArtworkRepository';
 import WishlistService from './WishlistService';
 import { Cart, CartItem, Wishlist, WishlistItem } from '@/models/sequelize';
-import { ArtworkDTO } from '@/models/Artwork';
+import { ArtworkDTO, PaginatedArtworks } from '@/models/Artwork';
 import { ARTWORK_STATUS } from '@/lib/constants';
+
+interface QueryParams {
+  search?: string;
+  sort?: 'popular' | 'latest';
+  styles?: number[];
+  mediums?: string[];
+  page?: number;
+  limit: number;
+}
 
 class ArtworkService {
   userId?: number;
@@ -11,24 +21,72 @@ class ArtworkService {
     this.userId = userId;
   }
 
-  async getArtworksForCustomer(): Promise<ArtworkDTO[]> {
-    const artworks = await ArtworkRepository.findAll({
-      where: {
-        status: [ARTWORK_STATUS.AVAILABLE, ARTWORK_STATUS.RENTED],
-      },
+  async getArtworksForCustomer({
+    search,
+    sort,
+    styles,
+    mediums,
+    limit,
+    page = 1,
+  }: QueryParams): Promise<PaginatedArtworks> {
+    // Build filtering options based on params
+    let options = {};
+    const offset = (page - 1) * limit;
+    const where: any = {
+      status: [ARTWORK_STATUS.AVAILABLE, ARTWORK_STATUS.RENTED],
+    };
+
+    if (search) {
+      where[Op.or] = [
+        { title: { [Op.like]: `%${search}%` } },
+        { description: { [Op.like]: `%${search}%` } },
+        // { '$artist.name$': { [Op.like]: `%${search}%` } }, // Todo: Unknown column 'artist.name' in 'where clause'
+      ];
+    }
+    if (styles && styles.length > 0) {
+      where.styleId = { [Op.in]: styles };
+    }
+    if (mediums && mediums.length > 0) {
+      where.medium = { [Op.in]: mediums };
+    }
+
+    // TODO: Sorting
+    if (sort) {
+      // if(sort === 'popular'){
+      //    order = [['popularityScore', 'DESC']]
+      // }
+      if (sort === 'latest') {
+        options = { ...options, order: [['createdAt', 'DESC']] };
+      }
+    }
+
+    options = { where, page, limit, offset };
+
+    console.log('ArtworkService - Query Options:', options);
+
+    const result = await ArtworkRepository.findPaginated({
+      ...options,
     });
 
+    const artworks = result.items;
     const cartArtworkIds = await this.getUserCartArtworkIds();
     const wishlistArtworkIds = await this.getUserWishlistArtworkIds();
 
-    return artworks.map((artwork) => {
-      const artworkDTO: ArtworkDTO = {
-        ...artwork,
-        isInCart: cartArtworkIds.includes(artwork.id),
-        isInWishlist: wishlistArtworkIds.includes(artwork.id),
-      };
-      return artworkDTO;
-    });
+    return {
+      page,
+      pageSize: result.pageSize,
+      nextPage: result.nextPage,
+      previousPage: result.previousPage,
+      totalPages: result.totalPages,
+      items: artworks.map((artwork) => {
+        const artworkDTO: ArtworkDTO = {
+          ...artwork,
+          isInCart: cartArtworkIds.includes(artwork.id),
+          isInWishlist: wishlistArtworkIds.includes(artwork.id),
+        };
+        return artworkDTO;
+      }),
+    };
   }
 
   async getAllArtworks(): Promise<ArtworkDTO[]> {
@@ -78,11 +136,6 @@ class ArtworkService {
 
       return artwork;
     });
-  }
-
-  async getPaginatedArtworks(page: number, limit: number) {
-    const offset = (page - 1) * limit;
-    return await ArtworkRepository.findAll({ offset, limit });
   }
 
   // TODO:

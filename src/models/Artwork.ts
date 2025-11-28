@@ -45,3 +45,12 @@ export interface ArtworkCreateDTO {
   rentalFee12Months: number;
   tags: string[];
 }
+
+export interface PaginatedArtworks {
+  page: number;
+  pageSize: number;
+  nextPage?: number;
+  previousPage?: number;
+  totalPages?: number;
+  items: ArtworkDTO[];
+}
