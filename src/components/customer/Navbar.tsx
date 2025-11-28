@@ -58,7 +58,9 @@ const Navbar: React.FC = () => {
           </h1>
         </div>
         <div className="flex items-center space-x-4">
-          {/* If logged in */}
+          <Link href="/artworks" className="font-light hover:text-gray-700">
+            Gallery
+          </Link>
           {isLoggedIn ? (
             <>
               <Link href="/checkout" className="font-light hover:text-gray-700">
