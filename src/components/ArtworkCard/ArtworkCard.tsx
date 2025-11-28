@@ -1,13 +1,12 @@
 'use client';
 import React, { useState } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getDimension, getImageUrl } from '@/lib/artwork';
-import './ArtworkCard.css';
 import HeartIcon from '../HeartIcon/HeartIcon';
 import CartIcon from '../CartIcon/CartIcon';
 import { cartApi } from '@/lib/api/cart';
 import { wishlistApi } from '@/lib/api/wishlist';
+import './ArtworkCard.css';
 
 export default function ArtworkCard({ artwork, displayInfo = true }: { artwork: any; displayInfo?: boolean }) {
   if (!artwork) return null;
