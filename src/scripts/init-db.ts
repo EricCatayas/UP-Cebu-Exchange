@@ -7,7 +7,7 @@ import '@/models/sequelize';
 
 import DatabaseService from '@/lib/database';
 
-import { seedDefaultRoles, seedUsers, seedDatabase } from './seed';
+import { seedDatabase } from './seed';
 
 async function initializeDatabase() {
   try {
@@ -22,12 +22,6 @@ async function initializeDatabase() {
     await dbService.sync({ force: false }); // Set to true to drop existing tables
 
     console.log('✅ All tables created successfully!');
-
-    // Seed default roles
-    await seedDefaultRoles();
-
-    // Seed test accounts
-    await seedUsers();
 
     // Await seed database
     await seedDatabase();

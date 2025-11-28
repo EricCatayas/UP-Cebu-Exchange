@@ -11,7 +11,7 @@ import Tag from '@/models/sequelize/Tag';
 import { ARTWORK_MEDIUM, ARTWORK_STATUS, USER_ROLE } from '@/lib/constants';
 import { hashPassword } from '@/lib/auth';
 
-export async function seedDefaultRoles() {
+async function seedDefaultRoles() {
   try {
     console.log('🌱 Seeding default roles...');
 
@@ -39,7 +39,7 @@ export async function seedDefaultRoles() {
   }
 }
 
-export async function seedUsers() {
+async function seedUsers() {
   try {
     const customerRole = await Role.findOne({
       where: { name: USER_ROLE.CUSTOMER },
@@ -78,7 +78,33 @@ export async function seedUsers() {
   }
 }
 
-export async function seedDatabase() {
+async function seedStyles() {
+  try {
+    const styles = [
+      'Contemporary',
+      'Realism',
+      'Abstract',
+      'Expressionism',
+      'Impressionism',
+      'Minimalism',
+      'Surrealism',
+      'Abstract Expressionism',
+      'Botanical Art',
+      'Folk Art',
+    ];
+    for (const styleName of styles) {
+      await Style.findOrCreate({
+        where: { name: styleName },
+        defaults: { name: styleName },
+      });
+    }
+  } catch (error) {
+    console.error('❌ Error seeding styles:', error);
+    throw error;
+  }
+}
+
+async function seedArtworks() {
   try {
     const artistsData = [
       {
@@ -513,7 +539,7 @@ export async function seedDatabase() {
         title: 'Threads of Heritage',
         description:
           'A vibrant piece combining geometric shapes and traditional patterns representing cultural identity.',
-        style: 'Modern Folk Art',
+        style: 'Folk Art',
         medium: ARTWORK_MEDIUM.MIXED_MEDIA,
         price: 600,
         heightCm: 88,
@@ -635,9 +661,12 @@ export async function seedDatabase() {
       const data = artistsData[i];
 
       // 1. Create Artist
-      const artist = await Artist.create({
-        name: data.name,
-        biography: data.biography,
+      const [artist] = await Artist.findOrCreate({
+        where: { name: data.name },
+        defaults: {
+          name: data.name,
+          biography: data.biography,
+        },
       });
 
       // 2. Create Style
@@ -700,4 +729,18 @@ export async function seedDatabase() {
     console.error('❌ Error seeding roles:', error);
     throw error;
   }
+}
+
+export async function seedDatabase() {
+  // Seed default roles
+  await seedDefaultRoles();
+
+  // Seed test accounts
+  await seedUsers();
+
+  // Seed styles
+  await seedStyles();
+
+  // Seed artworks
+  await seedArtworks();
 }
