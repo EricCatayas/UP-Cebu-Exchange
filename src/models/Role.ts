@@ -5,3 +5,5 @@ export interface RoleAttributes {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface RoleDTO extends Omit<RoleAttributes, 'description'> {}
