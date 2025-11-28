@@ -35,7 +35,12 @@ export function RentalOrderProvider({ children }: { children: React.ReactNode })
   const endDate = useMemo(() => {
     if (!startDate) return '';
     const date = new Date(startDate);
-    date.setMonth(date.getMonth() + selectedDuration);
+    if (selectedDuration === 12) {
+      // 364 days for 12 months
+      date.setDate(date.getDate() + 364);
+    } else {
+      date.setMonth(date.getMonth() + selectedDuration);
+    }
     return date.toISOString().split('T')[0];
   }, [startDate, selectedDuration]);
 

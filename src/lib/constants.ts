@@ -69,6 +69,8 @@ export enum PAYMENT_STATUS {
   FAILED = 'Failed',
 }
 
+export const PAYMENT_STATUSES = [PAYMENT_STATUS.PENDING, PAYMENT_STATUS.COMPLETED, PAYMENT_STATUS.FAILED];
+
 export enum PAYMENT_METHOD {
   CASH = 'Cash',
   CREDIT_CARD = 'Credit Card',

@@ -1,5 +1,5 @@
-import React from 'react';
 import RentalOrderDetails from '@/components/admin/RentalOrderDetails';
+import RentalOrderDetailsEdit from '@/components/admin/RentalOrderDetailsEdit';
 import RentalOrderService from '@/services/RentalOrderService';
 import { RentalOrderDTO } from '@/models/RentalOrder';
 
@@ -20,6 +20,7 @@ async function OrdersDetails({ params }: { params: { id: string } }) {
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">Rental Order Details</h1>
       <RentalOrderDetails order={order} />
+      <RentalOrderDetailsEdit order={order} />
     </div>
   );
 }
