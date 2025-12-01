@@ -17,6 +17,7 @@ import Style from './Style';
 import Tag from './Tag';
 import User from './User';
 import UserAddress from './UserAddress';
+import UserEmailVerification from './UserEmailVerification';
 import Wishlist from './Wishlist';
 import WishlistItem from './WishlistItem';
 
@@ -252,6 +253,7 @@ export {
   Tag,
   User,
   UserAddress,
+  UserEmailVerification,
   Wishlist,
   WishlistItem,
 };
@@ -274,6 +276,7 @@ export default {
   Tag,
   User,
   UserAddress,
+  UserEmailVerification,
   Wishlist,
   WishlistItem,
 };
