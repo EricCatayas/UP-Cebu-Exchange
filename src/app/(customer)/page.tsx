@@ -56,7 +56,7 @@ export default async function Page() {
     <>
       <HeroBackground>
         <div className="container mx-auto px-4 text-black text-left">
-          <h1 className="font-playfair text-5xl md:text-7xl font-medium mb-2">Discover Art</h1>
+          <h1 className="font-playfair text-8xl font-medium mb-2">Discover Art</h1>
           <h1 className="font-poppins text-4xl md:text-6xl font-regular mb-6">from UP Cebu</h1>
           <p className="font-poppins text-lg md:text-xl mb-8 max-w-2xl font-regular">
             We offer painting rentals crafted by the next generation of Filipino artists from the University of the
