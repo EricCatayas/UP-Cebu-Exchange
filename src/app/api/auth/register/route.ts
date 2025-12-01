@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { UserEmailVerification } from '@/models/sequelize';
 import { User, Role } from '@/models/sequelize';
 import { hashPassword } from '@/lib/auth';
 import { USER_ROLE, USER_STATUS } from '@/lib/constants';
+import crypto from 'crypto';
+import EmailService from '@/services/EmailService';
 
 // TODO: Test API
 export async function POST(request: NextRequest) {
@@ -51,10 +54,21 @@ export async function POST(request: NextRequest) {
       password: hashedPassword,
       fullName,
       roleId: customerRole.id,
-      status: USER_STATUS.ACTIVE, // Todo: In production, set status to 'Pending' and require email verification
+      status: USER_STATUS.PENDING,
     });
 
-    // TODO: Send verification email
+    // Send verification email
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+
+    await UserEmailVerification.create({
+      userId: newUser.id,
+      token: verificationToken,
+      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // Token valid for 24 hours
+    });
+
+    const emailService = new EmailService();
+    // todo: handle email errors
+    const { success, error } = await emailService.sendEmailVerification(email, verificationToken);
 
     return NextResponse.json(
       {

@@ -21,8 +21,8 @@ function Register() {
     if (result.success) {
       // Registration successful
       console.log('Registration successful');
-      alert('Registration successful! Please verify your email.');
-      router.push('/verify-email');
+      alert('Registration successful! A verification email has been sent to your email address.');
+      router.push(`/verify-email?email=${encodeURIComponent(email)}&sent=true`);
     } else {
       // Handle registration error
       alert(`Registration failed: ${result.error}`);

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { User, Role } from '@/models/sequelize';
 import { isAdmin, verifyPassword, generateToken, setAuthCookie } from '@/lib/auth';
+import { ERROR_MESSAGE } from '@/lib/constants';
 
 // TODO: Test API
 export async function POST(request: NextRequest) {
@@ -30,7 +31,7 @@ export async function POST(request: NextRequest) {
 
     // Check if user is active
     if (user.status !== 'Active') {
-      return NextResponse.json({ error: 'Account is not active. Please verify your email.' }, { status: 401 });
+      return NextResponse.json({ error: ERROR_MESSAGE.EMAIL_VERIFICATION_REQUIRED }, { status: 401 });
     }
 
     // Verify password

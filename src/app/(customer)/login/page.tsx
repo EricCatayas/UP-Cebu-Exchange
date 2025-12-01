@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import { ERROR_MESSAGE } from '@/lib/constants';
 
 function Login() {
   const { login } = useAuth();
@@ -17,6 +18,10 @@ function Login() {
       const { success, error, callbackUrl } = await login(email, password, remember);
       if (!success) {
         alert(error || 'Login failed');
+
+        if (error === ERROR_MESSAGE.EMAIL_VERIFICATION_REQUIRED) {
+          router.push(`/verify-email?email=${encodeURIComponent(email)}`);
+        }
         return;
       }
 
