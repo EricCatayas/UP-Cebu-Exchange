@@ -21,6 +21,8 @@ const publicRoutes = [
   '/api/auth/forgot-password',
   '/api/auth/reset-password',
   '/api/auth/session',
+  '/api/auth/verify-email',
+  '/api/auth/resend-verification',
 ];
 
 const adminRoutes = [

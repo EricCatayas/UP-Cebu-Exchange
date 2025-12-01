@@ -39,6 +39,14 @@ export enum DELIVERY_METHOD {
 
 export const DELIVERY_METHODS = [DELIVERY_METHOD.DELIVERY, DELIVERY_METHOD.PICKUP];
 
+export const ERROR_MESSAGE = {
+  GENERIC: 'An unexpected error occurred. Please try again later.',
+  EMAIL_VERIFICATION_REQUIRED: 'Email verification is required. Please check your email for the verification link.',
+  EMAIL_VERIFICATION_TOKEN_EXPIRED:
+    'Your email verification token has expired. Please request a new verification email.',
+  EMAIL_VERIFICATION_TOKEN_INVALID: 'The email verification token is invalid. Please check your verification link.',
+};
+
 export const DURATION_OPTIONS = [3, 6, 12];
 
 export const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
