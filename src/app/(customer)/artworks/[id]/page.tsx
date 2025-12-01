@@ -1,9 +1,9 @@
-import React from 'react';
-import ArtworkCarousel from '@/components/ArtworkCarousel/ArtworkCarousel';
+import React, { Suspense } from 'react';
 import ArtworkDetails from '@/components/ArtworkDetails/ArtworkDetails';
+import ArtworksFromArtist from '@/components/ArtworkDetails/ArtworksFromArtist';
 import ArtworkGallery from '@/components/ArtworkGallery/ArtworkGallery';
-import ArtworkGrid from '@/components/ArtworkGrid/ArtworkGrid';
 import ArtworkService from '@/services/ArtworkService';
+import SimilarArtworks from '@/components/ArtworkDetails/SimilarArtworks';
 import HeroBackground from '@/components/HeroBackground/HeroBackground';
 import { getCurrentUser } from '@/lib/auth';
 
@@ -22,16 +22,7 @@ async function ArtworkDetailsPage({ params }: { params: { id: string } }) {
     );
   }
 
-  const artworksFromArtist = await artworkService.getArtworksFromArtist(artwork?.artistId || 0);
-  const index = artworksFromArtist.findIndex((a) => a.id === artwork.id);
-  if (index !== -1) {
-    artworksFromArtist.splice(index, 1);
-  }
-
-  const similarArtworks = await artworkService.getSimilarArtworks(artwork.id);
-
   console.log('Artwork Details:', artwork);
-  console.log('Artworks from Artist:', artworksFromArtist);
 
   if (!artwork) {
     return (
@@ -76,21 +67,17 @@ async function ArtworkDetailsPage({ params }: { params: { id: string } }) {
       {/* More from the Artist */}
       <div className="mt-12">
         <h2 className="text-2xl font-bold mb-6">More from the Artist</h2>
-        {artworksFromArtist.length > 0 ? (
-          <ArtworkCarousel artworks={artworksFromArtist} />
-        ) : (
-          <p className="text-gray-600">No other artworks from this artist.</p>
-        )}
+        <Suspense fallback={<div>Loading...</div>}>
+          <ArtworksFromArtist artistId={artwork.artistId} excludeArtworkId={artwork.id} />
+        </Suspense>
       </div>
 
       {/* Similar Artworks */}
       <div className="mt-12">
         <h2 className="text-2xl font-bold mb-6">Similar Artworks</h2>
-        {similarArtworks.length > 0 ? (
-          <ArtworkGrid artworks={similarArtworks} />
-        ) : (
-          <p className="text-gray-600">No similar artworks found.</p>
-        )}
+        <Suspense fallback={<div>Loading...</div>}>
+          <SimilarArtworks artworkId={artwork.id} />
+        </Suspense>
       </div>
     </div>
   );

@@ -125,7 +125,10 @@ class ArtworkService {
       : null;
   }
 
-  async getArtworksFromArtist(artistId: number) {
+  async getArtworksFromArtist(artistId?: number) {
+    if (!artistId) {
+      return [];
+    }
     return await ArtworkRepository.findAll({ where: { artistId } });
   }
 
