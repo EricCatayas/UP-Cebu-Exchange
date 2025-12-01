@@ -33,6 +33,12 @@ Initialize Database
 npm run db:init
 ```
 
+Reset Database
+
+```bash
+npm run db:reset
+```
+
 ## Run the development server:
 
 ```bash
