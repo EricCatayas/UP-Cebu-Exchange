@@ -1,5 +1,6 @@
 import 'server-only';
 import Mailjet from 'node-mailjet';
+import { APP_NAME, APP_EMAIL } from '@/lib/constants';
 
 const APP_BASE_URL = process.env.APP_BASE_URL || 'http://localhost:3000';
 const EMAIL_API = process.env.MAILJET_API_KEY || '';
@@ -20,9 +21,8 @@ class EmailService {
       Messages: [
         {
           From: {
-            // Replace with a verified sender on Mailjet if available
-            Email: 'catayasericjay@gmail.com',
-            Name: 'UP Cebu Exchange',
+            Email: APP_EMAIL,
+            Name: APP_NAME,
           },
           To: [{ Email: email, Name: email }],
           Subject: 'Verify your email address',
@@ -99,6 +99,101 @@ class EmailService {
       });
 
     console.log(`Sending email verification to ${email} with token ${token}`);
+    return Promise.resolve({ success: true, error: null });
+  }
+
+  // todo: implement password reset email
+  sendPasswordReset(email: string, token: string): Promise<{ success: boolean; error: string | null }> {
+    const mailjet = new Mailjet({
+      apiKey: EMAIL_API,
+      apiSecret: EMAIL_SECRET,
+      config: { version: 'v3.1' },
+    });
+
+    const resetLink = `${APP_BASE_URL}/reset-password?token=${encodeURIComponent(token)}`;
+
+    const request = mailjet.post('send', { version: 'v3.1' }).request({
+      Messages: [
+        {
+          From: {
+            Email: APP_EMAIL,
+            Name: APP_NAME,
+          },
+          To: [{ Email: email, Name: email }],
+          Subject: 'Reset your password',
+          TextPart:
+            `Hi,\n\nYou requested a password reset for UP Cebu Exchange.\n\n` +
+            `Reset your password by clicking the link below:\n` +
+            `${resetLink}\n\n` +
+            `If you didn’t request this, you can safely ignore this email.`,
+          HTMLPart: `
+  <!doctype html>
+  <html lang="en">
+    <body style="margin:0;padding:0;background:#f7f7f8;">
+      <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background:#f7f7f8;">
+        <tr>
+          <td align="center" style="padding:32px 16px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="max-width:560px;background:#ffffff;border:1px solid #eaeaea;border-radius:12px;overflow:hidden;">
+              <tr>
+                <td style="padding:28px 28px 0 28px;font-family:Segoe UI, Arial, sans-serif;color:#111827;">
+                  <h1 style="margin:0 0 12px;font-size:20px;line-height:28px;">Reset your password</h1>
+                  <p style="margin:0 0 20px;font-size:14px;line-height:22px;color:#374151;">
+                    You requested a password reset for <strong>UP Cebu Exchange</strong>. Click the button below to continue.
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:0 28px 24px 28px;" align="left">
+                  <a href="${resetLink}"
+                     style="display:inline-block;background:#2563eb;color:#ffffff;text-decoration:none;
+                            font-family:Segoe UI, Arial, sans-serif;font-size:14px;line-height:20px;
+                            padding:12px 18px;border-radius:8px;">
+                    Reset password
+                  </a>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:0 28px 24px 28px;font-family:Segoe UI, Arial, sans-serif;">
+                  <p style="margin:0 0 8px;font-size:12px;line-height:18px;color:#6b7280;">
+                    Or copy and paste this link into your browser:
+                  </p>
+                  <p style="margin:0;font-size:12px;line-height:18px;color:#2563eb;word-break:break-all;">
+                    <a href="${resetLink}" style="color:#2563eb;text-decoration:underline;">${resetLink}</a>
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:0 28px 28px 28px;font-family:Segoe UI, Arial, sans-serif;color:#6b7280;">
+                  <p style="margin:0;font-size:12px;line-height:18px;">
+                    If you didn’t request this, you can safely ignore this email.
+                  </p>
+                </td>
+              </tr>
+            </table>
+            <p style="margin:12px 0 0;font-size:11px;line-height:16px;color:#9ca3af;font-family:Segoe UI, Arial, sans-serif;">
+              © ${new Date().getFullYear()} UP Cebu Exchange
+            </p>
+          </td>
+        </tr>
+      </table>
+    </body>
+  </html>
+          `,
+          CustomID: 'password_reset',
+        },
+      ],
+    });
+
+    request
+      .then(() => {
+        return { success: true, error: null };
+      })
+      .catch((err) => {
+        console.error('Mailjet error:', err?.statusCode || err);
+        return { success: false, error: err?.message || 'Failed to send password reset email' };
+      });
+
+    console.log(`Sending password reset to ${email} with token ${token}`);
     return Promise.resolve({ success: true, error: null });
   }
 }

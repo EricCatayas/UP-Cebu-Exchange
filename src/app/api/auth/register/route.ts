@@ -1,10 +1,10 @@
+import EmailService from '@/services/EmailService';
 import { NextRequest, NextResponse } from 'next/server';
 import { UserEmailVerification } from '@/models/sequelize';
 import { User, Role } from '@/models/sequelize';
 import { hashPassword } from '@/lib/auth';
 import { USER_ROLE, USER_STATUS } from '@/lib/constants';
-import crypto from 'crypto';
-import EmailService from '@/services/EmailService';
+import { generateToken } from '@/lib/auth';
 
 // TODO: Test API
 export async function POST(request: NextRequest) {
@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Send verification email
-    const verificationToken = crypto.randomBytes(32).toString('hex');
+    const verificationToken = generateToken();
 
     await UserEmailVerification.create({
       userId: newUser.id,

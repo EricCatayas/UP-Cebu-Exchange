@@ -1,4 +1,5 @@
 export const APP_NAME = 'UP Cebu Exchange';
+export const APP_EMAIL = process.env.APP_EMAIL;
 
 export enum ARTWORK_MEDIUM {
   OIL_ON_CANVAS = 'Oil on canvas',
@@ -45,6 +46,8 @@ export const ERROR_MESSAGE = {
   EMAIL_VERIFICATION_TOKEN_EXPIRED:
     'Your email verification token has expired. Please request a new verification email.',
   EMAIL_VERIFICATION_TOKEN_INVALID: 'The email verification token is invalid. Please check your verification link.',
+  PASSWORD_RESET_TOKEN_EXPIRED: 'Your password reset token has expired. Please request a new password reset email.',
+  PASSWORD_RESET_TOKEN_INVALID: 'The password reset token is invalid. Please check your password reset link.',
 };
 
 export const DURATION_OPTIONS = [3, 6, 12];

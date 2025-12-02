@@ -96,6 +96,7 @@ function Register() {
                 fontSize: '.95rem',
               }}
             />
+            <p className="mt-1 text-xs text-gray-500">Must be at least 6 characters</p>
           </label>
 
           <label style={{ display: 'grid', gap: '0.4rem' }}>
