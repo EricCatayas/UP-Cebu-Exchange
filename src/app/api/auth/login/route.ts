@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { User, Role } from '@/models/sequelize';
-import { isAdmin, verifyPassword, generateToken, setAuthCookie } from '@/lib/auth';
+import { isAdmin, verifyPassword, generateAuthToken, setAuthCookie } from '@/lib/auth';
 import { ERROR_MESSAGE } from '@/lib/constants';
 
 // TODO: Test API
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
     const roleName = (user as any).role.name;
 
     // Generate JWT token
-    const token = generateToken(
+    const token = generateAuthToken(
       {
         userId: user.id,
         email: user.email,

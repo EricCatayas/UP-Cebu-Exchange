@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 import { cookies } from 'next/headers';
 import { jwtVerify } from 'jose';
 import { JWTPayload, User } from '@/types/auth';
@@ -17,9 +18,13 @@ export const verifyPassword = async (password: string, hashedPassword: string): 
   return await bcrypt.compare(password, hashedPassword);
 };
 
-export const generateToken = (payload: Omit<JWTPayload, 'exp'>, rememberMe: boolean = false): string => {
+export const generateAuthToken = (payload: Omit<JWTPayload, 'exp'>, rememberMe: boolean = false): string => {
   const expiresIn = rememberMe ? '30d' : '7d';
   return jwt.sign(payload, JWT_SECRET, { expiresIn });
+};
+
+export const generateToken = (): string => {
+  return crypto.randomBytes(32).toString('hex');
 };
 
 // export const verifyToken = (token: string): JWTPayload | null => {
