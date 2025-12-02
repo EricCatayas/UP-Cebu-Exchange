@@ -1,4 +1,4 @@
-import cloudinary from '../types/cloudinary';
+import cloudinary from '@/types/cloudinary';
 
 export const uploadToCloudinary = async (fileBuffer: Buffer, folder: string) => {
   return new Promise((resolve, reject) => {
