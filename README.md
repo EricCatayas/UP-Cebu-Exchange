@@ -11,6 +11,8 @@ npm run install
 Create .env.local file in root folder, set the following config values:
 
 ```bash
+APP_BASE_URL=http://localhost:3000
+APP_EMAIL=example@email.com
 DB_HOST=localhost
 DB_PORT=3306
 DB_NAME=up_cebu_exchange
@@ -18,6 +20,12 @@ DB_USERNAME=root
 DB_USER=root
 DB_PASSWORD=your_mysql_password
 DB_DIALECT=mysql
+NODE_ENV=development
+JWT_SECRET=your-secret-jwt-key
+NEXTAUTH_SECRET=your-secret-key-here
+NEXTAUTH_URL=http://localhost:3000
+MAILJET_API_KEY=mailjet-api-key
+MAILJET_API_SECRET=mailjet-api-secret
 ```
 
 Create the database in MySQL
