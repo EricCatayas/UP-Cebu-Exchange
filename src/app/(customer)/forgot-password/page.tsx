@@ -61,7 +61,7 @@ export default function ForgotPassword() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      <div className="w-full max-w-md rounded-xl border border-gray-200 bg-white shadow-sm">
+      <div className="fillup-box w-full max-w-md rounded-xl border border-gray-200 bg-white shadow-sm">
         <div className="px-6 pt-6">
           <h1 className="text-xl font-semibold text-gray-900">Reset your password</h1>
           <p className="mt-2 text-sm text-gray-600">

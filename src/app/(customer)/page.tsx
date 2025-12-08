@@ -94,7 +94,8 @@ export default async function Page() {
           <CategoryGrid categories={categories} />
         </section>
         <section className="py-12">
-          <h2 className="text-3xl mb-6">Bring Art to your space</h2>
+          <h2 className="font-playfair text-6xl font-medium mb-6">Bring Art</h2>
+          <h4 className="text-3xl mb-6">to your space</h4>
           <p className="mb-4">
             Receive updates on the latest artwork rentals perfect for business displays, events, and creative spaces.
             Sign up to discover new collections from UP Cebu's emerging artists.
