@@ -1,5 +1,5 @@
 export interface ArtworkImageAttributes {
-  id: number;
+  id: string;
   artworkId: number;
   imageUrl: string;
   isPrimary: boolean;

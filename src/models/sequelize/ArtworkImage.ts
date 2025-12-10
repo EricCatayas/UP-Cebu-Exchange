@@ -8,7 +8,7 @@ class ArtworkImage
   extends Model<ArtworkImageAttributes, ArtworkImageCreationAttributes>
   implements ArtworkImageAttributes
 {
-  declare id: number;
+  declare id: string;
   declare artworkId: number;
   declare imageUrl: string;
   declare isPrimary: boolean;
@@ -18,9 +18,9 @@ class ArtworkImage
 ArtworkImage.init(
   {
     id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
+      type: DataTypes.STRING,
       primaryKey: true,
+      defaultValue: DataTypes.UUIDV4,
     },
     artworkId: {
       type: DataTypes.INTEGER,
