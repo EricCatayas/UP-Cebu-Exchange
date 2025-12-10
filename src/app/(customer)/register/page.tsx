@@ -31,15 +31,12 @@ function Register() {
   };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
+    <div style={{ display: 'flex', justifyContent: 'center', paddingBottom: '8rem', paddingTop: '5rem', }}>
       <div
+      className='fillup-box'
         style={{
           width: '100%',
           maxWidth: '420px',
-          border: '1px solid #ccc',
-          borderRadius: '8px',
-          padding: '1.75rem',
-          boxShadow: '0 2px 6px rgba(0,0,0,0.08)',
           background: '#fff',
           fontFamily: 'system-ui, sans-serif',
         }}
