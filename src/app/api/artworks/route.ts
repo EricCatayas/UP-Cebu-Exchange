@@ -1,9 +1,11 @@
+import ArtworkRepository from '@/repositories/ArtworkRepository';
 import { NextRequest, NextResponse } from 'next/server';
 import { Op } from 'sequelize';
 import { Artwork, Artist, ArtworkImage, ArtworkTag, RentalPlan, Tag, Style } from '@/models/sequelize';
 import { ArtworkCreateDTO } from '@/models/Artwork';
 import { getCurrentUser, isAdmin } from '@/lib/auth';
 import { ARTWORK_STATUS } from '@/lib/constants';
+import { ImageService } from '@/services/ImageService';
 
 // TODO: Test API
 export async function POST(request: NextRequest) {
@@ -21,7 +23,6 @@ export async function POST(request: NextRequest) {
 
     const formData = await request.formData();
 
-    const images = formData.getAll('images') as File[];
     const title = formData.get('title') as string;
     const artistId = formData.get('artistId') ? Number(formData.get('artistId')) : undefined;
     const artistName = formData.get('artistName') as string;
@@ -32,10 +33,10 @@ export async function POST(request: NextRequest) {
     const heightCm = formData.get('heightCm') ? Number(formData.get('heightCm')) : undefined;
     const widthCm = formData.get('widthCm') ? Number(formData.get('widthCm')) : undefined;
     const status = formData.get('status') as string;
+    const images = formData.getAll('images') as File[];
     const rentalFee3Months = Number(formData.get('rentalFee3Months'));
     const rentalFee6Months = Number(formData.get('rentalFee6Months'));
     const rentalFee12Months = Number(formData.get('rentalFee12Months'));
-
     const tagsString = formData.get('tags') as string;
     const tags = tagsString ? JSON.parse(tagsString) : [];
 
@@ -105,20 +106,26 @@ export async function POST(request: NextRequest) {
     });
 
     // Handle image uploads
-    for (let i = 0; i < images.length; i++) {
-      const image = images[i];
+    const arrayBuffers = await Promise.all(images.map((file) => file.arrayBuffer()));
+    const buffers = arrayBuffers.map((buffer) => {
+      return new Uint8Array(buffer);
+    });
 
-      // TODO: Upload to Cloudinary
-      // For now, using placeholder
-      const imageUrl =
-        'https://res.cloudinary.com/dbgolykzg/image/upload/v1763972672/UP%20Cebu%20Exchange/placeholder-img-1x1_ihvqvy.png';
+    const imageService = new ImageService();
+    const { success: imageUploadSuccess, results: imageUploadResults } = await imageService.uploadImages(buffers);
 
-      await ArtworkImage.create({
-        artworkId: createdArtwork!.id,
-        imageUrl: imageUrl,
-        isPrimary: i === 0,
-      });
+    if (imageUploadSuccess) {
+      for (let i = 0; i < imageUploadResults!.length; i++) {
+        const result = imageUploadResults![i];
+        await ArtworkImage.create({
+          id: result.public_id,
+          artworkId: createdArtwork!.id,
+          imageUrl: result.secure_url,
+          isPrimary: i === 0,
+        });
+      }
     }
+    // todo: handle failed image uploads
 
     await RentalPlan.bulkCreate([
       { artworkId: createdArtwork!.id, durationMonths: 3, price: rentalFee3Months },
@@ -275,12 +282,16 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'Valid artworkId is required' }, { status: 400 });
     }
     // Find the artwork
-    const artwork = await Artwork.findByPk(artworkId);
+    const artwork = await Artwork.findByPk(artworkId, { include: ['images'] });
     if (!artwork) {
       return NextResponse.json({ error: 'Artwork not found' }, { status: 404 });
     }
 
-    // TODO: handle deletion of associated images
+    const imageService = new ImageService();
+    const artworkImages = await artwork.images;
+    for (const image of artworkImages) {
+      await imageService.deleteImage(image.id);
+    }
 
     // Delete the artwork
     await artwork.destroy();

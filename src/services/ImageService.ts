@@ -1,13 +1,42 @@
-import cloudinary from '@/types/cloudinary';
+import cloudinary from '@/config/cloudinary';
+import { UploadApiResponse } from 'cloudinary';
+
+const FOLDER_NAME = process.env.CLOUDINARY_FOLDER_NAME || 'UP Cebu Exchange';
 
 export class ImageService {
-  async uploadImage(filePath: string, options = {}) {
+  async uploadImages(
+    Uint8ArrayFiles: Uint8Array[],
+    options = {}
+  ): Promise<{ success: boolean; results?: UploadApiResponse[]; error?: string }> {
     try {
-      const result = await cloudinary.uploader.upload(filePath, options);
-      return { success: true, url: result.secure_url };
+      const uploadResults = [];
+
+      for (const buffer of Uint8ArrayFiles) {
+        const result = await new Promise((resolve, reject) => {
+          cloudinary.uploader
+            .upload_stream(
+              {
+                folder: FOLDER_NAME,
+                ...options,
+              },
+              function (error, result) {
+                if (error) {
+                  console.error('Image upload error:', error);
+                  reject({ success: false, error: 'Failed to upload images' });
+                } else {
+                  resolve(result);
+                }
+              }
+            )
+            .end(buffer);
+        });
+        uploadResults.push(result);
+      }
+
+      return { success: true, results: uploadResults };
     } catch (error) {
       console.error('Image upload error:', error);
-      return { success: false, error: 'Failed to upload image' };
+      return { success: false, error: 'Failed to upload images' };
     }
   }
 
