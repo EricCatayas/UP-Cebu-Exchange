@@ -4,6 +4,7 @@ export interface UserAttributes {
   email: string;
   password: string;
   fullName: string;
+  phoneNumber: string;
   status: 'Active' | 'Pending' | 'Inactive' | 'Banned';
   createdAt: Date;
   updatedAt: Date;
@@ -16,6 +17,7 @@ export interface UserDTO extends Omit<UserAttributes, 'password'> {
 
 export interface UserCreateDTO {
   email: string;
+  phoneNumber: string;
   password: string;
   fullName: string;
   role: string;

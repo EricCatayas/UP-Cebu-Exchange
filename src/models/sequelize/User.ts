@@ -11,6 +11,7 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
   declare email: string;
   declare password: string;
   declare fullName: string;
+  declare phoneNumber: string;
   declare status: 'Active' | 'Pending' | 'Inactive' | 'Banned';
   declare createdAt: Date;
   declare updatedAt: Date;
@@ -41,6 +42,10 @@ User.init(
     },
     fullName: {
       type: DataTypes.STRING(255),
+      allowNull: false,
+    },
+    phoneNumber: {
+      type: DataTypes.STRING(20),
       allowNull: false,
     },
     status: {

@@ -56,6 +56,7 @@ async function seedUsers() {
         email: 'user1@test.com',
         fullName: 'User One',
         password: userPassword,
+        phoneNumber: '123-456-7890',
         roleId: customerRole.id,
         status: 'Active',
       },
@@ -68,6 +69,7 @@ async function seedUsers() {
         email: 'admin@test.com',
         fullName: 'Admin User',
         password: adminPassword,
+        phoneNumber: '987-654-3210',
         roleId: adminRole.id,
         status: 'Active',
       },
@@ -775,6 +777,8 @@ async function seedArtworks() {
     for (let i = 0; i < artistsData.length; i++) {
       const data = artistsData[i];
 
+      if (!data) continue;
+
       // 1. Create Artist
       const [artist] = await Artist.findOrCreate({
         where: { name: data.name },
@@ -841,7 +845,7 @@ async function seedArtworks() {
       await RentalPlan.bulkCreate(plans);
     }
   } catch (error) {
-    console.error('❌ Error seeding roles:', error);
+    console.error('❌ Error seeding artworks:', error);
     throw error;
   }
 }
