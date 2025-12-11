@@ -64,7 +64,7 @@ export default async function Page() {
           </p>
           <Link
             href="/artworks"
-            className="bg-secondary text-white px-8 py-3 rounded-full font-semibold transition-colors"
+            className="bg-primary text-white px-8 py-3 rounded-full font-semibold transition-colors"
           >
             Explore Paintings
           </Link>
