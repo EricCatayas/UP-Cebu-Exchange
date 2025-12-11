@@ -1,9 +1,11 @@
-import { Op } from 'sequelize';
 import ArtworkRepository from '@/repositories/ArtworkRepository';
-import WishlistService from './WishlistService';
-import { Cart, CartItem, Wishlist, WishlistItem } from '@/models/sequelize';
+import TagsService from '@/services/TagsService';
+import WishlistService from '@/services/WishlistService';
+import { Op } from 'sequelize';
+import { Artwork, Cart, CartItem, Wishlist, WishlistItem } from '@/models/sequelize';
 import { ArtworkDTO, PaginatedArtworks } from '@/models/Artwork';
-import { ARTWORK_STATUS, PAGE_SIZE } from '@/lib/constants';
+import { similarityScore } from '@/lib/recommendations';
+import { ARTWORK_STATUS, PAGE_SIZE, SIMILAR_ARTWORK_SCORE_THRESHOLD } from '@/lib/constants';
 
 interface QueryParams {
   search?: string;
@@ -154,9 +156,67 @@ class ArtworkService {
 
   // TODO:
   async getSimilarArtworks(artworkId: number) {
-    const artworks = await ArtworkRepository.findAll({ limit: 20 });
-    const shuffled = artworks.sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, 6);
+    const artwork = await ArtworkRepository.findById(artworkId);
+    if (!artwork) return [];
+
+    let otherSimilarArtworks: ArtworkDTO[] = [];
+    let otherArtworksWithSimilarTags: ArtworkDTO[] = [];
+
+    const getOtherSimilarArtworksByFeatures = async () => {
+      const where: any = {
+        id: { [Op.ne]: artworkId },
+        status: [ARTWORK_STATUS.AVAILABLE, ARTWORK_STATUS.RENTED],
+      };
+
+      where[Op.or] = [
+        // { artistId: artwork.artistId },
+        { styleId: artwork.styleId },
+        { medium: artwork.medium },
+      ];
+
+      let options = {
+        where,
+      };
+
+      const artworks = await ArtworkRepository.findAll(options);
+      otherSimilarArtworks = artworks;
+    };
+
+    const getOtherArtworksByTags = async () => {
+      const options = {
+        include: [{ model: Artwork, as: 'artwork', include: ['artist', 'rentalPlans', 'tags', 'images'] }],
+      };
+
+      for (let i = 0; i < artwork.tags.length; i++) {
+        const tagId = artwork.tags[i].id;
+        const artworksWithTag = await TagsService.getArtworksByTag(tagId, options);
+        const filteredArtworks = artworksWithTag.filter((a) => a.id !== artworkId);
+        otherArtworksWithSimilarTags = otherArtworksWithSimilarTags.concat(filteredArtworks);
+      }
+    };
+
+    await Promise.all([getOtherSimilarArtworksByFeatures(), getOtherArtworksByTags()]);
+
+    // Combine and rank by similarity score
+    const allSimilarArtworks = [...otherSimilarArtworks, ...otherArtworksWithSimilarTags];
+    const uniqueArtworksMap: { [key: number]: { score: number; artwork: ArtworkDTO } } = {};
+    allSimilarArtworks.forEach((similarArtwork) => {
+      if (!uniqueArtworksMap[similarArtwork.id]) {
+        uniqueArtworksMap[similarArtwork.id] = {
+          score: similarityScore(artwork, similarArtwork),
+          artwork: similarArtwork,
+        };
+      }
+    });
+
+    const uniqueArtworks = Object.values(uniqueArtworksMap);
+
+    const sortedArtworks = uniqueArtworks
+      .filter((entry) => entry.score > SIMILAR_ARTWORK_SCORE_THRESHOLD)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 9);
+
+    return sortedArtworks.map((entry) => entry.artwork);
   }
 
   async getFavoriteArtworks() {

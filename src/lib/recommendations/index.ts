@@ -1,3 +1,13 @@
+import { ArtworkDTO } from '@/models/Artwork';
+
+export function similarityScore(artworkA: ArtworkDTO, artworkB: ArtworkDTO): number {
+  // Example implementation
+  let score: number = 0;
+  if (artworkA.styleId === artworkB.styleId) score += 0.3;
+  if (artworkA.medium === artworkB.medium) score += 0.3;
+  if (artworkA.artistId === artworkB.artistId) score += 0.3;
+  return score; // Higher score means more similar
+}
 
 /*
 Option 1: Content-Based Filtering
