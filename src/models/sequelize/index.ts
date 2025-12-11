@@ -96,6 +96,11 @@ const initializeAssociations = () => {
     as: 'tags',
   });
 
+  ArtworkTag.belongsTo(Artwork, {
+    foreignKey: 'artworkId',
+    as: 'artwork',
+  });
+
   // Many-to-Many: Tag belongsToMany Artwork through ArtworkTag
   Tag.belongsToMany(Artwork, {
     through: ArtworkTag,
