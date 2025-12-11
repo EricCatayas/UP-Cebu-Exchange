@@ -510,7 +510,7 @@ function CreateArtworkForm({
       {/* Tags */}
       <div className="space-y-4">
         <h2 className="text-xl font-semibold">Tags</h2>
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-3 max-h-60 overflow-y-auto">
           {tagOptions?.map((tag) => (
             <label
               key={tag}
