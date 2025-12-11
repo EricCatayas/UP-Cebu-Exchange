@@ -4,7 +4,6 @@ import { hashPassword } from '@/lib/auth';
 import { USER_ROLE, USER_STATUS } from '@/lib/constants';
 import { getCurrentUser, isAdmin } from '@/lib/auth';
 
-// TODO: Test API
 export async function POST(request: NextRequest) {
   try {
     const currentUser = await getCurrentUser();
@@ -53,7 +52,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (!userRole) {
-      return NextResponse.json({ error: 'Customer role not found. Please contact administrator.' }, { status: 500 });
+      return NextResponse.json({ error: 'User role not found. Please contact administrator.' }, { status: 500 });
     }
 
     // Hash password

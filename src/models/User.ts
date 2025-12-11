@@ -17,8 +17,16 @@ export interface UserDTO extends Omit<UserAttributes, 'password'> {
 
 export interface UserCreateDTO {
   email: string;
+  fullName: string;
   phoneNumber: string;
   password: string;
-  fullName: string;
   role: string;
+}
+
+export interface UserUpdateDTO {
+  fullName?: string;
+  phoneNumber?: string;
+  password?: string;
+  newPassword?: string;
+  role?: string;
 }
