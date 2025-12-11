@@ -9,11 +9,11 @@ import { generateToken } from '@/lib/auth';
 // TODO: Test API
 export async function POST(request: NextRequest) {
   try {
-    const { email, password, fullName } = await request.json();
+    const { email, password, fullName, phoneNumber } = await request.json();
 
     // Validate input
-    if (!email || !password || !fullName) {
-      return NextResponse.json({ error: 'Email, password, and full name are required' }, { status: 400 });
+    if (!email || !password || !fullName || !phoneNumber) {
+      return NextResponse.json({ error: 'Email, password, full name, and phone number are required' }, { status: 400 });
     }
 
     // Validate email format
@@ -25,6 +25,17 @@ export async function POST(request: NextRequest) {
     // Validate password strength
     if (password.length < 6) {
       return NextResponse.json({ error: 'Password must be at least 6 characters long' }, { status: 400 });
+    }
+    // Password must contain at least one letter and one number
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).+$/;
+    if (!passwordRegex.test(password)) {
+      return NextResponse.json({ error: 'Password must contain at least one letter and one number' }, { status: 400 });
+    }
+
+    // Validate phone number
+    const phoneRegex = /^[0-9+\-() ]{7,20}$/;
+    if (!phoneRegex.test(phoneNumber)) {
+      return NextResponse.json({ error: 'Invalid phone number format' }, { status: 400 });
     }
 
     // Check if user already exists
@@ -53,6 +64,7 @@ export async function POST(request: NextRequest) {
       email: email.toLowerCase(),
       password: hashedPassword,
       fullName,
+      phoneNumber,
       roleId: customerRole.id,
       status: USER_STATUS.PENDING,
     });

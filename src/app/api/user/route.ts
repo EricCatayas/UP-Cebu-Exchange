@@ -12,11 +12,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { email, password, fullName, role } = await request.json();
+    const { email, password, fullName, phoneNumber, role } = await request.json();
 
     // Validate input
-    if (!email || !password || !fullName || !role) {
-      return NextResponse.json({ error: 'Email, password, and full name are required' }, { status: 400 });
+    if (!email || !password || !fullName || !phoneNumber || !role) {
+      return NextResponse.json(
+        { error: 'Email, password, full name, phone number, and role are required' },
+        { status: 400 }
+      );
     }
 
     // Validate email format
@@ -28,6 +31,11 @@ export async function POST(request: NextRequest) {
     // Validate password strength
     if (password.length < 6) {
       return NextResponse.json({ error: 'Password must be at least 6 characters long' }, { status: 400 });
+    }
+    // Password must contain at least one letter and one number
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).+$/;
+    if (!passwordRegex.test(password)) {
+      return NextResponse.json({ error: 'Password must contain at least one letter and one number' }, { status: 400 });
     }
 
     // Check if user already exists
@@ -55,6 +63,7 @@ export async function POST(request: NextRequest) {
     const newUser = await User.create({
       email: email.toLowerCase(),
       password: hashedPassword,
+      phoneNumber,
       fullName,
       roleId: userRole.id,
       status: USER_STATUS.ACTIVE,

@@ -11,9 +11,11 @@ function CreateUser() {
   const [formData, setFormData] = useState<UserCreateDTO>({
     fullName: '',
     email: '',
+    phoneNumber: '',
     password: '',
     role: roles[0] || '',
   });
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -25,6 +27,12 @@ function CreateUser() {
     e.preventDefault();
     setSubmitting(true);
     try {
+      if (formData.password !== confirmPassword) {
+        alert('Passwords do not match');
+        setSubmitting(false);
+        return;
+      }
+
       const res = await fetch('/api/user', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -92,6 +100,22 @@ function CreateUser() {
         </div>
 
         <div>
+          <label className={labelCls} htmlFor="phoneNumber">
+            Phone Number
+          </label>
+          <input
+            id="phoneNumber"
+            name="phoneNumber"
+            type="tel"
+            required
+            className={inputCls}
+            placeholder="+1234567890"
+            value={formData.phoneNumber}
+            onChange={handleChange}
+          />
+        </div>
+
+        <div>
           <label className={labelCls} htmlFor="password">
             Password
           </label>
@@ -104,6 +128,22 @@ function CreateUser() {
             placeholder="••••••••"
             value={formData.password}
             onChange={handleChange}
+          />
+        </div>
+
+        <div>
+          <label className={labelCls} htmlFor="confirmPassword">
+            Confirm Password
+          </label>
+          <input
+            id="confirmPassword"
+            name="confirmPassword"
+            type="password"
+            required
+            className={inputCls}
+            placeholder="••••••••"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
           />
         </div>
 

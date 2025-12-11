@@ -9,31 +9,34 @@ function Register() {
 
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: handle register
-    console.log({ fullName, email, password, confirm });
-    const result = await register(email, password, fullName);
+    if (password !== confirm) {
+      alert('Passwords do not match');
+      return;
+    }
+
+    const newAccount = { fullName, email, phoneNumber, password };
+    const result = await register(newAccount);
     console.log('result', result);
     if (result.success) {
-      // Registration successful
       console.log('Registration successful');
       alert('Registration successful! A verification email has been sent to your email address.');
       router.push(`/verify-email?email=${encodeURIComponent(email)}&sent=true`);
     } else {
-      // Handle registration error
       alert(`Registration failed: ${result.error}`);
       console.error('Registration error:', result.error);
     }
   };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', paddingBottom: '8rem', paddingTop: '5rem', }}>
+    <div style={{ display: 'flex', justifyContent: 'center', paddingBottom: '8rem', paddingTop: '5rem' }}>
       <div
-      className='fillup-box'
+        className="fillup-box"
         style={{
           width: '100%',
           maxWidth: '420px',
@@ -69,6 +72,23 @@ function Register() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email address"
+              style={{
+                padding: '0.55rem 0.7rem',
+                border: '1px solid #bbb',
+                borderRadius: '4px',
+                fontSize: '.95rem',
+              }}
+            />
+          </label>
+
+          <label style={{ display: 'grid', gap: '0.4rem' }}>
+            <span style={{ fontSize: '.9rem', fontWeight: 600 }}>Phone Number</span>
+            <input
+              type="tel"
+              required
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              placeholder="Enter your phone number"
               style={{
                 padding: '0.55rem 0.7rem',
                 border: '1px solid #bbb',
