@@ -133,7 +133,113 @@ async function seedArtworks() {
           },
         ],
       },
+      {
+        name: 'Riley Stonehart',
+        biography: 'A minimalist artist focusing on simplified forms and natural color harmony.',
+        title: 'Ocean Line',
+        description: 'A minimal horizon line separating sea and sky with soft gradient transitions.',
+        style: 'Minimalism',
+        medium: ARTWORK_MEDIUM.CHARCOAL_ON_PAPER,
+        price: 180,
+        heightCm: 60,
+        widthCm: 45,
+        tags: ['Ocean', 'Minimalism', 'Horizon', 'Soft Gradient'],
+        imageUrls: [
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1765418397/oceanline_wpckkj.png',
+            isPrimary: true,
+          },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1765418397/oceanline_wpckkj.png',
+            isPrimary: false,
+          },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1765418397/oceanline_wpckkj.png',
+            isPrimary: false,
+          },
+        ],
+      },
+      {
+        name: 'Sophie Delacroix',
+        biography: 'A surrealist painter exploring symbolic landscapes inspired by the subconscious.',
+        title: 'Waves of Memory',
+        description: 'Surreal floating islands drifting above a vast blue ocean under a glowing moon.',
+        style: 'Surrealism',
+        medium: ARTWORK_MEDIUM.OIL_ON_CANVAS,
+        price: 410,
+        heightCm: 100,
+        widthCm: 80,
+        tags: ['Ocean', 'Surreal', 'Dreamscape', 'Symbolism'],
+        imageUrls: [
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1765418396/wavesofmemory_ttp4lp.png',
+            isPrimary: true,
+          },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1765418396/wavesofmemory_ttp4lp.png',
+            isPrimary: false,
+          },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1765418396/wavesofmemory_ttp4lp.png',
+            isPrimary: false,
+          },
+        ],
+      },
+      {
+        name: 'Liam Crestwood',
+        biography: 'A contemporary impressionist capturing fleeting coastal moments and shifting light.',
+        title: 'Shoreline Breeze',
+        description: 'Loose, textured brushstrokes showing wind dancing across ocean waves.',
+        style: 'Impressionism',
+        medium: ARTWORK_MEDIUM.ACRYLIC_ON_CANVAS,
+        price: 300,
+        heightCm: 85,
+        widthCm: 65,
+        tags: ['Ocean', 'Coastal', 'Impressionism', 'Wind'],
+        imageUrls: [
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1765418396/shorelinebreeze_qsivy9.png',
+            isPrimary: true,
+          },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1765418396/shorelinebreeze_qsivy9.png',
+            isPrimary: false,
+          },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1765418396/shorelinebreeze_qsivy9.png',
+            isPrimary: false,
+          },
+        ],
+      },
 
+      {
+        name: 'Evan Marlowe',
+        biography: 'An abstract visualist whose works capture the rhythm and movement of natural forces.',
+        title: 'Tides in Motion',
+        description: 'A swirling abstract representation of waves colliding under shifting blue hues.',
+        style: 'Abstract',
+        medium: ARTWORK_MEDIUM.OIL_ON_CANVAS,
+        price: 320,
+        heightCm: 90,
+        widthCm: 70,
+        tags: ['Ocean', 'Abstract Waves', 'Blue Palette', 'Dynamic'],
+        imageUrls: [
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1765418396/tidesofmotion_wk0y8l.png',
+            isPrimary: true,
+          },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1765418396/tidesofmotion_wk0y8l.png',
+            isPrimary: false,
+          },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1765418396/tidesofmotion_wk0y8l.png',
+            isPrimary: false,
+          },
+        ],
+      },
+
+      ,
       {
         name: 'Antonella Mathis',
         biography: 'A wildlife painter capturing animals in expressive poses.',
@@ -563,7 +669,7 @@ async function seedArtworks() {
       {
         name: 'Mohammad Bernal',
         biography: 'An expressionist painter focusing on social themes and human emotion.',
-        title: 'Veins of Light',
+        title: 'Veins of Heart',
         description: 'A dynamic abstraction using overlapping strokes that mimic flowing streams of light.',
         style: 'Abstract Expressionism',
         medium: ARTWORK_MEDIUM.ACRYLIC_ON_CANVAS,
@@ -572,9 +678,18 @@ async function seedArtworks() {
         widthCm: 72,
         tags: ['Abstract', 'Textures', 'Expressionism', 'Light'],
         imageUrls: [
-          { url: 'https://res.cloudinary.com/placeholder/nia1_primary.jpg', isPrimary: true },
-          { url: 'https://res.cloudinary.com/placeholder/nia1_img2.jpg', isPrimary: false },
-          { url: 'https://res.cloudinary.com/placeholder/nia1_img3.jpg', isPrimary: false },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713970/veinsofheart_bzfsbh.png',
+            isPrimary: true,
+          },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713970/veinsofheart_bzfsbh.png',
+            isPrimary: false,
+          },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713970/veinsofheart_bzfsbh.png',
+            isPrimary: false,
+          },
         ],
       },
       {
