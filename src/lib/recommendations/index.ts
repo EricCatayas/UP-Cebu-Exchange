@@ -9,7 +9,7 @@ interface GlobalStats {
 
 export const globalStats: GlobalStats = {
   height: { min: 20, max: 300 },
-  width: { min: 20, max: 300 }
+  width: { min: 20, max: 300 },
 };
 
 export function similarityScore(artworkA: ArtworkDTO, artworkB: ArtworkDTO): number {
@@ -27,7 +27,7 @@ export function similarityScore(artworkA: ArtworkDTO, artworkB: ArtworkDTO): num
   const jaccard = (arr1: string[], arr2: string[]): number => {
     const set1 = new Set(arr1 || []);
     const set2 = new Set(arr2 || []);
-    const intersection = [...set1].filter(t => set2.has(t)).length;
+    const intersection = [...set1].filter((t) => set2.has(t)).length;
     const union = new Set([...set1, ...arr2]).size;
     return union === 0 ? 0 : intersection / union;
   };
@@ -39,28 +39,22 @@ export function similarityScore(artworkA: ArtworkDTO, artworkB: ArtworkDTO): num
 
   // ----- NUMERIC FIELDS -----
   if (artworkA.heightCm != null && artworkB.heightCm != null) {
-    addScore(
-      normalizeNumeric(artworkA.heightCm, artworkB.heightCm, globalStats.height.min, globalStats.height.max),
-      2
-    );
+    addScore(normalizeNumeric(artworkA.heightCm, artworkB.heightCm, globalStats.height.min, globalStats.height.max), 1);
   }
 
   if (artworkA.widthCm != null && artworkB.widthCm != null) {
-    addScore(
-      normalizeNumeric(artworkA.widthCm, artworkB.widthCm, globalStats.width.min, globalStats.width.max),
-      2
-    );
+    addScore(normalizeNumeric(artworkA.widthCm, artworkB.widthCm, globalStats.width.min, globalStats.width.max), 2);
   }
 
   // ----- CATEGORICAL FIELDS -----
   addScore(match(artworkA.medium, artworkB.medium), 3);
-  addScore(match(artworkA.styleId, artworkB.styleId), 4);
+  addScore(match(artworkA.styleId, artworkB.styleId), 3);
   addScore(match(artworkA.status, artworkB.status), 1);
   addScore(match(artworkA.artistId, artworkB.artistId), 1);
 
   // ----- TAGS -----
-  const tagsA: string[] = artworkA.tags?.map(tag => tag.name) ?? [];
-  const tagsB: string[] = artworkB.tags?.map(tag => tag.name) ?? [];
+  const tagsA: string[] = artworkA.tags?.map((tag) => tag.name) ?? [];
+  const tagsB: string[] = artworkB.tags?.map((tag) => tag.name) ?? [];
   addScore(jaccard(tagsA, tagsB), 5);
 
   return scoreSum / weightSum; // final similarity: 0 (not similar) to 1 (identical)

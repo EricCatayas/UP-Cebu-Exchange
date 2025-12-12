@@ -141,11 +141,11 @@ async function seedArtworks() {
         title: 'Ocean Line',
         description: 'A minimal horizon line separating sea and sky with soft gradient transitions.',
         style: 'Minimalism',
-        medium: ARTWORK_MEDIUM.CHARCOAL_ON_PAPER,
+        medium: ARTWORK_MEDIUM.PENCIL_ON_PAPER,
         price: 180,
         heightCm: 60,
         widthCm: 45,
-        tags: ['Ocean', 'Minimalism', 'Horizon', 'Soft Gradient'],
+        tags: ['Ocean', 'Minimalism', 'Horizon', 'Soft Gradient', 'Nature', 'Tranquil', 'Calm'],
         imageUrls: [
           {
             url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1765418397/oceanline_wpckkj.png',
@@ -197,7 +197,7 @@ async function seedArtworks() {
         price: 300,
         heightCm: 85,
         widthCm: 65,
-        tags: ['Ocean', 'Coastal', 'Impressionism', 'Wind'],
+        tags: ['Ocean', 'Coastal', 'Impressionism', 'Wind', 'Waves', 'Blue'],
         imageUrls: [
           {
             url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1765418396/shorelinebreeze_qsivy9.png',
@@ -219,12 +219,12 @@ async function seedArtworks() {
         biography: 'An abstract visualist whose works capture the rhythm and movement of natural forces.',
         title: 'Tides in Motion',
         description: 'A swirling abstract representation of waves colliding under shifting blue hues.',
-        style: 'Abstract',
+        style: 'Impressionism',
         medium: ARTWORK_MEDIUM.OIL_ON_CANVAS,
         price: 320,
         heightCm: 90,
         widthCm: 70,
-        tags: ['Ocean', 'Abstract Waves', 'Blue Palette', 'Dynamic'],
+        tags: ['Ocean', 'Waves', 'Blue', 'Dynamic', 'Impressionism'],
         imageUrls: [
           {
             url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1765418396/tidesofmotion_wk0y8l.png',
@@ -333,7 +333,7 @@ async function seedArtworks() {
         price: 250,
         heightCm: 60,
         widthCm: 45,
-        tags: ['Watercolor', 'Nature', 'Lake', 'Tranquil'],
+        tags: ['Watercolor', 'Soft Tones', 'Nature', 'Lake', 'Calm', 'Tranquil'],
         imageUrls: [
           {
             url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713972/stillwaters_uf7sng.png',
@@ -437,7 +437,7 @@ async function seedArtworks() {
         title: 'Quiet',
         description: 'A single line bending gently over a muted gray background.',
         style: 'Minimalism',
-        medium: ARTWORK_MEDIUM.ACRYLIC_ON_CANVAS,
+        medium: ARTWORK_MEDIUM.PENCIL_ON_PAPER,
         price: 400,
         heightCm: 55,
         widthCm: 40,
@@ -573,7 +573,7 @@ async function seedArtworks() {
         price: 600,
         heightCm: 95,
         widthCm: 75,
-        tags: ['Storm', 'Sky', 'Landscape', 'Drama'],
+        tags: ['Coastal', 'Storm', 'Sky', 'Landscape', 'Impressionism'],
         imageUrls: [
           {
             url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713971/tempestrising_cyfexl.png',
@@ -595,11 +595,11 @@ async function seedArtworks() {
         title: 'Quiet Horizons',
         description: 'A calm and ethereal abstract landscape blending muted tones for a peaceful atmosphere.',
         style: 'Minimalism',
-        medium: ARTWORK_MEDIUM.ACRYLIC_ON_CANVAS,
+        medium: ARTWORK_MEDIUM.WATERCOLOR_ON_PAPER,
         price: 400,
         heightCm: 80,
         widthCm: 60,
-        tags: ['Minimalist', 'Calm', 'Soft Tones', 'Abstract'],
+        tags: ['Minimalism', 'Soft Tones', 'Watercolor', 'Nature', 'Calm', 'Tranquil'],
         imageUrls: [
           {
             url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1763713971/quiethorizon_lepl8i.png',
