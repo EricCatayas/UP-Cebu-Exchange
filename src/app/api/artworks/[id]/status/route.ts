@@ -3,7 +3,7 @@ import { Artwork } from '@/models/sequelize';
 import { getCurrentUser, isAdmin } from '@/lib/auth';
 import { ARTWORK_STATUSES } from '@/lib/constants';
 
-export async function PUT(request: NextRequest) {
+export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const currentUser = await getCurrentUser();
 
@@ -15,10 +15,11 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Admin access required' }, { status: 403 });
     }
 
-    const { artworkId, status } = await request.json();
+    const artworkId = parseInt((await params).id);
+    const { status } = await request.json();
 
-    if (!artworkId || !status) {
-      return NextResponse.json({ error: 'Artwork ID and status are required' }, { status: 400 });
+    if (!status) {
+      return NextResponse.json({ error: 'Status is required' }, { status: 400 });
     }
 
     if (isNaN(Number(artworkId))) {

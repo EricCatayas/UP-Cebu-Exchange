@@ -33,12 +33,12 @@ export const artworkApi = {
     return response.json();
   },
   updateStatus: async (artworkId: number, status: string) => {
-    const response = await fetch('/api/artworks/status', {
+    const response = await fetch(`/api/artworks/${artworkId}/status`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ artworkId, status }),
+      body: JSON.stringify({ status }),
     });
 
     if (!response.ok) {
