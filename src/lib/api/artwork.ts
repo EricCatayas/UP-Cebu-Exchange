@@ -65,4 +65,21 @@ export const artworkApi = {
 
     return response.json();
   },
+
+  deleteImage: async (artworkId: number, imageId: string) => {
+    const response = await fetch(`/api/artworks/${artworkId}/image`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ imageId }),
+    });
+
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.error || 'Failed to delete artwork image');
+    }
+
+    return response.json();
+  },
 };
