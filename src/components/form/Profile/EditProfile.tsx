@@ -31,16 +31,12 @@ function EditProfileForm({ user }: { user: UserDTO }) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (formData.newPassword && formData.newPassword !== confirmPassword) {
+      alert('New passwords do not match');
+      return;
+    }
     setSubmitting(true);
     try {
-      if (formData.newPassword && formData.newPassword !== confirmPassword) {
-        alert('New passwords do not match');
-        setSubmitting(false);
-        return;
-      }
-
-      console.log;
-
       const res = await fetch(`/api/user/${user.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -50,19 +46,17 @@ function EditProfileForm({ user }: { user: UserDTO }) {
 
       const data = await res.json().catch(() => ({}));
 
-      if (!res.ok) {
+      if (res.ok) {
+        alert('Profile updated successfully');
+        setConfirmPassword('');
+        setFormData((prev) => ({
+          ...prev,
+          password: '',
+          newPassword: '',
+        }));
+      } else {
         alert(data?.error || 'Failed to update profile.');
-        setSubmitting(false);
-        return;
       }
-
-      alert('Profile updated successfully');
-      setConfirmPassword('');
-      setFormData((prev) => ({
-        ...prev,
-        password: '',
-        newPassword: '',
-      }));
     } catch (err) {
       alert('Network error. Please try again.');
       console.error(err);

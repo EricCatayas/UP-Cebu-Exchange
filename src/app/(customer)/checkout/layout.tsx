@@ -1,9 +1,9 @@
 import React from 'react';
+import CartService from '@/services/CartService';
+import AddressService from '@/services/AddressService';
 import { CartProvider } from '@/contexts/CartContext';
 import { RentalOrderProvider } from '@/contexts/RentalOrderContext';
 import { UserAddressProvider } from '@/contexts/UserAddressContext';
-import CartService from '@/services/CartService';
-import AddressService from '@/services/AddressService';
 import { getCurrentUser } from '@/lib/auth';
 
 export default async function CheckoutLayout({ children }: { children: React.ReactNode }) {

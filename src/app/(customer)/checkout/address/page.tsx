@@ -1,8 +1,8 @@
 'use client';
 import React, { useState } from 'react';
 import { useUserAddress } from '@/contexts/UserAddressContext';
-import AddAddress from '@/components/form/Address/AddAddress';
-import EditAddress from '@/components/form/Address/EditAddress';
+import AddAddressForm from '@/components/form/Address/AddAddress';
+import EditAddressForm from '@/components/form/Address/EditAddress';
 
 export default function CheckoutAddressPage() {
   const { address, setAddress } = useUserAddress();
@@ -15,12 +15,12 @@ export default function CheckoutAddressPage() {
           {address ? (
             <>
               <h2 className="text-xl font-semibold">Current Address</h2>
-              <EditAddress address={address} handleSetAddress={setAddress} />
+              <EditAddressForm address={address} handleSetAddress={setAddress} />
             </>
           ) : (
             <>
               <h2 className="text-xl font-semibold mb-4">Add New Address</h2>
-              <AddAddress handleSetAddress={setAddress} />
+              <AddAddressForm handleSetAddress={setAddress} />
             </>
           )}
         </div>
