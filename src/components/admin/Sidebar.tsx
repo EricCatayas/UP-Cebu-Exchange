@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { FaTachometerAlt, FaCalendarAlt, FaBox, FaUsers, FaBell, FaChartBar, FaPalette } from 'react-icons/fa';
+import { FaTachometerAlt, FaCalendarAlt, FaBox, FaUsers, FaBell, FaChartBar, FaPalette, FaTruck } from 'react-icons/fa';
 
 const Sidebar: React.FC = () => {
   return (
@@ -24,7 +24,7 @@ const Sidebar: React.FC = () => {
           </li>
           <li>
             <Link href="/orders" className="flex items-center p-2 hover:bg-gray-700">
-              <FaBox className="mr-2" />
+              <FaTruck className="mr-2" />
               Orders
             </Link>
           </li>
