@@ -50,12 +50,11 @@ export const artworkApi = {
   },
 
   delete: async (artworkId: number) => {
-    const response = await fetch(`/api/artworks`, {
+    const response = await fetch(`/api/artworks/${artworkId}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ artworkId }),
     });
 
     if (!response.ok) {

@@ -3,7 +3,7 @@ import { UploadApiResponse } from 'cloudinary';
 
 const FOLDER_NAME = process.env.CLOUDINARY_FOLDER_NAME || 'UP Cebu Exchange';
 
-export class ImageService {
+export default class ImageService {
   async uploadImages(
     Uint8ArrayFiles: Uint8Array[],
     options = {}

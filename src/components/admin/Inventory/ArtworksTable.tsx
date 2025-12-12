@@ -1,8 +1,9 @@
 'use client';
-import { getImageUrl } from '@/lib/artwork';
 import Link from 'next/link';
+import { getImageUrl } from '@/lib/artwork';
 import { ARTWORK_STATUS, ARTWORK_STATUSES } from '@/lib/constants';
 import { artworkApi } from '@/lib/api/artwork';
+import { FaSearch, FaInfoCircle, FaEdit, FaTrash } from 'react-icons/fa';
 
 export default function ArtworksTable({ artworks }: { artworks: any[] }) {
   const handleStatusChange = async (artworkId: number, newStatus: string) => {
@@ -66,14 +67,20 @@ export default function ArtworksTable({ artworks }: { artworks: any[] }) {
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm">
                 <div className="flex gap-2">
-                  <Link href={`/inventory/${artwork.id}`} className="text-blue-600 hover:text-blue-800 font-medium">
-                    Edit
+                  <Link href={`/inventory/${artwork.id}`} className="text-gray-600 hover:text-gray-800 font-medium">
+                    <FaSearch />
+                  </Link>
+                  <Link
+                    href={`/inventory/${artwork.id}/edit`}
+                    className="text-blue-600 hover:text-blue-800 font-medium"
+                  >
+                    <FaEdit />
                   </Link>
                   <button
                     onClick={() => handleDelete(artwork.id)}
                     className="text-red-600 hover:text-red-800 font-medium"
                   >
-                    Delete
+                    <FaTrash />
                   </button>
                 </div>
               </td>

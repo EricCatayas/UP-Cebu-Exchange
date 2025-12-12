@@ -7,7 +7,7 @@ import { ArtworkCreateDTO } from '@/models/Artwork';
 import { getCurrentUser, isAdmin } from '@/lib/auth';
 import { ARTWORK_STATUS } from '@/lib/constants';
 
-export async function POST(request: NextRequest) {
+export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     // Check authentication and admin authorization
     const currentUser = await getCurrentUser();
@@ -19,6 +19,8 @@ export async function POST(request: NextRequest) {
     if (!isAdmin(currentUser)) {
       return NextResponse.json({ error: 'Admin access required' }, { status: 403 });
     }
+
+    const artworkId = parseInt((await params).id);
 
     const formData = await request.formData();
 
@@ -39,6 +41,12 @@ export async function POST(request: NextRequest) {
     const tagsString = formData.get('tags') as string;
     const tags = tagsString ? JSON.parse(tagsString) : [];
 
+    const artwork = await ArtworkRepository.findById(artworkId);
+
+    if (!artwork) {
+      return NextResponse.json({ error: 'Artwork not found' }, { status: 404 });
+    }
+
     // Validate required fields
     if (!title) {
       return NextResponse.json({ error: 'Title is required' }, { status: 400 });
@@ -52,9 +60,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Rental fees are required' }, { status: 400 });
     }
 
-    if (!images || images.length === 0) {
+    if ((!artwork.images || artwork.images.length === 0) && images.length === 0) {
       return NextResponse.json({ error: 'At least one image is required' }, { status: 400 });
-    } else {
+    } else if (images && images.length > 0) {
       for (const image of images) {
         if (!image.type.startsWith('image/')) {
           return NextResponse.json({ error: 'All uploaded files must be image type' }, { status: 400 });
@@ -92,17 +100,55 @@ export async function POST(request: NextRequest) {
       artworkStyleId = newStyle.id;
     }
 
-    // Create artwork
-    const createdArtwork = await Artwork.create({
+    // Update artwork
+    await artwork.update({
       title: title?.trim(),
       artistId: artworkArtistId || undefined,
       styleId: artworkStyleId,
       description: description?.trim(),
-      medium: medium.trim(),
-      heightCm: Number(heightCm),
-      widthCm: Number(widthCm),
+      medium: medium?.trim(),
+      heightCm: heightCm,
+      widthCm: widthCm,
       status: status,
     });
+
+    // Update rental plans
+    const rentalPlans = artwork.rentalPlans as RentalPlan[];
+    for (const plan of rentalPlans) {
+      if (plan.durationMonths === 3) {
+        await plan.update({ price: rentalFee3Months });
+      } else if (plan.durationMonths === 6) {
+        await plan.update({ price: rentalFee6Months });
+      } else if (plan.durationMonths === 12) {
+        await plan.update({ price: rentalFee12Months });
+      }
+    }
+
+    // Update tags
+    const existingTags = artwork.tags as Tag[];
+    const existingTagNames = existingTags.map((tag) => tag.name);
+    const newTagNames = tags;
+    // Add new tags
+    for (const tagName of newTagNames) {
+      if (!existingTagNames.includes(tagName)) {
+        let tag = await Tag.findOne({ where: { name: tagName } });
+        if (!tag) {
+          tag = await Tag.create({ name: tagName });
+          await ArtworkTag.create({ artworkId: artwork.id, tagId: tag.id });
+        }
+      }
+    }
+    // Delete removed tags
+    for (const existingTag of existingTags) {
+      if (!newTagNames.includes(existingTag.name)) {
+        await ArtworkTag.destroy({
+          where: {
+            artworkId: artwork.id,
+            tagId: existingTag.id,
+          },
+        });
+      }
+    }
 
     // Handle image uploads
     const arrayBuffers = await Promise.all(images.map((file) => file.arrayBuffer()));
@@ -118,47 +164,12 @@ export async function POST(request: NextRequest) {
         const result = imageUploadResults![i];
         await ArtworkImage.create({
           id: result.public_id,
-          artworkId: createdArtwork!.id,
+          artworkId: artworkId,
           imageUrl: result.secure_url,
           isPrimary: i === 0,
         });
       }
     }
-    // todo: handle failed image uploads
-
-    await RentalPlan.bulkCreate([
-      { artworkId: createdArtwork!.id, durationMonths: 3, price: rentalFee3Months },
-      { artworkId: createdArtwork!.id, durationMonths: 6, price: rentalFee6Months },
-      { artworkId: createdArtwork!.id, durationMonths: 12, price: rentalFee12Months },
-    ]);
-
-    if (tags && Array.isArray(tags)) {
-      for (const tagName of tags) {
-        let tag = await Tag.findOrCreate({ where: { name: tagName } });
-        await ArtworkTag.create({ artworkId: createdArtwork!.id, tagId: tag[0].id });
-      }
-    }
-
-    return NextResponse.json(
-      {
-        message: 'Artwork created successfully',
-        artwork: {
-          id: createdArtwork!.id,
-          title: createdArtwork!.title,
-          artistId: createdArtwork!.artistId,
-          artist: (createdArtwork as any).artist || null,
-          description: createdArtwork!.description,
-          medium: createdArtwork!.medium,
-          heightCm: createdArtwork!.heightCm,
-          widthCm: createdArtwork!.widthCm,
-          status: createdArtwork!.status,
-          createdAt: createdArtwork!.createdAt,
-          updatedAt: createdArtwork!.updatedAt,
-          tags: tags || [],
-        },
-      },
-      { status: 201 }
-    );
   } catch (error) {
     console.error('Artwork creation error:', error);
 
@@ -175,91 +186,39 @@ export async function POST(request: NextRequest) {
 }
 
 // TODO: Test API
-export async function GET(request: NextRequest) {
+export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '10');
-    const status = searchParams.get('status');
-    const artistId = searchParams.get('artistId');
-    const search = searchParams.get('search');
-
-    if (page < 1 || limit < 1 || limit > 100) {
-      return NextResponse.json(
-        {
-          error: 'Invalid pagination parameters. Page must be >= 1 and limit must be between 1 and 100',
-        },
-        { status: 400 }
-      );
+    // Check authentication and admin authorization
+    const currentUser = await getCurrentUser();
+    if (!currentUser) {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+    }
+    if (!isAdmin(currentUser)) {
+      return NextResponse.json({ error: 'Admin access required' }, { status: 403 });
     }
 
-    // Build where clause
-    const whereClause: any = {};
+    const artworkId = parseInt((await params).id);
 
-    if (status !== null && status !== undefined) {
-      whereClause.status = status === 'true' ? 'available' : 'unavailable';
+    if (!artworkId || isNaN(Number(artworkId))) {
+      return NextResponse.json({ error: 'Valid artworkId is required' }, { status: 400 });
+    }
+    // Find the artwork
+    const artwork = await Artwork.findByPk(artworkId, { include: ['images'] });
+    if (!artwork) {
+      return NextResponse.json({ error: 'Artwork not found' }, { status: 404 });
     }
 
-    if (artistId) {
-      whereClause.artistId = parseInt(artistId);
+    const imageService = new ImageService();
+    const artworkImages = await artwork.images;
+    for (const image of artworkImages) {
+      await imageService.deleteImage(image.id);
     }
 
-    if (search) {
-      whereClause[Op.or] = [
-        { title: { [Op.iLike]: `%${search}%` } },
-        { description: { [Op.iLike]: `%${search}%` } },
-        { medium: { [Op.iLike]: `%${search}%` } },
-      ];
-    }
-
-    // Calculate offset
-    const offset = (page - 1) * limit;
-
-    // Fetch artworks with pagination
-    const { count, rows: artworks } = await Artwork.findAndCountAll({
-      where: whereClause,
-      include: [
-        {
-          model: Artist,
-          as: 'artist',
-          attributes: ['id', 'name', 'bio'],
-        },
-      ],
-      limit,
-      offset,
-      order: [['createdAt', 'DESC']],
-    });
-
-    // Calculate pagination info
-    const totalPages = Math.ceil(count / limit);
-    const hasNextPage = page < totalPages;
-    const hasPrevPage = page > 1;
-
-    return NextResponse.json({
-      artworks: artworks.map((artwork) => ({
-        id: artwork.id,
-        title: artwork.title,
-        artistId: artwork.artistId,
-        artist: (artwork as any).artist || null,
-        description: artwork.description,
-        medium: artwork.medium,
-        heightCm: artwork.heightCm,
-        widthCm: artwork.widthCm,
-        status: artwork.status,
-        createdAt: artwork.createdAt,
-        updatedAt: artwork.updatedAt,
-      })),
-      pagination: {
-        currentPage: page,
-        totalPages,
-        totalItems: count,
-        itemsPerPage: limit,
-        hasNextPage,
-        hasPrevPage,
-      },
-    });
+    // Delete the artwork
+    await artwork.destroy();
+    return NextResponse.json({ message: 'Artwork deleted successfully' }, { status: 200 });
   } catch (error) {
-    console.error('Artworks fetch error:', error);
+    console.error('Artwork deletion error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
