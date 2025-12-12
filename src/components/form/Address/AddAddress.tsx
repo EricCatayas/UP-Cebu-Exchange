@@ -8,20 +8,28 @@ export default function AddAddressForm({ handleSetAddress }: { handleSetAddress:
   const [postalCode, setPostalCode] = useState('');
   const [addressLine1, setAddressLine1] = useState('');
   const [addressLine2, setAddressLine2] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const res = await fetch('/api/address', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ city, province, postalCode, addressLine1, addressLine2 }),
-    });
-    const data = await res.json();
-    if (res.ok) {
-      const newAddress = data.address;
-      handleSetAddress(newAddress);
-    } else {
-      console.error(data.error || 'Failed to create address');
+    setSubmitting(true);
+    try {
+      const res = await fetch('/api/address', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ city, province, postalCode, addressLine1, addressLine2 }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        const newAddress = data.address;
+        handleSetAddress(newAddress);
+      } else {
+        alert(data.error || 'Failed to create address');
+      }
+    } catch (err) {
+      console.error('Error creating address:', err);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -80,9 +88,12 @@ export default function AddAddressForm({ handleSetAddress }: { handleSetAddress:
       </div>
       <button
         type="submit"
-        className="w-full bg-blue-600 text-white font-medium py-2 px-4 rounded-md hover:bg-blue-700"
+        disabled={submitting}
+        className={`px-4 py-2 rounded text-white transition ${
+          submitting ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+        }`}
       >
-        Submit
+        {submitting ? 'Adding Address...' : 'Add Address'}
       </button>
     </form>
   );

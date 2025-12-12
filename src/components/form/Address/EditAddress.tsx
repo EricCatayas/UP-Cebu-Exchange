@@ -10,6 +10,7 @@ export default function EditAddress({
   handleSetAddress: (address: AddressDTO) => void;
 }) {
   const [isEditing, setIsEditing] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [editedAddress, setEditedAddress] = useState({
     city: address?.city || '',
     province: address?.province || '',
@@ -32,6 +33,7 @@ export default function EditAddress({
 
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitting(true);
     try {
       const res = await fetch('/api/address', {
         method: 'PUT',
@@ -44,10 +46,12 @@ export default function EditAddress({
         handleSetAddress(updatedAddress);
         setIsEditing(false);
       } else {
-        console.error(data.error || 'Failed to update address');
+        alert(data.error || 'Failed to update address');
       }
     } catch (err) {
       console.error('Error updating address:', err);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -95,7 +99,7 @@ export default function EditAddress({
               <button
                 type="button"
                 onClick={() => setIsEditing(true)}
-                className="flex-1 bg-blue-600 text-white font-medium py-2 px-4 rounded-md hover:bg-blue-700"
+                className="px-4 py-2 rounded text-white transition bg-blue-600 hover:bg-blue-700"
               >
                 Edit
               </button>
@@ -155,9 +159,12 @@ export default function EditAddress({
             <div className="flex gap-3 pt-2">
               <button
                 type="submit"
-                className="flex-1 bg-blue-600 text-white font-medium py-2 px-4 rounded-md hover:bg-blue-700"
+                disabled={submitting}
+                className={`px-4 py-2 rounded text-white transition ${
+                  submitting ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+                }`}
               >
-                Save Changes
+                {submitting ? 'Saving...' : 'Save Changes'}
               </button>
               <button
                 type="button"
