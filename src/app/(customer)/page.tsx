@@ -71,7 +71,7 @@ export default async function Page() {
         </div>
       </HeroBackground>
       <div className="container mx-auto px-4 pb-4">
-        <section className="py-12">
+        <section className="pb-12">
           <h2 className="text-3xl font-bold mb-6">A Few of our Favorites</h2>
           <div
             style={{
