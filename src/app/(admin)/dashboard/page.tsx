@@ -25,7 +25,7 @@ function Dashboard() {
             <AnalyticsCard title="Ongoing" value={50} />
             <AnalyticsCard title="To Return" value={50} />
             <AnalyticsCard title="Completed" value={50} />
-            <AnalyticsCard title="Void" value={50} />
+            <AnalyticsCard title="Cancelled" value={50} />
           </div>
         </section>
 
