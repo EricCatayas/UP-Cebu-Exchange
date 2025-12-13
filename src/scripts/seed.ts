@@ -136,6 +136,138 @@ async function seedArtworks() {
         ],
       },
       {
+        name: 'Elias Hartmann',
+        biography: 'A nature-inspired painter celebrated for serene landscapes and reflective waters.',
+        title: 'Waters Echo',
+        description: 'A calm lakeside scene at dusk, where fading sunlight mirrors across glassy water.',
+        style: 'Realism',
+        medium: ARTWORK_MEDIUM.OIL_ON_CANVAS,
+        price: 320,
+        heightCm: 90,
+        widthCm: 70,
+        tags: ['Lake', 'Sunset', 'Reflection', 'Nature'],
+        imageUrls: [
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1765585292/watersecho_ynrwzp.png',
+            isPrimary: true,
+          },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1765585292/watersecho_ynrwzp.png',
+            isPrimary: false,
+          },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1765585292/watersecho_ynrwzp.png',
+            isPrimary: false,
+          },
+        ],
+      },
+      {
+        name: 'Marina Solis',
+        biography: 'A modern impressionist known for expressive brushstrokes and warm, atmospheric scenery.',
+        title: 'Ripples of Morning',
+        description: 'Soft ripples form across a quiet lake as gentle sunrise colors spill across the horizon.',
+        style: 'Impressionism',
+        medium: ARTWORK_MEDIUM.ACRYLIC_ON_CANVAS,
+        price: 270,
+        heightCm: 75,
+        widthCm: 55,
+        tags: ['Lake', 'Sunrise', 'Warm Tones', 'Tranquility'],
+        imageUrls: [
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1765585292/ripplesofmorning_leudyi.png',
+            isPrimary: true,
+          },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1765585292/ripplesofmorning_leudyi.png',
+            isPrimary: false,
+          },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1765585292/ripplesofmorning_leudyi.png',
+            isPrimary: false,
+          },
+        ],
+      },
+
+      {
+        name: 'Rowan Adler',
+        biography: 'A minimalist artist who explores muted palettes and peaceful natural environments.',
+        title: 'Silent Lake',
+        description: 'A nearly monochromatic portrayal of a fog-covered lake, where land and sky blend softly.',
+        style: 'Minimalism',
+        medium: ARTWORK_MEDIUM.WATERCOLOR_ON_PAPER,
+        price: 190,
+        heightCm: 60,
+        widthCm: 45,
+        tags: ['Lake', 'Fog', 'Neutral Tones', 'Calm'],
+        imageUrls: [
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1765585292/silentlake_gozvcc.png',
+            isPrimary: true,
+          },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1765585292/silentlake_gozvcc.png',
+            isPrimary: false,
+          },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1765585292/silentlake_gozvcc.png',
+            isPrimary: false,
+          },
+        ],
+      },
+      {
+        name: 'Helena Brooks',
+        biography: 'A vibrant colorist whose works highlight dramatic skies and luminous waters.',
+        title: 'Lake of Lights',
+        description: 'Colorful reflections dance across a lake under a glowing twilight sky.',
+        style: 'Expressionism',
+        medium: ARTWORK_MEDIUM.OIL_ON_CANVAS,
+        price: 380,
+        heightCm: 85,
+        widthCm: 65,
+        tags: ['Lake', 'Twilight', 'Vivid Colors', 'Sky'],
+        imageUrls: [
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1765585292/lakeoflights_b0zoew.png',
+            isPrimary: true,
+          },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1765585292/lakeoflights_b0zoew.png',
+            isPrimary: false,
+          },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1765585292/lakeoflights_b0zoew.png',
+            isPrimary: false,
+          },
+        ],
+      },
+      {
+        name: 'Soren Vale',
+        biography: 'A contemporary realist known for capturing peaceful natural retreats and untouched scenery.',
+        title: 'Midnight Lake',
+        description: 'A moonlit lake surrounded by dark pine silhouettes, illuminated by a silver glow.',
+        style: 'Contemporary Realism',
+        medium: ARTWORK_MEDIUM.ACRYLIC_ON_CANVAS,
+        price: 295,
+        heightCm: 70,
+        widthCm: 52,
+        tags: ['Lake', 'Moonlight', 'Nature', 'Cool Tones'],
+        imageUrls: [
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1765585292/midnightlake_rcaojg.png',
+            isPrimary: true,
+          },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1765585292/midnightlake_rcaojg.png',
+            isPrimary: false,
+          },
+          {
+            url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1765585292/midnightlake_rcaojg.png',
+            isPrimary: false,
+          },
+        ],
+      },
+
+      {
         name: 'Riley Stonehart',
         biography: 'A minimalist artist focusing on simplified forms and natural color harmony.',
         title: 'Ocean Line',
