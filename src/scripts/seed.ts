@@ -145,7 +145,7 @@ async function seedArtworks() {
         price: 320,
         heightCm: 90,
         widthCm: 70,
-        tags: ['Lake', 'Sunset', 'Reflection', 'Nature'],
+        tags: ['Lake', 'Sunset', 'Reflection', 'Nature', 'Tranquil'],
         imageUrls: [
           {
             url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1765585292/watersecho_ynrwzp.png',
@@ -171,7 +171,7 @@ async function seedArtworks() {
         price: 270,
         heightCm: 75,
         widthCm: 55,
-        tags: ['Lake', 'Sunrise', 'Warm Tones', 'Tranquility'],
+        tags: ['Lake', 'Sunset', 'Reflection', 'Nature', 'Tranquil'],
         imageUrls: [
           {
             url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1765585292/ripplesofmorning_leudyi.png',
@@ -198,7 +198,7 @@ async function seedArtworks() {
         price: 190,
         heightCm: 60,
         widthCm: 45,
-        tags: ['Lake', 'Fog', 'Neutral Tones', 'Calm'],
+        tags: ['Lake', 'Fog', 'Nature', 'Tranquil'],
         imageUrls: [
           {
             url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1765585292/silentlake_gozvcc.png',
@@ -224,7 +224,7 @@ async function seedArtworks() {
         price: 380,
         heightCm: 85,
         widthCm: 65,
-        tags: ['Lake', 'Twilight', 'Vivid Colors', 'Sky'],
+        tags: ['Lake', 'Sunset', 'Abstract', 'Nature', 'Reflection', 'Sky'],
         imageUrls: [
           {
             url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1765585292/lakeoflights_b0zoew.png',
@@ -250,7 +250,7 @@ async function seedArtworks() {
         price: 295,
         heightCm: 70,
         widthCm: 52,
-        tags: ['Lake', 'Moonlight', 'Nature', 'Cool Tones'],
+        tags: ['Lake', 'Reflection', 'Moonlight', 'Nature', 'Tranquil', 'Cool Tones'],
         imageUrls: [
           {
             url: 'https://res.cloudinary.com/ddssydxrf/image/upload/v1765585292/midnightlake_rcaojg.png',
