@@ -1,13 +1,19 @@
 import { Payment } from '@/models/sequelize';
-import { getCurrentUser, isAdmin } from '@/lib/auth';
+import { getCurrentUser, isAdmin, canEditContent } from '@/lib/auth';
 import { PAYMENT_STATUSES } from '@/lib/constants';
 
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
   try {
     const currentUser = await getCurrentUser();
+
     if (!currentUser || !isAdmin(currentUser)) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
     }
+
+    if (!canEditContent(currentUser)) {
+      return new Response(JSON.stringify({ error: 'Admin editor access required' }), { status: 403 });
+    }
+
     const paymentId = parseInt((await params).id);
 
     const { status } = await request.json();

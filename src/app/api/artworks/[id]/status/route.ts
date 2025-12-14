@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Artwork } from '@/models/sequelize';
-import { getCurrentUser, isAdmin } from '@/lib/auth';
+import { getCurrentUser, isAdmin, canEditContent } from '@/lib/auth';
 import { ARTWORK_STATUSES } from '@/lib/constants';
 
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
@@ -13,6 +13,10 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 
     if (!isAdmin(currentUser)) {
       return NextResponse.json({ error: 'Admin access required' }, { status: 403 });
+    }
+
+    if (!canEditContent(currentUser)) {
+      return NextResponse.json({ error: 'Admin editor access required' }, { status: 403 });
     }
 
     const artworkId = parseInt((await params).id);

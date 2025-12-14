@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Op } from 'sequelize';
 import { Artwork, Artist, ArtworkImage, ArtworkTag, RentalPlan, Tag, Style } from '@/models/sequelize';
 import { ArtworkCreateDTO } from '@/models/Artwork';
-import { getCurrentUser, isAdmin } from '@/lib/auth';
+import { getCurrentUser, isAdmin, canEditContent } from '@/lib/auth';
 import { ARTWORK_STATUS } from '@/lib/constants';
 
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
@@ -18,6 +18,10 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 
     if (!isAdmin(currentUser)) {
       return NextResponse.json({ error: 'Admin access required' }, { status: 403 });
+    }
+
+    if (!canEditContent(currentUser)) {
+      return NextResponse.json({ error: 'Admin editor access required' }, { status: 403 });
     }
 
     const artworkId = parseInt((await params).id);
@@ -195,6 +199,10 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
     }
     if (!isAdmin(currentUser)) {
       return NextResponse.json({ error: 'Admin access required' }, { status: 403 });
+    }
+
+    if (!canEditContent(currentUser)) {
+      return NextResponse.json({ error: 'Admin editor access required' }, { status: 403 });
     }
 
     const artworkId = parseInt((await params).id);

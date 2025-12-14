@@ -1,5 +1,5 @@
 import { RentalOrder } from '@/models/sequelize';
-import { getCurrentUser, isAdmin } from '@/lib/auth';
+import { getCurrentUser, isAdmin, canEditContent } from '@/lib/auth';
 import { ORDER_STATUSES } from '@/lib/constants';
 
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
@@ -8,6 +8,10 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 
     if (!currentUser || !isAdmin(currentUser)) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
+    }
+
+    if (!canEditContent(currentUser)) {
+      return new Response(JSON.stringify({ error: 'Admin editor access required' }), { status: 403 });
     }
 
     const orderId = parseInt((await params).id);

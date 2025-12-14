@@ -2,13 +2,17 @@ import { NextRequest, NextResponse } from 'next/server';
 import { User, Role } from '@/models/sequelize';
 import { hashPassword } from '@/lib/auth';
 import { USER_ROLE, USER_STATUS } from '@/lib/constants';
-import { getCurrentUser, isAdmin } from '@/lib/auth';
+import { getCurrentUser, isAdmin, canEditContent } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
   try {
     const currentUser = await getCurrentUser();
     if (!currentUser || !isAdmin(currentUser)) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    if (!canEditContent(currentUser)) {
+      return NextResponse.json({ error: 'Admin editor access required' }, { status: 403 });
     }
 
     const { email, password, fullName, phoneNumber, role } = await request.json();

@@ -2,8 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { User, Role } from '@/models/sequelize';
 import { hashPassword } from '@/lib/auth';
 import { USER_ROLES, USER_STATUS } from '@/lib/constants';
-import { getCurrentUser, isAdmin } from '@/lib/auth';
+import { getCurrentUser, isAdmin, canEditContent } from '@/lib/auth';
 
+// Both admin and the user themselves can update user info
+// but only admin can change roles
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const currentUser = await getCurrentUser();
@@ -12,7 +14,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     }
     const userId = parseInt((await params).id);
 
-    if (currentUser.userId != userId && !isAdmin(currentUser)) {
+    if (currentUser.userId != userId && !canEditContent(currentUser)) {
       return NextResponse.json({ error: 'Unauthorized to update user' }, { status: 401 });
     }
 
@@ -24,7 +26,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 
     const { fullName, phoneNumber, password, newPassword, role } = await request.json();
 
-    if (role && !isAdmin(currentUser)) {
+    if (role && !canEditContent(currentUser)) {
       return NextResponse.json({ error: 'Unauthorized to change role' }, { status: 401 });
     }
     if (role && !USER_ROLES.includes(role)) {
