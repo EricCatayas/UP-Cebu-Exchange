@@ -1,7 +1,7 @@
-import { ArtworkCreateDTO } from '@/models/Artwork';
+import { ArtworkCreateDTO, ArtworkEditDTO } from '@/models/Artwork';
 
 export const artworkApi = {
-  create: async (artworkData: ArtworkCreateDTO & { images?: File[] }) => {
+  create: async (artworkData: ArtworkCreateDTO) => {
     const formData = new FormData();
 
     Object.entries(artworkData).forEach(([key, value]) => {
@@ -32,6 +32,36 @@ export const artworkApi = {
 
     return response.json();
   },
+  edit: async (artworkData: ArtworkEditDTO) => {
+    const formData = new FormData();
+
+    Object.entries(artworkData).forEach(([key, value]) => {
+      if (key !== 'images' && value !== undefined && value !== null) {
+        if (Array.isArray(value)) {
+          formData.append(key, JSON.stringify(value));
+        } else {
+          formData.append(key, String(value));
+        }
+      }
+    });
+
+    if (artworkData.images && artworkData.images.length > 0) {
+      artworkData.images.forEach((image: File) => {
+        formData.append('images', image);
+      });
+    }
+
+    const response = await fetch(`/api/artworks/${artworkData.id}`, {
+      method: 'PUT',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.error || 'Failed to edit artwork');
+    }
+  },
+
   updateStatus: async (artworkId: number, status: string) => {
     const response = await fetch(`/api/artworks/${artworkId}/status`, {
       method: 'PUT',

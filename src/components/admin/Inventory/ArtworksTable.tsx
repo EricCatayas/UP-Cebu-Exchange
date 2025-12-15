@@ -13,28 +13,23 @@ export default function ArtworksTable({ artworks }: { artworks: any[] }) {
     try {
       await artworkApi.updateStatus(artworkId, newStatus);
     } catch (error) {
-      alert(error);
+      alert(error.message);
       // Optionally, you can add an error notification
     }
   };
 
   const handleDelete = async (artworkId: number) => {
     try {
-      let confirm = false;
       openConfirmation(
         'Are you sure you want to delete this item?',
-        () => {
-          confirm = true;
+        async () => {
+          await artworkApi.delete(artworkId);
+          alert('Artwork deleted successfully.');
         },
-        () => {
-          confirm = false;
-        }
+        () => {}
       );
-      if (confirm) {
-        await artworkApi.delete(artworkId);
-      }
     } catch (error) {
-      alert(error);
+      alert(error.message);
     }
   };
 

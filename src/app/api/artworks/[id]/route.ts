@@ -39,13 +39,22 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     const widthCm = formData.get('widthCm') ? Number(formData.get('widthCm')) : undefined;
     const status = formData.get('status') as string;
     const images = formData.getAll('images') as File[];
+    const primaryImageId = formData.get('primaryImageId') as string;
     const rentalFee3Months = Number(formData.get('rentalFee3Months'));
     const rentalFee6Months = Number(formData.get('rentalFee6Months'));
     const rentalFee12Months = Number(formData.get('rentalFee12Months'));
     const tagsString = formData.get('tags') as string;
     const tags = tagsString ? JSON.parse(tagsString) : [];
 
-    const artwork = await ArtworkRepository.findById(artworkId);
+    const artwork = await Artwork.findByPk(artworkId, {
+      include: [
+        { model: Artist, as: 'artist' },
+        { model: Style, as: 'style' },
+        { model: ArtworkImage, as: 'images' },
+        { model: RentalPlan, as: 'rentalPlans' },
+        'tags',
+      ],
+    });
 
     if (!artwork) {
       return NextResponse.json({ error: 'Artwork not found' }, { status: 404 });
@@ -135,11 +144,8 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     // Add new tags
     for (const tagName of newTagNames) {
       if (!existingTagNames.includes(tagName)) {
-        let tag = await Tag.findOne({ where: { name: tagName } });
-        if (!tag) {
-          tag = await Tag.create({ name: tagName });
-          await ArtworkTag.create({ artworkId: artwork.id, tagId: tag.id });
-        }
+        const [tag] = await Tag.findOrCreate({ where: { name: tagName } });
+        await ArtworkTag.create({ artworkId: artwork.id, tagId: tag.id });
       }
     }
     // Delete removed tags
@@ -170,10 +176,28 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
           id: result.public_id,
           artworkId: artworkId,
           imageUrl: result.secure_url,
-          isPrimary: i === 0,
+          isPrimary: String(i) === primaryImageId,
         });
       }
     }
+
+    const primaryImage = artwork.images?.find((img) => img.id === primaryImageId);
+    if (primaryImage) {
+      await ArtworkImage.update(
+        { isPrimary: false },
+        { where: { artworkId: artworkId, id: { [Op.ne]: primaryImageId } } }
+      );
+      primaryImage.isPrimary = true;
+      await primaryImage.save();
+    }
+
+    return NextResponse.json(
+      {
+        message: 'Artwork updated successfully',
+        artwork: artwork.toJSON(),
+      },
+      { status: 200 }
+    );
   } catch (error) {
     console.error('Artwork creation error:', error);
 

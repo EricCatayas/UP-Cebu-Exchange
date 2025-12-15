@@ -9,7 +9,7 @@ import { StyleDTO } from '@/models/Style';
 import { artworkApi } from '@/lib/api/artwork';
 import { ARTWORK_STATUS, ARTWORK_STATUSES } from '@/lib/constants';
 import { FaPlus } from 'react-icons/fa';
-import { getRentalFee, getTagNames } from '@/lib/artwork';
+import { getRentalFee, getPrimaryImage, getTagNames } from '@/lib/artwork';
 
 // Todo: test
 function EditArtworkForm({
@@ -43,6 +43,7 @@ function EditArtworkForm({
     rentalFee6Months: getRentalFee(artwork, 6) || '',
     rentalFee12Months: getRentalFee(artwork, 12) || '',
     tags: getTagNames(artwork) || [],
+    primaryImageId: getPrimaryImage(artwork)?.id || '',
   });
   const [newTag, setNewTag] = useState('');
   const [tagOptions, setTagOptions] = useState<string[]>(tags || []);
@@ -117,6 +118,13 @@ function EditArtworkForm({
     }
   };
 
+  const handleSetAsPrimary = (imageId: string | number) => {
+    setFormData((prev) => ({
+      ...prev,
+      primaryImageId: String(imageId),
+    }));
+  };
+
   const handleRemoveImage = (index: number) => {
     setImages((prev) => prev.filter((_, i) => i !== index));
     setImagePreviews((prev) => {
@@ -127,21 +135,15 @@ function EditArtworkForm({
 
   const handleRemoveExistingImage = async (imageId: string) => {
     try {
-      let confirm = false;
       openConfirmation(
         'Are you sure you want to delete this image?',
-        () => {
-          confirm = true;
+        async () => {
+          await artworkApi.deleteImage(artwork.id, imageId);
+          setExistingImages((prev) => prev.filter((img) => img.id !== imageId));
         },
-        () => {
-          confirm = false;
-        }
+        () => {}
       );
-      if (!confirm) return;
-      await artworkApi.deleteImage(artwork.id, imageId);
-      setExistingImages((prev) => prev.filter((img) => img.id !== imageId));
     } catch (error) {
-      console.error('Error deleting existing image:', error);
       alert(error instanceof Error ? error.message : 'Failed to delete image');
     }
   };
@@ -152,6 +154,7 @@ function EditArtworkForm({
 
     try {
       const artworkData = {
+        id: artwork.id,
         title: formData.title || undefined,
         artistId: formData.artistId ? Number(formData.artistId) : undefined,
         artistName: formData.artistName || undefined,
@@ -166,13 +169,14 @@ function EditArtworkForm({
         rentalFee6Months: Number(formData.rentalFee6Months),
         rentalFee12Months: Number(formData.rentalFee12Months),
         tags: selectedTags,
-        images: images,
+        images: images, // new images
+        primaryImageId: formData.primaryImageId,
       };
 
       console.log('Submitting artwork data:', artworkData);
 
-      await artworkApi.create(artworkData);
-      alert('Artwork created successfully!');
+      await artworkApi.edit(artworkData);
+      alert('Artwork saved successfully!');
       router.push('/inventory');
     } catch (error) {
       console.error('Error creating artwork:', error);
@@ -251,6 +255,13 @@ function EditArtworkForm({
                     >
                       ×
                     </button>
+                    <button
+                      type="button"
+                      onClick={() => handleSetAsPrimary(image.id)}
+                      className="absolute bottom-1 left-1 bg-blue-500 text-white rounded-full px-2 py-1 text-xs hover:bg-blue-600"
+                    >
+                      {image.id === formData.primaryImageId ? 'Primary' : 'Set as Primary'}
+                    </button>
                   </div>
                 ))}
               </>
@@ -270,6 +281,13 @@ function EditArtworkForm({
                       className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600"
                     >
                       ×
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleSetAsPrimary(index)}
+                      className="absolute bottom-1 left-1 bg-blue-500 text-white rounded-full px-2 py-1 text-xs hover:bg-blue-600"
+                    >
+                      {String(index) === formData.primaryImageId ? 'Primary' : 'Set as Primary'}
                     </button>
                   </div>
                 ))}
@@ -598,7 +616,7 @@ function EditArtworkForm({
           disabled={loading}
           className="flex-1 bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-400 disabled:cursor-not-allowed"
         >
-          {loading ? 'Creating...' : 'Create Artwork'}
+          {loading ? 'Saving Changes...' : 'Save Changes'}
         </button>
         <button
           type="button"

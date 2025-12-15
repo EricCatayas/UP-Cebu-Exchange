@@ -29,7 +29,6 @@ export interface ArtworkDTO extends ArtworkAttributes {
 }
 
 export interface ArtworkCreateDTO {
-  images: File[];
   title?: string;
   artistId?: number;
   artistName?: string;
@@ -44,6 +43,12 @@ export interface ArtworkCreateDTO {
   rentalFee6Months: number;
   rentalFee12Months: number;
   tags: string[];
+  images: File[];
+}
+
+export interface ArtworkEditDTO extends ArtworkCreateDTO {
+  id: number;
+  primaryImageId?: string;
 }
 
 export interface PaginatedArtworks {

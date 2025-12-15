@@ -1,8 +1,13 @@
 import { ArtworkDTO } from '@/models/Artwork';
 
+export const getPrimaryImage = (artwork: ArtworkDTO) => {
+  const images = artwork.images || [];
+  return images.find((img) => img.isPrimary) || null;
+};
+
 export const getImageUrl = (artwork: ArtworkDTO) => {
   const images = artwork.images || [];
-  const primaryImage = images.find((img) => img.isPrimary);
+  const primaryImage = getPrimaryImage(artwork);
   return primaryImage ? primaryImage.imageUrl : images[0]?.imageUrl || '';
 };
 

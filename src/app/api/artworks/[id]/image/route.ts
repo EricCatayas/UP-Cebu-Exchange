@@ -32,12 +32,13 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
       return NextResponse.json({ error: 'Artwork ID must be a valid number' }, { status: 400 });
     }
 
-    const artworkImage = await ArtworkImage.findOne({
+    const artworkImages = await ArtworkImage.findAll({
       where: {
-        id: imageId,
         artworkId: artworkId,
       },
     });
+
+    const artworkImage = artworkImages.find((img) => img.id === imageId);
 
     if (!artworkImage) {
       return NextResponse.json({ error: 'Artwork image not found' }, { status: 404 });
@@ -50,6 +51,13 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
       return NextResponse.json({ error: 'Failed to delete image from storage' }, { status: 500 });
     }
 
+    if (artworkImage.isPrimary) {
+      const otherImage = artworkImages.find((img) => img.id !== artworkImage.id);
+      if (otherImage) {
+        otherImage.isPrimary = true;
+        await otherImage.save();
+      }
+    }
     await artworkImage.destroy();
 
     return NextResponse.json({ message: 'Artwork image deleted successfully' }, { status: 200 });
