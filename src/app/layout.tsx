@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { AuthProvider } from '@/contexts/AuthContext';
+import { ModalProvider } from '@/contexts/ModalContext';
+import { Modal } from '@/components/Modal/Modal';
 import '@/app/globals.css';
 import '@/styles/fonts.css';
 import '@/styles/typography.css';
@@ -10,6 +12,7 @@ const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
 });
+
 export const metadata: Metadata = {
   title: 'UP Cebu Art Exchange',
   description: 'Art rental platform for UP Cebu community',
@@ -23,7 +26,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} antialiased`}>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <ModalProvider>
+            <Modal />
+            {children}
+          </ModalProvider>
+        </AuthProvider>
       </body>
     </html>
   );
