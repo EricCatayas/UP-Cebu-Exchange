@@ -37,6 +37,7 @@ class ArtworkService {
     const where: any = {
       status: [ARTWORK_STATUS.AVAILABLE, ARTWORK_STATUS.RENTED],
     };
+    let order: any = [];
 
     if (search) {
       where[Op.or] = [
@@ -58,11 +59,11 @@ class ArtworkService {
       //    order = [['popularityScore', 'DESC']]
       // }
       if (sort === 'latest') {
-        options = { ...options, order: [['createdAt', 'DESC']] };
+        order = [['createdAt', 'DESC']];
       }
     }
 
-    options = { where, page, limit, offset };
+    options = { where, order, page, limit, offset };
 
     console.log('ArtworkService - Query Options:', options);
 
