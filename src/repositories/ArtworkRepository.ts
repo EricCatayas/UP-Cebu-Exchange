@@ -9,7 +9,7 @@ class ArtworkRepository {
     const page = options.page;
     const limit = options.limit;
     const offset = (page - 1) * limit;
-    const { rows } = await Artwork.findAndCountAll({
+    const { rows, count: totalCount } = await Artwork.findAndCountAll({
       include: [
         {
           model: Artist,
@@ -20,6 +20,7 @@ class ArtworkRepository {
           model: Tag,
           as: 'tags',
           attributes: ['id', 'name'],
+          through: { attributes: [] }, // Exclude junction table data
         },
         {
           model: Style,
@@ -38,18 +39,16 @@ class ArtworkRepository {
         },
       ],
       ...options,
+      distinct: true,
       offset,
       limit,
     });
-    const count = rows.length;
-    let totalPages = 1;
-    for (let i = count; i > 0; i -= limit) {
-      totalPages++;
-    }
+    const pageSize = rows.length;
+    let totalPages = Math.ceil(totalCount / limit);
 
     return {
       page,
-      pageSize: count,
+      pageSize: pageSize,
       nextPage: page < totalPages ? page + 1 : undefined,
       previousPage: page > 1 ? page - 1 : undefined,
       totalPages,
