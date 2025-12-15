@@ -102,10 +102,6 @@ function CreateArtworkForm({
       const fileArray = Array.from(files);
       setImages(fileArray);
 
-      // Create preview URLs
-      const previewUrls = fileArray.map((file) => URL.createObjectURL(file));
-      setImagePreviews(previewUrls);
-
       // todo: set artwork tags based on image analysis
     }
   };
@@ -116,6 +112,19 @@ function CreateArtworkForm({
       URL.revokeObjectURL(prev[index]);
       return prev.filter((_, i) => i !== index);
     });
+  };
+
+  const handleSetAsPrimaryImage = (index: number) => {
+    const selectedImage = images[index];
+    if (selectedImage) {
+      // Move selected image to the front of the array
+      setImages((prev) => {
+        const newImages = [...prev];
+        newImages.splice(index, 1);
+        newImages.unshift(selectedImage);
+        return newImages;
+      });
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -179,6 +188,11 @@ function CreateArtworkForm({
     }
   }, [isNewArtist, isNewStyle]);
 
+  useEffect(() => {
+    const previewUrls = images.map((file) => URL.createObjectURL(file));
+    setImagePreviews(previewUrls);
+  }, [images]);
+
   // Cleanup preview URLs on unmount
   useEffect(() => {
     return () => {
@@ -221,6 +235,13 @@ function CreateArtworkForm({
                     className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600"
                   >
                     ×
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleSetAsPrimaryImage(index)}
+                    className="absolute bottom-1 left-1 bg-blue-500 text-white rounded-full px-2 py-1 text-xs hover:bg-blue-600"
+                  >
+                    {index === 0 ? 'Primary' : 'Set as Primary'}
                   </button>
                 </div>
               ))}
