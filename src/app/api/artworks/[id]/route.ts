@@ -46,6 +46,31 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     const tagsString = formData.get('tags') as string;
     const tags = tagsString ? JSON.parse(tagsString) : [];
 
+    // Validate required fields
+    if (!title) {
+      return NextResponse.json({ error: 'Title is required' }, { status: 400 });
+    }
+
+    if (!medium) {
+      return NextResponse.json({ error: 'Medium is required' }, { status: 400 });
+    }
+
+    if (!rentalFee3Months || !rentalFee6Months || !rentalFee12Months) {
+      return NextResponse.json({ error: 'Rental fees are required' }, { status: 400 });
+    }
+
+    if (!primaryImageId) {
+      return NextResponse.json({ error: 'Primary image ID is required' }, { status: 400 });
+    }
+
+    if (isNaN(Number(heightCm)) || isNaN(Number(widthCm))) {
+      return NextResponse.json({ error: 'Height and width must be valid numbers' }, { status: 400 });
+    }
+
+    if (Number(heightCm) <= 0 || Number(widthCm) <= 0) {
+      return NextResponse.json({ error: 'Height and width must be positive numbers' }, { status: 400 });
+    }
+
     const artwork = await Artwork.findByPk(artworkId, {
       include: [
         { model: Artist, as: 'artist' },
@@ -60,19 +85,6 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       return NextResponse.json({ error: 'Artwork not found' }, { status: 404 });
     }
 
-    // Validate required fields
-    if (!title) {
-      return NextResponse.json({ error: 'Title is required' }, { status: 400 });
-    }
-
-    if (!medium) {
-      return NextResponse.json({ error: 'Medium is required' }, { status: 400 });
-    }
-
-    if (!rentalFee3Months || !rentalFee6Months || !rentalFee12Months) {
-      return NextResponse.json({ error: 'Rental fees are required' }, { status: 400 });
-    }
-
     if ((!artwork.images || artwork.images.length === 0) && images.length === 0) {
       return NextResponse.json({ error: 'At least one image is required' }, { status: 400 });
     } else if (images && images.length > 0) {
@@ -81,14 +93,6 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
           return NextResponse.json({ error: 'All uploaded files must be image type' }, { status: 400 });
         }
       }
-    }
-
-    if (isNaN(Number(heightCm)) || isNaN(Number(widthCm))) {
-      return NextResponse.json({ error: 'Height and width must be valid numbers' }, { status: 400 });
-    }
-
-    if (Number(heightCm) <= 0 || Number(widthCm) <= 0) {
-      return NextResponse.json({ error: 'Height and width must be positive numbers' }, { status: 400 });
     }
 
     let artworkArtistId = null;
@@ -168,25 +172,28 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 
     const imageService = new ImageService();
     const { success: imageUploadSuccess, results: imageUploadResults } = await imageService.uploadImages(buffers);
+    let primaryImageID = primaryImageId;
 
     if (imageUploadSuccess) {
       for (let i = 0; i < imageUploadResults!.length; i++) {
         const result = imageUploadResults![i];
+        const isPrimary = String(i) === primaryImageID;
         await ArtworkImage.create({
           id: result.public_id,
           artworkId: artworkId,
           imageUrl: result.secure_url,
-          isPrimary: String(i) === primaryImageId,
+          isPrimary: isPrimary,
         });
+        if (isPrimary) primaryImageID = result.public_id;
       }
     }
 
-    const primaryImage = artwork.images?.find((img) => img.id === primaryImageId);
+    await ArtworkImage.update(
+      { isPrimary: false },
+      { where: { artworkId: artworkId, id: { [Op.ne]: primaryImageID } } }
+    );
+    const primaryImage = artwork.images?.find((img) => img.id === primaryImageID);
     if (primaryImage) {
-      await ArtworkImage.update(
-        { isPrimary: false },
-        { where: { artworkId: artworkId, id: { [Op.ne]: primaryImageId } } }
-      );
       primaryImage.isPrimary = true;
       await primaryImage.save();
     }
