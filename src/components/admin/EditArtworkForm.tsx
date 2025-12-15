@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useModal } from '@/contexts/ModalContext';
 import { ArtistDTO } from '@/models/Artist';
 import { ArtworkDTO } from '@/models/Artwork';
 import { StyleDTO } from '@/models/Style';
@@ -25,6 +26,7 @@ function EditArtworkForm({
   tags: string[];
 }) {
   const router = useRouter();
+  const { openConfirmation } = useModal();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     title: artwork.title || '',
@@ -125,6 +127,17 @@ function EditArtworkForm({
 
   const handleRemoveExistingImage = async (imageId: string) => {
     try {
+      let confirm = false;
+      openConfirmation(
+        'Are you sure you want to delete this image?',
+        () => {
+          confirm = true;
+        },
+        () => {
+          confirm = false;
+        }
+      );
+      if (!confirm) return;
       await artworkApi.deleteImage(artwork.id, imageId);
       setExistingImages((prev) => prev.filter((img) => img.id !== imageId));
     } catch (error) {

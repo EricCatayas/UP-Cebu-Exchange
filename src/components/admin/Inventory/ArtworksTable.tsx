@@ -1,26 +1,40 @@
 'use client';
 import Link from 'next/link';
+import { useModal } from '@/contexts/ModalContext';
 import { getImageUrl } from '@/lib/artwork';
 import { ARTWORK_STATUS, ARTWORK_STATUSES } from '@/lib/constants';
 import { artworkApi } from '@/lib/api/artwork';
 import { FaSearch, FaInfoCircle, FaEdit, FaTrash } from 'react-icons/fa';
 
 export default function ArtworksTable({ artworks }: { artworks: any[] }) {
+  const { openModal, openConfirmation } = useModal();
+
   const handleStatusChange = async (artworkId: number, newStatus: string) => {
     try {
       await artworkApi.updateStatus(artworkId, newStatus);
     } catch (error) {
-      console.error('Error updating artwork status:', error);
+      alert(error);
       // Optionally, you can add an error notification
     }
   };
 
   const handleDelete = async (artworkId: number) => {
     try {
-      // todo: prompt confirmation
-      await artworkApi.delete(artworkId);
+      let confirm = false;
+      openConfirmation(
+        'Are you sure you want to delete this item?',
+        () => {
+          confirm = true;
+        },
+        () => {
+          confirm = false;
+        }
+      );
+      if (confirm) {
+        await artworkApi.delete(artworkId);
+      }
     } catch (error) {
-      console.error('Error deleting artwork:', error);
+      alert(error);
     }
   };
 
