@@ -29,4 +29,24 @@ export const rentalOrderApi = {
     }
     return (await response.json()).rentalOrder;
   },
+  cancelRentalOrder: async (orderId: number): Promise<{ success: boolean }> => {
+    const response = await fetch(`/api/rental-order/${orderId}/cancel`, {
+      method: 'POST',
+    });
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.error || 'Failed to cancel rental order');
+    }
+    return await response.json();
+  },
+  returnRentalOrder: async (orderId: number): Promise<{ success: boolean }> => {
+    const response = await fetch(`/api/rental-order/${orderId}/return`, {
+      method: 'POST',
+    });
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.error || 'Failed to process rental order return');
+    }
+    return await response.json();
+  },
 };

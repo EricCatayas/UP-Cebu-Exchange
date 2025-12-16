@@ -5,6 +5,7 @@ import ArtworkService from '@/services/ArtworkService';
 import { FaEye, FaEdit } from 'react-icons/fa';
 import { ArtworkDTO } from '@/models/Artwork';
 import { notFound } from 'next/navigation';
+import { fmtMoney } from '@/lib/formatter';
 
 async function InventoryDetails({ params }: { params: { id: string } }) {
   const id = parseInt((await params).id);
@@ -156,7 +157,7 @@ async function InventoryDetails({ params }: { params: { id: string } }) {
                 {artwork.rentalPlans.map((plan) => (
                   <div key={plan.id} className="border border-gray-200 rounded-lg p-4">
                     <p className="text-sm font-medium text-gray-700 mb-2">{plan.durationMonths} Months</p>
-                    <p className="text-2xl font-bold text-gray-900">₱{parseFloat(plan.price).toFixed(2)}</p>
+                    <p className="text-2xl font-bold text-gray-900">{fmtMoney(plan.price)}</p>
                   </div>
                 ))}
               </div>

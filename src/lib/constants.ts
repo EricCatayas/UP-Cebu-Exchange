@@ -23,11 +23,17 @@ export const ARTWORK_MEDIUMS = [
 
 export enum ARTWORK_STATUS {
   AVAILABLE = 'Available',
+  RESERVED = 'Reserved',
   RENTED = 'Rented',
   UNAVAILABLE = 'Unavailable',
 }
 
-export const ARTWORK_STATUSES = [ARTWORK_STATUS.AVAILABLE, ARTWORK_STATUS.RENTED, ARTWORK_STATUS.UNAVAILABLE];
+export const ARTWORK_STATUSES = [
+  ARTWORK_STATUS.AVAILABLE,
+  ARTWORK_STATUS.RESERVED,
+  ARTWORK_STATUS.RENTED,
+  ARTWORK_STATUS.UNAVAILABLE,
+];
 
 export const CURRENCY_SYMBOL = '₱';
 
@@ -56,7 +62,7 @@ export const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', '
 
 export enum ORDER_STATUS {
   PENDING = 'Pending',
-  CONFIRMED = 'Confirmed',
+  RESERVED = 'Reserved',
   TORECEIVE = 'To Receive',
   ONGOING = 'Ongoing',
   TORETURN = 'To Return',
@@ -66,7 +72,7 @@ export enum ORDER_STATUS {
 
 export const ORDER_STATUSES = [
   ORDER_STATUS.PENDING,
-  ORDER_STATUS.CONFIRMED,
+  ORDER_STATUS.RESERVED,
   ORDER_STATUS.TORECEIVE,
   ORDER_STATUS.ONGOING,
   ORDER_STATUS.TORETURN,
