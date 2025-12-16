@@ -1,8 +1,10 @@
 import { Artist } from '@/models/sequelize';
 
 class ArtistService {
-  async getAllArtists() {
-    const artists = await Artist.findAll();
+  async getAllArtists(options = {}) {
+    const artists = await Artist.findAll({
+      ...options,
+    });
     return artists.map((artist) => artist.toJSON());
   }
 }

@@ -10,6 +10,9 @@ class ArtworkRepository {
     const limit = options.limit;
     const offset = (page - 1) * limit;
     const { rows, count: totalCount } = await Artwork.findAndCountAll({
+      ...options,
+      limit,
+      offset,
       include: [
         {
           model: Artist,
@@ -38,10 +41,7 @@ class ArtworkRepository {
           attributes: ['id', 'imageUrl', 'isPrimary'],
         },
       ],
-      ...options,
       distinct: true,
-      offset,
-      limit,
     });
     const pageSize = rows.length;
     let totalPages = Math.ceil(totalCount / limit);

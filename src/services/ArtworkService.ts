@@ -1,8 +1,20 @@
 import ArtworkRepository from '@/repositories/ArtworkRepository';
+import ArtistService from './ArtistService';
 import TagsService from '@/services/TagsService';
 import WishlistService from '@/services/WishlistService';
 import { Op } from 'sequelize';
-import { Artwork, Cart, CartItem, Wishlist, WishlistItem } from '@/models/sequelize';
+import {
+  Artwork,
+  ArtworkImage,
+  Artist,
+  Cart,
+  CartItem,
+  Wishlist,
+  WishlistItem,
+  Tag,
+  Style,
+  RentalPlan,
+} from '@/models/sequelize';
 import { ArtworkDTO, PaginatedArtworks } from '@/models/Artwork';
 import { similarityScore } from '@/lib/recommendations';
 import { ARTWORK_STATUS, PAGE_SIZE, SIMILAR_ARTWORK_SCORE_THRESHOLD } from '@/lib/constants';
@@ -40,9 +52,15 @@ class ArtworkService {
     let order: any = [];
 
     if (search) {
+      const artistMatches = await ArtistService.getAllArtists({
+        where: { name: { [Op.like]: `%${search}%` } },
+      });
+      const artistIds = artistMatches.map((artist) => artist.id);
+
       where[Op.or] = [
         { title: { [Op.like]: `%${search}%` } },
         { description: { [Op.like]: `%${search}%` } },
+        ...(artistIds.length > 0 ? [{ artistId: { [Op.in]: artistIds } }] : []),
         // { '$artist.name$': { [Op.like]: `%${search}%` } }, // Todo: Unknown column 'artist.name' in 'where clause'
       ];
     }
