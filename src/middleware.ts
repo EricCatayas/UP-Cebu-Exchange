@@ -26,6 +26,7 @@ const publicRoutes = [
 ];
 
 const adminRoutes = [
+  '/admin',
   '/login',
   '/dashboard',
   '/calendar',

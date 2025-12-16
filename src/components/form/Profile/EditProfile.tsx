@@ -91,15 +91,7 @@ function EditProfileForm({ user }: { user: UserDTO }) {
         <label className={labelCls} htmlFor="email">
           Email
         </label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          readOnly
-          className={inputCls}
-          value={user.email}
-          onChange={handleChange}
-        />
+        <input id="email" name="email" type="email" readOnly className={inputCls} value={user.email} />
       </div>
 
       <div>
