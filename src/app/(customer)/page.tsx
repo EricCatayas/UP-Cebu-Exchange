@@ -70,7 +70,7 @@ export default async function Page() {
           </Link>
         </div>
       </HeroBackground>
-      <div className="container mx-auto px-4 pb-4">
+      <div className="container px-8 py-6 max-w-7xl mx-auto">
         <section className="pb-12">
           <h2 className="text-3xl font-bold mb-6">A Few of our Favorites</h2>
           <div
