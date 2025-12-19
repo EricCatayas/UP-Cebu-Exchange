@@ -17,6 +17,12 @@ const RentalOrderCard = ({ order, children }: { order: RentalOrderDTO; children?
 
       {/* Content */}
       <dl className="text-sm space-y-2 px-4">
+        {order.user && (
+          <div className="flex justify-between">
+            <dt className="text-gray-500">From</dt>
+            <dd className="text-gray-900">{order.user.fullName}</dd>
+          </div>
+        )}
         <div className="flex justify-between">
           <dt className="text-gray-500">Order Date</dt>
           <dd className="text-gray-900">{fmtDate(order.createdAt)}</dd>

@@ -91,11 +91,6 @@ export default class RentalOrderService {
       where: { userId },
       include: [
         {
-          model: User,
-          as: 'user',
-          attributes: ['id', 'fullName', 'email'],
-        },
-        {
           model: Payment,
           as: 'payment',
           attributes: ['id', 'amount', 'status', 'method'],
