@@ -34,7 +34,7 @@ export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrde
   const handleSaveChanges = async () => {
     try {
       if (!order || !hasEdited) return;
-      const updatedOrder = await rentalOrderApi.updateRentalOrderStatus(order.id, orderStatus);
+      const updatedOrder = await rentalOrderApi.updateStatus(order.id, orderStatus);
       const updatedPayment = await paymentApi.updateStatus(order.payment.id, paymentStatus);
 
       alert(`Order has been updated`);

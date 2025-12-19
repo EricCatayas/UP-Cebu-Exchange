@@ -3,7 +3,6 @@ import { User, Role } from '@/models/sequelize';
 import { isAdmin, verifyPassword, generateAuthToken, setAuthCookie } from '@/lib/auth';
 import { ERROR_MESSAGE } from '@/lib/constants';
 
-// TODO: Test API
 export async function POST(request: NextRequest) {
   try {
     const { email, password, remember } = await request.json();

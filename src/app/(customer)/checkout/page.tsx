@@ -8,6 +8,7 @@ import { useUserAddress } from '@/contexts/UserAddressContext';
 import { AddressDTO } from '@/models/Address';
 import { DURATION_OPTIONS, DELIVERY_FEE, DELIVERY_METHODS, PAYMENT_METHODS, DELIVERY_METHOD } from '@/lib/constants';
 import { getDimension, getImageUrl, getRentalFee } from '@/lib/artwork';
+import { fmtDate, fmtMoney } from '@/lib/formatter';
 import { rentalOrderApi } from '@/lib/api/rentalOrder';
 
 function Checkout() {
@@ -31,20 +32,6 @@ function Checkout() {
   } = useRentalOrder();
 
   const router = useRouter();
-
-  const deliveryMethods = DELIVERY_METHODS;
-  const paymentMethods = PAYMENT_METHODS;
-
-  // Format date for display
-  const formatDate = (dateString: string) => {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      month: '2-digit',
-      day: '2-digit',
-      year: 'numeric',
-    });
-  };
 
   const canCheckout = useMemo(() => {
     return selectedCartItemIds.size > 0 && contractSigned;
@@ -104,7 +91,7 @@ function Checkout() {
     };
 
     try {
-      const newRentalOrder = await rentalOrderApi.createRentalOrder(rentalOrder);
+      const newRentalOrder = await rentalOrderApi.checkout(rentalOrder);
       router.push(`/checkout/success/${newRentalOrder.id}`);
     } catch (error) {
       console.error('Error during checkout:', error);
@@ -220,7 +207,7 @@ function Checkout() {
                         <p className="text-sm text-gray-600">{getDimension(item.artwork)}</p>
                       </div>
                     </div>
-                    <div className="font-semibold text-lg mr-4">₱{getRentalPlanFee(item)}</div>
+                    <div className="font-semibold text-lg mr-4">{fmtMoney(getRentalPlanFee(item))}</div>
                     <button onClick={() => handleRemoveCartItem(item)} className="text-red-500 hover:text-red-700">
                       🗑️
                     </button>
@@ -252,7 +239,7 @@ function Checkout() {
           <div className="bg-white border-2 border-gray-300 rounded-lg p-6 shadow-sm">
             <h2 className="text-xl font-bold mb-4">Delivery Method</h2>
             <div className="flex gap-6">
-              {deliveryMethods.map((method) => (
+              {DELIVERY_METHODS.map((method) => (
                 <label key={method} className="flex items-center space-x-2 cursor-pointer">
                   <input
                     type="radio"
@@ -303,7 +290,7 @@ function Checkout() {
           <div className="bg-white border-2 border-gray-300 rounded-lg p-6 shadow-sm">
             <h2 className="text-xl font-bold mb-4">Payment Method</h2>
             <div className="flex gap-6">
-              {paymentMethods.map((method) => (
+              {PAYMENT_METHODS.map((method) => (
                 <label key={method} className="flex items-center space-x-2 cursor-pointer">
                   <input
                     type="radio"
@@ -331,11 +318,11 @@ function Checkout() {
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Start Date:</span>
-                <span className="font-semibold">{formatDate(startDate)}</span>
+                <span className="font-semibold">{fmtDate(startDate)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">End Date:</span>
-                <span className="font-semibold">{formatDate(endDate)}</span>
+                <span className="font-semibold">{fmtDate(endDate)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Delivery Method:</span>
@@ -352,7 +339,7 @@ function Checkout() {
                   .map((item) => (
                     <div key={item.id} className="flex justify-between mb-2">
                       <span className="text-gray-600">{item.artwork.title}</span>
-                      <span className="font-semibold">₱{getRentalPlanFee(item)}</span>
+                      <span className="font-semibold">{fmtMoney(getRentalPlanFee(item))}</span>
                     </div>
                   ))}
               </div>

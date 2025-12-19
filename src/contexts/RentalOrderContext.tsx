@@ -64,7 +64,9 @@ export function RentalOrderProvider({ children }: { children: React.ReactNode })
       }, 0);
   }, [cartItems, selectedCartItemIds, selectedDuration]);
 
-  const total = subtotal + (deliveryMethod === 'Delivery' ? DELIVERY_FEE : 0);
+  const total = useMemo(() => {
+    return subtotal + (deliveryMethod === DELIVERY_METHOD.DELIVERY ? DELIVERY_FEE : 0);
+  }, [subtotal, deliveryMethod]);
 
   return (
     <RentalOrderContext.Provider

@@ -1,7 +1,21 @@
-import { RentalOrderDTO, RentalOrderCreateDTO } from '@/models/RentalOrder';
+import { CheckoutDTO, RentalOrderDTO, RentalOrderCreateDTO } from '@/models/RentalOrder';
 
 export const rentalOrderApi = {
-  createRentalOrder: async (data: RentalOrderCreateDTO): Promise<RentalOrderDTO> => {
+  checkout: async (data: CheckoutDTO): Promise<RentalOrderDTO> => {
+    const response = await fetch('/api/checkout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.error || 'Failed to create rental order');
+    }
+    return (await response.json()).rentalOrder;
+  },
+  create: async (data: RentalOrderCreateDTO): Promise<RentalOrderDTO> => {
     const response = await fetch('/api/rental-order', {
       method: 'POST',
       headers: {
@@ -15,7 +29,7 @@ export const rentalOrderApi = {
     }
     return (await response.json()).rentalOrder;
   },
-  updateRentalOrderStatus: async (orderId: number, status: string): Promise<RentalOrderDTO> => {
+  updateStatus: async (orderId: number, status: string): Promise<RentalOrderDTO> => {
     const response = await fetch(`/api/rental-order/${orderId}/status`, {
       method: 'PUT',
       headers: {
@@ -29,7 +43,7 @@ export const rentalOrderApi = {
     }
     return (await response.json()).rentalOrder;
   },
-  cancelRentalOrder: async (orderId: number): Promise<{ success: boolean }> => {
+  cancel: async (orderId: number): Promise<{ success: boolean }> => {
     const response = await fetch(`/api/rental-order/${orderId}/cancel`, {
       method: 'POST',
     });
@@ -39,7 +53,7 @@ export const rentalOrderApi = {
     }
     return await response.json();
   },
-  returnRentalOrder: async (orderId: number): Promise<{ success: boolean }> => {
+  return: async (orderId: number): Promise<{ success: boolean }> => {
     const response = await fetch(`/api/rental-order/${orderId}/return`, {
       method: 'POST',
     });

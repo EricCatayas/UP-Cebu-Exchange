@@ -1,5 +1,10 @@
-export const fmtDate = (d: Date) =>
-  new Date(d).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
+export const fmtDate = (d: string | Date) => {
+  if (!d) return '';
+  if (typeof d === 'string') {
+    d = new Date(d);
+  }
+  return new Date(d).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
+};
 
 export const fmtMoney = (amount: string | number) => {
   if (typeof amount === 'string') {

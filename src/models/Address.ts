@@ -10,3 +10,5 @@ export interface AddressAttributes {
 }
 
 export interface AddressDTO extends AddressAttributes {}
+
+export interface AddressCreateDTO extends Omit<AddressAttributes, 'id' | 'createdAt' | 'updatedAt'> {}

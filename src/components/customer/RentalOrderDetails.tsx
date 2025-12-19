@@ -9,33 +9,38 @@ import { isOrderCancelable, isOrderReturnable, isPaymentDue } from '@/lib/order'
 
 function RentalOrderDetailsWrapper({ order, action }: { order: RentalOrderDTO; action: string | undefined }) {
   const router = useRouter();
-  const { openModal, openConfirmation } = useModal();
+  const { openConfirmation } = useModal();
 
   const handleRentalItemClicked = (item) => {
     router.push(`/artworks/${item.artwork.id}`);
   };
 
   const handleCancelOrder = () => {
-    try {
-      openConfirmation('Are you sure you want to cancel this rental order?', async () => {
+      openConfirmation({
+        title: 'Cancel Order',
+        message: 'Are you sure you want to cancel this rental order?',
+      }, async () => {
         // Perform cancellation logic here
-        await rentalOrderApi.cancelRentalOrder(order.id);
-        router.push(`/account/rentals`);
+        try {
+            await rentalOrderApi.cancel(order.id);
+            router.push(`/account/rentals`);
+        } catch (error) {
+          alert(error.message);
+        }
       });
-    } catch (error) {
-      alert(error.message);
-    }
   };
   const handleReturnOrder = () => {
-    try {
-      openConfirmation('Are you sure you want to return the items in this rental order?', async () => {
-        // Perform return logic here
-        await rentalOrderApi.returnRentalOrder(order.id);
-        router.push(`/account/rentals`);
+      openConfirmation({
+        title: 'Return Items',
+        message: 'Are you sure you want to return the items in this rental order?',
+      }, async () => {
+        try {
+            await rentalOrderApi.return(order.id);
+            router.push(`/account/rentals`);
+        } catch (error) {
+          alert(error.message);
+        }
       });
-    } catch (error) {
-      alert(error.message);
-    }
   };
 
   const handlePayNow = () => {

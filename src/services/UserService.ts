@@ -19,6 +19,10 @@ class UserService {
     };
   }
 
+  async getCustomers(): Promise<UserDTO[]> {
+    return this.getUsersByRole('customer');
+  }
+
   async getUsersByRole(role: string): Promise<UserDTO[]> {
     const roleRecord = await Role.findOne({ where: { name: role } });
     if (!roleRecord) throw new Error(`Role ${role} not found`);
