@@ -7,7 +7,7 @@ import { artworkApi } from '@/lib/api/artwork';
 import { FaSearch, FaInfoCircle, FaEdit, FaTrash } from 'react-icons/fa';
 
 export default function ArtworksTable({ artworks }: { artworks: any[] }) {
-  const { openModal, openConfirmation } = useModal();
+  const { openConfirmation } = useModal();
 
   const handleStatusChange = async (artworkId: number, newStatus: string) => {
     try {
@@ -19,18 +19,21 @@ export default function ArtworksTable({ artworks }: { artworks: any[] }) {
   };
 
   const handleDelete = async (artworkId: number) => {
-    try {
-      openConfirmation(
-        'Are you sure you want to delete this item?',
-        async () => {
+    openConfirmation(
+      {
+        title: 'Delete Artwork',
+        message: 'Are you sure you want to delete this artwork?',
+      },
+      async () => {
+        try {
           await artworkApi.delete(artworkId);
           alert('Artwork deleted successfully.');
-        },
-        () => {}
-      );
-    } catch (error) {
-      alert(error.message);
-    }
+        } catch (error) {
+          alert(error.message);
+        }
+      },
+      () => {}
+    );
   };
 
   return (

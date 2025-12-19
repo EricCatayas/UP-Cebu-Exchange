@@ -22,7 +22,8 @@ export function Modal() {
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        <p className="modal-message">{modal.message}</p>
+        {modal.content?.title && <h2 className="modal-title">{modal.content.title}</h2>}
+        <p className="modal-message">{modal.content?.message}</p>
         <div className="modal-actions">
           {modal.confirmation ? (
             <>

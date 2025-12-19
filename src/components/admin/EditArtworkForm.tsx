@@ -134,18 +134,18 @@ function EditArtworkForm({
   };
 
   const handleRemoveExistingImage = async (imageId: string) => {
-    try {
-      openConfirmation(
-        'Are you sure you want to delete this image?',
-        async () => {
+    openConfirmation(
+      { title: 'Delete Image', message: 'Are you sure you want to delete this image?' },
+      async () => {
+        try {
           await artworkApi.deleteImage(artwork.id, imageId);
           setExistingImages((prev) => prev.filter((img) => img.id !== imageId));
-        },
-        () => {}
-      );
-    } catch (error) {
-      alert(error instanceof Error ? error.message : 'Failed to delete image');
-    }
+        } catch (error) {
+          alert(error instanceof Error ? error.message : 'Failed to delete image');
+        }
+      },
+      () => {}
+    );
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
