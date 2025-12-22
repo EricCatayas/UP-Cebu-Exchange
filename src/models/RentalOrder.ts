@@ -6,7 +6,7 @@ import { UserDTO } from '@/models/User';
 export interface RentalOrderAttributes {
   id: number;
   userId: number;
-  addressId?: number;
+  addressId: number;
   paymentId: number;
   startDate: Date;
   endDate: Date;
@@ -37,6 +37,7 @@ export interface RentalOrderCreateDTO {
 }
 
 export interface CheckoutDTO {
+  addressId: number;
   cartItemIds: number[];
   durationMonths: number;
   startDate: string;
@@ -44,5 +45,4 @@ export interface CheckoutDTO {
   totalAmount: number;
   deliveryMethod: string;
   paymentMethod: string;
-  addressId: number;
 }

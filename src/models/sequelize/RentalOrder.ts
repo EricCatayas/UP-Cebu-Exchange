@@ -9,7 +9,7 @@ interface RentalOrderCreationAttributes
 class RentalOrder extends Model<RentalOrderAttributes, RentalOrderCreationAttributes> implements RentalOrderAttributes {
   declare id: number;
   declare userId: number;
-  declare addressId?: number;
+  declare addressId: number;
   declare paymentId: number;
   declare startDate: Date;
   declare endDate: Date;
@@ -67,7 +67,7 @@ RentalOrder.init(
     },
     addressId: {
       type: DataTypes.INTEGER,
-      allowNull: true,
+      allowNull: false,
       references: {
         model: 'addresses',
         key: 'id',
