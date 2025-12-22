@@ -52,11 +52,8 @@ export async function POST(request: NextRequest) {
     if (!durationMonths || durationMonths <= 0) {
       return NextResponse.json({ error: 'Valid duration in months is required' }, { status: 400 });
     }
-    if (!startDate) {
-      return NextResponse.json({ error: 'Start date is required' }, { status: 400 });
-    }
-    if (!endDate) {
-      return NextResponse.json({ error: 'End date is required' }, { status: 400 });
+    if (!startDate || !endDate) {
+      return NextResponse.json({ error: 'Start and end dates are required' }, { status: 400 });
     }
     if (!totalAmount || totalAmount <= 0) {
       return NextResponse.json({ error: 'Valid total amount is required' }, { status: 400 });

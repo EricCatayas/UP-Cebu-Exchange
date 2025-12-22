@@ -156,7 +156,7 @@ async function OrdersPage() {
           <RentalOrderCard key={order.id} order={order}>
             <>
               <Link href={`/orders/${order.id}`} className="text-blue-600 hover:underline">
-                View Products
+                View Details
               </Link>
             </>
           </RentalOrderCard>

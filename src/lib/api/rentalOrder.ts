@@ -63,4 +63,14 @@ export const rentalOrderApi = {
     }
     return await response.json();
   },
+  delete: async (orderId: number): Promise<{ success: boolean }> => {
+    const response = await fetch(`/api/rental-order/${orderId}`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.error || 'Failed to delete rental order');
+    }
+    return await response.json();
+  },
 };

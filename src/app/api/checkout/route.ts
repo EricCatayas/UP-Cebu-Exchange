@@ -44,11 +44,8 @@ export async function POST(request: NextRequest) {
     if (!durationMonths || durationMonths <= 0) {
       return NextResponse.json({ error: 'Valid duration in months is required' }, { status: 400 });
     }
-    if (!startDate) {
-      return NextResponse.json({ error: 'Start date is required' }, { status: 400 });
-    }
-    if (!endDate) {
-      return NextResponse.json({ error: 'End date is required' }, { status: 400 });
+    if (!startDate || !endDate) {
+      return NextResponse.json({ error: 'Start and end dates are required' }, { status: 400 });
     }
     if (!totalAmount || totalAmount <= 0) {
       return NextResponse.json({ error: 'Valid total amount is required' }, { status: 400 });
@@ -59,18 +56,16 @@ export async function POST(request: NextRequest) {
     if (!paymentMethod) {
       return NextResponse.json({ error: 'Payment method is required' }, { status: 400 });
     }
-
     if (!addressId) {
       return NextResponse.json({ error: 'Address is required for order' }, { status: 400 });
     }
-    // Create new copy of address
     const existingAddress = await Address.findOne({
       where: { id: addressId },
     });
     if (!existingAddress) {
       return NextResponse.json({ error: 'Address not found' }, { status: 404 });
     }
-    // Create new address record
+    // Create new copy of address
     const newAddress = await Address.create({
       city: existingAddress.city,
       province: existingAddress.province,

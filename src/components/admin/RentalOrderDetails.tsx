@@ -6,12 +6,14 @@ import { rentalOrderApi } from '@/lib/api/rentalOrder';
 import { paymentApi } from '@/lib/api/payment';
 import { redirect } from 'next/navigation';
 import { RentalOrderDTO } from '@/models/RentalOrder';
+import { useModal } from '@/contexts/ModalContext';
 import { getImageUrl } from '@/lib/artwork';
 
 export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrderDTO }) {
   const [orderStatus, setOrderStatus] = useState(order.status || '');
   const [paymentStatus, setPaymentStatus] = useState(order.payment.status || '');
   const [hasEdited, setHasEdited] = useState(false);
+  const { openConfirmation } = useModal();
 
   const handleSelectStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newStatus = e.target.value;
@@ -21,6 +23,10 @@ export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrde
       console.error('Failed to update order status:', error);
     }
   };
+
+  function navigateToInventoryDetails(item) {
+    redirect(`/inventory/${item.artwork.id}`);
+  }
 
   const handleSelectPaymentStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newStatus = e.target.value;
@@ -43,9 +49,23 @@ export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrde
     }
   };
 
-  function handleRentalItemClick(item) {
-    redirect(`/inventory/${item.artwork.id}`);
-  }
+  const handleDeleteOrder = async () => {
+    openConfirmation(
+      {
+        title: 'Confirm Delete',
+        message: 'Are you sure you want to delete this order?',
+      },
+      async () => {
+        try {
+          await rentalOrderApi.delete(order.id);
+          alert('Order has been deleted');
+          redirect('/orders');
+        } catch (error) {
+          alert('Failed to delete order:', error.message);
+        }
+      }
+    );
+  };
 
   useEffect(() => {
     if (orderStatus !== order.status || paymentStatus !== order.payment.status) {
@@ -58,7 +78,7 @@ export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrde
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">Rental Order Details</h1>
-      <RentalOrderDetails order={order} onItemClicked={handleRentalItemClick} />
+      <RentalOrderDetails order={order} onItemClicked={navigateToInventoryDetails} />
       <div className="mt-6">
         <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-2">
           Update Status
@@ -96,6 +116,12 @@ export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrde
           className="ml-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
         >
           Save Changes
+        </button>
+        <button
+          onClick={handleDeleteOrder}
+          className="ml-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+        >
+          Delete Order
         </button>
       </div>
     </div>
