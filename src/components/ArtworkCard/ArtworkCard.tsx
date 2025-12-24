@@ -7,6 +7,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { getDimension, getImageUrl } from '@/lib/artwork';
 import { cartApi } from '@/lib/api/cart';
 import { wishlistApi } from '@/lib/api/wishlist';
+import { ARTWORK_STATUS } from '@/lib/constants';
 import './ArtworkCard.css';
 
 export default function ArtworkCard({ artwork, displayInfo = true }: { artwork: any; displayInfo?: boolean }) {
@@ -40,7 +41,7 @@ export default function ArtworkCard({ artwork, displayInfo = true }: { artwork: 
         alert('Artwork added to cart');
       }
     } catch (error) {
-      alert('Error toggling cart item:', error.message);
+      alert('Error toggling cart item:', error);
     }
   };
 
@@ -65,8 +66,9 @@ export default function ArtworkCard({ artwork, displayInfo = true }: { artwork: 
 
   return (
     <div className={`artwork-card status-${artwork.status}`}>
-      {artwork.status === 'rented' && <div className="ribbon">Rented</div>}
       <button type="button" className="image-wrapper" onClick={NavigateToArtwork} aria-label={`View ${artwork.title}`}>
+        {artwork.status === ARTWORK_STATUS.RESERVED && <div className="badge badge-reserved">Reserved</div>}
+        {artwork.status === ARTWORK_STATUS.RENTED && <div className="badge badge-rented">Rented</div>}
         <img src={primaryImageUrl} alt={artwork.title} loading="lazy" />
       </button>
       {displayInfo && (
