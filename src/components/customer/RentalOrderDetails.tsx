@@ -16,35 +16,53 @@ function RentalOrderDetailsWrapper({ order, action }: { order: RentalOrderDTO; a
   };
 
   const handleCancelOrder = () => {
-      openConfirmation({
+    openConfirmation(
+      {
         title: 'Cancel Order',
         message: 'Are you sure you want to cancel this rental order?',
-      }, async () => {
+      },
+      async () => {
         // Perform cancellation logic here
         try {
-            await rentalOrderApi.cancel(order.id);
-            router.push(`/account/rentals`);
+          await rentalOrderApi.cancel(order.id);
+          router.push(`/account/rentals`);
         } catch (error) {
           alert(error.message);
         }
-      });
+      }
+    );
   };
   const handleReturnOrder = () => {
-      openConfirmation({
+    openConfirmation(
+      {
         title: 'Return Items',
         message: 'Are you sure you want to return the items in this rental order?',
-      }, async () => {
+      },
+      async () => {
         try {
-            await rentalOrderApi.return(order.id);
-            router.push(`/account/rentals`);
+          await rentalOrderApi.return(order.id);
+          router.push(`/account/rentals`);
         } catch (error) {
           alert(error.message);
         }
-      });
+      }
+    );
   };
 
   const handlePayNow = () => {
-    router.push(`/account/rentals/${order.id}/payment`);
+    openConfirmation(
+      {
+        title: 'Proceed to Payment',
+        message: 'You will be redirected to Stripe to complete the payment.',
+      },
+      async () => {
+        try {
+          await rentalOrderApi.pay(order.id);
+        } catch (error) {
+          alert(error.message);
+        }
+      }
+    );
   };
 
   useEffect(() => {
@@ -54,8 +72,7 @@ function RentalOrderDetailsWrapper({ order, action }: { order: RentalOrderDTO; a
       } else if (action === 'return') {
         handleReturnOrder();
       } else if (action === 'pay') {
-        // Redirect to payment page
-        router.push(`/account/rentals/${order.id}/payment`);
+        handlePayNow();
       }
     }
   }, [action]);

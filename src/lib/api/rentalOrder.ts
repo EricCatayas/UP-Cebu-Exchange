@@ -73,4 +73,22 @@ export const rentalOrderApi = {
     }
     return await response.json();
   },
+  pay: async (orderId: number): Promise<{ success: boolean }> => {
+    const response = await fetch(`/api/rental-order/${orderId}/pay/stripe`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.error || 'Failed to initiate payment');
+    }
+    const { url } = await response.json();
+    if (url) {
+      // Redirect to Stripe checkout
+      window.location.href = url;
+    }
+    return { success: true };
+  },
 };

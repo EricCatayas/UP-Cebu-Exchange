@@ -1,5 +1,6 @@
 import { RentalOrderDTO } from '@/models/RentalOrder';
 import { Address, Artwork, RentalOrder, RentalOrderItem, User, Payment, ArtworkImage } from '@/models/sequelize';
+import { ARTWORK_STATUS, ORDER_STATUS } from '@/lib/constants';
 
 export default class RentalOrderService {
   async getAllOrders(): Promise<RentalOrderDTO[]> {
@@ -146,16 +147,7 @@ export default class RentalOrderService {
             {
               model: Artwork,
               as: 'artwork',
-              attributes: ['id', 'title'],
-              include: [
-                {
-                  model: ArtworkImage,
-                  as: 'images',
-                  attributes: ['imageUrl'],
-                  where: { isPrimary: true },
-                  required: false,
-                },
-              ],
+              include: ['artist', 'images', 'rentalPlans'],
             },
           ],
         },

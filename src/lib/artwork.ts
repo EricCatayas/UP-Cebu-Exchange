@@ -11,6 +11,11 @@ export const getImageUrl = (artwork: ArtworkDTO) => {
   return primaryImage ? primaryImage.imageUrl : images[0]?.imageUrl || '';
 };
 
+export const getImageUrls = (artwork: ArtworkDTO): string[] => {
+  const images = artwork.images || [];
+  return images.map((img) => img.imageUrl);
+};
+
 export const getDimension = (artwork: ArtworkDTO) => {
   return `${artwork.heightCm}cm x ${artwork.widthCm}cm`;
 };

@@ -38,7 +38,7 @@ async function RentalsPage() {
                   Extend Plan
                 </Link>
                 {isPaymentDue(order) && (
-                  <Link href={`/account/rentals/${order.id}/payment`} className="text-blue-600 hover:underline">
+                  <Link href={`/account/rentals/${order.id}?action=pay`} className="text-blue-600 hover:underline">
                     Pay Now
                   </Link>
                 )}
