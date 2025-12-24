@@ -49,7 +49,7 @@ class ArtworkService {
     let options = {};
     const offset = (page - 1) * limit;
     const where: any = {
-      status: [ARTWORK_STATUS.AVAILABLE, ARTWORK_STATUS.RENTED],
+      status: { [Op.in]: [ARTWORK_STATUS.AVAILABLE, ARTWORK_STATUS.RESERVED, ARTWORK_STATUS.RENTED] },
     };
     let order: any = [];
 

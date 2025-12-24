@@ -1,3 +1,4 @@
+import { ARTWORK_STATUS } from './constants';
 import { ArtworkDTO } from '@/models/Artwork';
 
 export const getPrimaryImage = (artwork: ArtworkDTO) => {
@@ -27,4 +28,8 @@ export const getRentalFee = (artwork: ArtworkDTO, duration: number) => {
 
 export const getTagNames = (artwork: ArtworkDTO): string[] => {
   return artwork.tags ? artwork.tags.map((tag) => tag.name) : [];
+};
+
+export const isAvailableForRental = (artwork: ArtworkDTO): boolean => {
+  return artwork.status === ARTWORK_STATUS.AVAILABLE;
 };

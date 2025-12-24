@@ -11,7 +11,7 @@ import {
 } from '@/models/sequelize';
 import { CheckoutDTO } from '@/models/RentalOrder';
 import { getCurrentUser } from '@/lib/auth';
-import { getRentalFee } from '@/lib/artwork';
+import { getRentalFee, isAvailableForRental } from '@/lib/artwork';
 import { ORDER_STATUS, PAYMENT_STATUS } from '@/lib/constants';
 
 export async function POST(request: NextRequest) {
@@ -65,6 +65,35 @@ export async function POST(request: NextRequest) {
     if (!existingAddress) {
       return NextResponse.json({ error: 'Address not found' }, { status: 404 });
     }
+    const cartItems = await CartItem.findAll({
+      where: {
+        id: cartItemIds,
+        cartId: cart.id,
+      },
+      include: [
+        {
+          model: Artwork,
+          as: 'artwork',
+          include: [
+            {
+              model: RentalPlan,
+              as: 'rentalPlans',
+            },
+          ],
+        },
+      ],
+    });
+    // Verify if artworks are available for rental
+    for (const cartItem of cartItems) {
+      // todo: verify rental dates availability?
+      if (!isAvailableForRental(cartItem.artwork)) {
+        return NextResponse.json(
+          { error: `Artwork ${cartItem.artwork.title} is not available for rental` },
+          { status: 400 }
+        );
+      }
+    }
+
     // Create new copy of address
     const newAddress = await Address.create({
       city: existingAddress.city,
@@ -92,24 +121,6 @@ export async function POST(request: NextRequest) {
       status: ORDER_STATUS.PENDING,
     });
 
-    const cartItems = await CartItem.findAll({
-      where: {
-        id: cartItemIds,
-        cartId: cart.id,
-      },
-      include: [
-        {
-          model: Artwork,
-          as: 'artwork',
-          include: [
-            {
-              model: RentalPlan,
-              as: 'rentalPlans',
-            },
-          ],
-        },
-      ],
-    });
     // Create rental order items
     for (const cartItem of cartItems) {
       await RentalOrderItem.create({

@@ -94,7 +94,7 @@ function Checkout() {
       const newRentalOrder = await rentalOrderApi.checkout(rentalOrder);
       router.push(`/checkout/success/${newRentalOrder.id}`);
     } catch (error) {
-      console.error('Error during checkout:', error);
+      alert(`Error during checkout: ${error.message}`);
     }
   };
 
