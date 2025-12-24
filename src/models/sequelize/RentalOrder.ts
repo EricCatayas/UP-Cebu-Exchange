@@ -73,7 +73,7 @@ RentalOrder.init(
         key: 'id',
       },
       onUpdate: 'CASCADE',
-      onDelete: 'SET NULL',
+      onDelete: 'RESTRICT',
     },
     paymentId: {
       type: DataTypes.INTEGER,
@@ -83,7 +83,7 @@ RentalOrder.init(
         key: 'id',
       },
       onUpdate: 'CASCADE',
-      onDelete: 'CASCADE',
+      onDelete: 'RESTRICT',
     },
     startDate: {
       type: DataTypes.DATE,
