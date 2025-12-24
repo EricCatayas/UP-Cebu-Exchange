@@ -58,6 +58,19 @@ npm run dev
 customer: user1@test.com, password: user123
 admin: admin@test.com, password: admin123
 
+## Test Stripe Payment Local Development
+
+Install Stripe CLI, then run command:
+
+```bash
+stripe login
+stripe listen --forward-to localhost:3000/api/webhooks/stripe
+```
+
+Copy webhook signing secret, set env variable STRIPE_WEBHOOK_SECRET
+
+## Development Phase
+
 Phase 1: Database & Authentication
 Phase 2: Core Backend APIs
 Phase 3: UI Foundation
