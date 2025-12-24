@@ -1,5 +1,5 @@
 import RentalOrderDetailsWrapper from '@/components/customer/RentalOrderDetails';
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import RentalOrderService from '@/services/RentalOrderService';
 import { RentalOrderDTO } from '@/models/RentalOrder';
 import { getCurrentUser } from '@/lib/auth';

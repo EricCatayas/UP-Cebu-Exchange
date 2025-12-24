@@ -3,10 +3,11 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useRentalOrder } from '@/contexts/RentalOrderContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { DELIVERY_METHOD } from '@/lib/constants';
+import { DELIVERY_METHOD, PAYMENT_METHOD } from '@/lib/constants';
 import { getDimension, getImageUrl } from '@/lib/artwork';
 import { FaCheckCircle, FaBox, FaMapMarkerAlt, FaCreditCard, FaEnvelope, FaPhone, FaClock } from 'react-icons/fa';
 import { RentalOrderDTO } from '@/models/RentalOrder';
+import { APP_SUPPORT_EMAIL } from '@/lib/constants';
 
 function CheckoutSuccess({ rentalOrder }: { rentalOrder: RentalOrderDTO }) {
   const router = useRouter();
@@ -16,10 +17,12 @@ function CheckoutSuccess({ rentalOrder }: { rentalOrder: RentalOrderDTO }) {
     return null;
   }
 
-  const { startDate, endDate, deliveryMethod } = rentalOrder;
+  const { startDate, endDate, deliveryMethod, payment } = rentalOrder;
   const total = rentalOrder.payment?.amount;
 
   const isPickup = deliveryMethod === DELIVERY_METHOD.PICKUP;
+  const isDelivery = deliveryMethod === DELIVERY_METHOD.DELIVERY;
+  const isOnlinePayment = payment?.method === PAYMENT_METHOD.ONLINE;
   const orderNumber = rentalOrder?.id ? `#${String(rentalOrder.id).padStart(6, '0')}` : '#000000';
 
   return (
@@ -74,7 +77,7 @@ function CheckoutSuccess({ rentalOrder }: { rentalOrder: RentalOrderDTO }) {
                     <div className="flex-1 space-y-2">
                       <h3 className="text-lg font-semibold text-gray-900">{item.artwork.title}</h3>
                       <p className="text-gray-700">
-                        <span className="text-gray-600">Artist/Owner:</span> {item.artwork.artist?.title || 'N/A'}
+                        <span className="text-gray-600">Artist:</span> {item.artwork.artist?.title || 'N/A'}
                       </p>
                       <p className="text-gray-700">
                         <span className="text-gray-600">Dimension:</span> {getDimension(item.artwork)}
@@ -157,7 +160,7 @@ function CheckoutSuccess({ rentalOrder }: { rentalOrder: RentalOrderDTO }) {
         )}
 
         {/* Next Steps - Delivery */}
-        {!isPickup && (
+        {isOnlinePayment && (
           <div className="bg-white rounded-lg shadow-md overflow-hidden">
             <div className="bg-purple-600 px-8 py-4">
               <h2 className="text-2xl font-bold text-white flex items-center gap-2">
@@ -167,10 +170,15 @@ function CheckoutSuccess({ rentalOrder }: { rentalOrder: RentalOrderDTO }) {
             </div>
 
             <div className="px-8 py-6 space-y-4">
-              <p className="text-gray-700 text-lg">To schedule your delivery, please complete your payment.</p>
+              <p className="text-gray-700 text-lg">
+                To {isDelivery ? 'schedule your delivery' : 'reserve your artworks'}, please complete your payment.
+              </p>
 
               <div className="bg-purple-50 p-6 rounded-lg border-l-4 border-purple-500 space-y-3">
-                <p className="text-gray-800">A payment link has been sent to your email. After successful payment:</p>
+                <p className="text-gray-800">
+                  You can complete your payment by clicking the button below or using the payment link sent to your
+                  email. After successful payment:
+                </p>
                 <ul className="space-y-2 ml-4">
                   <li className="flex items-start gap-2 text-gray-700">
                     <span className="text-purple-600 font-bold">✓</span>
@@ -188,7 +196,7 @@ function CheckoutSuccess({ rentalOrder }: { rentalOrder: RentalOrderDTO }) {
               </div>
 
               <button
-                onClick={() => router.push('/payment')}
+                onClick={() => router.push(`/account/rentals/${rentalOrder.id}?action=pay`)}
                 className="w-full bg-purple-600 text-white font-semibold py-4 rounded-lg hover:bg-purple-700 transition-colors shadow-md flex items-center justify-center gap-2"
               >
                 <FaCreditCard className="w-5 h-5" />
@@ -209,8 +217,8 @@ function CheckoutSuccess({ rentalOrder }: { rentalOrder: RentalOrderDTO }) {
             <div className="space-y-2">
               <p className="flex items-center gap-2 text-gray-800">
                 <FaEnvelope className="w-5 h-5 text-blue-600" />
-                <a href="mailto:support@upcebu.exchange" className="text-blue-600 hover:underline font-medium">
-                  support@upcebu.exchange
+                <a href={`mailto:${APP_SUPPORT_EMAIL}`} className="text-blue-600 hover:underline font-medium">
+                  {APP_SUPPORT_EMAIL}
                 </a>
               </p>
               <p className="flex items-center gap-2 text-gray-800">
@@ -252,6 +260,12 @@ function CheckoutSuccess({ rentalOrder }: { rentalOrder: RentalOrderDTO }) {
             className="flex-1 bg-blue-600 text-white font-semibold py-4 rounded-lg hover:bg-blue-700 transition-colors shadow-md"
           >
             View My Rentals
+          </button>
+          <button
+            onClick={() => router.push(`/account/rentals/${rentalOrder.id}?action=pay`)}
+            className="flex-1 bg-green-600 text-white font-semibold py-4 rounded-lg hover:bg-green-700 transition-colors shadow-md"
+          >
+            Proceed to Payment
           </button>
           <button
             onClick={() => router.push('/')}

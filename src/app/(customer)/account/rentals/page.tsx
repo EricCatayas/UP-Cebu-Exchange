@@ -29,7 +29,7 @@ async function RentalsPage() {
 
         <div className="mt-10 mb-10 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {rentalOrders.map((order) => (
-            <RentalOrderCard order={order}>
+            <RentalOrderCard key={order.id} order={order}>
               <>
                 <Link href={`/account/rentals/${order.id}`} className="text-blue-600 hover:underline">
                   View Products

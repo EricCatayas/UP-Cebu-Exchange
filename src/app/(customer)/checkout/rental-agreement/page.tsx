@@ -72,7 +72,7 @@ function RentalAgreement() {
                         <span className="text-gray-600">Artwork Title:</span> {item.artwork.title}
                       </p>
                       <p className="text-gray-700">
-                        <span className="text-gray-600">Artist/Owner:</span> {item.artwork.artist?.name || 'N/A'}
+                        <span className="text-gray-600">Artist:</span> {item.artwork.artist?.name || 'N/A'}
                       </p>
                       <p className="text-gray-700">
                         <span className="text-gray-600">Dimension:</span> {getDimension(item.artwork)}
