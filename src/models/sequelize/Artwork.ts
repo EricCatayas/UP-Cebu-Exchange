@@ -1,6 +1,7 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '@/config/database';
 import { ArtworkAttributes } from '@/models/Artwork';
+import { ARTWORK_STATUS } from '@/lib/constants';
 
 // Define creation attributes
 interface ArtworkCreationAttributes
@@ -80,7 +81,7 @@ Artwork.init(
     status: {
       type: DataTypes.STRING(20),
       allowNull: false,
-      defaultValue: 'available',
+      defaultValue: ARTWORK_STATUS.AVAILABLE,
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -101,9 +102,6 @@ Artwork.init(
     indexes: [
       {
         fields: ['artistId'],
-      },
-      {
-        fields: ['status'],
       },
       {
         fields: ['styleId'],
