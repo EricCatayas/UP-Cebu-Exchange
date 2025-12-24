@@ -25,10 +25,16 @@ function ArtworkDetails({ artwork }: { artwork: ArtworkDTO }) {
         alert('You need to be signed in to add item to cart');
         return;
       }
-      await cartApi.addItem(artwork.id);
-      setInCart(true);
+      if (inCart) {
+        await cartApi.removeItem(artwork.id);
+        setInCart(false);
+      } else {
+        await cartApi.addItem(artwork.id);
+        setInCart(true);
+        alert('Artwork added to cart');
+      }
     } catch (error) {
-      console.error('Error adding item to cart:', error);
+      alert('Error toggling cart item:', error.message);
     }
   };
 
@@ -38,10 +44,16 @@ function ArtworkDetails({ artwork }: { artwork: ArtworkDTO }) {
         alert('You need to be signed in to add item to wishlist');
         return;
       }
-      await wishlistApi.addItem(artwork.id);
-      setInWishlist(true);
+      if (inWishlist) {
+        await wishlistApi.removeItem(artwork.id);
+        setInWishlist(false);
+      } else {
+        await wishlistApi.addItem(artwork.id);
+        setInWishlist(true);
+        alert('Artwork added to wishlist');
+      }
     } catch (error) {
-      console.error('Error adding item to wishlist:', error);
+      alert('Error toggling wishlist item:', error.message);
     }
   };
 

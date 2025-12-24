@@ -37,9 +37,10 @@ export default function ArtworkCard({ artwork, displayInfo = true }: { artwork: 
       } else {
         await cartApi.addItem(artwork.id);
         setInCart(true);
+        alert('Artwork added to cart');
       }
     } catch (error) {
-      console.error('Error toggling cart item:', error);
+      alert('Error toggling cart item:', error.message);
     }
   };
 
@@ -55,9 +56,10 @@ export default function ArtworkCard({ artwork, displayInfo = true }: { artwork: 
       } else {
         await wishlistApi.addItem(artwork.id);
         setInWishlist(true);
+        alert('Artwork added to wishlist');
       }
     } catch (error) {
-      console.error('Error toggling wishlist item:', error);
+      alert('Error toggling wishlist item:', error.message);
     }
   };
 

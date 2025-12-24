@@ -1,5 +1,5 @@
 import WishlistService from '@/services/WishlistService';
-import { getCurrentUser } from '@/lib/auth';
+import { getCurrentUser, isCustomer } from '@/lib/auth';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
@@ -8,6 +8,10 @@ export async function GET(request: NextRequest) {
     if (!currentUser) {
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
     }
+    if (!isCustomer(currentUser)) {
+      return NextResponse.json({ error: 'Customer access required' }, { status: 403 });
+    }
+
     const wishlistItems = await WishlistService.getWishlistItems(currentUser.userId);
 
     return NextResponse.json({ wishlistItems }, { status: 200 });
@@ -23,6 +27,10 @@ export async function POST(request: NextRequest) {
     if (!currentUser) {
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
     }
+    if (!isCustomer(currentUser)) {
+      return NextResponse.json({ error: 'Customer access required' }, { status: 403 });
+    }
+
     const { artworkId } = await request.json();
 
     if (!artworkId || isNaN(Number(artworkId))) {
@@ -43,6 +51,10 @@ export async function DELETE(request: NextRequest) {
     if (!currentUser) {
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
     }
+    if (!isCustomer(currentUser)) {
+      return NextResponse.json({ error: 'Customer access required' }, { status: 403 });
+    }
+
     const { artworkId } = await request.json();
     if (!artworkId || isNaN(Number(artworkId))) {
       return NextResponse.json({ error: 'Valid artworkId is required' }, { status: 400 });
