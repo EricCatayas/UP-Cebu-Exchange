@@ -1,6 +1,7 @@
+import RentalOrderService from '@/services/RentalOrderService';
 import { RentalOrder } from '@/models/sequelize';
 import { getCurrentUser, isAdmin, canEditContent } from '@/lib/auth';
-import { ORDER_STATUSES } from '@/lib/constants';
+import { ORDER_STATUS, ORDER_STATUSES } from '@/lib/constants';
 
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
   try {
@@ -31,8 +32,26 @@ export async function PUT(request: Request, { params }: { params: { id: string }
       return new Response(JSON.stringify({ error: 'Rental order not found' }), { status: 404 });
     }
 
-    rentalOrder.status = status;
-    await rentalOrder.save();
+    const oldStatus = rentalOrder.status;
+    if (oldStatus === status) {
+      return new Response(JSON.stringify({ error: 'Rental order already has the specified status' }), { status: 400 });
+    }
+
+    const rentalOrderService = new RentalOrderService();
+    if (status === ORDER_STATUS.PENDING) {
+      await rentalOrderService.markOrderAsPending(rentalOrder.id);
+    } else if (status === ORDER_STATUS.RESERVED) {
+      await rentalOrderService.markOrderAsReserved(rentalOrder.id);
+    } else if (status === ORDER_STATUS.ONGOING) {
+      await rentalOrderService.markOrderAsOngoing(rentalOrder.id);
+    } else if (status === ORDER_STATUS.COMPLETED) {
+      await rentalOrderService.markOrderAsCompleted(rentalOrder.id);
+    } else if (status === ORDER_STATUS.CANCELLED) {
+      await rentalOrderService.markOrderAsCancelled(rentalOrder.id);
+    } else {
+      rentalOrder.status = status;
+      await rentalOrder.save();
+    }
 
     return new Response(JSON.stringify({ rentalOrder }), { status: 200 });
   } catch (error) {
