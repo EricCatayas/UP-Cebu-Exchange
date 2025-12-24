@@ -1,7 +1,7 @@
 'use client';
 import RentalOrderDetails from '@/components/RentalOrderDetails/RentalOrderDetails';
 import { useState, useEffect } from 'react';
-import { ORDER_STATUSES, PAYMENT_STATUSES } from '@/lib/constants';
+import { ORDER_STATUS, ORDER_STATUSES, PAYMENT_STATUS, PAYMENT_STATUSES } from '@/lib/constants';
 import { rentalOrderApi } from '@/lib/api/rentalOrder';
 import { paymentApi } from '@/lib/api/payment';
 import { redirect } from 'next/navigation';
@@ -40,10 +40,59 @@ export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrde
   const handleSaveChanges = async () => {
     try {
       if (!order || !hasEdited) return;
-      const updatedOrder = await rentalOrderApi.updateStatus(order.id, orderStatus);
-      const updatedPayment = await paymentApi.updateStatus(order.payment.id, paymentStatus);
+      let message = `Are you sure you want to update the order status to "${orderStatus}" and payment status to "${paymentStatus}"?`;
+      // todo: validate status transitions
+      if (orderStatus === ORDER_STATUS.PENDING && order.status !== ORDER_STATUS.PENDING) {
+        message = 'Warning: Changing the order status to "PENDING" will mark the items as available in inventory.';
+      }
+      if (orderStatus === ORDER_STATUS.RESERVED && order.status !== ORDER_STATUS.RESERVED) {
+        message = 'Warning: Changing the order status to "RESERVED" will mark the items as reserved in inventory.';
+      }
+      if (orderStatus === ORDER_STATUS.TORECEIVE && order.status !== ORDER_STATUS.TORECEIVE) {
+        message = 'Warning: Changing the order status to "TO RECEIVE" will mark the items as reserved in inventory.';
+      }
+      if (orderStatus === ORDER_STATUS.ONGOING && order.status !== ORDER_STATUS.ONGOING) {
+        message = 'Warning: Changing the order status to "ONGOING" will mark the items as rented.';
+      }
+      if (orderStatus === ORDER_STATUS.TORETURN && order.status !== ORDER_STATUS.TORETURN) {
+        message = 'Warning: Changing the order status to "TO RETURN" will mark the items as rented.';
+      }
+      if (orderStatus === ORDER_STATUS.COMPLETED && order.status !== ORDER_STATUS.COMPLETED) {
+        message = 'Warning: Changing the order status to "COMPLETED" will mark the items as available in inventory.';
+      }
+      if (orderStatus === ORDER_STATUS.CANCELLED && order.status !== ORDER_STATUS.CANCELLED) {
+        message = 'Warning: Changing the order status to "CANCELLED" will mark the items as available in inventory.';
+      }
+      if (paymentStatus === PAYMENT_STATUS.COMPLETED && order.payment.status !== PAYMENT_STATUS.COMPLETED) {
+        message =
+          'Warning: Changing the payment status to "COMPLETED" will mark the order and items as reserved in inventory.';
+      }
+      if (paymentStatus === PAYMENT_STATUS.FAILED && order.payment.status !== PAYMENT_STATUS.FAILED) {
+        message =
+          'Warning: Changing the payment status to "FAILED" will mark the order as "CANCELLED" and will mark the items as available in inventory.';
+      }
 
-      alert(`Order has been updated`);
+      openConfirmation(
+        {
+          title: 'Confirm Status Update',
+          message: message,
+        },
+        async () => {
+          try {
+            if (order.status !== orderStatus) {
+              const updatedOrder = await rentalOrderApi.updateStatus(order.id, orderStatus);
+            }
+            if (order.payment.status !== paymentStatus) {
+              const updatedPayment = await paymentApi.updateStatus(order.payment.id, paymentStatus);
+            }
+            // page refresh to reflect changes
+            alert(`Order has been updated`);
+            redirect('/orders');
+          } catch (error) {
+            console.error('Failed to update statuses:', error);
+          }
+        }
+      );
     } catch (error) {
       console.error('Failed to update order status:', error);
     }
@@ -110,13 +159,14 @@ export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrde
             </option>
           ))}
         </select>
-        <button
-          onClick={handleSaveChanges}
-          disabled={!hasEdited}
-          className="ml-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-        >
-          Save Changes
-        </button>
+        {hasEdited && (
+          <button
+            onClick={handleSaveChanges}
+            className="ml-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+          >
+            Save Changes
+          </button>
+        )}
         <button
           onClick={handleDeleteOrder}
           className="ml-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"

@@ -181,6 +181,13 @@ export default class RentalOrderService {
     }
     this.updateRentalOrderItemsStatus(orderId, ARTWORK_STATUS.RESERVED);
   }
+  async markOrderAsToReceive(orderId: number): Promise<void> {
+    const rentalOrder = await RentalOrder.findByPk(orderId);
+    if (rentalOrder) {
+      await rentalOrder.update({ status: ORDER_STATUS.TORECEIVE });
+    }
+    this.updateRentalOrderItemsStatus(orderId, ARTWORK_STATUS.RESERVED);
+  }
   async markOrderAsOngoing(orderId: number): Promise<void> {
     const rentalOrder = await RentalOrder.findByPk(orderId);
     if (rentalOrder) {
@@ -194,6 +201,13 @@ export default class RentalOrderService {
       await rentalOrder.update({ status: ORDER_STATUS.COMPLETED });
     }
     this.updateRentalOrderItemsStatus(orderId, ARTWORK_STATUS.AVAILABLE);
+  }
+  async markOrderAsToReturn(orderId: number): Promise<void> {
+    const rentalOrder = await RentalOrder.findByPk(orderId);
+    if (rentalOrder) {
+      await rentalOrder.update({ status: ORDER_STATUS.TORETURN });
+    }
+    this.updateRentalOrderItemsStatus(orderId, ARTWORK_STATUS.RENTED);
   }
   async markOrderAsCancelled(orderId: number): Promise<void> {
     const rentalOrder = await RentalOrder.findByPk(orderId);

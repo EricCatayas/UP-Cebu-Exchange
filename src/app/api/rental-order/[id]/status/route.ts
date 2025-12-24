@@ -42,8 +42,12 @@ export async function PUT(request: Request, { params }: { params: { id: string }
       await rentalOrderService.markOrderAsPending(rentalOrder.id);
     } else if (status === ORDER_STATUS.RESERVED) {
       await rentalOrderService.markOrderAsReserved(rentalOrder.id);
+    } else if (status === ORDER_STATUS.TORECEIVE) {
+      await rentalOrderService.markOrderAsToReceive(rentalOrder.id);
     } else if (status === ORDER_STATUS.ONGOING) {
       await rentalOrderService.markOrderAsOngoing(rentalOrder.id);
+    } else if (status === ORDER_STATUS.TORETURN) {
+      await rentalOrderService.markOrderAsToReturn(rentalOrder.id);
     } else if (status === ORDER_STATUS.COMPLETED) {
       await rentalOrderService.markOrderAsCompleted(rentalOrder.id);
     } else if (status === ORDER_STATUS.CANCELLED) {
