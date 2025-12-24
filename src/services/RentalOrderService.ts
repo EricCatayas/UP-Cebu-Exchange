@@ -1,3 +1,4 @@
+import { Op } from 'sequelize';
 import { RentalOrderDTO } from '@/models/RentalOrder';
 import { Address, Artwork, RentalOrder, RentalOrderItem, User, Payment, ArtworkImage } from '@/models/sequelize';
 import { ARTWORK_STATUS, ORDER_STATUS } from '@/lib/constants';
@@ -160,6 +161,33 @@ export default class RentalOrderService {
     });
     return order?.toJSON() || null;
   }
+  async getOngoingRentalByArtworkId(artworkId: number): Promise<RentalOrderDTO | null> {
+    const rentalOrderItems = await RentalOrderItem.findAll({
+      where: { artworkId },
+      attributes: ['rentalOrderId'],
+    });
+    const rentalOrderIds = rentalOrderItems.map((item) => item.rentalOrderId);
+
+    const ongoingOrders = await RentalOrder.findAll({
+      where: {
+        id: {
+          [Op.in]: rentalOrderIds,
+        },
+        status: {
+          [Op.in]: [ORDER_STATUS.RESERVED, ORDER_STATUS.TORECEIVE, ORDER_STATUS.ONGOING, ORDER_STATUS.TORETURN],
+        },
+      },
+      order: [['endDate', 'DESC']],
+    });
+
+    // return order with greatest endDate
+    if (ongoingOrders.length === 0) {
+      return null;
+    }
+    let latestOrder = ongoingOrders[0];
+    return latestOrder.toJSON();
+  }
+
   async markOrderAsPending(orderId: number): Promise<void> {
     const rentalOrder = await RentalOrder.findByPk(orderId);
     if (rentalOrder) {

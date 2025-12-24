@@ -33,3 +33,11 @@ export const getTagNames = (artwork: ArtworkDTO): string[] => {
 export const isAvailableForRental = (artwork: ArtworkDTO): boolean => {
   return artwork.status === ARTWORK_STATUS.AVAILABLE;
 };
+
+export const isUnavailableForRental = (artwork: ArtworkDTO): boolean => {
+  return artwork.status === ARTWORK_STATUS.UNAVAILABLE;
+};
+
+export const hasOngoingRental = (artwork: ArtworkDTO): boolean => {
+  return [ARTWORK_STATUS.RESERVED, ARTWORK_STATUS.RENTED].includes(artwork.status);
+};

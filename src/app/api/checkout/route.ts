@@ -9,10 +9,12 @@ import {
   Payment,
   RentalPlan,
 } from '@/models/sequelize';
+import RentalOrderService from '@/services/RentalOrderService';
 import { CheckoutDTO } from '@/models/RentalOrder';
 import { getCurrentUser } from '@/lib/auth';
-import { getRentalFee, isAvailableForRental } from '@/lib/artwork';
+import { getRentalFee, hasOngoingRental, isUnavailableForRental } from '@/lib/artwork';
 import { ORDER_STATUS, PAYMENT_STATUS } from '@/lib/constants';
+import { fmtDate } from '@/lib/formatter';
 
 export async function POST(request: NextRequest) {
   try {
@@ -85,12 +87,22 @@ export async function POST(request: NextRequest) {
     });
     // Verify if artworks are available for rental
     for (const cartItem of cartItems) {
-      // todo: verify rental dates availability?
-      if (!isAvailableForRental(cartItem.artwork)) {
-        return NextResponse.json(
-          { error: `Artwork ${cartItem.artwork.title} is not available for rental` },
-          { status: 400 }
-        );
+      if (hasOngoingRental(cartItem.artwork)) {
+        const rentalOrderService = new RentalOrderService();
+        const ongoingRental = await rentalOrderService.getOngoingRentalByArtworkId(cartItem.artwork.id);
+        if (ongoingRental && startDate < ongoingRental.endDate.toISOString()) {
+          return NextResponse.json(
+            {
+              error: `Artwork ${cartItem.artwork.title} is currently rented until ${fmtDate(ongoingRental.endDate)}`,
+            },
+            { status: 400 }
+          );
+        } else if (isUnavailableForRental(cartItem.artwork)) {
+          return NextResponse.json(
+            { error: `Artwork ${cartItem.artwork.title} is not available for rental` },
+            { status: 400 }
+          );
+        }
       }
     }
 
