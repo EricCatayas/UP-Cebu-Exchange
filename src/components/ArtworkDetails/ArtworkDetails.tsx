@@ -1,13 +1,16 @@
 'use client';
 import Link from 'next/link';
 import HeartIcon from '../HeartIcon/HeartIcon';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { ArtworkDTO } from '@/models/Artwork';
 import { getDimension } from '@/lib/artwork';
+import { artworkApi } from '@/lib/api/artwork';
 import { cartApi } from '@/lib/api/cart';
 import { wishlistApi } from '@/lib/api/wishlist';
+import { hasOngoingRental as hasOngoingRentalOrder } from '@/lib/artwork';
+import { fmtDate } from '@/lib/formatter';
 
 function ArtworkDetails({ artwork }: { artwork: ArtworkDTO }) {
   const router = useRouter();
@@ -16,6 +19,8 @@ function ArtworkDetails({ artwork }: { artwork: ArtworkDTO }) {
   const { user } = useAuth();
   const [inCart, setInCart] = useState(artwork.isInCart);
   const [inWishlist, setInWishlist] = useState(artwork.isInWishlist);
+  const [hasOngoingRental, setHasOngoingRental] = useState(hasOngoingRentalOrder(artwork));
+  const [availableDate, setAvailableDate] = useState<string | null>(null);
 
   const handleNavigateToArtist = () => router.push(`/artists/${artist.id}`);
 
@@ -56,6 +61,17 @@ function ArtworkDetails({ artwork }: { artwork: ArtworkDTO }) {
       alert('Error toggling wishlist item:', error.message);
     }
   };
+
+  useEffect(() => {
+    const fetchAvailableDate = async () => {
+      const { availableDate } = await artworkApi.availableDate(artwork.id);
+      setAvailableDate(availableDate);
+    };
+
+    if (hasOngoingRental) {
+      fetchAvailableDate();
+    }
+  }, [artwork]);
 
   return (
     <div>
@@ -165,6 +181,14 @@ function ArtworkDetails({ artwork }: { artwork: ArtworkDTO }) {
           </svg>
           <span>790 have viewed this art piece</span>
         </div>
+        {hasOngoingRental && availableDate && (
+          <div className="flex items-center gap-3">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zm0-13H5V5h14v1z" />
+            </svg>
+            <span>Currently rented. Available from: {fmtDate(availableDate)}</span>
+          </div>
+        )}
       </div>
     </div>
   );

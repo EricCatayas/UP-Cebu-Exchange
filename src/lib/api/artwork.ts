@@ -111,4 +111,18 @@ export const artworkApi = {
 
     return response.json();
   },
+
+  availableDate: async (artworkId: number) => {
+    const response = await fetch(`/api/artworks/${artworkId}/available-date`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.error || 'Failed to fetch artwork available date');
+    }
+    return response.json();
+  },
 };
