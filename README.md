@@ -26,6 +26,9 @@ NEXTAUTH_SECRET=your-secret-key-here
 NEXTAUTH_URL=http://localhost:3000
 MAILJET_API_KEY=mailjet-api-key
 MAILJET_API_SECRET=mailjet-api-secret
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=stripe-publishable-key
+STRIPE_SECRET_KEY=stripe-secret-key
+STRIPE_WEBHOOK_SECRET=stripe-webhook-signing-secret
 ```
 
 Create the database in MySQL
