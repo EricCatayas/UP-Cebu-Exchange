@@ -6,8 +6,8 @@ import { DELIVERY_FEE, DELIVERY_METHOD, PAYMENT_METHOD } from '@/lib/constants';
 import { getRentalFee } from '@/lib/artwork';
 
 interface RentalOrderContextType {
-  selectedDuration: number;
-  setSelectedDuration: (duration: number) => void;
+  duration: number;
+  setDuration: (duration: number) => void;
   startDate: string;
   endDate: string;
   setStartDate: (date: string) => void;
@@ -26,7 +26,7 @@ const RentalOrderContext = createContext<RentalOrderContextType | undefined>(und
 export function RentalOrderProvider({ children }: { children: React.ReactNode }) {
   const { cartItems, selectedCartItemIds } = useCart();
 
-  const [selectedDuration, setSelectedDuration] = useState<number>(12);
+  const [duration, setDuration] = useState<number>(12);
   const [startDate, setStartDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [deliveryMethod, setDeliveryMethod] = useState<string>(DELIVERY_METHOD.PICKUP);
   const [paymentMethod, setPaymentMethod] = useState<string>(PAYMENT_METHOD.CASH);
@@ -35,20 +35,20 @@ export function RentalOrderProvider({ children }: { children: React.ReactNode })
   const endDate = useMemo(() => {
     if (!startDate) return '';
     const date = new Date(startDate);
-    if (selectedDuration === 12) {
+    if (duration === 12) {
       // 364 days for 12 months
       date.setDate(date.getDate() + 364);
     } else {
-      date.setMonth(date.getMonth() + selectedDuration);
+      date.setMonth(date.getMonth() + duration);
     }
     return date.toISOString().split('T')[0];
-  }, [startDate, selectedDuration]);
+  }, [startDate, duration]);
 
   useEffect(() => {
     if (contractSigned) {
       setContractSigned(false);
     }
-  }, [selectedDuration, startDate, deliveryMethod, paymentMethod]);
+  }, [duration, startDate, deliveryMethod, paymentMethod]);
 
   useEffect(() => {
     if (contractSigned) {
@@ -60,9 +60,9 @@ export function RentalOrderProvider({ children }: { children: React.ReactNode })
     return cartItems
       .filter((item) => selectedCartItemIds.has(item.id))
       .reduce((sum, item) => {
-        return sum + getRentalFee(item.artwork, selectedDuration);
+        return sum + getRentalFee(item.artwork, duration);
       }, 0);
-  }, [cartItems, selectedCartItemIds, selectedDuration]);
+  }, [cartItems, selectedCartItemIds, duration]);
 
   const total = useMemo(() => {
     return subtotal + (deliveryMethod === DELIVERY_METHOD.DELIVERY ? DELIVERY_FEE : 0);
@@ -71,8 +71,8 @@ export function RentalOrderProvider({ children }: { children: React.ReactNode })
   return (
     <RentalOrderContext.Provider
       value={{
-        selectedDuration,
-        setSelectedDuration,
+        duration,
+        setDuration,
         startDate,
         endDate,
         setStartDate,

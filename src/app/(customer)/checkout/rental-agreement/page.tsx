@@ -11,7 +11,7 @@ function RentalAgreement() {
   const { cartItems } = useCart();
   const { address } = useUserAddress();
 
-  const { selectedDuration, startDate, endDate, deliveryMethod, paymentMethod, subtotal, total, setContractSigned } =
+  const { duration, startDate, endDate, deliveryMethod, paymentMethod, subtotal, total, setContractSigned } =
     useRentalOrder();
 
   const router = useRouter();
@@ -104,7 +104,7 @@ function RentalAgreement() {
                 <span className="font-medium">End Date:</span> {endDate}
               </p>
               <p className="text-gray-900">
-                <span className="font-medium">Duration:</span> {selectedDuration} months
+                <span className="font-medium">Duration:</span> {duration} months
               </p>
             </div>
             <p className="text-gray-700 mt-3 leading-relaxed">

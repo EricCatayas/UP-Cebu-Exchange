@@ -28,7 +28,7 @@ function CreateOrderForm({ artworks, customers }: { artworks: ArtworkDTO[]; cust
   const [selectedArtworkIds, setSelectedArtworkIds] = useState<Set<number>>(new Set());
   const [selectedCustomerId, setSelectedCustomerId] = useState<number | null>(null);
   const [useCustomerAddress, setUseCustomerAddress] = useState<boolean>(false);
-  const [selectedDuration, setSelectedDuration] = useState<number>(12);
+  const [duration, setDuration] = useState<number>(12);
   const [startDate, setStartDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [deliveryMethod, setDeliveryMethod] = useState<string>(DELIVERY_METHOD.PICKUP);
   const [paymentMethod, setPaymentMethod] = useState<string>(PAYMENT_METHOD.CASH);
@@ -36,14 +36,14 @@ function CreateOrderForm({ artworks, customers }: { artworks: ArtworkDTO[]; cust
   const endDate = useMemo(() => {
     if (!startDate) return '';
     const date = new Date(startDate);
-    if (selectedDuration === 12) {
+    if (duration === 12) {
       // 364 days for 12 months
       date.setDate(date.getDate() + 364);
     } else {
-      date.setMonth(date.getMonth() + selectedDuration);
+      date.setMonth(date.getMonth() + duration);
     }
     return date.toISOString().split('T')[0];
-  }, [startDate, selectedDuration]);
+  }, [startDate, duration]);
 
   const filteredArtworks = useMemo(() => {
     if (!search.trim()) return artworks;
@@ -70,9 +70,9 @@ function CreateOrderForm({ artworks, customers }: { artworks: ArtworkDTO[]; cust
     return artworks
       .filter((artwork) => selectedArtworkIds.has(artwork.id))
       .reduce((sum, artwork) => {
-        return sum + getRentalFee(artwork, selectedDuration);
+        return sum + getRentalFee(artwork, duration);
       }, 0);
-  }, [artworks, selectedArtworkIds, selectedDuration]);
+  }, [artworks, selectedArtworkIds, duration]);
 
   const total = useMemo(() => {
     return subtotal + (deliveryMethod === DELIVERY_METHOD.DELIVERY ? DELIVERY_FEE : 0);
@@ -93,7 +93,7 @@ function CreateOrderForm({ artworks, customers }: { artworks: ArtworkDTO[]; cust
   };
 
   const getRentalPlanFee = (artwork: any) => {
-    return getRentalFee(artwork, selectedDuration);
+    return getRentalFee(artwork, duration);
   };
 
   const handleSelectCustomer = async (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -146,7 +146,7 @@ function CreateOrderForm({ artworks, customers }: { artworks: ArtworkDTO[]; cust
 
   const handleSubmit = async () => {
     const rentalOrder = {
-      durationMonths: selectedDuration,
+      durationMonths: duration,
       startDate,
       endDate,
       artworkIds: Array.from(selectedArtworkIds),
@@ -188,8 +188,8 @@ function CreateOrderForm({ artworks, customers }: { artworks: ArtworkDTO[]; cust
             <div>
               <label className="block text-sm font-semibold mb-2">Duration</label>
               <select
-                value={selectedDuration}
-                onChange={(e) => setSelectedDuration(Number(e.target.value))}
+                value={duration}
+                onChange={(e) => setDuration(Number(e.target.value))}
                 className="w-full md:w-64 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 {DURATION_OPTIONS.map((months) => (
@@ -408,7 +408,7 @@ function CreateOrderForm({ artworks, customers }: { artworks: ArtworkDTO[]; cust
           <div className="space-y-3 mb-6">
             <div className="flex justify-between">
               <span className="text-gray-600">Duration:</span>
-              <span className="font-semibold">{selectedDuration} months</span>
+              <span className="font-semibold">{duration} months</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">Start Date:</span>

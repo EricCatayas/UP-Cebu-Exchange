@@ -18,8 +18,8 @@ function RentalCheckout() {
   const { address } = useUserAddress();
 
   const {
-    selectedDuration,
-    setSelectedDuration,
+    duration,
+    setDuration,
     startDate,
     endDate,
     setStartDate,
@@ -82,7 +82,7 @@ function RentalCheckout() {
 
   const handleCheckout = async () => {
     const rentalOrder = {
-      durationMonths: selectedDuration,
+      durationMonths: duration,
       startDate,
       endDate,
       cartItemIds: Array.from(selectedCartItemIds),
@@ -113,8 +113,8 @@ function RentalCheckout() {
         <div className="lg:col-span-2 space-y-6">
           {/* Rental Period */}
           <RentalPeriodCard
-            duration={selectedDuration}
-            onDurationChange={setSelectedDuration}
+            duration={duration}
+            onDurationChange={setDuration}
             startDate={startDate}
             onStartDateChange={setStartDate}
             endDate={endDate}
@@ -174,9 +174,7 @@ function RentalCheckout() {
                         <p className="text-sm text-gray-600">{getDimension(item.artwork)}</p>
                       </div>
                     </div>
-                    <div className="font-semibold text-lg mr-4">
-                      {fmtMoney(getRentalFee(item.artwork, selectedDuration))}
-                    </div>
+                    <div className="font-semibold text-lg mr-4">{fmtMoney(getRentalFee(item.artwork, duration))}</div>
                     <button onClick={() => handleRemoveCartItem(item)} className="text-red-500 hover:text-red-700">
                       🗑️
                     </button>
@@ -221,7 +219,7 @@ function RentalCheckout() {
         <div className="lg:col-span-1">
           <RentalSummaryCard
             artworks={selectedArtworks}
-            duration={selectedDuration}
+            duration={duration}
             startDate={startDate}
             endDate={endDate}
             deliveryMethod={deliveryMethod}
