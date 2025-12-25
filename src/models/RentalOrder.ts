@@ -36,6 +36,15 @@ export interface RentalOrderCreateDTO {
   paymentMethod: string;
 }
 
+export interface ExtendRentalOrderDTO {
+  id: number;
+  durationMonths: number;
+  startDate: string;
+  endDate: string;
+  totalAmount: number;
+  paymentMethod: string;
+}
+
 export interface CheckoutDTO {
   addressId: number;
   cartItemIds: number[];

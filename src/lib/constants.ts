@@ -43,6 +43,7 @@ export const DELIVERY_FEE = 50;
 export enum DELIVERY_METHOD {
   DELIVERY = 'Delivery',
   PICKUP = 'Pickup',
+  NONE = 'None',
 }
 
 export const DELIVERY_METHODS = [DELIVERY_METHOD.DELIVERY, DELIVERY_METHOD.PICKUP];

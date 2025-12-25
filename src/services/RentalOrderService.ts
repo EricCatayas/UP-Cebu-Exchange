@@ -1,6 +1,15 @@
 import { Op } from 'sequelize';
 import { RentalOrderDTO } from '@/models/RentalOrder';
-import { Address, Artwork, RentalOrder, RentalOrderItem, User, Payment, ArtworkImage } from '@/models/sequelize';
+import {
+  Address,
+  Artwork,
+  RentalOrder,
+  RentalOrderItem,
+  User,
+  Payment,
+  ArtworkImage,
+  RentalPlan,
+} from '@/models/sequelize';
 import { ARTWORK_STATUS, ORDER_STATUS } from '@/lib/constants';
 
 export default class RentalOrderService {
@@ -65,15 +74,7 @@ export default class RentalOrderService {
               model: Artwork,
               as: 'artwork',
               attributes: ['id', 'title'],
-              include: [
-                {
-                  model: ArtworkImage,
-                  as: 'images',
-                  attributes: ['imageUrl'],
-                  where: { isPrimary: true },
-                  required: false,
-                },
-              ],
+              include: ['artist', 'tags', 'style', 'rentalPlans', 'images'],
             },
           ],
         },
@@ -82,7 +83,6 @@ export default class RentalOrderService {
           as: 'address',
         },
       ],
-      order: [['createdAt', 'DESC']],
     });
 
     return order?.toJSON() || null;
@@ -105,15 +105,7 @@ export default class RentalOrderService {
               model: Artwork,
               as: 'artwork',
               attributes: ['id', 'title'],
-              include: [
-                {
-                  model: ArtworkImage,
-                  as: 'images',
-                  attributes: ['imageUrl'],
-                  where: { isPrimary: true },
-                  required: false,
-                },
-              ],
+              include: ['images'],
             },
           ],
         },
@@ -161,6 +153,7 @@ export default class RentalOrderService {
     });
     return order?.toJSON() || null;
   }
+  // Returns the furthest end date of ongoing rentals for a given artwork
   async getOngoingRentalByArtworkId(artworkId: number): Promise<RentalOrderDTO | null> {
     const rentalOrderItems = await RentalOrderItem.findAll({
       where: { artworkId },
@@ -180,12 +173,54 @@ export default class RentalOrderService {
       order: [['endDate', 'DESC']],
     });
 
-    // return order with greatest endDate
     if (ongoingOrders.length === 0) {
       return null;
     }
-    let latestOrder = ongoingOrders[0];
-    return latestOrder.toJSON();
+    let furthestEndOrder = ongoingOrders[0];
+    return furthestEndOrder.toJSON();
+  }
+
+  // TODO: Fix
+  async getExtensionFromUserOrder(orderId: number, userId: number) {
+    const order = await this.getOrderDetails(orderId);
+    if (!order) {
+      return null;
+    }
+    const dayAfterEndDate = new Date(order.endDate);
+    dayAfterEndDate.setDate(dayAfterEndDate.getDate() + 1);
+
+    const extensionOrder = await RentalOrder.findOne({
+      where: {
+        userId: userId,
+        startDate: { [Op.eq]: dayAfterEndDate },
+      },
+      include: [
+        {
+          model: RentalOrderItem,
+          as: 'items',
+          include: [
+            {
+              model: Artwork,
+              as: 'artwork',
+              include: ['artist', 'tags', 'style', 'rentalPlans', 'images'],
+            },
+          ],
+        },
+      ],
+    });
+
+    const artworks = order.items.map((item) => item.artwork);
+    // Verify if all artworks in the original order are in the extension order
+    const extensionArtworks = extensionOrder?.items.map((item) => item.artwork);
+    const allArtworksIncluded = artworks.every((artwork) =>
+      extensionArtworks?.some((extArtwork) => extArtwork.id === artwork.id)
+    );
+
+    if (extensionOrder && allArtworksIncluded) {
+      return extensionOrder.toJSON();
+    } else {
+      return null;
+    }
   }
 
   async markOrderAsPending(orderId: number): Promise<void> {

@@ -1,4 +1,4 @@
-import { CheckoutDTO, RentalOrderDTO, RentalOrderCreateDTO } from '@/models/RentalOrder';
+import { CheckoutDTO, RentalOrderDTO, RentalOrderCreateDTO, ExtendRentalOrderDTO } from '@/models/RentalOrder';
 
 export const rentalOrderApi = {
   checkout: async (data: CheckoutDTO): Promise<RentalOrderDTO> => {
@@ -90,5 +90,30 @@ export const rentalOrderApi = {
       window.location.href = url;
     }
     return { success: true };
+  },
+  extend: async (data: ExtendRentalOrderDTO): Promise<{ success: boolean; rentalOrder: RentalOrderDTO }> => {
+    const response = await fetch(`/api/rental-order/${data.id}/extend`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      const resData = await response.json();
+      throw new Error(resData.error || 'Failed to extend rental order');
+    }
+    return await response.json();
+  },
+  hasExtension: async (orderId: number): Promise<boolean> => {
+    const response = await fetch(`/api/rental-order/${orderId}/extend`, {
+      method: 'GET',
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error || 'Failed to check existing extension');
+    }
+    const { existingExtension } = data;
+    return existingExtension;
   },
 };

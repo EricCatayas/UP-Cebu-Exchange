@@ -18,7 +18,7 @@ export default function RentalSummaryCard({
   duration: number;
   startDate: string | Date;
   endDate: string | Date;
-  deliveryMethod: string;
+  deliveryMethod?: string;
   paymentMethod: string;
   total: number;
   customer?: UserDTO;
@@ -41,10 +41,12 @@ export default function RentalSummaryCard({
           <span className="text-gray-600">End Date:</span>
           <span className="font-semibold">{fmtDate(endDate)}</span>
         </div>
-        <div className="flex justify-between">
-          <span className="text-gray-600">Delivery Method:</span>
-          <span className="font-semibold">{deliveryMethod}</span>
-        </div>
+        {deliveryMethod && (
+          <div className="flex justify-between">
+            <span className="text-gray-600">Delivery Method:</span>
+            <span className="font-semibold">{deliveryMethod}</span>
+          </div>
+        )}
         <div className="flex justify-between">
           <span className="text-gray-600">Payment Method:</span>
           <span className="font-semibold">{paymentMethod}</span>
