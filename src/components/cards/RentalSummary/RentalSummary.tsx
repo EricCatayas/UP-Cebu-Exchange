@@ -2,6 +2,7 @@ import { getDimension, getImageUrl, getRentalFee } from '@/lib/artwork';
 import { DELIVERY_FEE } from '@/lib/constants';
 import { fmtDate, fmtMoney } from '@/lib/formatter';
 import { ArtworkDTO } from '@/models/Artwork';
+import { UserDTO } from '@/models/User';
 export default function RentalSummaryCard({
   artworks,
   duration,
@@ -10,6 +11,7 @@ export default function RentalSummaryCard({
   deliveryMethod,
   paymentMethod,
   total,
+  customer,
   children,
 }: {
   artworks: ArtworkDTO[];
@@ -19,6 +21,7 @@ export default function RentalSummaryCard({
   deliveryMethod: string;
   paymentMethod: string;
   total: number;
+  customer?: UserDTO;
   children?: React.ReactNode;
 }) {
   return (
@@ -46,6 +49,12 @@ export default function RentalSummaryCard({
           <span className="text-gray-600">Payment Method:</span>
           <span className="font-semibold">{paymentMethod}</span>
         </div>
+        {customer && (
+          <div className="flex justify-between">
+            <span className="text-gray-600">Customer:</span>
+            <span className="font-semibold">{customer.fullName}</span>
+          </div>
+        )}
 
         <div className="border-t pt-3 mt-3">
           {artworks.length > 0 &&
