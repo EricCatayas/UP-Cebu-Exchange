@@ -20,6 +20,7 @@ function RentalCheckout() {
   const {
     artworks,
     setArtworks,
+    setAddress,
     duration,
     setDuration,
     startDate,
@@ -39,6 +40,10 @@ function RentalCheckout() {
     const selectedArtworks = cartItems.filter((item) => selectedCartItemIds.has(item.id)).map((item) => item.artwork);
     setArtworks(selectedArtworks);
   }, [cartItems, selectedCartItemIds, setArtworks]);
+
+  useEffect(() => {
+    setAddress(address);
+  }, [address, setAddress]);
 
   const router = useRouter();
 
@@ -98,10 +103,6 @@ function RentalCheckout() {
       totalAmount: total,
       addressId: address?.id,
     };
-
-    if (!canCheckout) {
-      alert('Please ensure you have selected artworks and signed the contract before checking out.');
-    }
 
     try {
       const newRentalOrder = await rentalOrderApi.checkout(rentalOrder);

@@ -86,9 +86,9 @@ export async function POST(request: NextRequest) {
       ],
     });
     // Verify if artworks are available for rental
+    const rentalOrderService = new RentalOrderService();
     for (const cartItem of cartItems) {
       if (hasOngoingRental(cartItem.artwork)) {
-        const rentalOrderService = new RentalOrderService();
         const ongoingRental = await rentalOrderService.getOngoingRentalByArtworkId(cartItem.artwork.id);
         if (ongoingRental && startDate < ongoingRental.endDate.toISOString()) {
           return NextResponse.json(

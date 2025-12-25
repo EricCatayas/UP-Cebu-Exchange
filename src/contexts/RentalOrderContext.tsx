@@ -2,12 +2,15 @@
 
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { ArtworkDTO } from '@/models/Artwork';
+import { AddressDTO } from '@/models/Address';
 import { DELIVERY_FEE, DELIVERY_METHOD, PAYMENT_METHOD } from '@/lib/constants';
 import { getRentalFee } from '@/lib/artwork';
 
 interface RentalOrderContextType {
   artworks: ArtworkDTO[];
   setArtworks: (artworks: ArtworkDTO[]) => void;
+  address: AddressDTO | null;
+  setAddress: (address: AddressDTO | null) => void;
   duration: number;
   setDuration: (duration: number) => void;
   startDate: string;
@@ -27,6 +30,7 @@ const RentalOrderContext = createContext<RentalOrderContextType | undefined>(und
 
 export function RentalOrderProvider({ children }: { children: React.ReactNode }) {
   const [artworks, setArtworks] = useState<ArtworkDTO[]>([]);
+  const [address, setAddress] = useState<AddressDTO | null>(null);
   const [duration, setDuration] = useState<number>(12);
   const [startDate, setStartDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [deliveryMethod, setDeliveryMethod] = useState<string>(DELIVERY_METHOD.PICKUP);
@@ -72,6 +76,8 @@ export function RentalOrderProvider({ children }: { children: React.ReactNode })
       value={{
         artworks,
         setArtworks,
+        address,
+        setAddress,
         duration,
         setDuration,
         startDate,
