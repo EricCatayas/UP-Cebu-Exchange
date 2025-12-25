@@ -202,16 +202,33 @@ function RentalCheckout() {
             </div>
           )}
 
-          {/* Delivery Method */}
-          <DeliveryMethodCard
-            onMethodChange={setDeliveryMethod}
-            selectedMethod={deliveryMethod}
-            address={address}
-            onEditAddress={navigateToAddress}
-            onAddAddress={navigateToAddress}
-          />
+          <DeliveryMethodCard onMethodChange={setDeliveryMethod} selectedMethod={deliveryMethod}>
+            <div className="mt-6 pt-4 border-t">
+              <span className="font-semibold text-lg">Customer Address:</span>
+              <div className="mt-2 text-gray-700">
+                {address ? (
+                  <>
+                    <p>{address.addressLine1}</p>
+                    {address.addressLine2 && <p>{address.addressLine2}</p>}
+                    <p>
+                      {address.city}, {address.province}, {address.postalCode}
+                    </p>
+                    <button onClick={navigateToAddress} className="text-blue-600 hover:underline mt-2">
+                      Edit Address
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <p>Address is required</p>
+                    <button onClick={navigateToAddress} className="text-blue-600 hover:underline mt-2">
+                      Add Address
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+          </DeliveryMethodCard>
 
-          {/* Payment Method */}
           <PaymentMethodCard selectedMethod={paymentMethod} onMethodChange={setPaymentMethod} />
         </div>
 
