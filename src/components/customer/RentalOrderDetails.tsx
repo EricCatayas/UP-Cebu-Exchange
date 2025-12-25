@@ -65,6 +65,18 @@ function RentalOrderDetailsWrapper({ order, action }: { order: RentalOrderDTO; a
     );
   };
 
+  const handleExtendOrder = () => {
+    openConfirmation(
+      {
+        title: 'Extend Rental',
+        message: 'You will be redirected to extend your rental order.',
+      },
+      () => {
+        router.push(`/account/rentals/${order.id}/extend`);
+      }
+    );
+  };
+
   useEffect(() => {
     if (action) {
       if (action === 'cancel') {
@@ -83,19 +95,22 @@ function RentalOrderDetailsWrapper({ order, action }: { order: RentalOrderDTO; a
       <RentalOrderDetails order={order} onItemClicked={handleRentalItemClicked} />
 
       <div className="mt-6 flex gap-4">
+        {isPaymentDue(order) && (
+          <button onClick={handlePayNow} className="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+            Pay Now
+          </button>
+        )}
         {isOrderCancelable(order) && (
           <button onClick={handleCancelOrder} className="px-6 py-2 bg-red-600 text-white rounded hover:bg-red-700">
             Cancel Order
           </button>
         )}
+        <button onClick={handleExtendOrder} className="px-6 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700">
+          Extend Rental
+        </button>
         {isOrderReturnable(order) && (
           <button onClick={handleReturnOrder} className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
             Return Items
-          </button>
-        )}
-        {isPaymentDue(order) && (
-          <button onClick={handlePayNow} className="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700">
-            Pay Now
           </button>
         )}
       </div>

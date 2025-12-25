@@ -34,9 +34,6 @@ async function RentalsPage() {
                 <Link href={`/account/rentals/${order.id}`} className="text-blue-600 hover:underline">
                   View Products
                 </Link>
-                <Link href={`/account/rentals/${order.id}?action=extend`} className="text-blue-600 hover:underline">
-                  Extend Plan
-                </Link>
                 {isPaymentDue(order) && (
                   <Link href={`/account/rentals/${order.id}?action=pay`} className="text-blue-600 hover:underline">
                     Pay Now
@@ -47,6 +44,9 @@ async function RentalsPage() {
                     Cancel Order
                   </Link>
                 )}
+                <Link href={`/account/rentals/${order.id}/extend`} className="text-blue-600 hover:underline">
+                  Extend Plan
+                </Link>
                 {isOrderReturnable(order) && (
                   <Link href={`/account/rentals/${order.id}?action=return`} className="text-blue-600 hover:underline">
                     Return Products
