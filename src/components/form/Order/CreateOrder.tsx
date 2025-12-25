@@ -1,4 +1,8 @@
 'use client';
+import DeliveryMethodCard from '@/components/cards/DeliveryMethod/DeliveryMethod';
+import RentalPeriodCard from '@/components/cards/RentalPeriod/RentalPeriod';
+import PaymentMethodCard from '@/components/cards/PaymentMethod/PaymentMethod';
+import RentalSummaryCard from '@/components/cards/RentalSummary/RentalSummary';
 import SetAddressForm from '@/components/form/Address/SetAddress';
 import React, { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
@@ -179,53 +183,13 @@ function CreateOrderForm({ artworks, customers }: { artworks: ArtworkDTO[]; cust
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Left Column */}
       <div className="lg:col-span-2 space-y-6">
-        {/* Rental Period */}
-        <div className="bg-white border-2 border-gray-300 rounded-lg p-6 shadow-sm">
-          <h2 className="text-xl font-bold mb-4">Rental Period</h2>
-
-          <div className="space-y-4">
-            {/* Duration */}
-            <div>
-              <label className="block text-sm font-semibold mb-2">Duration</label>
-              <select
-                value={duration}
-                onChange={(e) => setDuration(Number(e.target.value))}
-                className="w-full md:w-64 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                {DURATION_OPTIONS.map((months) => (
-                  <option key={months} value={months}>
-                    {months} Months
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Start Date */}
-              <div>
-                <label className="block text-sm font-semibold mb-2">Start Date</label>
-                <input
-                  type="date"
-                  value={startDate}
-                  min={new Date().toISOString().split('T')[0]}
-                  onChange={(e) => setStartDate(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-
-              {/* End Date */}
-              <div>
-                <label className="block text-sm font-semibold mb-2">End Date</label>
-                <input
-                  type="date"
-                  value={endDate}
-                  readOnly
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
+        <RentalPeriodCard
+          duration={duration}
+          onDurationChange={setDuration}
+          startDate={startDate}
+          onStartDateChange={setStartDate}
+          endDate={endDate}
+        />
 
         {/* Select Artworks */}
         {artworks.length > 0 ? (
@@ -381,76 +345,20 @@ function CreateOrderForm({ artworks, customers }: { artworks: ArtworkDTO[]; cust
         </div>
 
         {/* Payment Method */}
-        <div className="bg-white border-2 border-gray-300 rounded-lg p-6 shadow-sm">
-          <h2 className="text-xl font-bold mb-4">Payment Method</h2>
-          <div className="flex gap-6">
-            {PAYMENT_METHODS.map((method) => (
-              <label key={method} className="flex items-center space-x-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="paymentMethod"
-                  value={method}
-                  checked={paymentMethod === method}
-                  onChange={() => setPaymentMethod(method)}
-                />
-                <span>{method}</span>
-              </label>
-            ))}
-          </div>
-        </div>
+        <PaymentMethodCard selectedMethod={paymentMethod} onMethodChange={setPaymentMethod} />
       </div>
 
       {/* Right Column - Rental Summary */}
       <div className="lg:col-span-1">
-        <div className="bg-white border-2 border-gray-300 rounded-lg p-6 shadow-sm sticky top-6">
-          <h2 className="text-xl font-bold mb-4">Rental Summary</h2>
-
-          <div className="space-y-3 mb-6">
-            <div className="flex justify-between">
-              <span className="text-gray-600">Duration:</span>
-              <span className="font-semibold">{duration} months</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">Start Date:</span>
-              <span className="font-semibold">{fmtDate(startDate)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">End Date:</span>
-              <span className="font-semibold">{fmtDate(endDate)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">Delivery Method:</span>
-              <span className="font-semibold">{deliveryMethod}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">Payment Method:</span>
-              <span className="font-semibold">{paymentMethod}</span>
-            </div>
-
-            <div className="border-t pt-3 mt-3">
-              {selectedArtworks.map((artwork) => (
-                <div key={artwork.id} className="flex justify-between mb-2">
-                  <span className="text-gray-600">{artwork.title}</span>
-                  <span className="font-semibold">{fmtMoney(getRentalPlanFee(artwork))}</span>
-                </div>
-              ))}
-            </div>
-
-            {deliveryMethod === 'Delivery' && (
-              <div className="flex justify-between">
-                <span className="text-gray-600">Delivery Fee</span>
-                <span className="font-semibold">₱{DELIVERY_FEE}</span>
-              </div>
-            )}
-          </div>
-
-          <div className="border-t pt-4 mb-6">
-            <div className="flex justify-between items-center">
-              <span className="font-bold text-lg">Total Rental Cost</span>
-              <span className="font-bold text-2xl text-primary">₱{total}</span>
-            </div>
-          </div>
-
+        <RentalSummaryCard
+          artworks={selectedArtworks}
+          duration={duration}
+          startDate={startDate}
+          endDate={endDate}
+          deliveryMethod={deliveryMethod}
+          paymentMethod={paymentMethod}
+          total={total}
+        >
           <button
             onClick={handleSubmit}
             className="w-full bg-primary hover:bg-primary-dark disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-lg transition-colors flex items-center justify-center space-x-2"
@@ -458,7 +366,7 @@ function CreateOrderForm({ artworks, customers }: { artworks: ArtworkDTO[]; cust
             <span>Create Order</span>
             <span>→</span>
           </button>
-        </div>
+        </RentalSummaryCard>
       </div>
     </div>
   );
