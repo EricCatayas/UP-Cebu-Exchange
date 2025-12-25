@@ -11,9 +11,17 @@ export default function RentalPeriodCard({
   duration: number;
   onDurationChange: (duration: number) => void;
   startDate: string;
-  onStartDateChange: (date: string) => void;
+  onStartDateChange?: (date: string) => void;
   endDate: string;
 }) {
+  const disableStartDate = onStartDateChange === undefined;
+
+  const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (onStartDateChange) {
+      onStartDateChange(e.target.value);
+    }
+  };
+
   return (
     <div className="bg-white border-2 border-gray-300 rounded-lg p-6 shadow-sm">
       <h2 className="text-xl font-bold mb-4">Rental Period</h2>
@@ -43,8 +51,11 @@ export default function RentalPeriodCard({
               type="date"
               value={startDate}
               min={new Date().toISOString().split('T')[0]}
-              onChange={(e) => onStartDateChange(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={handleStartDateChange}
+              disabled={disableStartDate}
+              className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                disableStartDate ? 'border-gray-200 bg-gray-100 text-gray-500 cursor-not-allowed' : 'border-gray-300'
+              }`}
             />
           </div>
 
