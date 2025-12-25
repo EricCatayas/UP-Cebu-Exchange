@@ -1,11 +1,13 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
-import { useCart } from '@/contexts/CartContext';
+import { ArtworkDTO } from '@/models/Artwork';
 import { DELIVERY_FEE, DELIVERY_METHOD, PAYMENT_METHOD } from '@/lib/constants';
 import { getRentalFee } from '@/lib/artwork';
 
 interface RentalOrderContextType {
+  artworks: ArtworkDTO[];
+  setArtworks: (artworks: ArtworkDTO[]) => void;
   duration: number;
   setDuration: (duration: number) => void;
   startDate: string;
@@ -24,8 +26,7 @@ interface RentalOrderContextType {
 const RentalOrderContext = createContext<RentalOrderContextType | undefined>(undefined);
 
 export function RentalOrderProvider({ children }: { children: React.ReactNode }) {
-  const { cartItems, selectedCartItemIds } = useCart();
-
+  const [artworks, setArtworks] = useState<ArtworkDTO[]>([]);
   const [duration, setDuration] = useState<number>(12);
   const [startDate, setStartDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [deliveryMethod, setDeliveryMethod] = useState<string>(DELIVERY_METHOD.PICKUP);
@@ -54,15 +55,13 @@ export function RentalOrderProvider({ children }: { children: React.ReactNode })
     if (contractSigned) {
       setContractSigned(false);
     }
-  }, [selectedCartItemIds.size]);
+  }, [artworks.length]);
 
   const subtotal = useMemo(() => {
-    return cartItems
-      .filter((item) => selectedCartItemIds.has(item.id))
-      .reduce((sum, item) => {
-        return sum + getRentalFee(item.artwork, duration);
-      }, 0);
-  }, [cartItems, selectedCartItemIds, duration]);
+    return artworks.reduce((sum, artwork) => {
+      return sum + getRentalFee(artwork, duration);
+    }, 0);
+  }, [artworks, duration]);
 
   const total = useMemo(() => {
     return subtotal + (deliveryMethod === DELIVERY_METHOD.DELIVERY ? DELIVERY_FEE : 0);
@@ -71,6 +70,8 @@ export function RentalOrderProvider({ children }: { children: React.ReactNode })
   return (
     <RentalOrderContext.Provider
       value={{
+        artworks,
+        setArtworks,
         duration,
         setDuration,
         startDate,

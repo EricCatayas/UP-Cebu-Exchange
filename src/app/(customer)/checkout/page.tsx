@@ -18,6 +18,8 @@ function RentalCheckout() {
   const { address } = useUserAddress();
 
   const {
+    artworks,
+    setArtworks,
     duration,
     setDuration,
     startDate,
@@ -32,6 +34,11 @@ function RentalCheckout() {
     subtotal,
     total,
   } = useRentalOrder();
+
+  useEffect(() => {
+    const selectedArtworks = cartItems.filter((item) => selectedCartItemIds.has(item.id)).map((item) => item.artwork);
+    setArtworks(selectedArtworks);
+  }, [cartItems, selectedCartItemIds, setArtworks]);
 
   const router = useRouter();
 
@@ -111,7 +118,6 @@ function RentalCheckout() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Rental Period */}
           <RentalPeriodCard
             duration={duration}
             onDurationChange={setDuration}

@@ -4,8 +4,9 @@ import RentalPeriodCard from '@/components/cards/RentalPeriod/RentalPeriod';
 import PaymentMethodCard from '@/components/cards/PaymentMethod/PaymentMethod';
 import RentalSummaryCard from '@/components/cards/RentalSummary/RentalSummary';
 import SetAddressForm from '@/components/form/Address/SetAddress';
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
+import { useRentalOrder } from '@/contexts/RentalOrderContext';
 import { useModal } from '@/contexts/ModalContext';
 import { ArtworkDTO } from '@/models/Artwork';
 import { UserDTO } from '@/models/User';
@@ -13,14 +14,7 @@ import { getDimension, getImageUrl, getRentalFee } from '@/lib/artwork';
 import { fmtDate, fmtMoney } from '@/lib/formatter';
 import { addressApi } from '@/lib/api/address';
 import { rentalOrderApi } from '@/lib/api/rentalOrder';
-import {
-  DURATION_OPTIONS,
-  DELIVERY_FEE,
-  DELIVERY_METHODS,
-  PAYMENT_METHOD,
-  PAYMENT_METHODS,
-  DELIVERY_METHOD,
-} from '@/lib/constants';
+
 import { AddressCreateDTO } from '@/models/Address';
 
 function CreateOrderForm({ artworks, customers }: { artworks: ArtworkDTO[]; customers: UserDTO[] }) {
@@ -32,22 +26,21 @@ function CreateOrderForm({ artworks, customers }: { artworks: ArtworkDTO[]; cust
   const [selectedArtworkIds, setSelectedArtworkIds] = useState<Set<number>>(new Set());
   const [selectedCustomerId, setSelectedCustomerId] = useState<number | null>(null);
   const [useCustomerAddress, setUseCustomerAddress] = useState<boolean>(false);
-  const [duration, setDuration] = useState<number>(12);
-  const [startDate, setStartDate] = useState<string>(new Date().toISOString().split('T')[0]);
-  const [deliveryMethod, setDeliveryMethod] = useState<string>(DELIVERY_METHOD.PICKUP);
-  const [paymentMethod, setPaymentMethod] = useState<string>(PAYMENT_METHOD.CASH);
 
-  const endDate = useMemo(() => {
-    if (!startDate) return '';
-    const date = new Date(startDate);
-    if (duration === 12) {
-      // 364 days for 12 months
-      date.setDate(date.getDate() + 364);
-    } else {
-      date.setMonth(date.getMonth() + duration);
-    }
-    return date.toISOString().split('T')[0];
-  }, [startDate, duration]);
+  const {
+    setArtworks,
+    duration,
+    setDuration,
+    startDate,
+    setStartDate,
+    endDate,
+    deliveryMethod,
+    setDeliveryMethod,
+    paymentMethod,
+    setPaymentMethod,
+    subtotal,
+    total,
+  } = useRentalOrder();
 
   const filteredArtworks = useMemo(() => {
     if (!search.trim()) return artworks;
@@ -70,17 +63,9 @@ function CreateOrderForm({ artworks, customers }: { artworks: ArtworkDTO[]; cust
     return customers.find((customer) => customer.id === selectedCustomerId) || null;
   }, [customers, selectedCustomerId]);
 
-  const subtotal = useMemo(() => {
-    return artworks
-      .filter((artwork) => selectedArtworkIds.has(artwork.id))
-      .reduce((sum, artwork) => {
-        return sum + getRentalFee(artwork, duration);
-      }, 0);
-  }, [artworks, selectedArtworkIds, duration]);
-
-  const total = useMemo(() => {
-    return subtotal + (deliveryMethod === DELIVERY_METHOD.DELIVERY ? DELIVERY_FEE : 0);
-  }, [subtotal, deliveryMethod]);
+  useEffect(() => {
+    setArtworks(selectedArtworks);
+  }, [artworks, selectedArtworkIds, setArtworks]);
 
   const navigateToArtwork = (artworkId: number) => {
     router.push(`/inventory/${artworkId}`);
@@ -334,6 +319,7 @@ function CreateOrderForm({ artworks, customers }: { artworks: ArtworkDTO[]; cust
           deliveryMethod={deliveryMethod}
           paymentMethod={paymentMethod}
           total={total}
+          customer={selectedCustomer}
         >
           <button
             onClick={handleSubmit}
