@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import RentalOrderService from '@/services/RentalOrderService';
-import RentalOrderCard from '@/components/RentalOrderCard/RentalOrderCard';
+import RentalOrderCard from '@/components/cards/RentalOrder/RentalOrder';
 
 async function OrdersPage() {
   const rentalOrderService = new RentalOrderService();
