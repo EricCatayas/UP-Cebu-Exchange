@@ -1,6 +1,7 @@
 'use client';
 import { AddressDTO } from '@/models/Address';
 import React, { useState } from 'react';
+import { addressApi } from '@/lib/api/address';
 
 export default function AddAddressForm({ handleSetAddress }: { handleSetAddress: (address: AddressDTO) => void }) {
   const [city, setCity] = useState('');
@@ -14,20 +15,12 @@ export default function AddAddressForm({ handleSetAddress }: { handleSetAddress:
     e.preventDefault();
     setSubmitting(true);
     try {
-      const res = await fetch('/api/address', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ city, province, postalCode, addressLine1, addressLine2 }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        const newAddress = data.address;
-        handleSetAddress(newAddress);
-      } else {
-        alert(data.error || 'Failed to create address');
-      }
-    } catch (err) {
-      console.error('Error creating address:', err);
+      const address = { city, province, postalCode, addressLine1, addressLine2 };
+      const newAddress = await addressApi.create(address);
+      handleSetAddress(newAddress);
+    } catch (error) {
+      alert(error.message || 'Failed to create address');
+      console.error('Error creating address:', error);
     } finally {
       setSubmitting(false);
     }

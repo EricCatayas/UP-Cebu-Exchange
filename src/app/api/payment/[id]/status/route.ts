@@ -1,7 +1,10 @@
+import RentalOrderService from '@/services/RentalOrderService';
+import { RentalOrder } from '@/models/sequelize';
 import { Payment } from '@/models/sequelize';
 import { getCurrentUser, isAdmin, canEditContent } from '@/lib/auth';
-import { PAYMENT_STATUSES } from '@/lib/constants';
+import { PAYMENT_STATUS, PAYMENT_STATUSES } from '@/lib/constants';
 
+// todo: test
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
   try {
     const currentUser = await getCurrentUser();
@@ -28,8 +31,21 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     if (!payment) {
       return new Response(JSON.stringify({ error: 'Payment not found' }), { status: 404 });
     }
+    const oldStatus = payment.status;
+    if (oldStatus === status) {
+      return new Response(JSON.stringify({ error: 'Payment already has the specified status' }), { status: 400 });
+    }
     payment.status = status;
     await payment.save();
+
+    const rentalOrder = await RentalOrder.findOne({ where: { paymentId: payment.id } });
+    const rentalOrderService = new RentalOrderService();
+    if (status === PAYMENT_STATUS.COMPLETED) {
+      if (rentalOrder) await rentalOrderService.markOrderAsPaid(rentalOrder.id);
+    }
+    if (status === PAYMENT_STATUS.FAILED) {
+      if (rentalOrder) await rentalOrderService.markOrderAsCancelled(rentalOrder.id);
+    }
     return new Response(JSON.stringify({ payment }), { status: 200 });
   } catch (error) {
     console.error('Error updating payment status:', error);

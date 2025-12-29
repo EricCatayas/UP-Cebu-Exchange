@@ -1,13 +1,16 @@
 'use client';
 import Link from 'next/link';
 import HeartIcon from '../HeartIcon/HeartIcon';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { ArtworkDTO } from '@/models/Artwork';
 import { getDimension } from '@/lib/artwork';
+import { artworkApi } from '@/lib/api/artwork';
 import { cartApi } from '@/lib/api/cart';
 import { wishlistApi } from '@/lib/api/wishlist';
+import { hasOngoingRental as hasOngoingRentalOrder } from '@/lib/artwork';
+import { fmtDate } from '@/lib/formatter';
 
 function ArtworkDetails({ artwork }: { artwork: ArtworkDTO }) {
   const router = useRouter();
@@ -16,6 +19,8 @@ function ArtworkDetails({ artwork }: { artwork: ArtworkDTO }) {
   const { user } = useAuth();
   const [inCart, setInCart] = useState(artwork.isInCart);
   const [inWishlist, setInWishlist] = useState(artwork.isInWishlist);
+  const [hasOngoingRental, setHasOngoingRental] = useState(hasOngoingRentalOrder(artwork));
+  const [availableDate, setAvailableDate] = useState<string | null>(null);
 
   const handleNavigateToArtist = () => router.push(`/artists/${artist.id}`);
 
@@ -25,10 +30,16 @@ function ArtworkDetails({ artwork }: { artwork: ArtworkDTO }) {
         alert('You need to be signed in to add item to cart');
         return;
       }
-      await cartApi.addItem(artwork.id);
-      setInCart(true);
+      if (inCart) {
+        await cartApi.removeItem(artwork.id);
+        setInCart(false);
+      } else {
+        await cartApi.addItem(artwork.id);
+        setInCart(true);
+        alert('Artwork added to cart');
+      }
     } catch (error) {
-      console.error('Error adding item to cart:', error);
+      alert('Error toggling cart item:', error.message);
     }
   };
 
@@ -38,12 +49,29 @@ function ArtworkDetails({ artwork }: { artwork: ArtworkDTO }) {
         alert('You need to be signed in to add item to wishlist');
         return;
       }
-      await wishlistApi.addItem(artwork.id);
-      setInWishlist(true);
+      if (inWishlist) {
+        await wishlistApi.removeItem(artwork.id);
+        setInWishlist(false);
+      } else {
+        await wishlistApi.addItem(artwork.id);
+        setInWishlist(true);
+        alert('Artwork added to wishlist');
+      }
     } catch (error) {
-      console.error('Error adding item to wishlist:', error);
+      alert('Error toggling wishlist item:', error.message);
     }
   };
+
+  useEffect(() => {
+    const fetchAvailableDate = async () => {
+      const { availableDate } = await artworkApi.availableDate(artwork.id);
+      setAvailableDate(availableDate);
+    };
+
+    if (hasOngoingRental) {
+      fetchAvailableDate();
+    }
+  }, [artwork]);
 
   return (
     <div>
@@ -153,6 +181,14 @@ function ArtworkDetails({ artwork }: { artwork: ArtworkDTO }) {
           </svg>
           <span>790 have viewed this art piece</span>
         </div>
+        {hasOngoingRental && availableDate && (
+          <div className="flex items-center gap-3">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zm0-13H5V5h14v1z" />
+            </svg>
+            <span>Currently rented. Available from: {fmtDate(availableDate)}</span>
+          </div>
+        )}
       </div>
     </div>
   );

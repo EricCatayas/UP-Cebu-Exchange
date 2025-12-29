@@ -1,3 +1,4 @@
+import { ARTWORK_STATUS } from './constants';
 import { ArtworkDTO } from '@/models/Artwork';
 
 export const getPrimaryImage = (artwork: ArtworkDTO) => {
@@ -11,6 +12,11 @@ export const getImageUrl = (artwork: ArtworkDTO) => {
   return primaryImage ? primaryImage.imageUrl : images[0]?.imageUrl || '';
 };
 
+export const getImageUrls = (artwork: ArtworkDTO): string[] => {
+  const images = artwork.images || [];
+  return images.map((img) => img.imageUrl);
+};
+
 export const getDimension = (artwork: ArtworkDTO) => {
   return `${artwork.heightCm}cm x ${artwork.widthCm}cm`;
 };
@@ -22,4 +28,16 @@ export const getRentalFee = (artwork: ArtworkDTO, duration: number) => {
 
 export const getTagNames = (artwork: ArtworkDTO): string[] => {
   return artwork.tags ? artwork.tags.map((tag) => tag.name) : [];
+};
+
+export const isAvailableForRental = (artwork: ArtworkDTO): boolean => {
+  return artwork.status === ARTWORK_STATUS.AVAILABLE;
+};
+
+export const isUnavailableForRental = (artwork: ArtworkDTO): boolean => {
+  return artwork.status === ARTWORK_STATUS.UNAVAILABLE;
+};
+
+export const hasOngoingRental = (artwork: ArtworkDTO): boolean => {
+  return [ARTWORK_STATUS.RESERVED, ARTWORK_STATUS.RENTED].includes(artwork.status);
 };

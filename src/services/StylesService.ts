@@ -1,7 +1,9 @@
 import { Style } from '@/models/sequelize';
 class StylesService {
-  async getAllStyles() {
-    const styles = await Style.findAll();
+  async getAllStyles(options = {}) {
+    const styles = await Style.findAll({
+      ...options,
+    });
     return styles.map((style) => style.toJSON());
   }
 

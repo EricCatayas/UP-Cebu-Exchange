@@ -1,17 +1,12 @@
 'use client';
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { useCart } from '@/contexts/CartContext';
 import { useRentalOrder } from '@/contexts/RentalOrderContext';
-import { useUserAddress } from '@/contexts/UserAddressContext';
 import { DELIVERY_FEE, DELIVERY_METHOD } from '@/lib/constants';
 import { getDimension, getImageUrl } from '@/lib/artwork';
 
 function RentalAgreement() {
-  const { cartItems } = useCart();
-  const { address } = useUserAddress();
-
-  const { selectedDuration, startDate, endDate, deliveryMethod, paymentMethod, subtotal, total, setContractSigned } =
+  const { artworks, address, duration, startDate, endDate, deliveryMethod, paymentMethod, subtotal, total, setContractSigned } =
     useRentalOrder();
 
   const router = useRouter();
@@ -59,23 +54,19 @@ function RentalAgreement() {
             <p className="text-gray-700 mb-4">The item being rented includes:</p>
 
             <div className="space-y-4">
-              {cartItems.map((item) => (
-                <div key={item.id} className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+              {artworks.map((artwork) => (
+                <div key={artwork.id} className="bg-gray-50 p-4 rounded-lg border border-gray-200">
                   <div className="flex gap-4">
-                    <img
-                      src={getImageUrl(item.artwork)}
-                      alt={item.artwork.title}
-                      className="w-24 h-24 object-cover rounded"
-                    />
+                    <img src={getImageUrl(artwork)} alt={artwork.title} className="w-24 h-24 object-cover rounded" />
                     <div className="flex-1">
                       <p className="text-gray-900 font-medium">
-                        <span className="text-gray-600">Artwork Title:</span> {item.artwork.title}
+                        <span className="text-gray-600">Artwork Title:</span> {artwork.title}
                       </p>
                       <p className="text-gray-700">
-                        <span className="text-gray-600">Artist/Owner:</span> {item.artwork.artist?.name || 'N/A'}
+                        <span className="text-gray-600">Artist:</span> {artwork.artist?.name || 'N/A'}
                       </p>
                       <p className="text-gray-700">
-                        <span className="text-gray-600">Dimension:</span> {getDimension(item.artwork)}
+                        <span className="text-gray-600">Dimension:</span> {getDimension(artwork)}
                       </p>
                     </div>
                   </div>
@@ -104,7 +95,7 @@ function RentalAgreement() {
                 <span className="font-medium">End Date:</span> {endDate}
               </p>
               <p className="text-gray-900">
-                <span className="font-medium">Duration:</span> {selectedDuration} months
+                <span className="font-medium">Duration:</span> {duration} months
               </p>
             </div>
             <p className="text-gray-700 mt-3 leading-relaxed">

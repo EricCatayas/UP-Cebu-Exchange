@@ -1,13 +1,18 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
-import { useCart } from '@/contexts/CartContext';
+import { ArtworkDTO } from '@/models/Artwork';
+import { AddressDTO } from '@/models/Address';
 import { DELIVERY_FEE, DELIVERY_METHOD, PAYMENT_METHOD } from '@/lib/constants';
 import { getRentalFee } from '@/lib/artwork';
 
 interface RentalOrderContextType {
-  selectedDuration: number;
-  setSelectedDuration: (duration: number) => void;
+  artworks: ArtworkDTO[];
+  setArtworks: (artworks: ArtworkDTO[]) => void;
+  address: AddressDTO | null;
+  setAddress: (address: AddressDTO | null) => void;
+  duration: number;
+  setDuration: (duration: number) => void;
   startDate: string;
   endDate: string;
   setStartDate: (date: string) => void;
@@ -24,9 +29,9 @@ interface RentalOrderContextType {
 const RentalOrderContext = createContext<RentalOrderContextType | undefined>(undefined);
 
 export function RentalOrderProvider({ children }: { children: React.ReactNode }) {
-  const { cartItems, selectedCartItemIds } = useCart();
-
-  const [selectedDuration, setSelectedDuration] = useState<number>(12);
+  const [artworks, setArtworks] = useState<ArtworkDTO[]>([]);
+  const [address, setAddress] = useState<AddressDTO | null>(null);
+  const [duration, setDuration] = useState<number>(12);
   const [startDate, setStartDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [deliveryMethod, setDeliveryMethod] = useState<string>(DELIVERY_METHOD.PICKUP);
   const [paymentMethod, setPaymentMethod] = useState<string>(PAYMENT_METHOD.CASH);
@@ -35,42 +40,46 @@ export function RentalOrderProvider({ children }: { children: React.ReactNode })
   const endDate = useMemo(() => {
     if (!startDate) return '';
     const date = new Date(startDate);
-    if (selectedDuration === 12) {
+    if (duration === 12) {
       // 364 days for 12 months
       date.setDate(date.getDate() + 364);
     } else {
-      date.setMonth(date.getMonth() + selectedDuration);
+      date.setMonth(date.getMonth() + duration);
     }
     return date.toISOString().split('T')[0];
-  }, [startDate, selectedDuration]);
+  }, [startDate, duration]);
 
   useEffect(() => {
     if (contractSigned) {
       setContractSigned(false);
     }
-  }, [selectedDuration, startDate, deliveryMethod, paymentMethod]);
+  }, [duration, startDate, deliveryMethod, paymentMethod]);
 
   useEffect(() => {
     if (contractSigned) {
       setContractSigned(false);
     }
-  }, [selectedCartItemIds.size]);
+  }, [artworks.length]);
 
   const subtotal = useMemo(() => {
-    return cartItems
-      .filter((item) => selectedCartItemIds.has(item.id))
-      .reduce((sum, item) => {
-        return sum + getRentalFee(item.artwork, selectedDuration);
-      }, 0);
-  }, [cartItems, selectedCartItemIds, selectedDuration]);
+    return artworks.reduce((sum, artwork) => {
+      return sum + getRentalFee(artwork, duration);
+    }, 0);
+  }, [artworks, duration]);
 
-  const total = subtotal + (deliveryMethod === 'Delivery' ? DELIVERY_FEE : 0);
+  const total = useMemo(() => {
+    return subtotal + (deliveryMethod === DELIVERY_METHOD.DELIVERY ? DELIVERY_FEE : 0);
+  }, [subtotal, deliveryMethod]);
 
   return (
     <RentalOrderContext.Provider
       value={{
-        selectedDuration,
-        setSelectedDuration,
+        artworks,
+        setArtworks,
+        address,
+        setAddress,
+        duration,
+        setDuration,
         startDate,
         endDate,
         setStartDate,

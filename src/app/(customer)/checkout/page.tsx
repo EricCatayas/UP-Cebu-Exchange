@@ -1,22 +1,28 @@
 'use client';
 
+import DeliveryMethodCard from '@/components/cards/DeliveryMethod/DeliveryMethod';
+import RentalPeriodCard from '@/components/cards/RentalPeriod/RentalPeriod';
+import PaymentMethodCard from '@/components/cards/PaymentMethod/PaymentMethod';
+import RentalSummaryCard from '@/components/cards/RentalSummary/RentalSummary';
 import React, { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/contexts/CartContext';
 import { useRentalOrder } from '@/contexts/RentalOrderContext';
 import { useUserAddress } from '@/contexts/UserAddressContext';
-import { AddressDTO } from '@/models/Address';
-import { DURATION_OPTIONS, DELIVERY_FEE, DELIVERY_METHODS, PAYMENT_METHODS, DELIVERY_METHOD } from '@/lib/constants';
 import { getDimension, getImageUrl, getRentalFee } from '@/lib/artwork';
+import { fmtDate, fmtMoney } from '@/lib/formatter';
 import { rentalOrderApi } from '@/lib/api/rentalOrder';
 
-function Checkout() {
+function RentalCheckout() {
   const { cartItems, selectedCartItemIds, toggleCartItem, toggleAllCartItems, removeFromCart } = useCart();
   const { address } = useUserAddress();
 
   const {
-    selectedDuration,
-    setSelectedDuration,
+    artworks,
+    setArtworks,
+    setAddress,
+    duration,
+    setDuration,
     startDate,
     endDate,
     setStartDate,
@@ -30,21 +36,16 @@ function Checkout() {
     total,
   } = useRentalOrder();
 
+  useEffect(() => {
+    const selectedArtworks = cartItems.filter((item) => selectedCartItemIds.has(item.id)).map((item) => item.artwork);
+    setArtworks(selectedArtworks);
+  }, [cartItems, selectedCartItemIds, setArtworks]);
+
+  useEffect(() => {
+    setAddress(address);
+  }, [address, setAddress]);
+
   const router = useRouter();
-
-  const deliveryMethods = DELIVERY_METHODS;
-  const paymentMethods = PAYMENT_METHODS;
-
-  // Format date for display
-  const formatDate = (dateString: string) => {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      month: '2-digit',
-      day: '2-digit',
-      year: 'numeric',
-    });
-  };
 
   const canCheckout = useMemo(() => {
     return selectedCartItemIds.size > 0 && contractSigned;
@@ -53,6 +54,10 @@ function Checkout() {
   const canSignContract = useMemo(() => {
     return selectedCartItemIds.size > 0 && address !== null && address !== undefined;
   }, [selectedCartItemIds, address]);
+
+  const selectedArtworks = useMemo(() => {
+    return cartItems.filter((item) => selectedCartItemIds.has(item.id)).map((item) => item.artwork);
+  }, [cartItems, selectedCartItemIds]);
 
   const navigateToArtwork = (artworkId: number) => {
     router.push(`/artworks/${artworkId}`);
@@ -64,10 +69,6 @@ function Checkout() {
 
   const navigateToAddress = () => {
     router.push('/checkout/address');
-  };
-
-  const getRentalPlanFee = (item: any) => {
-    return getRentalFee(item.artwork, selectedDuration);
   };
 
   const handleRemoveCartItem = async (cartItem: any) => {
@@ -93,7 +94,7 @@ function Checkout() {
 
   const handleCheckout = async () => {
     const rentalOrder = {
-      durationMonths: selectedDuration,
+      durationMonths: duration,
       startDate,
       endDate,
       cartItemIds: Array.from(selectedCartItemIds),
@@ -104,10 +105,10 @@ function Checkout() {
     };
 
     try {
-      const newRentalOrder = await rentalOrderApi.createRentalOrder(rentalOrder);
+      const newRentalOrder = await rentalOrderApi.checkout(rentalOrder);
       router.push(`/checkout/success/${newRentalOrder.id}`);
     } catch (error) {
-      console.error('Error during checkout:', error);
+      alert(`Error during checkout: ${error.message}`);
     }
   };
 
@@ -118,53 +119,13 @@ function Checkout() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Rental Period */}
-          <div className="bg-white border-2 border-gray-300 rounded-lg p-6 shadow-sm">
-            <h2 className="text-xl font-bold mb-4">Rental Period</h2>
-
-            <div className="space-y-4">
-              {/* Duration */}
-              <div>
-                <label className="block text-sm font-semibold mb-2">Duration</label>
-                <select
-                  value={selectedDuration}
-                  onChange={(e) => setSelectedDuration(Number(e.target.value))}
-                  className="w-full md:w-64 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  {DURATION_OPTIONS.map((months) => (
-                    <option key={months} value={months}>
-                      {months} Months
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Start Date */}
-                <div>
-                  <label className="block text-sm font-semibold mb-2">Start Date</label>
-                  <input
-                    type="date"
-                    value={startDate}
-                    min={new Date().toISOString().split('T')[0]}
-                    onChange={(e) => setStartDate(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-
-                {/* End Date */}
-                <div>
-                  <label className="block text-sm font-semibold mb-2">End Date</label>
-                  <input
-                    type="date"
-                    value={endDate}
-                    readOnly
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
+          <RentalPeriodCard
+            duration={duration}
+            onDurationChange={setDuration}
+            startDate={startDate}
+            onStartDateChange={setStartDate}
+            endDate={endDate}
+          />
 
           {/* Select Artworks */}
           {cartItems.length > 0 ? (
@@ -220,7 +181,7 @@ function Checkout() {
                         <p className="text-sm text-gray-600">{getDimension(item.artwork)}</p>
                       </div>
                     </div>
-                    <div className="font-semibold text-lg mr-4">₱{getRentalPlanFee(item)}</div>
+                    <div className="font-semibold text-lg mr-4">{fmtMoney(getRentalFee(item.artwork, duration))}</div>
                     <button onClick={() => handleRemoveCartItem(item)} className="text-red-500 hover:text-red-700">
                       🗑️
                     </button>
@@ -248,31 +209,7 @@ function Checkout() {
             </div>
           )}
 
-          {/* Delivery Method */}
-          <div className="bg-white border-2 border-gray-300 rounded-lg p-6 shadow-sm">
-            <h2 className="text-xl font-bold mb-4">Delivery Method</h2>
-            <div className="flex gap-6">
-              {deliveryMethods.map((method) => (
-                <label key={method} className="flex items-center space-x-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="deliveryMethod"
-                    value={method}
-                    checked={deliveryMethod === method}
-                    onChange={() => setDeliveryMethod(method)}
-                  />
-                  <span>{method}</span>
-                </label>
-              ))}
-            </div>
-            <div className="mt-6 pt-4 border-t">
-              <span className="font-semibold text-lg">Instructions:</span>
-              <p className="text-sm text-gray-600 mt-2">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis animi ullam pariatur tempore natus,
-                eligendi sit in asperiores doloribus. Aliquam obcaecati iure debitis, nemo earum in quisquam fugit
-                corporis minus!
-              </p>
-            </div>
+          <DeliveryMethodCard onMethodChange={setDeliveryMethod} selectedMethod={deliveryMethod}>
             <div className="mt-6 pt-4 border-t">
               <span className="font-semibold text-lg">Customer Address:</span>
               <div className="mt-2 text-gray-700">
@@ -297,81 +234,22 @@ function Checkout() {
                 )}
               </div>
             </div>
-          </div>
+          </DeliveryMethodCard>
 
-          {/* Payment Method */}
-          <div className="bg-white border-2 border-gray-300 rounded-lg p-6 shadow-sm">
-            <h2 className="text-xl font-bold mb-4">Payment Method</h2>
-            <div className="flex gap-6">
-              {paymentMethods.map((method) => (
-                <label key={method} className="flex items-center space-x-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    value={method}
-                    checked={paymentMethod === method}
-                    onChange={() => setPaymentMethod(method)}
-                  />
-                  <span>{method}</span>
-                </label>
-              ))}
-            </div>
-          </div>
+          <PaymentMethodCard selectedMethod={paymentMethod} onMethodChange={setPaymentMethod} />
         </div>
 
         {/* Right Column - Rental Summary */}
         <div className="lg:col-span-1">
-          <div className="bg-white border-2 border-gray-300 rounded-lg p-6 shadow-sm sticky top-6">
-            <h2 className="text-xl font-bold mb-4">Rental Summary</h2>
-
-            <div className="space-y-3 mb-6">
-              <div className="flex justify-between">
-                <span className="text-gray-600">Duration:</span>
-                <span className="font-semibold">{selectedDuration} months</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Start Date:</span>
-                <span className="font-semibold">{formatDate(startDate)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">End Date:</span>
-                <span className="font-semibold">{formatDate(endDate)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Delivery Method:</span>
-                <span className="font-semibold">{deliveryMethod}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Payment Method:</span>
-                <span className="font-semibold">{paymentMethod}</span>
-              </div>
-
-              <div className="border-t pt-3 mt-3">
-                {cartItems
-                  .filter((item) => selectedCartItemIds.has(item.id))
-                  .map((item) => (
-                    <div key={item.id} className="flex justify-between mb-2">
-                      <span className="text-gray-600">{item.artwork.title}</span>
-                      <span className="font-semibold">₱{getRentalPlanFee(item)}</span>
-                    </div>
-                  ))}
-              </div>
-
-              {deliveryMethod === 'Delivery' && (
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Delivery Fee</span>
-                  <span className="font-semibold">₱{DELIVERY_FEE}</span>
-                </div>
-              )}
-            </div>
-
-            <div className="border-t pt-4 mb-6">
-              <div className="flex justify-between items-center">
-                <span className="font-bold text-lg">Total Rental Cost</span>
-                <span className="font-bold text-2xl text-primary">₱{total}</span>
-              </div>
-            </div>
-
+          <RentalSummaryCard
+            artworks={selectedArtworks}
+            duration={duration}
+            startDate={startDate}
+            endDate={endDate}
+            deliveryMethod={deliveryMethod}
+            paymentMethod={paymentMethod}
+            total={total}
+          >
             {contractSigned ? (
               <button
                 onClick={handleCheckout}
@@ -391,11 +269,11 @@ function Checkout() {
                 <span>→</span>
               </button>
             )}
-          </div>
+          </RentalSummaryCard>
         </div>
       </div>
     </div>
   );
 }
 
-export default Checkout;
+export default RentalCheckout;

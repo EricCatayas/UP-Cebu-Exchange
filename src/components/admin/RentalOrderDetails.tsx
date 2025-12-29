@@ -1,17 +1,19 @@
 'use client';
 import RentalOrderDetails from '@/components/RentalOrderDetails/RentalOrderDetails';
 import { useState, useEffect } from 'react';
-import { ORDER_STATUSES, PAYMENT_STATUSES } from '@/lib/constants';
+import { ORDER_STATUS, ORDER_STATUSES, PAYMENT_STATUS, PAYMENT_STATUSES } from '@/lib/constants';
 import { rentalOrderApi } from '@/lib/api/rentalOrder';
 import { paymentApi } from '@/lib/api/payment';
 import { redirect } from 'next/navigation';
 import { RentalOrderDTO } from '@/models/RentalOrder';
+import { useModal } from '@/contexts/ModalContext';
 import { getImageUrl } from '@/lib/artwork';
 
 export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrderDTO }) {
   const [orderStatus, setOrderStatus] = useState(order.status || '');
   const [paymentStatus, setPaymentStatus] = useState(order.payment.status || '');
   const [hasEdited, setHasEdited] = useState(false);
+  const { openConfirmation } = useModal();
 
   const handleSelectStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newStatus = e.target.value;
@@ -21,6 +23,10 @@ export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrde
       console.error('Failed to update order status:', error);
     }
   };
+
+  function navigateToInventoryDetails(item) {
+    redirect(`/inventory/${item.artwork.id}`);
+  }
 
   const handleSelectPaymentStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newStatus = e.target.value;
@@ -34,18 +40,81 @@ export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrde
   const handleSaveChanges = async () => {
     try {
       if (!order || !hasEdited) return;
-      const updatedOrder = await rentalOrderApi.updateRentalOrderStatus(order.id, orderStatus);
-      const updatedPayment = await paymentApi.updateStatus(order.payment.id, paymentStatus);
+      let message = `Are you sure you want to update the order status to "${orderStatus}" and payment status to "${paymentStatus}"?`;
+      // todo: validate status transitions
+      if (orderStatus === ORDER_STATUS.PENDING && order.status !== ORDER_STATUS.PENDING) {
+        message = 'Warning: Changing the order status to "PENDING" will mark the items as available in inventory.';
+      }
+      if (orderStatus === ORDER_STATUS.RESERVED && order.status !== ORDER_STATUS.RESERVED) {
+        message = 'Warning: Changing the order status to "RESERVED" will mark the items as reserved in inventory.';
+      }
+      if (orderStatus === ORDER_STATUS.TORECEIVE && order.status !== ORDER_STATUS.TORECEIVE) {
+        message = 'Warning: Changing the order status to "TO RECEIVE" will mark the items as reserved in inventory.';
+      }
+      if (orderStatus === ORDER_STATUS.ONGOING && order.status !== ORDER_STATUS.ONGOING) {
+        message = 'Warning: Changing the order status to "ONGOING" will mark the items as rented.';
+      }
+      if (orderStatus === ORDER_STATUS.TORETURN && order.status !== ORDER_STATUS.TORETURN) {
+        message = 'Warning: Changing the order status to "TO RETURN" will mark the items as rented.';
+      }
+      if (orderStatus === ORDER_STATUS.COMPLETED && order.status !== ORDER_STATUS.COMPLETED) {
+        message = 'Warning: Changing the order status to "COMPLETED" will mark the items as available in inventory.';
+      }
+      if (orderStatus === ORDER_STATUS.CANCELLED && order.status !== ORDER_STATUS.CANCELLED) {
+        message = 'Warning: Changing the order status to "CANCELLED" will mark the items as available in inventory.';
+      }
+      if (paymentStatus === PAYMENT_STATUS.COMPLETED && order.payment.status !== PAYMENT_STATUS.COMPLETED) {
+        message =
+          'Warning: Changing the payment status to "COMPLETED" will mark the order and items as reserved in inventory.';
+      }
+      if (paymentStatus === PAYMENT_STATUS.FAILED && order.payment.status !== PAYMENT_STATUS.FAILED) {
+        message =
+          'Warning: Changing the payment status to "FAILED" will mark the order as "CANCELLED" and will mark the items as available in inventory.';
+      }
 
-      alert(`Order has been updated`);
+      openConfirmation(
+        {
+          title: 'Confirm Status Update',
+          message: message,
+        },
+        async () => {
+          try {
+            if (order.status !== orderStatus) {
+              const updatedOrder = await rentalOrderApi.updateStatus(order.id, orderStatus);
+            }
+            if (order.payment.status !== paymentStatus) {
+              const updatedPayment = await paymentApi.updateStatus(order.payment.id, paymentStatus);
+            }
+            // page refresh to reflect changes
+            alert(`Order has been updated`);
+            redirect('/orders');
+          } catch (error) {
+            console.error('Failed to update statuses:', error);
+          }
+        }
+      );
     } catch (error) {
       console.error('Failed to update order status:', error);
     }
   };
 
-  function handleRentalItemClick(item) {
-    redirect(`/inventory/${item.artwork.id}`);
-  }
+  const handleDeleteOrder = async () => {
+    openConfirmation(
+      {
+        title: 'Confirm Delete',
+        message: 'Are you sure you want to delete this order?',
+      },
+      async () => {
+        try {
+          await rentalOrderApi.delete(order.id);
+          alert('Order has been deleted');
+          redirect('/orders');
+        } catch (error) {
+          alert('Failed to delete order:', error.message);
+        }
+      }
+    );
+  };
 
   useEffect(() => {
     if (orderStatus !== order.status || paymentStatus !== order.payment.status) {
@@ -58,7 +127,7 @@ export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrde
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">Rental Order Details</h1>
-      <RentalOrderDetails order={order} onItemClicked={handleRentalItemClick} />
+      <RentalOrderDetails order={order} onItemClicked={navigateToInventoryDetails} />
       <div className="mt-6">
         <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-2">
           Update Status
@@ -90,12 +159,19 @@ export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrde
             </option>
           ))}
         </select>
+        {hasEdited && (
+          <button
+            onClick={handleSaveChanges}
+            className="ml-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+          >
+            Save Changes
+          </button>
+        )}
         <button
-          onClick={handleSaveChanges}
-          disabled={!hasEdited}
-          className="ml-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+          onClick={handleDeleteOrder}
+          className="ml-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
         >
-          Save Changes
+          Delete Order
         </button>
       </div>
     </div>

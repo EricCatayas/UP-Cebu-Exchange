@@ -2,9 +2,14 @@
 
 import React, { createContext, useContext, useState, useCallback } from 'react';
 
+interface ModalContent {
+  title: string;
+  message: string;
+}
+
 export interface ModalState {
   isOpen: boolean;
-  message: string;
+  content: ModalContent | null;
   confirmation: boolean;
   onConfirm?: () => void;
   onCancel?: () => void;
@@ -12,8 +17,8 @@ export interface ModalState {
 
 interface ModalContextType {
   modal: ModalState;
-  openModal: (message: string) => void;
-  openConfirmation: (message: string, onConfirm: () => void, onCancel?: () => void) => void;
+  openModal: (content: ModalContent) => void;
+  openConfirmation: (content: ModalContent, onConfirm: () => void, onCancel?: () => void) => void;
   closeModal: () => void;
 }
 
@@ -22,22 +27,22 @@ const ModalContext = createContext<ModalContextType | undefined>(undefined);
 export function ModalProvider({ children }: { children: React.ReactNode }) {
   const [modal, setModal] = useState<ModalState>({
     isOpen: false,
-    message: '',
+    content: null,
     confirmation: false,
   });
 
-  const openModal = useCallback((message: string) => {
+  const openModal = useCallback((content: ModalContent) => {
     setModal({
       isOpen: true,
-      message,
+      content,
       confirmation: false,
     });
   }, []);
 
-  const openConfirmation = useCallback((message: string, onConfirm: () => void, onCancel?: () => void) => {
+  const openConfirmation = useCallback((content: ModalContent, onConfirm: () => void, onCancel?: () => void) => {
     setModal({
       isOpen: true,
-      message,
+      content,
       confirmation: true,
       onConfirm,
       onCancel,

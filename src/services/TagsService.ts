@@ -1,8 +1,10 @@
 import { Artwork, ArtworkTag, Tag } from '@/models/sequelize';
 
 class TagsService {
-  async getAllTags() {
-    const tags = await Tag.findAll();
+  async getAllTags(options = {}) {
+    const tags = await Tag.findAll({
+      ...options,
+    });
     return tags.map((tag) => tag.toJSON());
   }
   async getArtworksByTag(tagId: number, options = {}) {

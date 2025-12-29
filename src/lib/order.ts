@@ -30,7 +30,11 @@ export function getOrderStatus(order: RentalOrderDTO): string {
   }
 
   // Todo: auto update status based on date and condition. Then remove these lines later.
-  if (today < endDate && order.payment.status === PAYMENT_STATUS.COMPLETED && order.status === ORDER_STATUS.RESERVED) {
+  if (
+    today >= startDate &&
+    order.payment.status === PAYMENT_STATUS.COMPLETED &&
+    order.status === ORDER_STATUS.RESERVED
+  ) {
     return ORDER_STATUS.TORECEIVE;
   }
 

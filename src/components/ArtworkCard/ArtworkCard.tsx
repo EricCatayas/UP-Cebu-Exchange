@@ -7,6 +7,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { getDimension, getImageUrl } from '@/lib/artwork';
 import { cartApi } from '@/lib/api/cart';
 import { wishlistApi } from '@/lib/api/wishlist';
+import { ARTWORK_STATUS } from '@/lib/constants';
 import './ArtworkCard.css';
 
 export default function ArtworkCard({ artwork, displayInfo = true }: { artwork: any; displayInfo?: boolean }) {
@@ -37,9 +38,10 @@ export default function ArtworkCard({ artwork, displayInfo = true }: { artwork: 
       } else {
         await cartApi.addItem(artwork.id);
         setInCart(true);
+        alert('Artwork added to cart');
       }
     } catch (error) {
-      console.error('Error toggling cart item:', error);
+      alert('Error toggling cart item:', error);
     }
   };
 
@@ -55,16 +57,18 @@ export default function ArtworkCard({ artwork, displayInfo = true }: { artwork: 
       } else {
         await wishlistApi.addItem(artwork.id);
         setInWishlist(true);
+        alert('Artwork added to wishlist');
       }
     } catch (error) {
-      console.error('Error toggling wishlist item:', error);
+      alert('Error toggling wishlist item:', error.message);
     }
   };
 
   return (
     <div className={`artwork-card status-${artwork.status}`}>
-      {artwork.status === 'rented' && <div className="ribbon">Rented</div>}
       <button type="button" className="image-wrapper" onClick={NavigateToArtwork} aria-label={`View ${artwork.title}`}>
+        {artwork.status === ARTWORK_STATUS.RESERVED && <div className="badge badge-reserved">Reserved</div>}
+        {artwork.status === ARTWORK_STATUS.RENTED && <div className="badge badge-rented">Rented</div>}
         <img src={primaryImageUrl} alt={artwork.title} loading="lazy" />
       </button>
       {displayInfo && (

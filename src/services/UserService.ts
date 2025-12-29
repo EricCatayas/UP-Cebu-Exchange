@@ -7,16 +7,20 @@ class UserService {
     if (!user) return null;
     const userJson = user.toJSON() as any;
     return {
-      id: user.id,
-      email: user.email,
-      fullName: user.fullName,
-      phoneNumber: user.phoneNumber,
-      status: user.status,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-      roleId: user.roleId,
+      id: userJson.id,
+      email: userJson.email,
+      fullName: userJson.fullName,
+      phoneNumber: userJson.phoneNumber,
+      status: userJson.status,
+      createdAt: userJson.createdAt,
+      updatedAt: userJson.updatedAt,
+      roleId: userJson.roleId,
       role: userJson.role,
     };
+  }
+
+  async getCustomers(): Promise<UserDTO[]> {
+    return this.getUsersByRole('customer');
   }
 
   async getUsersByRole(role: string): Promise<UserDTO[]> {
@@ -34,7 +38,7 @@ class UserService {
         createdAt: userJson.createdAt,
         updatedAt: userJson.updatedAt,
         roleId: userJson.roleId,
-        role: roleRecord,
+        role: roleRecord.toJSON(),
       };
     });
   }

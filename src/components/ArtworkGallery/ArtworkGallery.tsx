@@ -1,31 +1,33 @@
-"use client";
-import React from "react";
+'use client';
+import React from 'react';
+import { ARTWORK_STATUS } from '@/lib/constants';
+
 const ArtworkGallery = ({ artwork }: { artwork: any }) => {
   const [currentImageIndex, setCurrentImageIndex] = React.useState(
     artwork.images?.findIndex((img) => img.isPrimary) || 0
   );
 
   const handlePrevious = () => {
-    setCurrentImageIndex((prev) =>
-      prev > 0 ? prev - 1 : artwork.images.length - 1
-    );
+    setCurrentImageIndex((prev) => (prev > 0 ? prev - 1 : artwork.images.length - 1));
   };
 
   const handleNext = () => {
-    setCurrentImageIndex((prev) =>
-      prev < artwork.images.length - 1 ? prev + 1 : 0
-    );
+    setCurrentImageIndex((prev) => (prev < artwork.images.length - 1 ? prev + 1 : 0));
   };
 
   return (
     <div>
       {/* Main Image */}
       <div className="bg-gray-100 mb-4 rounded-lg overflow-hidden">
-        <img
-          src={artwork.images[currentImageIndex]?.imageUrl}
-          alt={artwork.title}
-          className="w-full h-auto object-contain"
-        />
+        <div className="image-wrapper">
+          {artwork.status === ARTWORK_STATUS.RESERVED && <div className="badge badge-reserved">Reserved</div>}
+          {artwork.status === ARTWORK_STATUS.RENTED && <div className="badge badge-rented">Rented</div>}
+          <img
+            src={artwork.images[currentImageIndex]?.imageUrl}
+            alt={artwork.title}
+            className="w-full h-auto object-contain"
+          />
+        </div>
       </div>
 
       {/* Thumbnail Navigation */}
@@ -35,14 +37,7 @@ const ArtworkGallery = ({ artwork }: { artwork: any }) => {
           className="p-2 hover:bg-gray-100 rounded-full transition"
           aria-label="Previous image"
         >
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M15 18l-6-6 6-6" />
           </svg>
         </button>
@@ -53,9 +48,7 @@ const ArtworkGallery = ({ artwork }: { artwork: any }) => {
               key={index}
               onClick={() => setCurrentImageIndex(index)}
               className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition ${
-                currentImageIndex === index
-                  ? "border-blue-500"
-                  : "border-gray-200 hover:border-gray-400"
+                currentImageIndex === index ? 'border-blue-500' : 'border-gray-200 hover:border-gray-400'
               }`}
             >
               <img
@@ -67,19 +60,8 @@ const ArtworkGallery = ({ artwork }: { artwork: any }) => {
           ))}
         </div>
 
-        <button
-          onClick={handleNext}
-          className="p-2 hover:bg-gray-100 rounded-full transition"
-          aria-label="Next image"
-        >
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
+        <button onClick={handleNext} className="p-2 hover:bg-gray-100 rounded-full transition" aria-label="Next image">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M9 18l6-6-6-6" />
           </svg>
         </button>

@@ -23,6 +23,7 @@ const publicRoutes = [
   '/api/auth/session',
   '/api/auth/verify-email',
   '/api/auth/resend-verification',
+  '/api/webhooks',
 ];
 
 const adminRoutes = [

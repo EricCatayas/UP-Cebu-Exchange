@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import AnnualDateRange from '@/components/AnnualDateRange/AnnualDateRange';
 import PageHeader from '@/components/PageHeader/PageHeader';
-import RentalOrderCard from '@/components/RentalOrderCard/RentalOrderCard';
+import RentalOrderCard from '@/components/cards/RentalOrder/RentalOrder';
 import RentalOrderService from '@/services/RentalOrderService';
 import { OrderDateRange } from '@/types/OrderDateRange';
 import { getDaysRemaining, isOrderCancelable, isOrderReturnable, isPaymentDue } from '@/lib/order';
@@ -29,16 +29,13 @@ async function RentalsPage() {
 
         <div className="mt-10 mb-10 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {rentalOrders.map((order) => (
-            <RentalOrderCard order={order}>
+            <RentalOrderCard key={order.id} order={order}>
               <>
                 <Link href={`/account/rentals/${order.id}`} className="text-blue-600 hover:underline">
                   View Products
                 </Link>
-                <Link href={`/account/rentals/${order.id}?action=extend`} className="text-blue-600 hover:underline">
-                  Extend Plan
-                </Link>
                 {isPaymentDue(order) && (
-                  <Link href={`/account/rentals/${order.id}/payment`} className="text-blue-600 hover:underline">
+                  <Link href={`/account/rentals/${order.id}?action=pay`} className="text-blue-600 hover:underline">
                     Pay Now
                   </Link>
                 )}
@@ -47,6 +44,9 @@ async function RentalsPage() {
                     Cancel Order
                   </Link>
                 )}
+                <Link href={`/account/rentals/${order.id}/extend`} className="text-blue-600 hover:underline">
+                  Extend Plan
+                </Link>
                 {isOrderReturnable(order) && (
                   <Link href={`/account/rentals/${order.id}?action=return`} className="text-blue-600 hover:underline">
                     Return Products

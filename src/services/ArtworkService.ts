@@ -1,6 +1,7 @@
 import ArtworkRepository from '@/repositories/ArtworkRepository';
 import ArtistService from './ArtistService';
 import TagsService from '@/services/TagsService';
+import StylesService from '@/services/StylesService';
 import WishlistService from '@/services/WishlistService';
 import { Op } from 'sequelize';
 import {
@@ -14,6 +15,7 @@ import {
   Tag,
   Style,
   RentalPlan,
+  ArtworkTag,
 } from '@/models/sequelize';
 import { ArtworkDTO, PaginatedArtworks } from '@/models/Artwork';
 import { similarityScore } from '@/lib/recommendations';
@@ -47,21 +49,43 @@ class ArtworkService {
     let options = {};
     const offset = (page - 1) * limit;
     const where: any = {
-      status: [ARTWORK_STATUS.AVAILABLE, ARTWORK_STATUS.RENTED],
+      status: { [Op.in]: [ARTWORK_STATUS.AVAILABLE, ARTWORK_STATUS.RESERVED, ARTWORK_STATUS.RENTED] },
     };
     let order: any = [];
 
     if (search) {
-      const artistMatches = await ArtistService.getAllArtists({
-        where: { name: { [Op.like]: `%${search}%` } },
-      });
+      const [artistMatches, tagMatches, styleMatches] = await Promise.all([
+        ArtistService.getAllArtists({
+          where: { name: { [Op.like]: `%${search}%` } },
+        }),
+        TagsService.getAllTags({
+          where: { name: { [Op.like]: `%${search}%` } },
+        }),
+        StylesService.getAllStyles({
+          where: { name: { [Op.like]: `%${search}%` } },
+        }),
+      ]);
       const artistIds = artistMatches.map((artist) => artist.id);
+      const styleIds = styleMatches.map((style) => style.id);
+      const tagIds = tagMatches.map((tag) => tag.id);
 
       where[Op.or] = [
         { title: { [Op.like]: `%${search}%` } },
         { description: { [Op.like]: `%${search}%` } },
         ...(artistIds.length > 0 ? [{ artistId: { [Op.in]: artistIds } }] : []),
-        // { '$artist.name$': { [Op.like]: `%${search}%` } }, // Todo: Unknown column 'artist.name' in 'where clause'
+        ...(styleIds.length > 0 ? [{ styleId: { [Op.in]: styleIds } }] : []),
+        ...(tagIds.length > 0
+          ? [
+              {
+                id: {
+                  [Op.in]: ArtworkTag.findAll({
+                    attributes: ['artworkId'],
+                    where: { tagId: { [Op.in]: tagIds } },
+                  }).then((artworkTags) => artworkTags.map((at) => at.artworkId)),
+                },
+              },
+            ]
+          : []),
       ];
     }
     if (styles && styles.length > 0) {

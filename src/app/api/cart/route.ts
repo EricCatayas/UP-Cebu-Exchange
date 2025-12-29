@@ -1,5 +1,5 @@
 import CartService from '@/services/CartService';
-import { getCurrentUser } from '@/lib/auth';
+import { getCurrentUser, isCustomer } from '@/lib/auth';
 
 export async function GET(request: Request) {
   try {
@@ -7,6 +7,9 @@ export async function GET(request: Request) {
 
     if (!currentUser) {
       return new Response(JSON.stringify({ error: 'Authentication required' }), { status: 401 });
+    }
+    if (!isCustomer(currentUser)) {
+      return new Response(JSON.stringify({ error: 'Customer access required' }), { status: 403 });
     }
 
     const cartItems = await CartService.getCartItems(currentUser.userId);
@@ -23,6 +26,9 @@ export async function POST(request: Request) {
     const currentUser = await getCurrentUser();
     if (!currentUser) {
       return new Response(JSON.stringify({ error: 'Authentication required' }), { status: 401 });
+    }
+    if (!isCustomer(currentUser)) {
+      return new Response(JSON.stringify({ error: 'Customer access required' }), { status: 403 });
     }
     const { artworkId } = await request.json();
 
@@ -46,6 +52,10 @@ export async function DELETE(request: Request) {
     if (!currentUser) {
       return new Response(JSON.stringify({ error: 'Authentication required' }), { status: 401 });
     }
+    if (!isCustomer(currentUser)) {
+      return new Response(JSON.stringify({ error: 'Customer access required' }), { status: 403 });
+    }
+
     const { artworkId } = await request.json();
     if (!artworkId || isNaN(Number(artworkId))) {
       return new Response(JSON.stringify({ error: 'Valid artworkId is required' }), { status: 400 });

@@ -1,5 +1,6 @@
 export const APP_NAME = 'UP Cebu Exchange';
 export const APP_EMAIL = process.env.APP_EMAIL;
+export const APP_SUPPORT_EMAIL = 'support@upcebu.exchange'; // todo
 
 export enum ARTWORK_MEDIUM {
   OIL_ON_CANVAS = 'Oil on canvas',
@@ -42,6 +43,7 @@ export const DELIVERY_FEE = 50;
 export enum DELIVERY_METHOD {
   DELIVERY = 'Delivery',
   PICKUP = 'Pickup',
+  NONE = 'None',
 }
 
 export const DELIVERY_METHODS = [DELIVERY_METHOD.DELIVERY, DELIVERY_METHOD.PICKUP];
@@ -90,11 +92,11 @@ export const PAYMENT_STATUSES = [PAYMENT_STATUS.PENDING, PAYMENT_STATUS.COMPLETE
 
 export enum PAYMENT_METHOD {
   CASH = 'Cash',
-  CREDIT_CARD = 'Credit Card',
+  ONLINE = 'Online',
   BANK_TRANSFER = 'Bank Transfer',
 }
 
-export const PAYMENT_METHODS = [PAYMENT_METHOD.CASH, PAYMENT_METHOD.CREDIT_CARD, PAYMENT_METHOD.BANK_TRANSFER];
+export const PAYMENT_METHODS = [PAYMENT_METHOD.CASH, PAYMENT_METHOD.ONLINE, PAYMENT_METHOD.BANK_TRANSFER];
 
 export const PAGE_SIZE = 12;
 

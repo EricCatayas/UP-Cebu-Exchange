@@ -26,6 +26,9 @@ NEXTAUTH_SECRET=your-secret-key-here
 NEXTAUTH_URL=http://localhost:3000
 MAILJET_API_KEY=mailjet-api-key
 MAILJET_API_SECRET=mailjet-api-secret
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=stripe-publishable-key
+STRIPE_SECRET_KEY=stripe-secret-key
+STRIPE_WEBHOOK_SECRET=stripe-webhook-signing-secret
 ```
 
 Create the database in MySQL
@@ -57,6 +60,19 @@ npm run dev
 
 customer: user1@test.com, password: user123
 admin: admin@test.com, password: admin123
+
+## Test Stripe Payment Local Development
+
+Install Stripe CLI, then run command:
+
+```bash
+stripe login
+stripe listen --forward-to localhost:3000/api/webhooks/stripe
+```
+
+Copy webhook signing secret, set env variable STRIPE_WEBHOOK_SECRET
+
+## Development Phase
 
 Phase 1: Database & Authentication
 Phase 2: Core Backend APIs
