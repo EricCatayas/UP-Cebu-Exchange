@@ -1,5 +1,5 @@
-import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '@/config/database';
+import { DataTypes, Model, Optional } from 'sequelize';
 import { ArtworkAttributes } from '@/models/Artwork';
 import { ARTWORK_STATUS } from '@/lib/constants';
 
