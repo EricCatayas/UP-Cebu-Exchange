@@ -1,4 +1,3 @@
-// ...existing code...
 import { NextRequest, NextResponse } from 'next/server';
 import { isAdmin, verifyToken } from '@/lib/auth';
 
@@ -105,4 +104,3 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: ['/((?!api/auth|_next/static|_next/image|favicon.ico).*)'],
 };
-// ...existing code...

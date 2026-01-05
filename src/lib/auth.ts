@@ -1,6 +1,5 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import crypto from 'crypto';
 import { cookies } from 'next/headers';
 import { jwtVerify } from 'jose';
 import { JWTPayload, User } from '@/types/auth';
@@ -24,7 +23,9 @@ export const generateAuthToken = (payload: Omit<JWTPayload, 'exp'>, rememberMe: 
 };
 
 export const generateToken = (): string => {
-  return crypto.randomBytes(32).toString('hex');
+  const array = new Uint8Array(32);
+  crypto.getRandomValues(array);
+  return Array.from(array, (byte) => byte.toString(16).padStart(2, '0')).join('');
 };
 
 // export const verifyToken = (token: string): JWTPayload | null => {
