@@ -55,6 +55,8 @@ export async function getSession(sessionId: string): Promise<JWTPayload | null> 
     ],
   });
 
+  console.log('getSession - Session:', session);
+
   if (!session || !session.userId) {
     return null;
   }

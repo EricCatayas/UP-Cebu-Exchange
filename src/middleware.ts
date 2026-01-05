@@ -1,6 +1,7 @@
 // ...existing code...
 import { NextRequest, NextResponse } from 'next/server';
-import { isAdmin, verifyToken } from '@/lib/auth';
+import { isAdmin } from '@/lib/auth';
+import { getSessionCookie, getSession } from '@/lib/session';
 
 const publicRoutes = [
   '/',
@@ -68,15 +69,17 @@ export async function middleware(request: NextRequest) {
   const isPublicRoute = publicRoutes.some((route) => pathname === route || pathname.startsWith(route + '/'));
   if (isPublicRoute) return NextResponse.next();
 
-  const token = request.cookies.get('auth-token')?.value;
-  if (!token) {
+  const sessionId = await getSessionCookie();
+
+  console.log('Middleware - Session ID:', sessionId);
+  if (!sessionId) {
     if (isApiRoute(pathname)) {
       return NextResponse.json({ error: 'Unauthorized', message: 'Authentication required' }, { status: 401 });
     }
     return redirectToLogin(request, pathname);
   }
 
-  const user = await verifyToken(token);
+  const user = await getSession(sessionId);
 
   if (!user) {
     if (isApiRoute(pathname)) {

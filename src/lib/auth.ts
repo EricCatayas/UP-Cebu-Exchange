@@ -4,6 +4,7 @@ import crypto from 'crypto';
 import { cookies } from 'next/headers';
 import { jwtVerify } from 'jose';
 import { JWTPayload, User } from '@/types/auth';
+import { getCurrentSession } from '@/lib/session';
 import { ADMIN_ROLES, ADMIN_EDITOR_ROLES, USER_ROLE } from './constants';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-key';
@@ -78,11 +79,16 @@ export const getAuthToken = async (): Promise<string | null> => {
   return token?.value || null;
 };
 
-export const getCurrentUser = async (): Promise<JWTPayload | null> => {
-  const token = await getAuthToken();
-  if (!token) return null;
+// export const getCurrentUser = async (): Promise<JWTPayload | null> => {
+//   const token = await getAuthToken();
+//   if (!token) return null;
 
-  return verifyToken(token);
+//   return verifyToken(token);
+// };
+
+// Get current user from session
+export const getCurrentUser = async (): Promise<JWTPayload | null> => {
+  return await getCurrentSession();
 };
 
 export const isAdmin = (user: JWTPayload | User | null): boolean => {

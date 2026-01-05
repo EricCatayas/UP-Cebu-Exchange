@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { User, Role } from '@/models/sequelize';
 import { isAdmin, verifyPassword, generateAuthToken, setAuthCookie } from '@/lib/auth';
+import { createSession } from '@/lib/session';
 import { ERROR_MESSAGE } from '@/lib/constants';
 
 export async function POST(request: NextRequest) {
@@ -41,7 +42,7 @@ export async function POST(request: NextRequest) {
 
     const roleName = (user as any).role.name;
 
-    // Generate JWT token
+    // Generate JWT token for middleware
     const token = generateAuthToken(
       {
         userId: user.id,
@@ -52,8 +53,11 @@ export async function POST(request: NextRequest) {
       remember
     );
 
-    // Set auth cookie
+    // Set JWT cookie (for middleware)
     await setAuthCookie(token, remember);
+
+    // Create session in database (for API routes and tracking)
+    await createSession(user.id, remember);
 
     let callbackUrl = '/';
 

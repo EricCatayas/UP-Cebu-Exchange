@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getCurrentUser } from '@/lib/auth';
+import { getCurrentSession } from '@/lib/session';
 
-// TODO: Test API
 export async function GET(request: NextRequest) {
   try {
-    const user = await getCurrentUser();
+    // const user = await getCurrentUser();
+    const user = await getCurrentSession();
 
     if (!user) {
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
