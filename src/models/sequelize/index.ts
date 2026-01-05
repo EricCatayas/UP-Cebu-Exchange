@@ -14,6 +14,7 @@ import RentalOrderItem from './RentalOrderItem';
 import RentalPlan from './RentalPlan';
 import Role from './Role';
 import Style from './Style';
+import Session from './Session';
 import Tag from './Tag';
 import User from './User';
 import UserAddress from './UserAddress';
@@ -235,6 +236,12 @@ const initializeAssociations = () => {
     foreignKey: 'userId',
     as: 'user',
   });
+
+  // Session belongs to User
+  Session.belongsTo(User, {
+    foreignKey: 'userId',
+    as: 'user',
+  });
 };
 
 // Initialize associations
@@ -255,6 +262,7 @@ export {
   RentalOrderItem,
   RentalPlan,
   Role,
+  Session,
   Style,
   Tag,
   User,
@@ -279,6 +287,7 @@ export default {
   RentalOrderItem,
   RentalPlan,
   Role,
+  Session,
   Style,
   Tag,
   User,
