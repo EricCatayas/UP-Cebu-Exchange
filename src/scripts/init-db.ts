@@ -46,4 +46,4 @@ if (require.main === module) {
     });
 }
 
-export { initializeDatabase, seedDefaultRoles };
+export { initializeDatabase };
