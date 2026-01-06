@@ -50,26 +50,26 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
     fetchSession();
   }, []);
 
-  // End session on component unmount and browser close
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      if (sessionId) {
-        navigator.sendBeacon('/api/session/end');
-      }
-    };
+  // Todo: Runs on page reload instead of browser close. Hard to fix
+  // useEffect(() => {
+  //   const handleBeforeUnload = () => {
+  //     if (sessionId) {
+  //       navigator.sendBeacon('/api/session/end');
+  //     }
+  //   };
 
-    // Listen for browser/tab close
-    window.addEventListener('beforeunload', handleBeforeUnload);
+  //   // Listen for browser/tab close
+  //   window.addEventListener('beforeunload', handleBeforeUnload);
 
-    // Cleanup function - called when component unmounts
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
+  //   // Cleanup function - called when component unmounts
+  //   return () => {
+  //     window.removeEventListener('beforeunload', handleBeforeUnload);
 
-      if (sessionId) {
-        endSession();
-      }
-    };
-  }, [sessionId]);
+  //     if (sessionId) {
+  //       endSession();
+  //     }
+  //   };
+  // }, [sessionId]);
 
   const value = useMemo(
     () => ({

@@ -1,3 +1,4 @@
+import EventService from '@/services/EventService';
 import { NextRequest, NextResponse } from 'next/server';
 import { User, Role } from '@/models/sequelize';
 import { isAdmin, verifyPassword, generateAuthToken, setAuthCookie } from '@/lib/auth';
@@ -60,6 +61,8 @@ export async function POST(request: NextRequest) {
     const session = await getCurrentSession();
     if (session) {
       await updateSessionUser(session.sessionId, user.id);
+      const eventService = new EventService(session.id);
+      await eventService.login(user.id);
     }
 
     let callbackUrl = '/';

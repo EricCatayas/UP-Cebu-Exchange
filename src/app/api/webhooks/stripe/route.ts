@@ -1,7 +1,8 @@
 import Stripe from 'stripe';
+import EventService from '@/services/EventService';
 import RentalOrderService from '@/services/RentalOrderService';
 import { Artwork, Payment, RentalOrder } from '@/models/sequelize';
-import { ARTWORK_STATUS, PAYMENT_STATUS, ORDER_STATUS } from '@/lib/constants';
+import { PAYMENT_STATUS } from '@/lib/constants';
 import { stripe } from '@/lib/stripe';
 
 export async function POST(req: Request) {
@@ -20,6 +21,7 @@ export async function POST(req: Request) {
     console.log('\n\nStripe Checkout Session completed:', session);
     const sessionId = session.id;
     const orderId = session.metadata?.orderId;
+    const browserSessionId = session.metadata?.sessionId;
     const customerEmail = session.customer_email; // todo: email notification
 
     // Verify Checkout session actually resulted in payment
@@ -41,12 +43,18 @@ export async function POST(req: Request) {
       return new Response('ok', { status: 200 });
     }
 
+    // PAYMENT SUCCESSFUL
     await payment.update({ status: PAYMENT_STATUS.COMPLETED });
 
     if (orderId) {
       const rentalOrderService = new RentalOrderService();
       await rentalOrderService.markOrderAsPaid(parseInt(orderId));
       console.log(`\n\nPayment ID ${payment.id} for order ${orderId} marked as completed.`);
+    }
+
+    if (browserSessionId) {
+      const eventService = new EventService(parseInt(browserSessionId));
+      await eventService.completePayment(payment.id);
     }
   }
 

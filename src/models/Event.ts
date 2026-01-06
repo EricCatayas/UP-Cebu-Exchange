@@ -15,11 +15,13 @@ Example Event names:
   browse_artworks
   search_artworks
   view_artwork
+  create_account
+  verify_email
+  login
+  set_address
   add_to_cart
   add_to_wishlist
   begin_checkout
-  create_account
-  verify_email
   sign_rental_agreement
   place_order
   complete_payment

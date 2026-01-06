@@ -1,10 +1,11 @@
 import EmailService from '@/services/EmailService';
+import EventService from '@/services/EventService';
 import { NextRequest, NextResponse } from 'next/server';
 import { UserEmailVerification } from '@/models/sequelize';
 import { User, Role } from '@/models/sequelize';
-import { hashPassword } from '@/lib/auth';
+import { hashPassword, generateToken } from '@/lib/auth';
 import { USER_ROLE, USER_STATUS } from '@/lib/constants';
-import { generateToken } from '@/lib/auth';
+import { getCurrentSession } from '@/lib/session';
 
 // TODO: Test API
 export async function POST(request: NextRequest) {
@@ -81,6 +82,12 @@ export async function POST(request: NextRequest) {
     const emailService = new EmailService();
     // todo: handle email errors
     const { success, error } = await emailService.sendEmailVerification(email, verificationToken);
+
+    const session = await getCurrentSession();
+    if (session) {
+      const eventService = new EventService(session.id);
+      await eventService.createAccount(newUser.id);
+    }
 
     return NextResponse.json(
       {

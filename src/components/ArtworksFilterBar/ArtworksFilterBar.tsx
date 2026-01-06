@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { eventApi } from '@/lib/api/event';
 import { StyleDTO } from '@/models/Style';
 
 export default function ArtworksFilterBar({ mediums, styles }: { mediums: string[]; styles: StyleDTO[] }) {
@@ -63,6 +64,13 @@ export default function ArtworksFilterBar({ mediums, styles }: { mediums: string
     if (selectedMediums.length > 0) {
       params.set('mediums', selectedMediums.join(','));
     }
+
+    eventApi.searchArtworks({
+      search: searchQuery.trim(),
+      sort: sortBy,
+      styleIds: selectedStyleIds,
+      mediums: selectedMediums,
+    });
 
     // Update URL with new parameters
     router.push(`?${params.toString()}`, { scroll: false });

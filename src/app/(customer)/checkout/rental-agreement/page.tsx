@@ -4,15 +4,27 @@ import { useRouter } from 'next/navigation';
 import { useRentalOrder } from '@/contexts/RentalOrderContext';
 import { DELIVERY_FEE, DELIVERY_METHOD } from '@/lib/constants';
 import { getDimension, getImageUrl } from '@/lib/artwork';
+import { eventApi } from '@/lib/api/event';
 
 function RentalAgreement() {
-  const { artworks, address, duration, startDate, endDate, deliveryMethod, paymentMethod, subtotal, total, setContractSigned } =
-    useRentalOrder();
+  const {
+    artworks,
+    address,
+    duration,
+    startDate,
+    endDate,
+    deliveryMethod,
+    paymentMethod,
+    subtotal,
+    total,
+    setContractSigned,
+  } = useRentalOrder();
 
   const router = useRouter();
 
   const handleSignAgreement = () => {
     setContractSigned(true);
+    eventApi.signRentalAgreement();
     router.push('/checkout');
   };
 

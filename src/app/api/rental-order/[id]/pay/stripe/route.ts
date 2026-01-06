@@ -6,6 +6,7 @@ import { isOrderReturnable } from '@/lib/order';
 import { getImageUrls } from '@/lib/artwork';
 import { ORDER_STATUS, PAYMENT_STATUS } from '@/lib/constants';
 import { stripe } from '@/lib/stripe';
+import { getCurrentSession } from '@/lib/session';
 
 export async function POST(request: Request, { params }: { params: { id: string } }) {
   try {
@@ -45,9 +46,10 @@ export async function POST(request: Request, { params }: { params: { id: string 
     }));
 
     const heading = `UP Cebu Exchange - ${rentalOrder.durationMonths}-Month Rental Order #${orderId}`;
+    const session = await getCurrentSession();
 
     // Create Stripe checkout session
-    const session = await stripe.checkout.sessions.create({
+    const stripeSession = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: lineItems,
       mode: 'payment',
@@ -57,10 +59,11 @@ export async function POST(request: Request, { params }: { params: { id: string 
       metadata: {
         orderId: orderId.toString(),
         userId: currentUser.userId.toString(),
+        sessionId: session ? session.id.toString() : '',
       },
     });
 
-    return new Response(JSON.stringify({ sessionId: session.id, url: session.url }), { status: 200 });
+    return new Response(JSON.stringify({ sessionId: stripeSession.id, url: stripeSession.url }), { status: 200 });
   } catch (error) {
     console.error('Error creating payment session:', error);
     return new Response(JSON.stringify({ error: 'Internal Server Error' }), { status: 500 });

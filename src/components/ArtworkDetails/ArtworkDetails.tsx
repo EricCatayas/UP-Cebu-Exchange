@@ -4,10 +4,12 @@ import HeartIcon from '../HeartIcon/HeartIcon';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import { useSession } from '@/contexts/SessionContext';
 import { ArtworkDTO } from '@/models/Artwork';
 import { getDimension } from '@/lib/artwork';
 import { artworkApi } from '@/lib/api/artwork';
 import { cartApi } from '@/lib/api/cart';
+import { eventApi } from '@/lib/api/event';
 import { wishlistApi } from '@/lib/api/wishlist';
 import { hasOngoingRental as hasOngoingRentalOrder } from '@/lib/artwork';
 import { fmtDate } from '@/lib/formatter';
@@ -17,6 +19,7 @@ function ArtworkDetails({ artwork }: { artwork: ArtworkDTO }) {
 
   const artist = artwork.artist;
   const { user } = useAuth();
+  const { sessionId } = useSession();
   const [inCart, setInCart] = useState(artwork.isInCart);
   const [inWishlist, setInWishlist] = useState(artwork.isInWishlist);
   const [hasOngoingRental, setHasOngoingRental] = useState(hasOngoingRentalOrder(artwork));
@@ -37,6 +40,7 @@ function ArtworkDetails({ artwork }: { artwork: ArtworkDTO }) {
         await cartApi.addItem(artwork.id);
         setInCart(true);
         alert('Artwork added to cart');
+        eventApi.addToCart(artwork.id);
       }
     } catch (error) {
       alert('Error toggling cart item:', error.message);
@@ -56,6 +60,7 @@ function ArtworkDetails({ artwork }: { artwork: ArtworkDTO }) {
         await wishlistApi.addItem(artwork.id);
         setInWishlist(true);
         alert('Artwork added to wishlist');
+        eventApi.addToWishlist(artwork.id);
       }
     } catch (error) {
       alert('Error toggling wishlist item:', error.message);
@@ -72,6 +77,15 @@ function ArtworkDetails({ artwork }: { artwork: ArtworkDTO }) {
       fetchAvailableDate();
     }
   }, [artwork]);
+
+  useEffect(() => {
+    const logViewArtworkEvent = () => {
+      if (!sessionId) return;
+      eventApi.viewArtwork(artwork.id);
+    };
+
+    logViewArtworkEvent();
+  }, [sessionId, artwork.id]);
 
   return (
     <div>

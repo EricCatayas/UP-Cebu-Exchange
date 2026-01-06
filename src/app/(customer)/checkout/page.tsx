@@ -12,6 +12,7 @@ import { useRentalOrder } from '@/contexts/RentalOrderContext';
 import { useUserAddress } from '@/contexts/UserAddressContext';
 import { getDimension, getImageUrl, getRentalFee } from '@/lib/artwork';
 import { fmtDate, fmtMoney } from '@/lib/formatter';
+import { eventApi } from '@/lib/api/event';
 import { rentalOrderApi } from '@/lib/api/rentalOrder';
 
 function RentalCheckout() {

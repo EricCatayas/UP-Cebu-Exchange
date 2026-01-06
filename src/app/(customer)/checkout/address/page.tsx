@@ -3,9 +3,16 @@ import React, { useState } from 'react';
 import { useUserAddress } from '@/contexts/UserAddressContext';
 import AddAddressForm from '@/components/form/Address/AddAddress';
 import EditAddressForm from '@/components/form/Address/EditAddress';
+import { AddressDTO } from '@/models/Address';
+import { eventApi } from '@/lib/api/event';
 
 export default function CheckoutAddressPage() {
   const { address, setAddress } = useUserAddress();
+
+  const handleSetAddress = (newAddress: AddressDTO) => {
+    setAddress(newAddress);
+    eventApi.setAddress();
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -15,12 +22,12 @@ export default function CheckoutAddressPage() {
           {address ? (
             <>
               <h2 className="text-xl font-semibold">Current Address</h2>
-              <EditAddressForm address={address} handleSetAddress={setAddress} />
+              <EditAddressForm address={address} handleSetAddress={handleSetAddress} />
             </>
           ) : (
             <>
               <h2 className="text-xl font-semibold mb-4">Add New Address</h2>
-              <AddAddressForm handleSetAddress={setAddress} />
+              <AddAddressForm handleSetAddress={handleSetAddress} />
             </>
           )}
         </div>

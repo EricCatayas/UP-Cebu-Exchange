@@ -58,6 +58,38 @@ export const ERROR_MESSAGE = {
   PASSWORD_RESET_TOKEN_INVALID: 'The password reset token is invalid. Please check your password reset link.',
 };
 
+export enum EVENT_NAME {
+  VISIT_SITE = 'visit_site',
+  BROWSE_ARTWORKS = 'browse_artworks',
+  SEARCH_ARTWORKS = 'search_artworks',
+  VIEW_ARTWORK = 'view_artwork',
+  CREATE_ACCOUNT = 'create_account',
+  VERIFY_EMAIL = 'verify_email',
+  SET_ADDRESS = 'set_address',
+  LOGIN = 'login',
+  ADD_TO_CART = 'add_to_cart',
+  ADD_TO_WISHLIST = 'add_to_wishlist',
+  BEGIN_CHECKOUT = 'begin_checkout',
+  SIGN_RENTAL_AGREEMENT = 'sign_rental_agreement',
+  PLACE_ORDER = 'place_order',
+  COMPLETE_PAYMENT = 'complete_payment',
+}
+
+export enum EVENT_CATEGORY {
+  DISCOVERY = 'discovery',
+  ENGAGEMENT = 'engagement',
+  INTEREST = 'interest',
+  INTENT = 'intent',
+  CONVERSION = 'conversion',
+}
+
+export enum EVENT_ENTITY_TYPE {
+  ARTWORK = 'artwork',
+  RENTAL_ORDER = 'rental_order',
+  PAYMENT = 'payment',
+  USER = 'user',
+}
+
 export const DURATION_OPTIONS = [3, 6, 12];
 
 export const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];

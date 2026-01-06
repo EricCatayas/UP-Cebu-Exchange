@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { getDimension, getImageUrl } from '@/lib/artwork';
 import { cartApi } from '@/lib/api/cart';
+import { eventApi } from '@/lib/api/event';
 import { wishlistApi } from '@/lib/api/wishlist';
 import { ARTWORK_STATUS } from '@/lib/constants';
 import './ArtworkCard.css';
@@ -39,6 +40,7 @@ export default function ArtworkCard({ artwork, displayInfo = true }: { artwork: 
         await cartApi.addItem(artwork.id);
         setInCart(true);
         alert('Artwork added to cart');
+        eventApi.addToCart(artwork.id);
       }
     } catch (error) {
       alert('Error toggling cart item:', error);
@@ -58,6 +60,7 @@ export default function ArtworkCard({ artwork, displayInfo = true }: { artwork: 
         await wishlistApi.addItem(artwork.id);
         setInWishlist(true);
         alert('Artwork added to wishlist');
+        eventApi.addToWishlist(artwork.id);
       }
     } catch (error) {
       alert('Error toggling wishlist item:', error.message);

@@ -17,18 +17,9 @@ import {
   RentalPlan,
   ArtworkTag,
 } from '@/models/sequelize';
-import { ArtworkDTO, PaginatedArtworks } from '@/models/Artwork';
+import { ArtworkDTO, PaginatedArtworks, ArtworkQueryParams } from '@/models/Artwork';
 import { similarityScore } from '@/lib/recommendations';
 import { ARTWORK_STATUS, PAGE_SIZE, SIMILAR_ARTWORK_SCORE_THRESHOLD } from '@/lib/constants';
-
-interface QueryParams {
-  search?: string;
-  sort?: 'popular' | 'latest';
-  styles?: number[];
-  mediums?: string[];
-  page?: number;
-  limit: number;
-}
 
 class ArtworkService {
   userId?: number;
@@ -44,7 +35,7 @@ class ArtworkService {
     mediums,
     page = 1,
     limit = PAGE_SIZE,
-  }: QueryParams): Promise<PaginatedArtworks> {
+  }: ArtworkQueryParams): Promise<PaginatedArtworks> {
     // Build filtering options based on params
     let options = {};
     const offset = (page - 1) * limit;

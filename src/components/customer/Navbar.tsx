@@ -4,6 +4,7 @@ import Link from 'next/link';
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import { eventApi } from '@/lib/api/event';
 
 const Navbar: React.FC = () => {
   const { user, isLoggedIn, logout } = useAuth();
@@ -36,6 +37,11 @@ const Navbar: React.FC = () => {
     };
   }, []);
 
+  const handleCartClick = () => {
+    eventApi.beginCheckout();
+    router.push('/checkout');
+  };
+
   const handleLogout = async () => {
     await logout();
     setAccountOpen(false);
@@ -60,9 +66,9 @@ const Navbar: React.FC = () => {
           </Link>
           {isLoggedIn ? (
             <>
-              <Link href="/checkout" className="font-light hover:text-gray-700">
+              <button onClick={handleCartClick} className="font-light hover:text-gray-700">
                 Cart
-              </Link>
+              </button>
               <Link href="/account/rentals" className="font-light hover:text-gray-700">
                 My Rentals
               </Link>

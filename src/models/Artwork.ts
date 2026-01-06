@@ -59,3 +59,12 @@ export interface PaginatedArtworks {
   totalPages: number;
   items: ArtworkDTO[];
 }
+
+export interface ArtworkQueryParams {
+  search?: string;
+  sort?: 'popular' | 'latest';
+  styles?: number[];
+  mediums?: string[];
+  page?: number;
+  limit: number;
+}

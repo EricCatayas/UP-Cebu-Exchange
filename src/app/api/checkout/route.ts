@@ -1,3 +1,5 @@
+import EventService from '@/services/EventService';
+import RentalOrderService from '@/services/RentalOrderService';
 import { NextRequest, NextResponse } from 'next/server';
 import {
   Address,
@@ -9,10 +11,10 @@ import {
   Payment,
   RentalPlan,
 } from '@/models/sequelize';
-import RentalOrderService from '@/services/RentalOrderService';
 import { CheckoutDTO } from '@/models/RentalOrder';
 import { getCurrentUser } from '@/lib/auth';
 import { getRentalFee, hasOngoingRental, isUnavailableForRental } from '@/lib/artwork';
+import { getCurrentSession } from '@/lib/session';
 import { ORDER_STATUS, PAYMENT_STATUS } from '@/lib/constants';
 import { fmtDate } from '@/lib/formatter';
 
@@ -149,6 +151,13 @@ export async function POST(request: NextRequest) {
         cartId: cart.id,
       },
     });
+
+    const session = await getCurrentSession();
+    if (session) {
+      const eventService = new EventService(session.id);
+      await eventService.placeOrder(newRentalOrder.id);
+    }
+
     return NextResponse.json(
       { message: 'Rental order created successfully', rentalOrder: newRentalOrder },
       { status: 201 }

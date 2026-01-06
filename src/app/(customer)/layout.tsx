@@ -1,8 +1,7 @@
-import React from 'react';
 import Navbar from '@/components/customer/Navbar';
 import Footer from '@/components/customer/Footer';
 
-export default async function CustomerLayout({ children }: { children: React.ReactNode }) {
+export default function CustomerLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Navbar />

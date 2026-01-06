@@ -1,6 +1,8 @@
+import EventService from '@/services/EventService';
 import { NextRequest, NextResponse } from 'next/server';
 import { User, UserEmailVerification } from '@/models/sequelize';
 import { ERROR_MESSAGE } from '@/lib/constants';
+import { getCurrentSession } from '@/lib/session';
 // TODO: Test API
 export async function POST(request: NextRequest) {
   // Read token from query.
@@ -30,5 +32,22 @@ export async function POST(request: NextRequest) {
   user.status = 'Active';
   await user.save();
 
-  return NextResponse.json({ message: 'Email verified successfully' }, { status: 200 });
+  const session = await getCurrentSession();
+  if (session) {
+    const eventService = new EventService(session.id);
+    await eventService.verifyEmail(user.id);
+  }
+
+  return NextResponse.json(
+    {
+      message: 'Email verified successfully',
+      user: {
+        id: user.id,
+        email: user.email,
+        fullName: user.fullName,
+        roleId: user.roleId,
+      },
+    },
+    { status: 200 }
+  );
 }
