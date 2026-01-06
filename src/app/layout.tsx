@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { AuthProvider } from '@/contexts/AuthContext';
+import { SessionProvider } from '@/contexts/SessionContext';
 import { ModalProvider } from '@/contexts/ModalContext';
 import { Modal } from '@/components/Modal/Modal';
 import '@/app/globals.css';
@@ -26,12 +27,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} antialiased`}>
-        <AuthProvider>
-          <ModalProvider>
-            <Modal />
-            {children}
-          </ModalProvider>
-        </AuthProvider>
+        <SessionProvider>
+          <AuthProvider>
+            <ModalProvider>
+              <Modal />
+              {children}
+            </ModalProvider>
+          </AuthProvider>
+        </SessionProvider>
       </body>
     </html>
   );
