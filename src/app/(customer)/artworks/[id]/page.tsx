@@ -5,6 +5,7 @@ import ArtworkGallery from '@/components/ArtworkGallery/ArtworkGallery';
 import ArtworkService from '@/services/ArtworkService';
 import SimilarArtworks from '@/components/ArtworkDetails/SimilarArtworks';
 import HeroBackground from '@/components/HeroBackground/HeroBackground';
+import ProductDemandService from '@/services/ProductDemandService';
 import { getCurrentUser } from '@/lib/auth';
 
 async function ArtworkDetailsPage({ params }: { params: { id: string } }) {
@@ -22,15 +23,10 @@ async function ArtworkDetailsPage({ params }: { params: { id: string } }) {
     );
   }
 
-  console.log('Artwork Details:', artwork);
-
-  if (!artwork) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <p>Artwork not found</p>
-      </div>
-    );
-  }
+  const [viewCount, wishlistCount] = await Promise.all([
+    ProductDemandService.getArtworkViewCount(id),
+    ProductDemandService.getArtworkWishlistCount(id),
+  ]);
 
   return (
     <div>
@@ -40,7 +36,7 @@ async function ArtworkDetailsPage({ params }: { params: { id: string } }) {
             {/* Left Column - Image Gallery */}
             <ArtworkGallery artwork={artwork} />
             {/* Right Column - Details */}
-            <ArtworkDetails artwork={artwork} />
+            <ArtworkDetails artwork={artwork} viewCount={viewCount} wishlistCount={wishlistCount} />
           </div>
         </div>
       </HeroBackground>
