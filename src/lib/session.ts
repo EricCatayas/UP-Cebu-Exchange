@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 import { cookies } from 'next/headers';
 import { User, Role, Session } from '@/models/sequelize';
+import { SessionDTO } from '@/models/Session';
 import { Op } from 'sequelize';
 
 const SESSION_COOKIE_NAME = 'session-id';
@@ -11,10 +12,10 @@ export function generateSessionId(): string {
   return crypto.randomBytes(32).toString('hex');
 }
 
-export async function createSession(userId?: number): Promise<string> {
+export async function createSession(userId?: number): Promise<SessionDTO> {
   const sessionId = generateSessionId();
 
-  await Session.create({
+  const newSession = await Session.create({
     sessionId,
     userId,
     createdAt: new Date(),
@@ -23,7 +24,7 @@ export async function createSession(userId?: number): Promise<string> {
 
   await setSessionCookie(sessionId);
 
-  return sessionId;
+  return newSession;
 }
 
 export async function setSessionCookie(sessionId: string): Promise<void> {
