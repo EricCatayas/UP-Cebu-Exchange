@@ -1,4 +1,4 @@
-import { Artwork, ArtworkImage, Cart, CartItem, RentalPlan } from '@/models/sequelize';
+import { Artist, Artwork, ArtworkImage, Cart, CartItem, RentalPlan } from '@/models/sequelize';
 import { CartItemDTO } from '@/models/CartItem';
 import { ARTWORK_STATUS } from '@/lib/constants';
 
@@ -54,6 +54,10 @@ class CartService {
                 {
                   model: ArtworkImage,
                   as: 'images',
+                },
+                {
+                  model: Artist,
+                  as: 'artist',
                 },
               ],
             },
