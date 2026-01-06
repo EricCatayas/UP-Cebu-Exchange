@@ -1,7 +1,9 @@
+import EventService from '@/services/EventService';
 import { RentalOrder, Payment } from '@/models/sequelize';
 import { getCurrentUser, isAdmin, canEditContent } from '@/lib/auth';
 import { isOrderCancelable } from '@/lib/order';
 import { ORDER_STATUS, PAYMENT_STATUS } from '@/lib/constants';
+import { getCurrentSession } from '@/lib/session';
 
 export async function POST(request: Request, { params }: { params: { id: string } }) {
   try {
@@ -33,7 +35,13 @@ export async function POST(request: Request, { params }: { params: { id: string 
     rentalOrder.status = ORDER_STATUS.CANCELLED;
     await rentalOrder.save();
 
-    // TODO: If there's an associated payment that is completed, process refund logic here
+    // TODO: If there's an associated payment that is completed, send notification for refund processing
+
+    const session = await getCurrentSession();
+    if (session) {
+      const eventService = new EventService(session.id);
+      await eventService.cancelOrder(rentalOrder.id);
+    }
 
     return new Response(JSON.stringify({ success: true, message: 'Rental order status updated to Cancelled' }), {
       status: 200,

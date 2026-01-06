@@ -58,9 +58,20 @@ export function isPaymentDue(order: RentalOrderDTO): boolean {
 export function isOrderCancelable(order: RentalOrderDTO): boolean {
   const today = new Date();
   const startDate = new Date(order.startDate);
-  return order.status === ORDER_STATUS.PENDING || order.status === ORDER_STATUS.TORECEIVE; // payment?
+  // I.e. order has not been delivered yet
+  return (
+    order.status === ORDER_STATUS.PENDING ||
+    order.status === ORDER_STATUS.RESERVED ||
+    order.status === ORDER_STATUS.TORECEIVE
+  );
+}
+
+export function isOrderExtendable(order: RentalOrderDTO): boolean {
+  const today = new Date();
+  const endDate = new Date(order.endDate);
+  return order.status !== ORDER_STATUS.CANCELLED && order.status !== ORDER_STATUS.COMPLETED;
 }
 
 export function isOrderReturnable(order: RentalOrderDTO): boolean {
-  return order.payment?.status === PAYMENT_STATUS.COMPLETED && order.status === ORDER_STATUS.ONGOING;
+  return order.status === ORDER_STATUS.ONGOING;
 }

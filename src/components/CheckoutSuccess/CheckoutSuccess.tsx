@@ -3,11 +3,10 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useRentalOrder } from '@/contexts/RentalOrderContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { DELIVERY_METHOD, PAYMENT_METHOD } from '@/lib/constants';
+import { APP_SUPPORT_EMAIL, DELIVERY_METHOD, PAYMENT_METHOD } from '@/lib/constants';
 import { getDimension, getImageUrl } from '@/lib/artwork';
 import { FaCheckCircle, FaBox, FaMapMarkerAlt, FaCreditCard, FaEnvelope, FaPhone, FaClock } from 'react-icons/fa';
 import { RentalOrderDTO } from '@/models/RentalOrder';
-import { APP_SUPPORT_EMAIL } from '@/lib/constants';
 
 function CheckoutSuccess({ rentalOrder }: { rentalOrder: RentalOrderDTO }) {
   const router = useRouter();

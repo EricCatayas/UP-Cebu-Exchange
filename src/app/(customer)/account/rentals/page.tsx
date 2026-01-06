@@ -5,7 +5,7 @@ import PageHeader from '@/components/PageHeader/PageHeader';
 import RentalOrderCard from '@/components/cards/RentalOrder/RentalOrder';
 import RentalOrderService from '@/services/RentalOrderService';
 import { OrderDateRange } from '@/types/OrderDateRange';
-import { getDaysRemaining, isOrderCancelable, isOrderReturnable, isPaymentDue } from '@/lib/order';
+import { getDaysRemaining, isOrderCancelable, isOrderExtendable, isOrderReturnable, isPaymentDue } from '@/lib/order';
 import { getCurrentUser } from '@/lib/auth';
 async function RentalsPage() {
   const user = await getCurrentUser();
@@ -44,9 +44,11 @@ async function RentalsPage() {
                     Cancel Order
                   </Link>
                 )}
+                {isOrderExtendable(order) && (
                 <Link href={`/account/rentals/${order.id}/extend`} className="text-blue-600 hover:underline">
                   Extend Plan
                 </Link>
+                  )}
                 {isOrderReturnable(order) && (
                   <Link href={`/account/rentals/${order.id}?action=return`} className="text-blue-600 hover:underline">
                     Return Products

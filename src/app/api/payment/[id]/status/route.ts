@@ -1,8 +1,10 @@
+import EventService from '@/services/EventService';
 import RentalOrderService from '@/services/RentalOrderService';
 import { RentalOrder } from '@/models/sequelize';
 import { Payment } from '@/models/sequelize';
 import { getCurrentUser, isAdmin, canEditContent } from '@/lib/auth';
 import { PAYMENT_STATUS, PAYMENT_STATUSES } from '@/lib/constants';
+import { getCurrentSession } from '@/lib/session';
 
 // todo: test
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
@@ -42,6 +44,11 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     const rentalOrderService = new RentalOrderService();
     if (status === PAYMENT_STATUS.COMPLETED) {
       if (rentalOrder) await rentalOrderService.markOrderAsPaid(rentalOrder.id);
+      const session = await getCurrentSession();
+      if (session) {
+        const eventService = new EventService(session.id);
+        await eventService.completePayment(payment.id);
+      }
     }
     if (status === PAYMENT_STATUS.FAILED) {
       if (rentalOrder) await rentalOrderService.markOrderAsCancelled(rentalOrder.id);
