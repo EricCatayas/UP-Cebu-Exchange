@@ -1,7 +1,62 @@
-export interface Event {
+export interface EventAttributes {
   id: number;
-  userId: number;
-  sessionId: string;
-  eventTypeId: number;
+  sessionId: number;
+  name: string;
+  category: string;
+  entity_type?: string;
+  entity_id?: number;
+  metadata?: string; // JSON string
   createdAt: Date;
 }
+
+/* 
+Example Event names:
+  visit_site
+  browse_artworks
+  search_artworks
+  view_artwork
+  add_to_cart
+  add_to_wishlist
+  begin_checkout
+  create_account
+  verify_email
+  sign_rental_agreement
+  place_order
+  complete_payment
+  ...
+
+Example Event categories:
+  discovery (e.g., visit site, browsing)
+  engagement (e.g., view artwork)
+  interest (e.g., add to cart, add to wishlist)
+  intent (e.g., begin checkout, create account, verify email, sign rental agreement, place order)
+  conversion (e.g., complete payment)
+
+Example entity_types:
+  artwork
+  rental_order
+  payment
+  user
+
+Sample event:
+{
+  id: 1,
+  sessionId: 42,  
+  name: 'view_artwork',
+  category: 'engagement',
+  entity_type: 'artwork',
+  entity_id: 101,
+  createdAt: new Date('2024-01-01T12:00:00Z')
+},
+{
+  id: 2,
+  sessionId: 42,  
+  name: 'add_to_cart',
+  category: 'interest',
+  entity_type: 'artwork',
+  entity_id: 101,
+  createdAt: new Date('2024-01-01T12:05:00Z')
+}
+
+
+*/

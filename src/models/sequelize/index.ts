@@ -8,6 +8,7 @@ import ArtworkImage from './ArtworkImage';
 import ArtworkTag from './ArtworkTag';
 import Cart from './Cart';
 import CartItem from './CartItem';
+import Event from './Event';
 import Payment from './Payment';
 import RentalOrder from './RentalOrder';
 import RentalOrderItem from './RentalOrderItem';
@@ -242,6 +243,12 @@ const initializeAssociations = () => {
     foreignKey: 'userId',
     as: 'user',
   });
+
+  // Event belongs to Session
+  Event.belongsTo(Session, {
+    foreignKey: 'sessionId',
+    as: 'session',
+  });
 };
 
 // Initialize associations
@@ -257,6 +264,7 @@ export {
   ArtworkTag,
   Cart,
   CartItem,
+  Event,
   Payment,
   RentalOrder,
   RentalOrderItem,
@@ -282,6 +290,7 @@ export default {
   ArtworkTag,
   Cart,
   CartItem,
+  Event,
   Payment,
   RentalOrder,
   RentalOrderItem,
