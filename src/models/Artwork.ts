@@ -56,6 +56,6 @@ export interface PaginatedArtworks {
   pageSize: number;
   nextPage?: number;
   previousPage?: number;
-  totalPages?: number;
+  totalPages: number;
   items: ArtworkDTO[];
 }

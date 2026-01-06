@@ -107,8 +107,6 @@ class ArtworkService {
 
     options = { where, order, page, limit, offset };
 
-    console.log('ArtworkService - Query Options:', options);
-
     const result = await ArtworkRepository.findPaginated({
       ...options,
     });

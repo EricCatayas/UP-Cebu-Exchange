@@ -5,8 +5,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 interface PaginationProps {
   currentPage: number;
   totalPages: number;
-  nextPage: number | null;
-  previousPage: number | null;
+  nextPage?: number;
+  previousPage?: number;
 }
 
 export default function Pagination({ currentPage, totalPages, nextPage, previousPage }: PaginationProps) {
@@ -20,13 +20,13 @@ export default function Pagination({ currentPage, totalPages, nextPage, previous
   };
 
   const handlePrevious = () => {
-    if (previousPage !== null) {
+    if (previousPage !== undefined || previousPage !== null) {
       navigateToPage(previousPage);
     }
   };
 
   const handleNext = () => {
-    if (nextPage !== null) {
+    if (nextPage !== undefined || nextPage !== null) {
       navigateToPage(nextPage);
     }
   };
