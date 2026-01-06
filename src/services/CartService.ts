@@ -1,4 +1,6 @@
 import { Artwork, ArtworkImage, Cart, CartItem, RentalPlan } from '@/models/sequelize';
+import { CartItemDTO } from '@/models/CartItem';
+import { ARTWORK_STATUS } from '@/lib/constants';
 
 class CartService {
   async addItem(userId: number, artworkId: number) {
@@ -33,7 +35,7 @@ class CartService {
     return !!cartItem;
   }
 
-  async getCartItems(userId: number) {
+  async getCartItems(userId: number): Promise<CartItemDTO[]> {
     const cart = await Cart.findOne({
       where: { userId },
       include: [
@@ -63,7 +65,19 @@ class CartService {
     if (!cart) {
       return [];
     }
-    return cart.cartItems.map((item) => item.toJSON());
+    return cart.cartItems.map((item) => {
+      const cartItem = item.toJSON();
+      const artwork = cartItem.artwork;
+      const isAvailable = artwork.status === ARTWORK_STATUS.AVAILABLE;
+      return {
+        id: cartItem.id,
+        cartId: cartItem.cartId,
+        artworkId: cartItem.artworkId,
+        artwork: artwork,
+        createdAt: cartItem.createdAt,
+        isAvailable,
+      };
+    });
   }
 }
 

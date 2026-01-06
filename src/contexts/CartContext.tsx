@@ -3,18 +3,11 @@
 import React, { createContext, useContext, useState } from 'react';
 import { ArtworkDTO } from '@/models/Artwork';
 import { RentalPlanDTO } from '@/models/RentalPlan';
-
-export interface CartItem {
-  id: number;
-  artworkId: number;
-  artwork: ArtworkDTO;
-  imageUrl: string;
-  rentalPlans: RentalPlanDTO[];
-}
+import { CartItemDTO } from '@/models/CartItem';
 
 interface CartContextType {
-  cartItems: CartItem[];
-  setCartItems: (items: CartItem[]) => void;
+  cartItems: CartItemDTO[];
+  setCartItems: (items: CartItemDTO[]) => void;
   selectedCartItemIds: Set<number>;
   toggleCartItem: (id: number) => void;
   toggleAllCartItems: () => void;
@@ -25,14 +18,14 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 interface CartProviderProps {
   children: React.ReactNode;
-  initialCartItems?: CartItem[];
+  initialCartItems?: CartItemDTO[];
 }
 
 export function CartProvider({ children, initialCartItems = [] }: CartProviderProps) {
-  const [cartItems, setItemsInCart] = useState<CartItem[]>(initialCartItems);
+  const [cartItems, setItemsInCart] = useState<CartItemDTO[]>(initialCartItems);
   const [selectedCartItemIds, setSelectedCartItemIds] = useState<Set<number>>(new Set());
 
-  const setCartItems = (items: CartItem[]) => {
+  const setCartItems = (items: CartItemDTO[]) => {
     setItemsInCart(items);
   };
 
@@ -47,7 +40,9 @@ export function CartProvider({ children, initialCartItems = [] }: CartProviderPr
 
   const toggleAllCartItems = () => {
     setSelectedCartItemIds((prev) =>
-      prev.size === cartItems.length ? new Set() : new Set(cartItems.map((i) => i.id))
+      prev.size === cartItems.length
+        ? new Set()
+        : new Set(cartItems.filter((item) => item.isAvailable).map((item) => item.id))
     );
   };
 

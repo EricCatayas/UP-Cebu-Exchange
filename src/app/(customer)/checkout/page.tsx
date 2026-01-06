@@ -4,6 +4,7 @@ import DeliveryMethodCard from '@/components/cards/DeliveryMethod/DeliveryMethod
 import RentalPeriodCard from '@/components/cards/RentalPeriod/RentalPeriod';
 import PaymentMethodCard from '@/components/cards/PaymentMethod/PaymentMethod';
 import RentalSummaryCard from '@/components/cards/RentalSummary/RentalSummary';
+import { FaExclamationTriangle } from 'react-icons/fa';
 import React, { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/contexts/CartContext';
@@ -154,12 +155,18 @@ function RentalCheckout() {
                     className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50"
                   >
                     <div className="flex items-center space-x-4 flex-1">
-                      <input
-                        type="checkbox"
-                        checked={selectedCartItemIds.has(item.id)}
-                        onChange={() => toggleCartItem(item.id)}
-                        className="w-5 h-5 rounded border-gray-300 cursor-pointer"
-                      />
+                      {item.isAvailable ? (
+                        <input
+                          type="checkbox"
+                          checked={selectedCartItemIds.has(item.id)}
+                          onChange={() => toggleCartItem(item.id)}
+                          className="w-5 h-5 rounded border-gray-300 cursor-pointer"
+                        />
+                      ) : (
+                        <div title="This artwork is currently unavailable for rent.">
+                          <FaExclamationTriangle className="text-red-500 w-5 h-5" />
+                        </div>
+                      )}
                       <div
                         className="w-20 h-20 bg-gray-200 rounded-md flex-shrink-0"
                         onClick={() => navigateToArtwork(item.artworkId)}
