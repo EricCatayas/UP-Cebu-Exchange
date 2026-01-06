@@ -1,21 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { removeAuthCookie } from '@/lib/auth';
-
+import { endSession } from '@/lib/session';
 // TODO: Test API
 export async function POST(request: NextRequest) {
   try {
     // Remove auth cookie
     await removeAuthCookie();
-    
+    // End session
+    await endSession();
+
     return NextResponse.json({
-      message: 'Logout successful'
+      message: 'Logout successful',
     });
-    
   } catch (error) {
     console.error('Logout error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

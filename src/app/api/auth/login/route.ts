@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { User, Role } from '@/models/sequelize';
 import { isAdmin, verifyPassword, generateAuthToken, setAuthCookie } from '@/lib/auth';
+import { getCurrentSession, updateSessionUser } from '@/lib/session';
 import { ERROR_MESSAGE } from '@/lib/constants';
 
 export async function POST(request: NextRequest) {
@@ -54,6 +55,12 @@ export async function POST(request: NextRequest) {
 
     // Set auth cookie
     await setAuthCookie(token, remember);
+
+    // Update session with user ID
+    const session = await getCurrentSession();
+    if (session) {
+      await updateSessionUser(session.sessionId, user.id);
+    }
 
     let callbackUrl = '/';
 
