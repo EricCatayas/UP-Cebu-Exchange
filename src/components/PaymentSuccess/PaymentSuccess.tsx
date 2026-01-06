@@ -23,6 +23,7 @@ export default function PaymentSuccess({ rentalOrder }: { rentalOrder: RentalOrd
   const total = rentalOrder.payment?.amount || 0;
   const isPickup = deliveryMethod === DELIVERY_METHOD.PICKUP;
   const isDelivery = deliveryMethod === DELIVERY_METHOD.DELIVERY;
+  const isExtendDuration = deliveryMethod === DELIVERY_METHOD.NONE;
   const orderNumber = rentalOrder?.id ? `#${String(rentalOrder.id).padStart(6, '0')}` : '#000000';
   const paymentDate = payment?.updatedAt ? fmtDate(payment.updatedAt) : fmtDate(new Date());
 
@@ -133,7 +134,10 @@ export default function PaymentSuccess({ rentalOrder }: { rentalOrder: RentalOrd
             </div>
 
             <div className="px-8 py-6 space-y-4">
-              <p className="text-gray-700 text-lg">Your items are ready for pickup at our location.</p>
+              <p className="text-gray-700 text-lg">
+                The items you rented are being prepared for your pickup at our location. We will contact you to schedule
+                pickup within 24-48 hours.
+              </p>
 
               <div className="bg-orange-50 p-6 rounded-lg border-l-4 border-orange-500">
                 <h3 className="font-semibold text-gray-900 text-lg mb-3">Pickup Location:</h3>
@@ -190,10 +194,6 @@ export default function PaymentSuccess({ rentalOrder }: { rentalOrder: RentalOrd
                     <span className="text-indigo-600 font-bold">✓</span>
                     Delivery date and time confirmation
                   </li>
-                  <li className="flex items-start gap-2 text-gray-700">
-                    <span className="text-indigo-600 font-bold">✓</span>
-                    Tracking information via email
-                  </li>
                 </ul>
               </div>
 
@@ -228,33 +228,6 @@ export default function PaymentSuccess({ rentalOrder }: { rentalOrder: RentalOrd
               </p>
             </div>
           </div>
-        </div>
-
-        {/* What Happens Next */}
-        <div className="bg-green-50 rounded-lg border border-green-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-3">✅ What Happens Next?</h3>
-          <ul className="space-y-2 text-gray-700">
-            <li className="flex items-start gap-2">
-              <span className="text-green-600 font-bold mt-1">•</span>
-              <span>
-                Your rental status has been updated to <strong>"Confirmed"</strong>
-              </span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-green-600 font-bold mt-1">•</span>
-              <span>
-                {isPickup
-                  ? 'Your items are ready for pickup during our business hours'
-                  : 'We will contact you to schedule delivery within 24-48 hours'}
-              </span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-green-600 font-bold mt-1">•</span>
-              <span>
-                You can view your rental details anytime in <strong>My Rentals</strong>
-              </span>
-            </li>
-          </ul>
         </div>
 
         {/* Action Buttons */}

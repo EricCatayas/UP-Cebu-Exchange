@@ -89,7 +89,7 @@ function ExtendRental({
       const response = await rentalOrderApi.extend(rentalOrder);
       console.log('Extend response:', response);
       const { rentalOrder: newRentalOrder } = response;
-      // router.push(`/accounts/rentals/${newRentalOrder.id}`);
+      router.push(`/accounts/rentals/${newRentalOrder.id}/extend/success`);
     } catch (error) {
       alert(`Error during checkout: ${error.message}`);
     }

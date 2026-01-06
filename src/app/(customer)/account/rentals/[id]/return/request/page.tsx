@@ -38,9 +38,39 @@ export default async function OrderReturnRequestPage({ params }: { params: { id:
           <div className="px-8 py-4 bg-green-50 border-t border-green-100">
             <p className="text-gray-700 flex items-center gap-2">
               <FaEnvelope className="w-5 h-5 text-green-600" />
-              The owner has been notified about your return request. Please follow the return instructions sent to your
-              email.
+              The owner has been notified about your return request. Please follow the return instructions below. We've
+              also sent a confirmation email to your registered email address.
             </p>
+          </div>
+        </div>
+
+        {/* Return Instructions */}
+        <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          <div className="bg-gray-800 px-8 py-4">
+            <h2 className="text-2xl font-bold text-white">Return Instructions</h2>
+          </div>
+          <div className="px-8 py-6">
+            <ol className="list-decimal list-inside space-y-4 text-gray-700">
+              <li>
+                <span className="font-semibold">Prepare the Items:</span> Ensure all rented items are securely packed in
+                their original packaging, including any accessories or documentation.
+              </li>
+              <li>
+                <span className="font-semibold">Schedule a Pickup:</span> Contact our support team at{' '}
+                <a href={`mailto:${APP_SUPPORT_EMAIL}`} className="text-blue-600 hover:underline font-medium">
+                  {APP_SUPPORT_EMAIL}
+                </a>{' '}
+                to arrange a convenient pickup time for the return of your items.
+              </li>
+              <li>
+                <span className="font-semibold">Handover the Items:</span> On the scheduled pickup date, hand over the
+                packed items to our delivery personnel. Ensure you receive a confirmation receipt for the return.
+              </li>
+              <li>
+                <span className="font-semibold">Return Confirmation:</span> Once the items are received and inspected,
+                we will send you a confirmation email regarding the successful return of your rental order.
+              </li>
+            </ol>
           </div>
         </div>
 

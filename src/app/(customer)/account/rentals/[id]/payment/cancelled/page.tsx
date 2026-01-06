@@ -39,9 +39,7 @@ export default function PaymentCancelledPage() {
             </li>
             <li className="flex items-start gap-2">
               <span className="text-red-600 font-bold mt-1">•</span>
-              <span>
-                Your rental order remains in <strong>"Pending Payment"</strong> status
-              </span>
+              <span>Your rental order request is still pending. You may retry the payment to complete your order</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-red-600 font-bold mt-1">•</span>

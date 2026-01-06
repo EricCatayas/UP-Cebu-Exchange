@@ -43,7 +43,7 @@ export const DELIVERY_FEE = 50;
 export enum DELIVERY_METHOD {
   DELIVERY = 'Delivery',
   PICKUP = 'Pickup',
-  NONE = 'None',
+  NONE = 'None', // For extend rental duration where delivery method is N/A
 }
 
 export const DELIVERY_METHODS = [DELIVERY_METHOD.DELIVERY, DELIVERY_METHOD.PICKUP];
@@ -127,10 +127,9 @@ export const PAYMENT_STATUSES = [PAYMENT_STATUS.PENDING, PAYMENT_STATUS.COMPLETE
 export enum PAYMENT_METHOD {
   CASH = 'Cash',
   ONLINE = 'Online',
-  BANK_TRANSFER = 'Bank Transfer',
 }
 
-export const PAYMENT_METHODS = [PAYMENT_METHOD.CASH, PAYMENT_METHOD.ONLINE, PAYMENT_METHOD.BANK_TRANSFER];
+export const PAYMENT_METHODS = [PAYMENT_METHOD.CASH, PAYMENT_METHOD.ONLINE];
 
 export const PAGE_SIZE = 12;
 

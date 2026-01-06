@@ -157,8 +157,49 @@ function CheckoutSuccess({ rentalOrder }: { rentalOrder: RentalOrderDTO }) {
             </div>
           </div>
         )}
-
         {/* Next Steps - Delivery */}
+        {isDelivery && (
+          <div className="bg-white rounded-lg shadow-md overflow-hidden">
+            <div className="bg-indigo-600 px-8 py-4">
+              <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+                <FaMapMarkerAlt className="w-6 h-6" />
+                Delivery Information
+              </h2>
+            </div>
+
+            <div className="px-8 py-6 space-y-4">
+              <p className="text-gray-700 text-lg">Your items will be delivered to your registered address.</p>
+
+              <div className="bg-indigo-50 p-6 rounded-lg border-l-4 border-indigo-500 space-y-3">
+                <p className="text-gray-800">
+                  Our team will contact you within 24-48 hours to schedule the delivery. You will receive:
+                </p>
+                <ul className="space-y-2 ml-4">
+                  <li className="flex items-start gap-2 text-gray-700">
+                    <span className="text-indigo-600 font-bold">✓</span>A call or SMS to confirm your delivery address
+                  </li>
+                  <li className="flex items-start gap-2 text-gray-700">
+                    <span className="text-indigo-600 font-bold">✓</span>
+                    Delivery date and time confirmation
+                  </li>
+                  <li className="flex items-start gap-2 text-gray-700">
+                    <span className="text-indigo-600 font-bold">✓</span>
+                    Tracking information via email
+                  </li>
+                </ul>
+              </div>
+
+              <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                <p className="text-gray-800 font-medium">📦 Delivery Instructions:</p>
+                <p className="text-gray-700 mt-1">
+                  Please ensure someone is available to receive the items during the scheduled delivery time.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Next Steps - Payment */}
         {isOnlinePayment && (
           <div className="bg-white rounded-lg shadow-md overflow-hidden">
             <div className="bg-purple-600 px-8 py-4">
@@ -185,12 +226,14 @@ function CheckoutSuccess({ rentalOrder }: { rentalOrder: RentalOrderDTO }) {
                   </li>
                   <li className="flex items-start gap-2 text-gray-700">
                     <span className="text-purple-600 font-bold">✓</span>
-                    The delivery schedule will be arranged
+                    The items will be reserved for you
                   </li>
-                  <li className="flex items-start gap-2 text-gray-700">
-                    <span className="text-purple-600 font-bold">✓</span>
-                    You will receive a delivery confirmation email
-                  </li>
+                  {isDelivery && (
+                    <li className="flex items-start gap-2 text-gray-700">
+                      <span className="text-purple-600 font-bold">✓</span>
+                      The delivery schedule will be arranged
+                    </li>
+                  )}
                 </ul>
               </div>
 
