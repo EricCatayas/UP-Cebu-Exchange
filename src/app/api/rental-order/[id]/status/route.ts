@@ -1,7 +1,9 @@
+import EventService from '@/services/EventService';
 import RentalOrderService from '@/services/RentalOrderService';
 import { RentalOrder } from '@/models/sequelize';
 import { getCurrentUser, isAdmin, canEditContent } from '@/lib/auth';
 import { ORDER_STATUS, ORDER_STATUSES } from '@/lib/constants';
+import { getCurrentSession } from '@/lib/session';
 
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
   try {
@@ -37,6 +39,8 @@ export async function PUT(request: Request, { params }: { params: { id: string }
       return new Response(JSON.stringify({ error: 'Rental order already has the specified status' }), { status: 400 });
     }
 
+    const session = await getCurrentSession();
+
     const rentalOrderService = new RentalOrderService();
     if (status === ORDER_STATUS.PENDING) {
       await rentalOrderService.markOrderAsPending(rentalOrder.id);
@@ -55,6 +59,15 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     } else {
       rentalOrder.status = status;
       await rentalOrder.save();
+    }
+
+    if (status === ORDER_STATUS.COMPLETED && session) {
+      const eventService = new EventService(session.id);
+      await eventService.completeOrder(rentalOrder.id);
+    }
+    if (status === ORDER_STATUS.CANCELLED && session) {
+      const eventService = new EventService(session.id);
+      await eventService.cancelOrder(rentalOrder.id);
     }
 
     return new Response(JSON.stringify({ rentalOrder }), { status: 200 });

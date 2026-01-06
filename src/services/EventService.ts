@@ -65,6 +65,16 @@ class EventService {
     });
   }
 
+  async cancelOrder(rentalOrderId: number) {
+    await Event.create({
+      sessionId: this.sessionId,
+      name: EVENT_NAME.CANCEL_ORDER,
+      category: EVENT_CATEGORY.INTENT,
+      entity_type: EVENT_ENTITY_TYPE.RENTAL_ORDER,
+      entity_id: rentalOrderId,
+    });
+  }
+
   async completePayment(paymentId: number) {
     await Event.create({
       sessionId: this.sessionId,
@@ -72,6 +82,16 @@ class EventService {
       category: EVENT_CATEGORY.CONVERSION,
       entity_type: EVENT_ENTITY_TYPE.PAYMENT,
       entity_id: paymentId,
+    });
+  }
+
+  async completeOrder(rentalOrderId: number) {
+    await Event.create({
+      sessionId: this.sessionId,
+      name: EVENT_NAME.COMPLETE_ORDER,
+      category: EVENT_CATEGORY.CONVERSION,
+      entity_type: EVENT_ENTITY_TYPE.RENTAL_ORDER,
+      entity_id: rentalOrderId,
     });
   }
 

@@ -72,7 +72,9 @@ export enum EVENT_NAME {
   BEGIN_CHECKOUT = 'begin_checkout',
   SIGN_RENTAL_AGREEMENT = 'sign_rental_agreement',
   PLACE_ORDER = 'place_order',
+  CANCEL_ORDER = 'cancel_order',
   COMPLETE_PAYMENT = 'complete_payment',
+  COMPLETE_ORDER = 'complete_order',
 }
 
 export enum EVENT_CATEGORY {
