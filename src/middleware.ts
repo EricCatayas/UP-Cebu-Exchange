@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { isAdmin, verifyToken } from '@/lib/auth';
+import { matchesRoute } from '@/lib/paths';
 
 const publicRoutes = [
   '/',
@@ -22,6 +23,7 @@ const publicRoutes = [
   '/api/auth/session',
   '/api/auth/verify-email',
   '/api/auth/resend-verification',
+  '/api/artworks/:id/available-date',
   '/api/event',
   '/api/session',
   '/api/webhooks',
@@ -66,7 +68,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const isPublicRoute = publicRoutes.some((route) => pathname === route || pathname.startsWith(route + '/'));
+  const isPublicRoute = publicRoutes.some((route) => matchesRoute(pathname, route));
   if (isPublicRoute) return NextResponse.next();
 
   const token = request.cookies.get('auth-token')?.value;
