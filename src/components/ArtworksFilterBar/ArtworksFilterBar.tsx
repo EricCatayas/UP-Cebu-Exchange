@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { eventApi } from '@/lib/api/event';
 import { StyleDTO } from '@/models/Style';
@@ -88,11 +88,11 @@ export default function ArtworksFilterBar({ mediums, styles }: { mediums: string
     router.push('/artworks', { scroll: false });
   };
 
-  useMemo(() => {
+  useEffect(() => {
     applyFilter();
   }, [sortBy, selectedStyleIds, selectedMediums]);
 
-  useMemo(() => {
+  useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       applyFilter();
     }, 500);
