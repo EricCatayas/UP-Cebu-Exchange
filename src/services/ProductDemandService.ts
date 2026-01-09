@@ -49,17 +49,19 @@ class ProductDemandService {
     return viewCount;
   }
   async getArtworkCartCount(artworkId: number): Promise<number> {
-    const cartCount = await CartItem.count({
+    const cartCount = await Event.count({
       where: {
-        artworkId: artworkId,
+        entity_id: artworkId,
+        name: EVENT_NAME.ADD_TO_CART,
       },
     });
     return cartCount;
   }
   async getArtworkWishlistCount(artworkId: number): Promise<number> {
-    const wishlistCount = await WishlistItem.count({
+    const wishlistCount = await Event.count({
       where: {
-        artworkId: artworkId,
+        entity_id: artworkId,
+        name: EVENT_NAME.ADD_TO_WISHLIST,
       },
     });
     return wishlistCount;
@@ -128,23 +130,29 @@ class ProductDemandService {
     return viewCounts;
   }
   async getArtworksCartCounts(): Promise<{ [artworkId: number]: number }> {
-    const cartItems = await CartItem.findAll({
-      attributes: ['artworkId'],
+    const cartItems = await Event.findAll({
+      where: {
+        name: EVENT_NAME.ADD_TO_CART,
+      },
+      attributes: ['entity_id'],
     });
     const cartCounts: { [artworkId: number]: number } = {};
     cartItems.forEach((item) => {
-      const artworkId = item.artworkId;
+      const artworkId = item.entity_id;
       cartCounts[artworkId] = (cartCounts[artworkId] || 0) + 1;
     });
     return cartCounts;
   }
   async getArtworksWishlistCounts(): Promise<{ [artworkId: number]: number }> {
-    const wishlistItems = await WishlistItem.findAll({
-      attributes: ['artworkId'],
+    const wishlistItems = await Event.findAll({
+      where: {
+        name: EVENT_NAME.ADD_TO_WISHLIST,
+      },
+      attributes: ['entity_id'],
     });
     const wishlistCounts: { [artworkId: number]: number } = {};
     wishlistItems.forEach((item) => {
-      const artworkId = item.artworkId;
+      const artworkId = item.entity_id;
       wishlistCounts[artworkId] = (wishlistCounts[artworkId] || 0) + 1;
     });
     return wishlistCounts;
