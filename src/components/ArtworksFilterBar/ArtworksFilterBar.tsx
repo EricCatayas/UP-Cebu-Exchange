@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { eventApi } from '@/lib/api/event';
 import { StyleDTO } from '@/models/Style';
@@ -28,6 +28,10 @@ export default function ArtworksFilterBar({ mediums, styles }: { mediums: string
     setSearchQuery(e.target.value);
   };
 
+  const handleSelectSortBy = (value: string) => {
+    setSortBy(value);
+  };
+
   const handleToggleStyle = (styleId: number) => {
     setSelectedStyleIds((prevSelected) => {
       if (prevSelected.includes(styleId)) {
@@ -46,7 +50,7 @@ export default function ArtworksFilterBar({ mediums, styles }: { mediums: string
     });
   };
 
-  const handleApplyFilter = () => {
+  const applyFilter = () => {
     const params = new URLSearchParams();
 
     if (searchQuery.trim()) {
@@ -84,6 +88,17 @@ export default function ArtworksFilterBar({ mediums, styles }: { mediums: string
     router.push('/artworks', { scroll: false });
   };
 
+  useMemo(() => {
+    applyFilter();
+  }, [sortBy, selectedStyleIds, selectedMediums]);
+
+  useMemo(() => {
+    const delayDebounceFn = setTimeout(() => {
+      applyFilter();
+    }, 500);
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchQuery]);
+
   return (
     <>
       <details className="group p-4">
@@ -99,7 +114,7 @@ export default function ArtworksFilterBar({ mediums, styles }: { mediums: string
             <div className="flex items-center gap-2">
               <label className="text-sm font-medium text-gray-700">SORT BY:</label>
               <button
-                onClick={() => setSortBy(SORTBY.POPULAR)}
+                onClick={() => handleSelectSortBy(SORTBY.POPULAR)}
                 className={`px-3 py-2 text-sm rounded-md transition ${
                   sortBy === SORTBY.POPULAR ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
@@ -107,7 +122,7 @@ export default function ArtworksFilterBar({ mediums, styles }: { mediums: string
                 Popular
               </button>
               <button
-                onClick={() => setSortBy(SORTBY.LATEST)}
+                onClick={() => handleSelectSortBy(SORTBY.LATEST)}
                 className={`px-3 py-2 text-sm rounded-md transition ${
                   sortBy === SORTBY.LATEST ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
@@ -115,12 +130,6 @@ export default function ArtworksFilterBar({ mediums, styles }: { mediums: string
                 Latest
               </button>
             </div>
-            <button
-              onClick={handleApplyFilter}
-              className="px-4 py-2 bg-primary text-white text-sm font-medium rounded-md hover:bg-primary-dark transition"
-            >
-              Apply Filter
-            </button>
             {hasFilter && (
               <button
                 onClick={handleRemoveFilter}
