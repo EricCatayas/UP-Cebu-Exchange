@@ -42,6 +42,11 @@ class UserService {
       };
     });
   }
+
+  async getRoleIdByName(roleName: string): Promise<number | null> {
+    const role = await Role.findOne({ where: { name: roleName } });
+    return role ? role.id : null;
+  }
 }
 
 export default UserService;
