@@ -14,6 +14,7 @@ async function ArtworkDetailsPage({ params }: { params: { id: string } }) {
   const currentUser = await getCurrentUser();
   const artworkService = new ArtworkService(currentUser?.userId);
   const artwork = await artworkService.getArtworkById(id);
+  const productDemandService = new ProductDemandService();
 
   if (!artwork) {
     return (
@@ -24,8 +25,8 @@ async function ArtworkDetailsPage({ params }: { params: { id: string } }) {
   }
 
   const [viewCount, wishlistCount] = await Promise.all([
-    ProductDemandService.getArtworkViewCount(id),
-    ProductDemandService.getArtworkWishlistCount(id),
+    productDemandService.getArtworkViewCount(id),
+    productDemandService.getArtworkWishlistCount(id),
   ]);
 
   return (
