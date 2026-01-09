@@ -40,6 +40,7 @@ function CreateArtworkForm({
   });
   const [newTag, setNewTag] = useState('');
   const [tagOptions, setTagOptions] = useState<string[]>(tags || []);
+  const [filteredTagOptions, setFilteredTagOptions] = useState<string[]>(tags || []);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [isNewArtist, setIsNewArtist] = useState(false);
   const [isNewMedium, setIsNewMedium] = useState(false);
@@ -78,6 +79,14 @@ function CreateArtworkForm({
       ...prev,
       medium: value,
     }));
+  };
+
+  const handleTagSearch = (searchTerm: string) => {
+    if (searchTerm.trim() === '') {
+      setFilteredTagOptions(tagOptions);
+      return;
+    }
+    setFilteredTagOptions(tagOptions.filter((tag) => tag.toLowerCase().includes(searchTerm.toLowerCase())));
   };
 
   const handleToggleTag = (tag: string) => {
@@ -531,9 +540,14 @@ function CreateArtworkForm({
       {/* Tags */}
       <div className="space-y-4">
         <h2 className="text-xl font-semibold">Tags</h2>
-        {/* todo: search tag */}
+        <input
+          type="text"
+          placeholder="Search tags..."
+          onChange={(e) => handleTagSearch(e.target.value)}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
         <div className="flex flex-wrap gap-3 max-h-60 overflow-y-auto">
-          {tagOptions?.map((tag) => (
+          {filteredTagOptions?.map((tag) => (
             <label
               key={tag}
               className="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-md hover:bg-gray-50 cursor-pointer"
@@ -547,7 +561,6 @@ function CreateArtworkForm({
               <span className="text-sm text-gray-700">{tag}</span>
             </label>
           ))}
-          {/* Todo: Add Tag */}
           <label className="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-md hover:bg-gray-50 cursor-pointer">
             <input
               type="text"
