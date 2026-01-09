@@ -3,6 +3,7 @@ import ArtistService from './ArtistService';
 import TagsService from '@/services/TagsService';
 import StylesService from '@/services/StylesService';
 import WishlistService from '@/services/WishlistService';
+import ProductDemandService from './ProductDemandService';
 import { Op } from 'sequelize';
 import {
   Artwork,
@@ -17,6 +18,7 @@ import {
   RentalPlan,
   ArtworkTag,
 } from '@/models/sequelize';
+import sequelize from '@/config/database';
 import { ArtworkDTO, PaginatedArtworks, ArtworkQueryParams } from '@/models/Artwork';
 import { similarityScore } from '@/lib/recommendations';
 import { ARTWORK_STATUS, PAGE_SIZE, SIMILAR_ARTWORK_SCORE_THRESHOLD } from '@/lib/constants';
@@ -86,11 +88,13 @@ class ArtworkService {
       where.medium = { [Op.in]: mediums };
     }
 
-    // TODO: Sorting
     if (sort) {
-      // if(sort === 'popular'){
-      //    order = [['popularityScore', 'DESC']]
-      // }
+      if (sort === 'popular') {
+        const productDemandService = new ProductDemandService();
+        const { artworks: sortedArtworks } = await productDemandService.getArtworksPopularityScores();
+        const sortedArtworkIds = sortedArtworks.map((a) => a.id);
+        order = [[sequelize.literal(`FIELD(\`Artwork\`.\`id\`, ${sortedArtworkIds.join(',')})`), 'ASC']];
+      }
       if (sort === 'latest') {
         order = [['createdAt', 'DESC']];
       }
