@@ -6,7 +6,7 @@ import { ArtistDTO } from '@/models/Artist';
 import { ArtworkCreateDTO } from '@/models/Artwork';
 import { StyleDTO } from '@/models/Style';
 import { artworkApi } from '@/lib/api/artwork';
-import { ARTWORK_STATUS, ARTWORK_STATUSES } from '@/lib/constants';
+import { ARTWORK_STATUS } from '@/lib/constants';
 import { FaPlus } from 'react-icons/fa';
 
 function CreateArtworkForm({
@@ -46,6 +46,7 @@ function CreateArtworkForm({
   const [isNewStyle, setIsNewStyle] = useState(false);
   const [images, setImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const artworkStatuses = [ARTWORK_STATUS.AVAILABLE, ARTWORK_STATUS.UNAVAILABLE];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -330,11 +331,10 @@ function CreateArtworkForm({
               id="status"
               name="status"
               value={formData.status}
-              onChange={handleChange}
               required
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              {ARTWORK_STATUSES.map((status) => (
+              {artworkStatuses.map((status) => (
                 <option key={status} value={status}>
                   {status}
                 </option>
