@@ -32,6 +32,7 @@ const Navbar: React.FC = () => {
     await logout();
     setAccountOpen(false);
     router.push('/');
+    window.location.reload();
   };
 
   return (

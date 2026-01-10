@@ -38,7 +38,7 @@ const Navbar: React.FC = () => {
   }, []);
 
   const handleCartClick = () => {
-    eventApi.beginCheckout();
+    eventApi.beginCheckout(user?.id || null);
     router.push('/checkout');
   };
 
@@ -46,6 +46,7 @@ const Navbar: React.FC = () => {
     await logout();
     setAccountOpen(false);
     router.push('/');
+    window.location.reload();
   };
 
   return (

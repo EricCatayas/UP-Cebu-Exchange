@@ -131,7 +131,12 @@ export const eventApi = {
       return { success: false, error: err?.message || 'Error logging add to wishlist event' };
     }
   },
-  async beginCheckout(): Promise<{ success: boolean; error: string | null }> {
+  async beginCheckout(userId: number | null): Promise<{ success: boolean; error: string | null }> {
+    if (userId === null) {
+      console.error('User ID is required to begin checkout');
+      return { success: false, error: 'User ID is required to begin checkout' };
+    }
+
     try {
       const response = await fetch('/api/event/log', {
         method: 'POST',
@@ -139,6 +144,8 @@ export const eventApi = {
         body: JSON.stringify({
           eventName: EVENT_NAME.BEGIN_CHECKOUT,
           category: EVENT_CATEGORY.INTENT,
+          entityType: EVENT_ENTITY_TYPE.USER,
+          entityId: userId,
         }),
       });
       const data = await response.json();
