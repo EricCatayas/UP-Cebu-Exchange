@@ -1,6 +1,7 @@
 import { Artwork, Event, WishlistItem, CartItem, RentalOrder, RentalOrderItem } from '@/models/sequelize';
 import { EVENT_CATEGORY, EVENT_NAME, ORDER_STATUS } from '@/lib/constants';
 import { Op } from 'sequelize';
+import { opTimeframe } from '@/lib/orm';
 
 class PopularityScore {
   rentedCount: number;
@@ -29,6 +30,12 @@ class PopularityScore {
 }
 
 class ProductDemandService {
+  private timeframe?: string;
+
+  constructor(timeframe?: string) {
+    this.timeframe = timeframe;
+  }
+
   // Configurable weights for popularity scoring
   // Ordered from highest to lowest priority
   private weights = {
@@ -119,6 +126,7 @@ class ProductDemandService {
     const events = await Event.findAll({
       where: {
         name: EVENT_NAME.VIEW_ARTWORK,
+        ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
       },
       attributes: ['entity_id'],
     });
@@ -133,6 +141,7 @@ class ProductDemandService {
     const cartItems = await Event.findAll({
       where: {
         name: EVENT_NAME.ADD_TO_CART,
+        ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
       },
       attributes: ['entity_id'],
     });
@@ -147,6 +156,7 @@ class ProductDemandService {
     const wishlistItems = await Event.findAll({
       where: {
         name: EVENT_NAME.ADD_TO_WISHLIST,
+        ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
       },
       attributes: ['entity_id'],
     });
@@ -159,6 +169,16 @@ class ProductDemandService {
   }
   async getArtworksOrderCounts(): Promise<{ [artworkId: number]: number }> {
     const orderItems = await RentalOrderItem.findAll({
+      include: [
+        {
+          model: RentalOrder,
+          as: 'rentalOrder',
+          where: {
+            ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
+          },
+          attributes: [],
+        },
+      ],
       attributes: ['artworkId'],
     });
     const orderCounts: { [artworkId: number]: number } = {};
@@ -176,6 +196,7 @@ class ProductDemandService {
           as: 'rentalOrder',
           where: {
             status: ORDER_STATUS.COMPLETED,
+            ...(this.timeframe && { updatedAt: opTimeframe(this.timeframe) }),
           },
           attributes: [],
         },
@@ -190,7 +211,7 @@ class ProductDemandService {
     return rentedCounts;
   }
 
-  async getArtworksPopularityScores() {
+  async getArtworksPopularityScores(limit?: number) {
     const [viewCounts, cartCounts, wishlistCounts, orderCounts, rentedCounts] = await Promise.all([
       this.getArtworksViewCounts(),
       this.getArtworksCartCounts(),
@@ -226,11 +247,10 @@ class ProductDemandService {
       };
     });
 
-    // Sort by popularity score in descending order
     const sorted = artworksWithScores.sort((a, b) => b.popularityScore - a.popularityScore);
-    // Return limited results if specified
+
     return {
-      artworks: sorted,
+      artworks: limit ? sorted.slice(0, limit) : sorted,
       popularityScores: popularityScores,
     };
   }

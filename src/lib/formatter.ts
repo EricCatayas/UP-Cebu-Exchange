@@ -6,6 +6,12 @@ export const fmtDate = (d: string | Date) => {
   return new Date(d).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
 };
 
+export const fmtMonth = (d: number) => {
+  const date = new Date();
+  date.setMonth(d - 1);
+  return date.toLocaleDateString('en-US', { month: 'long' });
+};
+
 export const fmtMoney = (amount: string | number) => {
   if (typeof amount === 'string') {
     amount = parseFloat(amount);
