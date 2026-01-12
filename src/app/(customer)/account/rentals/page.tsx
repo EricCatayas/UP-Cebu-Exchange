@@ -45,10 +45,10 @@ async function RentalsPage() {
                   </Link>
                 )}
                 {isOrderExtendable(order) && (
-                <Link href={`/account/rentals/${order.id}/extend`} className="text-blue-600 hover:underline">
-                  Extend Plan
-                </Link>
-                  )}
+                  <Link href={`/account/rentals/${order.id}/extend`} className="text-blue-600 hover:underline">
+                    Extend Plan
+                  </Link>
+                )}
                 {isOrderReturnable(order) && (
                   <Link href={`/account/rentals/${order.id}?action=return`} className="text-blue-600 hover:underline">
                     Return Products
@@ -57,6 +57,9 @@ async function RentalsPage() {
               </>
             </RentalOrderCard>
           ))}
+          {rentalOrders.length === 0 && (
+            <p className="col-span-full text-center text-gray-600">You have no rental orders.</p>
+          )}
         </div>
       </div>
     </>

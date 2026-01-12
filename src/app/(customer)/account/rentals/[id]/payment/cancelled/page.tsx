@@ -79,7 +79,7 @@ export default function PaymentCancelledPage() {
             onClick={() => router.push('/account/rentals')}
             className="flex-1 bg-gray-600 text-white font-semibold py-4 rounded-lg hover:bg-gray-700 transition-colors shadow-md"
           >
-            View All Rentals
+            View My Rentals
           </button>
           <button
             onClick={() => router.push('/')}
