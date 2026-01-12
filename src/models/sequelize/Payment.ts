@@ -12,6 +12,7 @@ class Payment extends Model<PaymentAttributes, PaymentCreationAttributes> implem
   declare status: 'Pending' | 'Completed' | 'Failed';
   declare method: string;
   declare createdAt: Date;
+  declare updatedAt: Date;
 }
 
 Payment.init(
@@ -52,12 +53,17 @@ Payment.init(
       allowNull: false,
       defaultValue: DataTypes.NOW,
     },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+    },
   },
   {
     sequelize,
     modelName: 'Payment',
     tableName: 'payments',
-    timestamps: false,
+    timestamps: true,
     indexes: [
       {
         fields: ['userId'],
