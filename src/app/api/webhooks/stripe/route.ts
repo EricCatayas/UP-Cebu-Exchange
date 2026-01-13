@@ -4,6 +4,7 @@ import RentalOrderService from '@/services/RentalOrderService';
 import { Artwork, Payment, RentalOrder } from '@/models/sequelize';
 import { PAYMENT_STATUS } from '@/lib/constants';
 import { stripe } from '@/lib/stripe';
+import { paymentCompletedNotification } from '@/lib/notifications';
 
 export async function POST(req: Request) {
   const sig = req.headers.get('stripe-signature');
@@ -30,7 +31,7 @@ export async function POST(req: Request) {
       return new Response('ok', { status: 200 });
     }
 
-    const rentalOrder = await RentalOrder.findByPk(orderId, { include: ['payment'] });
+    const rentalOrder = await RentalOrder.findByPk(orderId, { include: ['payment', 'user'] });
     if (!rentalOrder) {
       console.log(`Rental order ${orderId} not found for session ${sessionId}. Skipping.`);
       return new Response('ok', { status: 200 });
@@ -56,6 +57,8 @@ export async function POST(req: Request) {
       const eventService = new EventService(parseInt(browserSessionId));
       await eventService.completePayment(payment.id);
     }
+
+    await paymentCompletedNotification(payment, { fullName: customerEmail || rentalOrder.user.fullName });
   }
 
   return new Response('ok', { status: 200 });

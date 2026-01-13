@@ -3,6 +3,7 @@ import { RentalOrder } from '@/models/sequelize';
 import { getCurrentUser, isAdmin, canEditContent } from '@/lib/auth';
 import { isOrderReturnable } from '@/lib/order';
 import { ORDER_STATUS, PAYMENT_STATUS } from '@/lib/constants';
+import { orderReturnRequestNotification } from '@/lib/notifications';
 
 export async function POST(request: Request, { params }: { params: { id: string } }) {
   try {
@@ -31,6 +32,11 @@ export async function POST(request: Request, { params }: { params: { id: string 
 
     // Update rental order status to 'To Return'
     await RentalOrder.update({ status: ORDER_STATUS.TORETURN }, { where: { id: orderId } });
+
+    await orderReturnRequestNotification(rentalOrder.id, {
+      id: currentUser.userId,
+      fullName: rentalOrder.user.fullName,
+    });
 
     return new Response(JSON.stringify({ success: true, message: 'Rental order status updated to To Return' }), {
       status: 200,

@@ -4,6 +4,7 @@ import { getCurrentUser, isAdmin, canEditContent } from '@/lib/auth';
 import { isOrderCancelable } from '@/lib/order';
 import { ORDER_STATUS, PAYMENT_STATUS } from '@/lib/constants';
 import { getCurrentSession } from '@/lib/session';
+import { orderCancelledNotification } from '@/lib/notifications';
 
 export async function POST(request: Request, { params }: { params: { id: string } }) {
   try {
@@ -42,6 +43,8 @@ export async function POST(request: Request, { params }: { params: { id: string 
       const eventService = new EventService(session.id);
       await eventService.cancelOrder(rentalOrder.id);
     }
+
+    await orderCancelledNotification(rentalOrder.id, { id: currentUser.userId, fullName: rentalOrder.user.fullName });
 
     return new Response(JSON.stringify({ success: true, message: 'Rental order status updated to Cancelled' }), {
       status: 200,

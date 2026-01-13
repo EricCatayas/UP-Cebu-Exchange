@@ -6,6 +6,7 @@ import { User, Role } from '@/models/sequelize';
 import { hashPassword, generateToken } from '@/lib/auth';
 import { USER_ROLE, USER_STATUS } from '@/lib/constants';
 import { getCurrentSession } from '@/lib/session';
+import { newCustomerNotification } from '@/lib/notifications';
 
 // TODO: Test API
 export async function POST(request: NextRequest) {
@@ -82,6 +83,8 @@ export async function POST(request: NextRequest) {
     const emailService = new EmailService();
     // todo: handle email errors
     const { success, error } = await emailService.sendEmailVerification(email, verificationToken);
+
+    await newCustomerNotification(newUser);
 
     const session = await getCurrentSession();
     if (session) {

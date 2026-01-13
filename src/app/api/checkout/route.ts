@@ -17,6 +17,7 @@ import { getRentalFee, hasOngoingRental, isUnavailableForRental } from '@/lib/ar
 import { getCurrentSession } from '@/lib/session';
 import { ORDER_STATUS, PAYMENT_STATUS } from '@/lib/constants';
 import { fmtDate } from '@/lib/formatter';
+import { orderPlacedNotification } from '@/lib/notifications';
 
 export async function POST(request: NextRequest) {
   try {
@@ -151,6 +152,8 @@ export async function POST(request: NextRequest) {
         cartId: cart.id,
       },
     });
+
+    await orderPlacedNotification(newRentalOrder.id, { id: currentUser.userId, fullName: currentUser.email });
 
     const session = await getCurrentSession();
     if (session) {
