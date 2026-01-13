@@ -4,7 +4,7 @@ import { EventAttributes } from '@/models/Event';
 
 // Define creation attributes
 interface EventCreationAttributes
-  extends Optional<EventAttributes, 'id' | 'entity_type' | 'entity_id' | 'metadata' | 'createdAt'> {}
+  extends Optional<EventAttributes, 'id' | 'entityType' | 'entityId' | 'metadata' | 'createdAt'> {}
 
 // Define the Event model class
 class Event extends Model<EventAttributes, EventCreationAttributes> implements EventAttributes {
@@ -12,8 +12,8 @@ class Event extends Model<EventAttributes, EventCreationAttributes> implements E
   declare sessionId: number;
   declare name: string;
   declare category: string;
-  declare entity_type?: string;
-  declare entity_id?: number;
+  declare entityType?: string;
+  declare entityId?: number;
   declare metadata?: string;
   declare createdAt: Date;
 }
@@ -44,11 +44,11 @@ Event.init(
       type: DataTypes.STRING(50),
       allowNull: false,
     },
-    entity_type: {
+    entityType: {
       type: DataTypes.STRING(50),
       allowNull: true,
     },
-    entity_id: {
+    entityId: {
       type: DataTypes.INTEGER,
       allowNull: true,
     },
@@ -79,7 +79,7 @@ Event.init(
         fields: ['category'],
       },
       {
-        fields: ['entity_type', 'entity_id'],
+        fields: ['entityType', 'entityId'],
       },
       {
         fields: ['createdAt'],

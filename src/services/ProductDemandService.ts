@@ -49,7 +49,7 @@ class ProductDemandService {
   async getArtworkViewCount(artworkId: number): Promise<number> {
     const viewCount = await Event.count({
       where: {
-        entity_id: artworkId,
+        entityId: artworkId,
         name: EVENT_NAME.VIEW_ARTWORK,
       },
     });
@@ -58,7 +58,7 @@ class ProductDemandService {
   async getArtworkCartCount(artworkId: number): Promise<number> {
     const cartCount = await Event.count({
       where: {
-        entity_id: artworkId,
+        entityId: artworkId,
         name: EVENT_NAME.ADD_TO_CART,
       },
     });
@@ -67,7 +67,7 @@ class ProductDemandService {
   async getArtworkWishlistCount(artworkId: number): Promise<number> {
     const wishlistCount = await Event.count({
       where: {
-        entity_id: artworkId,
+        entityId: artworkId,
         name: EVENT_NAME.ADD_TO_WISHLIST,
       },
     });
@@ -128,11 +128,11 @@ class ProductDemandService {
         name: EVENT_NAME.VIEW_ARTWORK,
         ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
       },
-      attributes: ['entity_id'],
+      attributes: ['entityId'],
     });
     const viewCounts: { [artworkId: number]: number } = {};
     events.forEach((event) => {
-      const artworkId = event.entity_id;
+      const artworkId = event.entityId;
       viewCounts[artworkId] = (viewCounts[artworkId] || 0) + 1;
     });
     return viewCounts;
@@ -143,11 +143,11 @@ class ProductDemandService {
         name: EVENT_NAME.ADD_TO_CART,
         ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
       },
-      attributes: ['entity_id'],
+      attributes: ['entityId'],
     });
     const cartCounts: { [artworkId: number]: number } = {};
     cartItems.forEach((item) => {
-      const artworkId = item.entity_id;
+      const artworkId = item.entityId;
       cartCounts[artworkId] = (cartCounts[artworkId] || 0) + 1;
     });
     return cartCounts;
@@ -158,11 +158,11 @@ class ProductDemandService {
         name: EVENT_NAME.ADD_TO_WISHLIST,
         ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
       },
-      attributes: ['entity_id'],
+      attributes: ['entityId'],
     });
     const wishlistCounts: { [artworkId: number]: number } = {};
     wishlistItems.forEach((item) => {
-      const artworkId = item.entity_id;
+      const artworkId = item.entityId;
       wishlistCounts[artworkId] = (wishlistCounts[artworkId] || 0) + 1;
     });
     return wishlistCounts;

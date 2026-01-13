@@ -236,7 +236,7 @@ class FunnelAnalyticsService {
         name: EVENT_NAME.BEGIN_CHECKOUT,
         ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
       },
-      group: ['entity_id'],
+      group: ['entityId'],
     });
     const beginCheckoutCount = Array.isArray(groupedBeginCheckoutEvent) ? groupedBeginCheckoutEvent.length : 0;
     return beginCheckoutCount;

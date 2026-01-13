@@ -3,8 +3,8 @@ export interface EventAttributes {
   sessionId: number;
   name: string;
   category: string;
-  entity_type?: string;
-  entity_id?: number;
+  entityType?: string;
+  entityId?: number;
   metadata?: string; // JSON string
   createdAt: Date;
 }
@@ -46,8 +46,8 @@ Sample event:
   sessionId: 42,  
   name: 'view_artwork',
   category: 'engagement',
-  entity_type: 'artwork',
-  entity_id: 101,
+  entityType: 'artwork',
+  entityId: 101,
   createdAt: new Date('2024-01-01T12:00:00Z')
 },
 {
@@ -55,8 +55,8 @@ Sample event:
   sessionId: 42,  
   name: 'add_to_cart',
   category: 'interest',
-  entity_type: 'artwork',
-  entity_id: 101,
+  entityType: 'artwork',
+  entityId: 101,
   createdAt: new Date('2024-01-01T12:05:00Z')
 }
 

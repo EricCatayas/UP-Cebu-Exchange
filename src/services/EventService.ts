@@ -30,8 +30,8 @@ class EventService {
       sessionId: this.sessionId,
       name: EVENT_NAME.CREATE_ACCOUNT,
       category: EVENT_CATEGORY.INTENT,
-      entity_type: EVENT_ENTITY_TYPE.USER,
-      entity_id: userId,
+      entityType: EVENT_ENTITY_TYPE.USER,
+      entityId: userId,
     });
   }
 
@@ -40,8 +40,8 @@ class EventService {
       sessionId: this.sessionId,
       name: EVENT_NAME.VERIFY_EMAIL,
       category: EVENT_CATEGORY.INTENT,
-      entity_type: EVENT_ENTITY_TYPE.USER,
-      entity_id: userId,
+      entityType: EVENT_ENTITY_TYPE.USER,
+      entityId: userId,
     });
   }
 
@@ -50,8 +50,8 @@ class EventService {
       sessionId: this.sessionId,
       name: EVENT_NAME.LOGIN,
       category: EVENT_CATEGORY.INTENT,
-      entity_type: EVENT_ENTITY_TYPE.USER,
-      entity_id: userId,
+      entityType: EVENT_ENTITY_TYPE.USER,
+      entityId: userId,
     });
   }
 
@@ -60,8 +60,8 @@ class EventService {
       sessionId: this.sessionId,
       name: EVENT_NAME.PLACE_ORDER,
       category: EVENT_CATEGORY.INTENT,
-      entity_type: EVENT_ENTITY_TYPE.RENTAL_ORDER,
-      entity_id: rentalOrderId,
+      entityType: EVENT_ENTITY_TYPE.RENTAL_ORDER,
+      entityId: rentalOrderId,
     });
   }
 
@@ -70,8 +70,8 @@ class EventService {
       sessionId: this.sessionId,
       name: EVENT_NAME.CANCEL_ORDER,
       category: EVENT_CATEGORY.INTENT,
-      entity_type: EVENT_ENTITY_TYPE.RENTAL_ORDER,
-      entity_id: rentalOrderId,
+      entityType: EVENT_ENTITY_TYPE.RENTAL_ORDER,
+      entityId: rentalOrderId,
     });
   }
 
@@ -80,8 +80,8 @@ class EventService {
       sessionId: this.sessionId,
       name: EVENT_NAME.COMPLETE_PAYMENT,
       category: EVENT_CATEGORY.CONVERSION,
-      entity_type: EVENT_ENTITY_TYPE.PAYMENT,
-      entity_id: paymentId,
+      entityType: EVENT_ENTITY_TYPE.PAYMENT,
+      entityId: paymentId,
     });
   }
 
@@ -90,8 +90,8 @@ class EventService {
       sessionId: this.sessionId,
       name: EVENT_NAME.COMPLETE_ORDER,
       category: EVENT_CATEGORY.CONVERSION,
-      entity_type: EVENT_ENTITY_TYPE.RENTAL_ORDER,
-      entity_id: rentalOrderId,
+      entityType: EVENT_ENTITY_TYPE.RENTAL_ORDER,
+      entityId: rentalOrderId,
     });
   }
 
@@ -106,8 +106,8 @@ class EventService {
       sessionId: this.sessionId,
       name: eventName,
       category,
-      entity_type: entityType,
-      entity_id: entityId,
+      entityType: entityType,
+      entityId: entityId,
       metadata: metadata ? JSON.stringify(metadata) : undefined,
     });
   }
