@@ -1,12 +1,14 @@
 'use client';
 import Link from 'next/link';
+import React, { useState } from 'react';
 import { useModal } from '@/contexts/ModalContext';
 import { getImageUrl } from '@/lib/artwork';
 import { ARTWORK_STATUS, ARTWORK_STATUSES } from '@/lib/constants';
 import { artworkApi } from '@/lib/api/artwork';
 import { FaSearch, FaInfoCircle, FaEdit, FaTrash } from 'react-icons/fa';
 
-export default function ArtworksTable({ artworks }: { artworks: any[] }) {
+export default function ArtworksTable({ artworks: data }: { artworks: any[] }) {
+  const [artworks, setArtworks] = useState(data);
   const { openConfirmation } = useModal();
 
   const handleStatusChange = async (artworkId: number, newStatus: string) => {
@@ -28,6 +30,7 @@ export default function ArtworksTable({ artworks }: { artworks: any[] }) {
         try {
           await artworkApi.delete(artworkId);
           alert('Artwork deleted successfully.');
+          setArtworks(artworks.filter((artwork) => artwork.id !== artworkId));
         } catch (error) {
           alert(error.message);
         }
