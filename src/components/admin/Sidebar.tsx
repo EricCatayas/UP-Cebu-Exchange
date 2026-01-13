@@ -1,8 +1,11 @@
+'use client';
 import React from 'react';
 import Link from 'next/link';
+import { useNotification } from '@/contexts/NotificationContext';
 import { FaTachometerAlt, FaCalendarAlt, FaBox, FaUsers, FaBell, FaChartBar, FaPalette, FaTruck } from 'react-icons/fa';
 
 const Sidebar: React.FC = () => {
+  const { hasNewNotifications } = useNotification();
   return (
     <aside className="sticky top-0 h-screen w-64 bg-gray-800 text-white">
       <div className="p-4">
@@ -42,7 +45,12 @@ const Sidebar: React.FC = () => {
           </li>
           <li>
             <Link href="/notifications" className="flex items-center p-2 hover:bg-gray-700">
-              <FaBell className="mr-2" />
+              <div className="relative mr-2">
+                <FaBell />
+                {hasNewNotifications && (
+                  <span className="absolute -top-1 -right-1 inline-block w-2 h-2 bg-red-600 rounded-full"></span>
+                )}
+              </div>
               Notifications
             </Link>
           </li>

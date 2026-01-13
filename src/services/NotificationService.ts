@@ -54,6 +54,12 @@ class NotificationService {
       }
     );
   }
+  async hasUnreadNotifications(): Promise<boolean> {
+    const count = await Notification.count({
+      where: { isRead: false },
+    });
+    return count > 0;
+  }
 }
 
 export default NotificationService;

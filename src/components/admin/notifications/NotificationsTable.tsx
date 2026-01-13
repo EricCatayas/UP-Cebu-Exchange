@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useNotification } from '@/contexts/NotificationContext';
 import { useModal } from '@/contexts/ModalContext';
 import { NotificationDTO } from '@/models/Notification';
 import { NOTIFICATION_TYPE } from '@/lib/constants';
@@ -25,11 +26,14 @@ export default function NotificationsTable({
   const [notifications, setNotifications] = useState(data);
   const router = useRouter();
   const { openConfirmation } = useModal();
+  const { setHasNewNotifications } = useNotification();
 
   const handleReadNotification = async (notificationId: number) => {
     try {
       await notificationApi.read(notificationId);
       setNotifications(notifications.map((n) => (n.id === notificationId ? { ...n, isRead: true } : n)));
+      const anyUnread = notifications.some((n) => n.id !== notificationId && !n.isRead);
+      setHasNewNotifications(anyUnread);
     } catch (error) {
       alert(error.message);
     }
@@ -39,6 +43,7 @@ export default function NotificationsTable({
     try {
       await notificationApi.readAll();
       setNotifications(notifications.map((n) => ({ ...n, isRead: true })));
+      setHasNewNotifications(false);
     } catch (error) {
       alert(error.message);
     }
