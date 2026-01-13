@@ -9,6 +9,7 @@ import ArtworkTag from './ArtworkTag';
 import Cart from './Cart';
 import CartItem from './CartItem';
 import Event from './Event';
+import Notification from './Notification';
 import Payment from './Payment';
 import RentalOrder from './RentalOrder';
 import RentalOrderItem from './RentalOrderItem';
@@ -265,6 +266,7 @@ export {
   Cart,
   CartItem,
   Event,
+  Notification,
   Payment,
   RentalOrder,
   RentalOrderItem,
@@ -291,6 +293,7 @@ export default {
   Cart,
   CartItem,
   Event,
+  Notification,
   Payment,
   RentalOrder,
   RentalOrderItem,
