@@ -11,3 +11,12 @@ export interface NotificationAttributes {
 }
 
 export interface NotificationDTO extends NotificationAttributes {}
+
+export interface PaginatedNotifications {
+  page: number;
+  pageSize: number;
+  nextPage?: number;
+  previousPage?: number;
+  totalPages: number;
+  items: NotificationDTO[];
+}

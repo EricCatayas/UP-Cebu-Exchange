@@ -10,7 +10,7 @@ export async function newCustomerNotification(user: { id: number; fullName: stri
   const type = NOTIFICATION_TYPE.SYSTEM_ALERT;
   const message = `A new customer named ${user.fullName} has just registered.`;
   const metadata = JSON.stringify({ userId: user.id });
-  await notificationService.createNotification(title, type, message, metadata);
+  await notificationService.create(title, type, message, metadata);
 }
 
 export async function verifiedEmailNotification(user: { id: number; fullName: string }) {
@@ -19,16 +19,16 @@ export async function verifiedEmailNotification(user: { id: number; fullName: st
   const type = NOTIFICATION_TYPE.SYSTEM_ALERT;
   const message = `The email address for user ${user.fullName} has been successfully verified.`;
   const metadata = JSON.stringify({ userId: user.id });
-  await notificationService.createNotification(title, type, message, metadata);
+  await notificationService.create(title, type, message, metadata);
 }
 
 export async function orderPlacedNotification(orderId: number, user: { id: number; fullName: string }) {
   const notificationService = new NotificationService();
   const title = 'Order Placed';
   const type = NOTIFICATION_TYPE.ORDER_UPDATE;
-  const message = `An order with ID ${orderId} has been placed successfully by ${user.fullName}.`;
+  const message = `An order with ID ${orderId} has been placed by ${user.fullName}.`;
   const metadata = JSON.stringify({ orderId, userId: user.id });
-  await notificationService.createNotification(title, type, message, metadata);
+  await notificationService.create(title, type, message, metadata);
 }
 
 export async function orderCancelledNotification(orderId: number, user: { id: number; fullName: string }) {
@@ -37,7 +37,7 @@ export async function orderCancelledNotification(orderId: number, user: { id: nu
   const type = NOTIFICATION_TYPE.ORDER_UPDATE;
   const message = `The order with ID ${orderId} has been cancelled by ${user.fullName}.`;
   const metadata = JSON.stringify({ orderId, userId: user.id });
-  await notificationService.createNotification(title, type, message, metadata);
+  await notificationService.create(title, type, message, metadata);
 }
 
 export async function paymentCompletedNotification(payment: PaymentDTO, user: { fullName: string }) {
@@ -46,7 +46,7 @@ export async function paymentCompletedNotification(payment: PaymentDTO, user: { 
   const type = NOTIFICATION_TYPE.ORDER_UPDATE;
   const message = `Payment with ID ${payment.id} of amount ₱${payment.amount} has been completed successfully by ${user.fullName}.`;
   const metadata = JSON.stringify({ paymentId: payment.id });
-  await notificationService.createNotification(title, type, message, metadata);
+  await notificationService.create(title, type, message, metadata);
 }
 
 export async function orderStartReminderNotification(order: RentalOrderDTO) {
@@ -57,7 +57,7 @@ export async function orderStartReminderNotification(order: RentalOrderDTO) {
     order.startDate
   )}. Please take necessary actions.`;
   const metadata = JSON.stringify({ orderId: order.id, userId: order.userId });
-  await notificationService.createNotification(title, type, message, metadata);
+  await notificationService.create(title, type, message, metadata);
 }
 
 export async function orderEndReminderNotification(order: RentalOrderDTO) {
@@ -68,7 +68,7 @@ export async function orderEndReminderNotification(order: RentalOrderDTO) {
     order.endDate
   )}. Please take necessary actions.`;
   const metadata = JSON.stringify({ orderId: order.id, userId: order.userId });
-  await notificationService.createNotification(title, type, message, metadata);
+  await notificationService.create(title, type, message, metadata);
 }
 
 export async function orderReturnRequestNotification(orderId: number, user: { id: number; fullName: string }) {
@@ -77,5 +77,5 @@ export async function orderReturnRequestNotification(orderId: number, user: { id
   const type = NOTIFICATION_TYPE.ORDER_UPDATE;
   const message = `A return has been requested for the order with ID ${orderId} by ${user.fullName}. Please take necessary actions.`;
   const metadata = JSON.stringify({ orderId, userId: user.id });
-  await notificationService.createNotification(title, type, message, metadata);
+  await notificationService.create(title, type, message, metadata);
 }

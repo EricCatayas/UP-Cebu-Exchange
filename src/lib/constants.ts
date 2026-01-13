@@ -97,8 +97,8 @@ export const DURATION_OPTIONS = [3, 6, 12];
 export const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 export enum NOTIFICATION_TYPE {
+  NEW_ORDER = 'New Order',
   ORDER_UPDATE = 'Order Update',
-  PROMOTION = 'Promotion',
   SYSTEM_ALERT = 'System Alert',
 }
 

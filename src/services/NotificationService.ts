@@ -1,8 +1,9 @@
 import { Notification } from '@/models/sequelize';
+import { NotificationDTO, PaginatedNotifications } from '@/models/Notification';
 // import { NOTIFICATION_TYPE } from "@/lib/constants";
 
 class NotificationService {
-  async createNotification(title: string, type: string, message: string, metadata?: string): Promise<Notification> {
+  async create(title: string, type: string, message: string, metadata?: string): Promise<NotificationDTO> {
     const notification = await Notification.create({
       title,
       type,
@@ -10,13 +11,24 @@ class NotificationService {
       metadata,
       isRead: false,
     });
-    return notification;
+    return notification.toJSON();
   }
-  async getNotifications(): Promise<Notification[]> {
-    const notifications = await Notification.findAll({
+  async getAll({ page = 1, limit = 20 }): Promise<PaginatedNotifications> {
+    const offset = (page - 1) * limit;
+    const { count, rows } = await Notification.findAndCountAll({
       order: [['createdAt', 'DESC']],
+      limit,
+      offset,
     });
-    return notifications;
+    const totalPages = Math.ceil(count / limit);
+    return {
+      page,
+      pageSize: limit,
+      nextPage: page < totalPages ? page + 1 : undefined,
+      previousPage: page > 1 ? page - 1 : undefined,
+      totalPages,
+      items: rows.map((notification) => notification.toJSON()),
+    };
   }
   async markAsRead(notificationId: number, userId: number): Promise<void> {
     await Notification.update(
