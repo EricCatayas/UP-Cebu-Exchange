@@ -4,10 +4,10 @@ import Link from 'next/link';
 const Footer: React.FC = () => {
   return (
     <footer>
-      <div className="container">
+      <div className="container pt-12 pb-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <Link href="/">
-            <img src="/logo.png" alt="Logo" className="h-20 ml-8" />
+            <img src="/images/logo.png" alt="Logo" className="h-20 ml-8" />
           </Link>
           <div>
             <h3 className="text-lg font-bold mb-2">CONTACT</h3>

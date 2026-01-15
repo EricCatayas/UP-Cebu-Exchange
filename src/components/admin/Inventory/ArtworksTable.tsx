@@ -60,7 +60,7 @@ export default function ArtworksTable({ artworks: data }: { artworks: any[] }) {
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="relative h-16 w-16">
                   <img
-                    src={getImageUrl(artwork) || '/placeholder.png'}
+                    src={getImageUrl(artwork) || '/images/placeholder.png'}
                     alt={artwork.title || 'Artwork'}
                     className="object-cover rounded h-16 w-16"
                   />

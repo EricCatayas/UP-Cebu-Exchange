@@ -147,17 +147,12 @@ function ExtendRental({
                       className="w-20 h-20 bg-gray-200 rounded-md flex-shrink-0"
                       onClick={() => navigateToArtwork(artwork.id)}
                     >
-                      {artwork.images && artwork.images.length > 0 ? (
-                        <img
-                          src={getImageUrl(artwork)}
-                          alt={artwork.title}
-                          className="w-full h-full object-cover rounded-md cursor-pointer"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs cursor-pointer">
-                          Image
-                        </div>
-                      )}
+                      <img
+                        src={getImageUrl(artwork) || '/images/placeholder.png'}
+                        alt={artwork.title}
+                        className="w-full h-full object-cover rounded-md cursor-pointer"
+                      />
+                      )
                     </div>
                     <div className="flex-1 cursor-pointer" onClick={() => navigateToArtwork(artwork.id)}>
                       <h3 className="font-semibold">{artwork.title}</h3>

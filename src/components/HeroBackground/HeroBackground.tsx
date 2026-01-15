@@ -2,7 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 
 export default function HeroBackground({
-  backgroundImage = '/Landing-page-bg.png',
+  backgroundImage = '/images/landing-page-bg.png',
   children,
 }: {
   backgroundImage?: string;
