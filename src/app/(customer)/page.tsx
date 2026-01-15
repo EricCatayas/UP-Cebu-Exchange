@@ -2,9 +2,8 @@ import ArtworkCard from '@/components/ArtworkCard/ArtworkCard';
 import CategoryGrid from '@/components/CategoryGrid/CategoryGrid';
 import ArtworkCarousel from '@/components/ArtworkCarousel/ArtworkCarousel';
 import HeroBackground from '@/components/HeroBackground/HeroBackground';
-import Image from 'next/image';
 import ArtworksDisplay from '@/components/ArtworksDisplay/ArtworksDisplay';
-import VisitUs from '@/components/VisitUs/VisitUs';
+import Slider from '@/components/Slider/Slider';
 import ArtworkService from '@/services/ArtworkService';
 import StylesService from '@/services/StylesService';
 import Link from 'next/link';
@@ -89,7 +88,7 @@ export default async function Page() {
           <CategoryGrid categories={categories} />
         </section>
       </div>
-      <VisitUs />
+      <Slider />
     </>
   );
 }
