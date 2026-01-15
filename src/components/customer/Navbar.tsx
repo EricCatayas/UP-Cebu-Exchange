@@ -58,7 +58,10 @@ const Navbar: React.FC = () => {
       <div className="container mx-auto px-4 py-2 flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <Link href="/">
-            <h1 className="text-2xl font-bold">UP Cebu Exchange</h1>
+            <h1 className="text-3xl font-bold">
+              <span className="text-primary">UP</span> <span className="text-secondary">Cebu</span>{' '}
+              <span className="text-tertiary">Exchange</span>
+            </h1>
           </Link>
         </div>
         <div className="flex items-center space-x-4">

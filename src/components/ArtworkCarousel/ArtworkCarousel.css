@@ -24,8 +24,8 @@
 
 .carousel-item {
   flex: 0 0 calc(25% - 1.125rem);
-  min-width: 250px;
-  max-width: 350px;
+  min-width: 350px;
+  max-width: 450px;
 }
 
 /* Responsive breakpoints */

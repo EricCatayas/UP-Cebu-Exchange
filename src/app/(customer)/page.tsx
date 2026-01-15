@@ -2,10 +2,14 @@ import ArtworkCard from '@/components/ArtworkCard/ArtworkCard';
 import CategoryGrid from '@/components/CategoryGrid/CategoryGrid';
 import ArtworkCarousel from '@/components/ArtworkCarousel/ArtworkCarousel';
 import HeroBackground from '@/components/HeroBackground/HeroBackground';
+import Image from 'next/image';
+import ArtworksDisplay from '@/components/ArtworksDisplay/ArtworksDisplay';
+import VisitUs from '@/components/VisitUs/VisitUs';
 import ArtworkService from '@/services/ArtworkService';
 import StylesService from '@/services/StylesService';
 import Link from 'next/link';
 
+// todo: log browse event when user clicks paintings?
 export default async function Page() {
   const artworkService = new ArtworkService();
   const favorite_artworks = await artworkService.getFavoriteArtworks();
@@ -73,17 +77,8 @@ export default async function Page() {
       <div className="container px-8 py-6 max-w-7xl mx-auto">
         <section className="pb-12">
           <h2 className="text-3xl font-bold mb-6">A Few of our Favorites</h2>
-          <div
-            style={{
-              display: 'grid',
-              gap: '20px',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(300px,1fr))',
-            }}
-          >
-            {favorite_artworks.map((a) => (
-              <ArtworkCard key={a.id} artwork={a} displayInfo={false} />
-            ))}
-          </div>
+          <ArtworksDisplay artworks={favorite_artworks} />
+          {/* <ArtworksRandomized artworks={favorite_artworks} /> */}
         </section>
         <section className="py-12">
           <h2 className="text-3xl font-bold mb-6">Curated for You</h2>
@@ -93,21 +88,8 @@ export default async function Page() {
           <h2 className="text-3xl font-bold mb-6">Explore by Category</h2>
           <CategoryGrid categories={categories} />
         </section>
-        <section className="py-12">
-          <h2 className="font-playfair text-6xl font-medium mb-6">Bring Art</h2>
-          <h4 className="text-3xl mb-6">to your space</h4>
-          <p className="mb-4">
-            Receive updates on the latest artwork rentals perfect for business displays, events, and creative spaces.
-            Sign up to discover new collections from UP Cebu's emerging artists.
-          </p>
-          <div className="flex gap-2">
-            <input type="email" placeholder="Enter your email" className="flex-1 px-4 py-2 border rounded" />
-            <button className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800 transition-colors">
-              Join our Mailing List
-            </button>
-          </div>
-        </section>
       </div>
+      <VisitUs />
     </>
   );
 }
