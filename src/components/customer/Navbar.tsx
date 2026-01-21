@@ -69,7 +69,7 @@ const Navbar: React.FC = () => {
             Gallery
           </Link>
           <Link href="/about" className="font-light hover:text-gray-700">
-            About Us
+            About
           </Link>
           <Link href="/themes" className="font-light hover:text-gray-700">
             Themes
