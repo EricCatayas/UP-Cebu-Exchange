@@ -9,7 +9,7 @@ const Sidebar: React.FC = () => {
   return (
     <aside className="sticky top-0 h-screen w-64 bg-gray-800 text-white">
       <div className="p-4">
-        <Link href="/dashboard">
+        <Link href="/">
           <h2 className="text-lg font-bold">UP Cebu Exchange</h2>
         </Link>
       </div>

@@ -1,12 +1,11 @@
 import AnalyticsCard from '@/components/AnalyticsCard/AnalyticsCard';
+import Header from '@/components/admin/Header';
 
 function Dashboard() {
   return (
     <div className="px-8 py-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Overview</h1>
-      </div>
+      <Header title="Overview" />
 
       <div className="mt-8 space-y-12">
         {/* Sales */}
