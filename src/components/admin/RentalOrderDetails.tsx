@@ -125,7 +125,7 @@ export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrde
   }, [orderStatus, paymentStatus]);
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container px-8 py-6 max-w-7xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">Rental Order Details</h1>
       <RentalOrderDetails order={order} onItemClicked={navigateToInventoryDetails} />
       <div className="mt-6">

@@ -89,8 +89,7 @@ function RentalOrderDetailsWrapper({ order, action }: { order: RentalOrderDTO; a
   }, [action]);
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Rental Order Details</h1>
+    <div className="container px-8 py-6 max-w-7xl mx-auto">
       <RentalOrderDetails order={order} onItemClicked={handleRentalItemClicked} />
 
       <div className="mt-6 flex gap-4">
