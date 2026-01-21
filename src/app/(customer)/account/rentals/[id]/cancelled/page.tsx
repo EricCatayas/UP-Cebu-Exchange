@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { RentalOrderDTO } from '@/models/RentalOrder';
 import { FaCheckCircle, FaBox, FaMapMarkerAlt, FaCreditCard, FaEnvelope, FaPhone, FaClock } from 'react-icons/fa';
 import { getCurrentUser } from '@/lib/auth';
-import { APP_SUPPORT_EMAIL, ORDER_STATUS, PAYMENT_STATUS } from '@/lib/constants';
+import { APP_CONTACT_EMAIL, ORDER_STATUS, PAYMENT_STATUS } from '@/lib/constants';
 
 export default async function OrderCancelledPage({ params }: { params: { id: string } }) {
   const id = parseInt((await params).id);
@@ -55,8 +55,8 @@ export default async function OrderCancelledPage({ params }: { params: { id: str
             <div className="space-y-2">
               <p className="flex items-center gap-2 text-gray-800">
                 <FaEnvelope className="w-5 h-5 text-blue-600" />
-                <a href={`mailto:${APP_SUPPORT_EMAIL}`} className="text-blue-600 hover:underline font-medium">
-                  {APP_SUPPORT_EMAIL}
+                <a href={`mailto:${APP_CONTACT_EMAIL}`} className="text-blue-600 hover:underline font-medium">
+                  {APP_CONTACT_EMAIL}
                 </a>
               </p>
               <p className="flex items-center gap-2 text-gray-800">

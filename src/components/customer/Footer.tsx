@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import { APP_CONTACT_EMAIL } from '@/lib/constants';
 
 const Footer: React.FC = () => {
   return (
@@ -13,7 +14,7 @@ const Footer: React.FC = () => {
             <h3 className="text-lg font-bold mb-2">CONTACT</h3>
             <p className="text-sm">(+63) 987 654 3210</p>
             <p className="text-sm">
-              <a href="mailto:upcebuexchange@email.com">upcebuexchange@email.com</a>
+              <a href={`mailto:${APP_CONTACT_EMAIL}`}>{APP_CONTACT_EMAIL}</a>
             </p>
             <p className="text-sm">
               University Of The Philippines, Arts & Sciences Building, 3rd Floor, Gorordo Ave, Cebu City
@@ -21,9 +22,18 @@ const Footer: React.FC = () => {
           </div>
           <div>
             <h3 className="text-lg font-bold mb-2">ABOUT</h3>
-            <p className="text-sm">About Us</p>
-            <p className="text-sm">Terms of Service</p>
-            <p className="text-sm">Privacy Policy</p>
+            <Link href="/about">
+              <p className="text-sm">About Us</p>
+            </Link>
+            <Link href="/faq">
+              <p className="text-sm">FAQ</p>
+            </Link>
+            <Link href="/terms">
+              <p className="text-sm">Terms of Use</p>
+            </Link>
+            <Link href="/privacy">
+              <p className="text-sm">Privacy Policy</p>
+            </Link>
           </div>
           <div>
             <h3 className="text-lg font-bold mb-2">FOLLOW US</h3>

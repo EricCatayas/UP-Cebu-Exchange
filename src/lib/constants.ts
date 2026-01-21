@@ -1,6 +1,6 @@
 export const APP_NAME = 'UP Cebu Exchange';
-export const APP_EMAIL = process.env.APP_EMAIL;
-export const APP_SUPPORT_EMAIL = 'cebuinit.upcebu@up.edu.ph';
+export const APP_EMAIL = process.env.APP_EMAIL; // For system emails and config
+export const APP_CONTACT_EMAIL = 'cebuinit.upcebu@up.edu.ph'; // For contact info
 
 export enum ARTWORK_MEDIUM {
   OIL_ON_CANVAS = 'Oil on canvas',

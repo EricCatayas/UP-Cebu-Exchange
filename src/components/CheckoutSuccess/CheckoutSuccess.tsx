@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useRentalOrder } from '@/contexts/RentalOrderContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { APP_SUPPORT_EMAIL, DELIVERY_METHOD, PAYMENT_METHOD } from '@/lib/constants';
+import { APP_CONTACT_EMAIL, DELIVERY_METHOD, PAYMENT_METHOD } from '@/lib/constants';
 import { getDimension, getImageUrl } from '@/lib/artwork';
 import { FaCheckCircle, FaBox, FaMapMarkerAlt, FaCreditCard, FaEnvelope, FaPhone, FaClock } from 'react-icons/fa';
 import { RentalOrderDTO } from '@/models/RentalOrder';
@@ -259,8 +259,8 @@ function CheckoutSuccess({ rentalOrder }: { rentalOrder: RentalOrderDTO }) {
             <div className="space-y-2">
               <p className="flex items-center gap-2 text-gray-800">
                 <FaEnvelope className="w-5 h-5 text-blue-600" />
-                <a href={`mailto:${APP_SUPPORT_EMAIL}`} className="text-blue-600 hover:underline font-medium">
-                  {APP_SUPPORT_EMAIL}
+                <a href={`mailto:${APP_CONTACT_EMAIL}`} className="text-blue-600 hover:underline font-medium">
+                  {APP_CONTACT_EMAIL}
                 </a>
               </p>
               <p className="flex items-center gap-2 text-gray-800">

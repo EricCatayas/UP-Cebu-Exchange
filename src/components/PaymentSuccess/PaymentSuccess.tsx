@@ -13,7 +13,7 @@ import {
 } from 'react-icons/fa';
 import { RentalOrderDTO } from '@/models/RentalOrder';
 import { getDimension, getImageUrl } from '@/lib/artwork';
-import { APP_SUPPORT_EMAIL, DELIVERY_METHOD } from '@/lib/constants';
+import { APP_CONTACT_EMAIL, DELIVERY_METHOD } from '@/lib/constants';
 import { fmtDate } from '@/lib/formatter';
 
 export default function PaymentSuccess({ rentalOrder }: { rentalOrder: RentalOrderDTO }) {
@@ -218,8 +218,8 @@ export default function PaymentSuccess({ rentalOrder }: { rentalOrder: RentalOrd
             <div className="space-y-2">
               <p className="flex items-center gap-2 text-gray-800">
                 <FaEnvelope className="w-5 h-5 text-blue-600" />
-                <a href={`mailto:${APP_SUPPORT_EMAIL}`} className="text-blue-600 hover:underline font-medium">
-                  {APP_SUPPORT_EMAIL}
+                <a href={`mailto:${APP_CONTACT_EMAIL}`} className="text-blue-600 hover:underline font-medium">
+                  {APP_CONTACT_EMAIL}
                 </a>
               </p>
               <p className="flex items-center gap-2 text-gray-800">
