@@ -14,7 +14,7 @@ export default function ArtworksDisplay({ artworks }: { artworks: ArtworkDTO[] }
       const minGap = 15;
       const maxGap = 50;
       const minTop = 0;
-      const maxTop = 150; // pixels of vertical offset
+      const maxTop = 120; // pixels of vertical offset
 
       const newPositions: Array<{ left: number; top: number }> = [];
       let currentLeft = 0;

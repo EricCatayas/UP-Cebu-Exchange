@@ -137,11 +137,7 @@ function ArtworkDetails({
           <label htmlFor="rentalPlan" className="text-sm text-gray-600 mb-1 block">
             Choose a rental plan:
           </label>
-          <select
-            id="rentalPlan"
-            name="rentalPlan"
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
-          >
+          <select id="rentalPlan" name="rentalPlan" className="border border-gray-300 rounded-lg px-3 py-2 text-sm">
             {artwork.rentalPlans.map((plan) => (
               <option key={plan.durationMonths} value={plan.durationMonths}>
                 {plan.durationMonths} months - ₱{plan.price.toLocaleString()}
