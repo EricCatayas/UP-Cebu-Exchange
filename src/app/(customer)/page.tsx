@@ -112,12 +112,10 @@ export default async function Page() {
           <h2 className="text-3xl font-bold mb-6 slide-right-delay-600">Explore by Category</h2>
           <CategoryGrid categories={categories} />
         </section>
-      </div>
-      <section className="py-12">
-        <div className=" px-6 md:px-8">
+        <section className="py-12">
           <Slider images={images} />
-        </div>
-      </section>
+        </section>
+      </div>
     </>
   );
 }
