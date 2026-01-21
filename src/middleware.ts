@@ -12,9 +12,10 @@ const publicRoutes = [
   '/privacy-policy',
   '/register',
   '/reset-password',
-  '/terms-and-conditions',
+  '/terms-of-use',
   '/verify-email',
   '/themes', // todo: remove later
+  '/faq',
   // api routes
   '/api/auth/login',
   '/api/auth/register',

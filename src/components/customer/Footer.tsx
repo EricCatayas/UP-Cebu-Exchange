@@ -31,7 +31,7 @@ const Footer: React.FC = () => {
             <Link href="/terms">
               <p className="text-sm">Terms of Use</p>
             </Link>
-            <Link href="/privacy">
+            <Link href="/privacy-policy">
               <p className="text-sm">Privacy Policy</p>
             </Link>
           </div>

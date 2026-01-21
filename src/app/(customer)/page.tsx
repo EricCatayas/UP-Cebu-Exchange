@@ -47,6 +47,7 @@ export default async function Page() {
     },
   ];
 
+  // todo: optimize - wrap in suspense
   const styles = await StylesService.getStylesByNames(categories.map((c) => c.name));
   categories.forEach((category) => {
     const style = styles.find((s) => s.name === category.name);
@@ -55,22 +56,43 @@ export default async function Page() {
     }
   });
 
+  const images = [
+    {
+      id: 1,
+      url: '/images/gallery-1.jpg',
+      title: 'Jose T. Joya Gallery',
+      subtitle: 'Contemporary Art',
+    },
+    {
+      id: 2,
+      url: '/images/gallery-2.jpg',
+      title: 'Museum of Art',
+      subtitle: 'Cultural Heritage',
+    },
+    {
+      id: 3,
+      url: '/images/gallery-3.jpg',
+      title: 'Visit Us',
+      subtitle: 'Campus Experience',
+    },
+  ];
+
   return (
     <>
       <HeroBackground>
         <div className="container mx-auto pl-24 text-left">
-          <h1 className="font-lora font-medium text-8xl mb-4 w-fit leading-tight bg-gradient-to-br from-[#a70006] to-[#e5ca48] bg-clip-text text-transparent">
+          <h1 className="font-lora font-medium text-8xl mb-4 w-fit leading-tight bg-gradient-to-tr from-[#e53e44] to-[#e5ca48] bg-clip-text text-transparent slide-in-delay-300">
             Discover Art
             <br />
             from UP Cebu
           </h1>
-          <p className="font-lora font-bold text-white text-lg md:text-xl mb-8 max-w-2xl">
+          <p className="font-lora font-bold text-white text-lg md:text-xl mb-8 max-w-2xl slide-in-delay-400">
             We offer painting rentals crafted by the next generation of Filipino artists from the University of the
             Philippines Cebu
           </p>
           <Link
             href="/artworks"
-            className="bg-primary text-white px-8 py-3 rounded-full font-semibold transition-colors"
+            className="bg-primary text-white px-8 py-3 rounded-full font-semibold transition-colors slide-in-delay-500"
           >
             Explore Paintings
           </Link>
@@ -78,20 +100,24 @@ export default async function Page() {
       </HeroBackground>
       <div className="container px-8 py-6 max-w-7xl mx-auto">
         <section className="pb-12">
-          <h2 className="text-3xl font-bold mb-6">A Few of our Favorites</h2>
+          <h2 className="text-3xl font-bold mb-6 slide-right-delay-600">A Few of our Favorites</h2>
           <ArtworksDisplay artworks={favorite_artworks} />
           {/* <ArtworksRandomized artworks={favorite_artworks} /> */}
         </section>
         <section className="py-12">
-          <h2 className="text-3xl font-bold mb-6">Curated for You</h2>
+          <h2 className="text-3xl font-bold mb-6 slide-right-delay-600">Curated for You</h2>
           <ArtworkCarousel artworks={recommended_artworks} />
         </section>
         <section className="py-12">
-          <h2 className="text-3xl font-bold mb-6">Explore by Category</h2>
+          <h2 className="text-3xl font-bold mb-6 slide-right-delay-600">Explore by Category</h2>
           <CategoryGrid categories={categories} />
         </section>
       </div>
-      <Slider />
+      <section className="py-12">
+        <div className=" px-6 md:px-8">
+          <Slider images={images} />
+        </div>
+      </section>
     </>
   );
 }
