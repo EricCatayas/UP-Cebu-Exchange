@@ -21,6 +21,7 @@ module.exports = {
         playfair: ['Playfair Display', 'serif'],
         poppins: ['Poppins', 'sans-serif'],
         rajdhani: ['Rajdhani', 'sans-serif'],
+        lora: ['Lora', 'serif'],
       },
       fontWeight: {
         light: '300',
