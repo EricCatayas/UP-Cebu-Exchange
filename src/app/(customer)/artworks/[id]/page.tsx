@@ -42,8 +42,8 @@ async function ArtworkDetailsPage({ params }: { params: { id: string } }) {
         </div>
       </HeroBackground>
       {/* Description Section */}
-      <div className="border-t pt-6">
-        <details className="group" open>
+      <div className="border-t">
+        <details className="group px-8 py-6 max-w-7xl mx-auto" open>
           <summary className="flex justify-between items-center cursor-pointer list-none font-semibold text-lg mb-4">
             <span>Description</span>
             <svg
@@ -62,19 +62,21 @@ async function ArtworkDetailsPage({ params }: { params: { id: string } }) {
       </div>
 
       {/* More from the Artist */}
-      <div className="mt-12">
-        <h2 className="text-2xl font-bold mb-6">More from the Artist</h2>
-        <Suspense fallback={<div>Loading...</div>}>
-          <ArtworksFromArtist artistId={artwork.artistId} excludeArtworkId={artwork.id} />
-        </Suspense>
-      </div>
+      <div className="container px-8 py-6 max-w-7xl mx-auto">
+        <div className="mt-12">
+          <h2 className="text-2xl font-bold mb-6">More from the Artist</h2>
+          <Suspense fallback={<div>Loading...</div>}>
+            <ArtworksFromArtist artistId={artwork.artistId} excludeArtworkId={artwork.id} />
+          </Suspense>
+        </div>
 
-      {/* Similar Artworks */}
-      <div className="mt-12">
-        <h2 className="text-2xl font-bold mb-6">Similar Artworks</h2>
-        <Suspense fallback={<div>Loading...</div>}>
-          <SimilarArtworks artworkId={artwork.id} />
-        </Suspense>
+        {/* Similar Artworks */}
+        <div className="mt-12">
+          <h2 className="text-2xl font-bold mb-6">Similar Artworks</h2>
+          <Suspense fallback={<div>Loading...</div>}>
+            <SimilarArtworks artworkId={artwork.id} />
+          </Suspense>
+        </div>
       </div>
     </div>
   );
