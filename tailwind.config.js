@@ -18,8 +18,6 @@ module.exports = {
         cancelled: '#fca5a5',
       },
       fontFamily: {
-        playfair: ['Playfair Display', 'serif'],
-        poppins: ['Poppins', 'sans-serif'],
         rajdhani: ['Rajdhani', 'sans-serif'],
         lora: ['Lora', 'serif'],
       },

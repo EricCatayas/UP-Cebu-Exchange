@@ -1,53 +1,4 @@
 @font-face {
-  font-family: 'Playfair Display';
-  font-weight: 500;
-  font-display: swap;
-  src: url('/fonts/playfair-display/PlayfairDisplay-Medium.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Poppins';
-  font-weight: 400;
-  font-display: swap;
-  src: url('/fonts/poppins/Poppins-Regular.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Poppins';
-  font-weight: 500;
-  font-display: swap;
-  src: url('/fonts/poppins/Poppins-Medium.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Poppins';
-  font-weight: 600;
-  font-display: swap;
-  src: url('/fonts/poppins/Poppins-SemiBold.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Poppins';
-  font-weight: 700;
-  font-display: swap;
-  src: url('/fonts/poppins/Poppins-Bold.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Rajdhani';
-  font-weight: 400;
-  font-display: swap;
-  src: url('/fonts/rajdhani/Rajdhani-Regular.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Rajdhani';
-  font-weight: 300;
-  font-display: swap;
-  src: url('/fonts/rajdhani/Rajdhani-Light.ttf') format('truetype');
-}
-
-@font-face {
   font-family: 'Lora';
   font-weight: 400;
   font-display: swap;
@@ -56,9 +7,9 @@
 
 @font-face {
   font-family: 'Lora';
-  font-weight: 700;
+  font-weight: 500;
   font-display: swap;
-  src: url('/fonts/lora/static/Lora-Bold.ttf') format('truetype');
+  src: url('/fonts/lora/static/Lora-Medium.ttf') format('truetype');
 }
 
 @font-face {
@@ -66,4 +17,42 @@
   font-weight: 600;
   font-display: swap;
   src: url('/fonts/lora/static/Lora-SemiBold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Lora';
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/lora/static/Lora-Bold.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Lora';
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+  src: url('/fonts/lora/static/Lora-Italic.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Lora';
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+  src: url('/fonts/lora/static/Lora-MediumItalic.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Lora';
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+  src: url('/fonts/lora/static/Lora-SemiBoldItalic.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Lora';
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+  src: url('/fonts/lora/static/Lora-BoldItalic.ttf') format('truetype');
 }

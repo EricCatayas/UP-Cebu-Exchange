@@ -6,7 +6,6 @@ import { ModalProvider } from '@/contexts/ModalContext';
 import { Modal } from '@/components/Modal/Modal';
 import '@/app/globals.css';
 import '@/styles/fonts.css';
-import '@/styles/typography.css';
 
 // Todo: update fonts
 const geistSans = Geist({
