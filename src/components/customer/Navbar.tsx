@@ -68,6 +68,9 @@ const Navbar: React.FC = () => {
           <Link href="/artworks" className="font-light hover:text-gray-700">
             Gallery
           </Link>
+          <Link href="/about" className="font-light hover:text-gray-700">
+            About Us
+          </Link>
           <Link href="/themes" className="font-light hover:text-gray-700">
             Themes
           </Link>
