@@ -61,3 +61,31 @@ body {
   padding: 1.75rem;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
+
+@layer components {
+  .slide-in-delay-300 {
+    @apply animate-slidein opacity-0 [--slide-delay:300ms];
+  }
+  .slide-in-delay-400 {
+    @apply animate-slidein opacity-0 [--slide-delay:400ms];
+  }
+  .slide-in-delay-500 {
+    @apply animate-slidein opacity-0 [--slide-delay:500ms];
+  }
+  .slide-in-delay-600 {
+    @apply animate-slidein opacity-0 [--slide-delay:600ms];
+  }
+
+  .slide-right-delay-300 {
+    @apply animate-slideright opacity-0 [--slide-delay:300ms];
+  }
+  .slide-right-delay-400 {
+    @apply animate-slideright opacity-0 [--slide-delay:400ms];
+  }
+  .slide-right-delay-500 {
+    @apply animate-slideright opacity-0 [--slide-delay:500ms];
+  }
+  .slide-right-delay-600 {
+    @apply animate-slideright opacity-0 [--slide-delay:600ms];
+  }
+}
