@@ -14,6 +14,7 @@ const publicRoutes = [
   '/reset-password',
   '/terms-and-conditions',
   '/verify-email',
+  '/themes', // todo: remove later
   // api routes
   '/api/auth/login',
   '/api/auth/register',
@@ -38,7 +39,7 @@ const adminRoutes = [
   '/notifications',
   '/orders',
   '/reports',
-  '/themes',
+  // '/themes',
   '/users',
 ];
 
