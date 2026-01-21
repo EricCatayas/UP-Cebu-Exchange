@@ -58,10 +58,13 @@ export default async function Page() {
   return (
     <>
       <HeroBackground>
-        <div className="container mx-auto px-4 text-black text-left">
-          <h1 className="font-playfair text-8xl font-medium mb-2">Discover Art</h1>
-          <h1 className="font-poppins text-4xl md:text-6xl font-regular mb-6">from UP Cebu</h1>
-          <p className="font-poppins text-lg md:text-xl mb-8 max-w-2xl font-regular">
+        <div className="container mx-auto pl-24 text-left">
+          <h1 className="font-lora font-medium text-8xl mb-4 w-fit leading-tight bg-gradient-to-br from-[#a70006] to-[#e5ca48] bg-clip-text text-transparent">
+            Discover Art
+            <br />
+            from UP Cebu
+          </h1>
+          <p className="font-lora font-bold text-white text-lg md:text-xl mb-8 max-w-2xl">
             We offer painting rentals crafted by the next generation of Filipino artists from the University of the
             Philippines Cebu
           </p>

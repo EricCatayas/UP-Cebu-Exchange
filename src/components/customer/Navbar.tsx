@@ -58,15 +58,18 @@ const Navbar: React.FC = () => {
       <div className="container mx-auto px-4 py-2 flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <Link href="/">
-            <h1 className="text-3xl font-bold">
-              <span className="text-primary">UP</span> <span className="text-secondary">Cebu</span>{' '}
-              <span className="text-tertiary">Exchange</span>
+            <h1 className="font-lora text-3xl font-bold">
+              <span className="text-primary">UP</span> <span className="text-tertiary">Cebu</span>{' '}
+              <span className="text-secondary">Exchange</span>
             </h1>
           </Link>
         </div>
         <div className="flex items-center space-x-4">
           <Link href="/artworks" className="font-light hover:text-gray-700">
             Gallery
+          </Link>
+          <Link href="/themes" className="font-light hover:text-gray-700">
+            Themes
           </Link>
           {isLoggedIn ? (
             <>
