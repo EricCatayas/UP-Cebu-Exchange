@@ -8,6 +8,8 @@ interface SliderImage {
   url: string;
   title: string;
   subtitle: string;
+  buttonText: string;
+  onClick: () => void;
 }
 
 interface SliderProps {
@@ -63,8 +65,11 @@ export default function Slider({ images }: SliderProps) {
               >
                 <p className="text-gray-300 text-sm md:text-base mb-2 uppercase tracking-wider">{image.subtitle}</p>
                 <h2 className="text-white font-bold text-3xl md:text-5xl mb-4 leading-tight">{image.title}</h2>
-                <button className="px-6 py-3 bg-white text-black font-semibold rounded-lg transition-all duration-300 hover:bg-gray-200 hover:scale-105 active:scale-95 shadow-lg">
-                  Explore
+                <button
+                  onClick={() => image.onClick()}
+                  className="px-6 py-3 bg-white text-black font-semibold rounded-lg transition-all duration-300 hover:bg-gray-200 hover:scale-105 active:scale-95 shadow-lg"
+                >
+                  {image.buttonText}
                 </button>
               </div>
 

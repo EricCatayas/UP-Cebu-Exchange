@@ -3,7 +3,7 @@ import CategoryGrid from '@/components/CategoryGrid/CategoryGrid';
 import ArtworkCarousel from '@/components/ArtworkCarousel/ArtworkCarousel';
 import HeroBackground from '@/components/HeroBackground/HeroBackground';
 import ArtworksDisplay from '@/components/ArtworksDisplay/ArtworksDisplay';
-import Slider from '@/components/Slider/Slider';
+import HomeSlider from '@/components/Slider/HomeSlider';
 import ArtworkService from '@/services/ArtworkService';
 import StylesService from '@/services/StylesService';
 import Link from 'next/link';
@@ -56,27 +56,6 @@ export default async function Page() {
     }
   });
 
-  const images = [
-    {
-      id: 1,
-      url: '/images/gallery-1.jpg',
-      title: 'Jose T. Joya Gallery',
-      subtitle: 'Contemporary Art',
-    },
-    {
-      id: 2,
-      url: '/images/gallery-2.jpg',
-      title: 'Museum of Art',
-      subtitle: 'Cultural Heritage',
-    },
-    {
-      id: 3,
-      url: '/images/gallery-3.jpg',
-      title: 'Visit Us',
-      subtitle: 'Campus Experience',
-    },
-  ];
-
   return (
     <>
       <HeroBackground>
@@ -113,7 +92,7 @@ export default async function Page() {
           <CategoryGrid categories={categories} />
         </section>
         <section className="py-12">
-          <Slider images={images} />
+          <HomeSlider />
         </section>
       </div>
     </>

@@ -1,3 +1,5 @@
+'use client';
+
 import HeroBackground from '@/components/HeroBackground/HeroBackground';
 import Slider from '@/components/Slider/Slider';
 import { FaGithub, FaFacebook } from 'react-icons/fa';
@@ -30,24 +32,32 @@ export default function Page() {
       url: '/images/temp3.jpg',
       title: 'Workshop',
       subtitle: 'Events',
+      buttonText: 'Learn More',
+      onClick: () => {},
     },
     {
       id: 2,
       url: '/images/temp2.jpg',
       title: 'Museum of Art',
       subtitle: 'Cultural Heritage',
+      buttonText: 'Learn More',
+      onClick: () => {},
     },
     {
       id: 3,
       url: '/images/temp1.jpg',
-      title: 'Visit Us',
-      subtitle: 'Campus Experience',
+      title: 'Jose T. Joya Gallery',
+      subtitle: 'Contemporary Art',
+      buttonText: 'Learn More',
+      onClick: () => {},
     },
     {
       id: 4,
       url: '/images/temp4.jpg',
       title: 'Visit Us',
       subtitle: 'Campus Experience',
+      buttonText: 'Learn More',
+      onClick: () => {},
     },
   ];
   // TODO: About Us
