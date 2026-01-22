@@ -12,7 +12,7 @@ import { useRentalOrder } from '@/contexts/RentalOrderContext';
 import { useUserAddress } from '@/contexts/UserAddressContext';
 import { getDimension, getImageUrl, getRentalFee } from '@/lib/artwork';
 import { fmtDate, fmtMoney } from '@/lib/formatter';
-import { eventApi } from '@/lib/api/event';
+import { getUnavailableReason } from '@/lib/order';
 import { rentalOrderApi } from '@/lib/api/rentalOrder';
 
 function RentalCheckout() {
@@ -164,7 +164,7 @@ function RentalCheckout() {
                           className="w-5 h-5 rounded border-gray-300 cursor-pointer"
                         />
                       ) : (
-                        <div title="This artwork is currently unavailable for rent.">
+                        <div title={getUnavailableReason(item.status)}>
                           <FaExclamationTriangle className="text-red-500 w-5 h-5" />
                         </div>
                       )}

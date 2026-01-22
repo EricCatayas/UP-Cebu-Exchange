@@ -1,5 +1,6 @@
 import { RentalOrderDTO } from '@/models/RentalOrder';
 import { ORDER_STATUS, PAYMENT_STATUS } from '@/lib/constants';
+import { CART_STATUS } from '@/models/CartItem';
 
 export function getDaysRemaining(order: RentalOrderDTO): number {
   const today = new Date();
@@ -44,6 +45,19 @@ export function getOrderStatus(order: RentalOrderDTO): string {
 
   return order.status;
 }
+
+export const getUnavailableReason = (status: CART_STATUS) => {
+  switch (status) {
+    case CART_STATUS.UNAVAILABLE:
+      return 'This artwork is currently not available for rent.';
+    case CART_STATUS.RENTED:
+      return 'This artwork is currently rented out.';
+    case CART_STATUS.PENDING_ORDER_EXISTS:
+      return 'This artwork is in a pending order.';
+    default:
+      return null;
+  }
+};
 
 export function isOrderOverdue(order: RentalOrderDTO): boolean {
   const today = new Date();

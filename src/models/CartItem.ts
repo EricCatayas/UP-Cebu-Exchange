@@ -6,6 +6,13 @@ export interface CartItemAttributes {
   createdAt: Date;
 }
 
+export enum CART_STATUS {
+  AVAILABLE = 'AVAILABLE',
+  UNAVAILABLE = 'UNAVAILABLE',
+  RENTED = 'RENTED',
+  PENDING_ORDER_EXISTS = 'PENDING_ORDER_EXISTS',
+}
+
 export interface CartItemDTO {
   id: number;
   cartId: number;
@@ -13,4 +20,5 @@ export interface CartItemDTO {
   artwork: ArtworkDTO;
   createdAt: Date;
   isAvailable: boolean;
+  status: CART_STATUS;
 }

@@ -1,6 +1,7 @@
+import RentalOrderService from '@/services/RentalOrderService';
 import { Artist, Artwork, ArtworkImage, Cart, CartItem, RentalPlan } from '@/models/sequelize';
-import { CartItemDTO } from '@/models/CartItem';
-import { ARTWORK_STATUS } from '@/lib/constants';
+import { CartItemDTO, CART_STATUS } from '@/models/CartItem';
+import { ARTWORK_STATUS, ORDER_STATUS } from '@/lib/constants';
 
 class CartService {
   async addItem(userId: number, artworkId: number) {
@@ -69,17 +70,39 @@ class CartService {
     if (!cart) {
       return [];
     }
+
+    const rentalOrderService = new RentalOrderService();
+    const userOrders = await rentalOrderService.getUserOrders(userId);
+    const pendingUserOrders = userOrders.filter((order) => order.status === ORDER_STATUS.PENDING);
+    const pendingArtworkIds = new Set<number>();
+    pendingUserOrders.forEach((order) => {
+      order.items.forEach((item) => {
+        pendingArtworkIds.add(item.artworkId);
+      });
+    });
+
+    false;
+
     return cart.cartItems.map((item) => {
       const cartItem = item.toJSON();
       const artwork = cartItem.artwork;
       const isAvailable = artwork.status === ARTWORK_STATUS.AVAILABLE;
+      const isRented = artwork.status === ARTWORK_STATUS.RENTED;
+      const hasItemInPendingOrder = pendingArtworkIds.has(item.artworkId);
       return {
         id: cartItem.id,
         cartId: cartItem.cartId,
         artworkId: cartItem.artworkId,
         artwork: artwork,
         createdAt: cartItem.createdAt,
-        isAvailable,
+        isAvailable: isAvailable && !hasItemInPendingOrder,
+        status: hasItemInPendingOrder
+          ? CART_STATUS.PENDING_ORDER_EXISTS
+          : isRented
+            ? CART_STATUS.RENTED
+            : isAvailable
+              ? CART_STATUS.AVAILABLE
+              : CART_STATUS.UNAVAILABLE,
       };
     });
   }
