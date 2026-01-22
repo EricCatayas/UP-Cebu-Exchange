@@ -1,16 +1,15 @@
 import EventService from '@/services/EventService';
 import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth';
-import { hasSession, createSession, getCurrentSession } from '@/lib/session';
+import { createSession, getCurrentSession } from '@/lib/session';
 
 // TODO: Test API
 export async function GET(request: NextRequest) {
   try {
-    const hasSessionStored = await hasSession();
+    const session = await getCurrentSession();
 
-    if (hasSessionStored) {
+    if (session) {
       console.log('Existing session found.');
-      const session = await getCurrentSession();
       return NextResponse.json({
         sessionId: session.sessionId,
       });
