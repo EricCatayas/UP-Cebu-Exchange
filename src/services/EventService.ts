@@ -25,6 +25,15 @@ class EventService {
     });
   }
 
+  async setCookiePreference(preference: 'accept' | 'reject') {
+    await Event.create({
+      sessionId: this.sessionId,
+      name: EVENT_NAME.COOKIE_PREFERENCE,
+      category: EVENT_CATEGORY.SYSTEM,
+      metadata: JSON.stringify({ preference }),
+    });
+  }
+
   async createAccount(userId: number) {
     await Event.create({
       sessionId: this.sessionId,

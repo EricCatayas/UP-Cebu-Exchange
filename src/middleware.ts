@@ -14,6 +14,7 @@ const publicRoutes = [
   '/reset-password',
   '/terms-of-use',
   '/verify-email',
+  '/settings',
   '/themes', // todo: remove later
   '/faq',
   // api routes

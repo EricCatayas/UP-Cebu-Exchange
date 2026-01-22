@@ -60,6 +60,7 @@ export const ERROR_MESSAGE = {
 
 export enum EVENT_NAME {
   VISIT_SITE = 'visit_site',
+  COOKIE_PREFERENCE = 'cookie_preference',
   BROWSE_ARTWORKS = 'browse_artworks',
   SEARCH_ARTWORKS = 'search_artworks',
   VIEW_ARTWORK = 'view_artwork',
@@ -83,6 +84,7 @@ export enum EVENT_CATEGORY {
   INTEREST = 'interest',
   INTENT = 'intent',
   CONVERSION = 'conversion',
+  SYSTEM = 'system',
 }
 
 export enum EVENT_ENTITY_TYPE {
