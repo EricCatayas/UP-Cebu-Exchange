@@ -153,7 +153,7 @@ export default function PaymentSuccess({ rentalOrder }: { rentalOrder: RentalOrd
                   <FaClock className="w-5 h-5 mt-0.5 text-orange-600" />
                   <div>
                     <p className="font-medium">Pickup Hours:</p>
-                    <p>Monday - Friday: 9:00 AM - 5:00 PM</p>
+                    <p>Monday - Friday: 8:00 AM - 5:00 PM</p>
                   </div>
                 </div>
               </div>

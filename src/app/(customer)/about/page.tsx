@@ -93,8 +93,7 @@ export default function Page() {
               UP Cebu Exchange is a platform that showcases and supports artworks crafted by student Filipino artists
               from the University of the Philippines Cebu. We provide a space where students can share their creative
               narratives, develop their artistic identity, and make their works more accessible through an art rental
-              experience. Through UP Cebu Exchange, we aim to foster sustainability, creativity, and meaningful
-              engagement between artists and the community.
+              experience.
             </p>
           </div>
         </div>
@@ -103,11 +102,12 @@ export default function Page() {
         <div className="max-w-4xl mx-auto px-4 py-12">
           <section className="mb-12">
             <h2 className="text-3xl font-bold mb-4">Our Mission</h2>
-            <p className="text-lg text-gray-700">
+            <p className="text-lg text-gray-700 mb-4">
               Our mission is to connect students with people who want to buy or rent unique, student-made products and
               artworks. From handmade items to original designs, we give young creators a space to share their work,
               earn from their skills, and reach a wider audience.
             </p>
+            <Slider images={images} />
           </section>
           <section className="mb-12">
             <h2 className="text-3xl font-bold mb-4">Our Vision</h2>
@@ -121,7 +121,7 @@ export default function Page() {
             <div className="flex gap-8 items-start mb-4">
               <p className="text-lg text-gray-700 flex-1">
                 You can visit us at the UP Cebu Business Incubator for Information Technology (inIT) located at the
-                {locations.office.address}. We are open from Monday to Friday, 9:00 AM to 5:00 PM. Feel free to drop by
+                {locations.office.address}. We are open from Monday to Friday, 8:00 AM to 5:00 PM. Feel free to drop by
                 and explore our collection of student-made artworks!
               </p>
               <iframe
@@ -134,7 +134,6 @@ export default function Page() {
                 referrerPolicy="no-referrer-when-downgrade"
               ></iframe>
             </div>
-            <Slider images={images} />
           </section>
           <section className="mb-12">
             <h2 className="text-3xl font-bold mb-8">Our Team</h2>
