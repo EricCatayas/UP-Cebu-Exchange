@@ -4,10 +4,12 @@ import Link from 'next/link';
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import { useSession } from '@/contexts/SessionContext';
 import { eventApi } from '@/lib/api/event';
 
 const Navbar: React.FC = () => {
   const { user, isLoggedIn, logout } = useAuth();
+  const { sessionId } = useSession();
   const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
@@ -38,7 +40,7 @@ const Navbar: React.FC = () => {
   }, []);
 
   const handleCartClick = () => {
-    eventApi.beginCheckout(user?.id || null);
+    if (sessionId) eventApi.beginCheckout(user?.id || null);
     router.push('/checkout');
   };
 

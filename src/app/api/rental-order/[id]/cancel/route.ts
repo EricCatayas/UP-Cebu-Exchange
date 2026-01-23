@@ -1,6 +1,7 @@
 import EventService from '@/services/EventService';
 import { RentalOrder, Payment } from '@/models/sequelize';
-import { getCurrentUser, isAdmin, canEditContent } from '@/lib/auth';
+import { getCurrentUser } from '@/lib/auth';
+import { isAdmin, canEditContent } from '@/lib/role';
 import { isOrderCancelable } from '@/lib/order';
 import { ORDER_STATUS, PAYMENT_STATUS } from '@/lib/constants';
 import { getCurrentSession } from '@/lib/session';

@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { User, Role } from '@/models/sequelize';
 import { hashPassword } from '@/lib/auth';
 import { USER_ROLE, USER_STATUS } from '@/lib/constants';
-import { getCurrentUser, isAdmin, canEditContent } from '@/lib/auth';
+import { getCurrentUser } from '@/lib/auth';
+import { isAdmin, canEditContent } from '@/lib/role';
 
 export async function POST(request: NextRequest) {
   try {

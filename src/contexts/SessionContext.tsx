@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState, useMemo } from 'react';
+import { useCookie } from '@/contexts/CookieContext';
 
 interface SessionContextType {
   sessionId: string | null;
@@ -11,8 +12,11 @@ interface SessionContextType {
 const SessionContext = createContext<SessionContextType | undefined>(undefined);
 
 export function SessionProvider({ children }: { children: React.ReactNode }) {
+  const { canTrack } = useCookie();
+
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [prevCanTrack, setPrevCanTrack] = useState<boolean | null>(null);
 
   const endSession = async () => {
     try {
@@ -29,9 +33,14 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  // Check session on mount
+  // Create session on canTrack change
   useEffect(() => {
-    const fetchSession = async () => {
+    const fetchOrCreateSession = async () => {
+      if (!canTrack) {
+        setSessionId(null);
+        setIsLoading(false);
+        return;
+      }
       try {
         const response = await fetch('/api/session');
         if (response.ok) {
@@ -47,29 +56,38 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
         setIsLoading(false);
       }
     };
-    fetchSession();
-  }, []);
+    fetchOrCreateSession();
+  }, [canTrack]);
 
-  // Todo: Runs on page reload instead of browser close. Hard to fix
+  // End session when canTrack changes from true to false
+  // i.e user later rejects cookies
+  useEffect(() => {
+    if (prevCanTrack === true && canTrack === false) {
+      endSession();
+    }
+    setPrevCanTrack(canTrack);
+  }, [canTrack]);
+
+  // // Check session on mount
   // useEffect(() => {
-  //   const handleBeforeUnload = () => {
-  //     if (sessionId) {
-  //       navigator.sendBeacon('/api/session/end');
+  //   const fetchSession = async () => {
+  //     try {
+  //       const response = await fetch('/api/session');
+  //       if (response.ok) {
+  //         const data = await response.json();
+  //         setSessionId(data.sessionId);
+  //       } else {
+  //         setSessionId(null);
+  //       }
+  //     } catch (error) {
+  //       console.error('Session fetch failed:', error);
+  //       setSessionId(null);
+  //     } finally {
+  //       setIsLoading(false);
   //     }
   //   };
-
-  //   // Listen for browser/tab close
-  //   window.addEventListener('beforeunload', handleBeforeUnload);
-
-  //   // Cleanup function - called when component unmounts
-  //   return () => {
-  //     window.removeEventListener('beforeunload', handleBeforeUnload);
-
-  //     if (sessionId) {
-  //       endSession();
-  //     }
-  //   };
-  // }, [sessionId]);
+  //   fetchSession();
+  // }, []);
 
   const value = useMemo(
     () => ({

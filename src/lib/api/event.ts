@@ -1,9 +1,15 @@
+'use client';
+import { useCookie } from '@/contexts/CookieContext';
 import { EVENT_CATEGORY, EVENT_NAME, EVENT_ENTITY_TYPE } from '@/lib/constants';
 import { ArtworkQueryParams } from '@/models/Artwork';
+import { canTrackCookies } from '@/lib/cookies';
 import { sign } from 'crypto';
 
 export const eventApi = {
   async visitSite(): Promise<{ success: boolean; error: string | null }> {
+    if (!canTrackCookies()) {
+      return { success: false, error: 'Tracking not allowed by user' };
+    }
     try {
       const response = await fetch('/api/event/log', {
         method: 'POST',
@@ -24,6 +30,12 @@ export const eventApi = {
     }
   },
   async browseArtworks(): Promise<{ success: boolean; error: string | null }> {
+    if (!canTrackCookies()) {
+      console.log('Tracking not allowed by user');
+      return { success: false, error: 'Tracking not allowed by user' };
+    } else {
+      console.log('Tracking allowed by user');
+    }
     try {
       const response = await fetch('/api/event/log', {
         method: 'POST',
@@ -44,6 +56,9 @@ export const eventApi = {
     }
   },
   async searchArtworks(query: ArtworkQueryParams): Promise<{ success: boolean; error: string | null }> {
+    if (!canTrackCookies()) {
+      return { success: false, error: 'Tracking not allowed by user' };
+    }
     try {
       const response = await fetch('/api/event/log', {
         method: 'POST',
@@ -65,6 +80,9 @@ export const eventApi = {
     }
   },
   async viewArtwork(artworkId: number): Promise<{ success: boolean; error: string | null }> {
+    if (!canTrackCookies()) {
+      return { success: false, error: 'Tracking not allowed by user' };
+    }
     try {
       const response = await fetch('/api/event/log', {
         method: 'POST',
@@ -88,6 +106,9 @@ export const eventApi = {
   },
 
   async addToCart(artworkId: number): Promise<{ success: boolean; error: string | null }> {
+    if (!canTrackCookies()) {
+      return { success: false, error: 'Tracking not allowed by user' };
+    }
     try {
       const response = await fetch('/api/event/log', {
         method: 'POST',
@@ -110,6 +131,9 @@ export const eventApi = {
     }
   },
   async addToWishlist(artworkId: number): Promise<{ success: boolean; error: string | null }> {
+    if (!canTrackCookies()) {
+      return { success: false, error: 'Tracking not allowed by user' };
+    }
     try {
       const response = await fetch('/api/event/log', {
         method: 'POST',
@@ -136,6 +160,9 @@ export const eventApi = {
       console.error('User ID is required to begin checkout');
       return { success: false, error: 'User ID is required to begin checkout' };
     }
+    if (!canTrackCookies()) {
+      return { success: false, error: 'Tracking not allowed by user' };
+    }
 
     try {
       const response = await fetch('/api/event/log', {
@@ -159,6 +186,9 @@ export const eventApi = {
     }
   },
   async setAddress(): Promise<{ success: boolean; error: string | null }> {
+    if (!canTrackCookies()) {
+      return { success: false, error: 'Tracking not allowed by user' };
+    }
     try {
       const response = await fetch('/api/event/log', {
         method: 'POST',
@@ -179,6 +209,9 @@ export const eventApi = {
     }
   },
   async signRentalAgreement(): Promise<{ success: boolean; error: string | null }> {
+    if (!canTrackCookies()) {
+      return { success: false, error: 'Tracking not allowed by user' };
+    }
     try {
       const response = await fetch('/api/event/log', {
         method: 'POST',

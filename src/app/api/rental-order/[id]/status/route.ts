@@ -1,7 +1,8 @@
 import EventService from '@/services/EventService';
 import RentalOrderService from '@/services/RentalOrderService';
 import { RentalOrder } from '@/models/sequelize';
-import { getCurrentUser, isAdmin, canEditContent } from '@/lib/auth';
+import { getCurrentUser } from '@/lib/auth';
+import { isAdmin, canEditContent } from '@/lib/role';
 import { ORDER_STATUS, ORDER_STATUSES } from '@/lib/constants';
 import { getCurrentSession } from '@/lib/session';
 

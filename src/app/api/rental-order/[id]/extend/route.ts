@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import RentalOrderService from '@/services/RentalOrderService';
 import { Address, RentalOrder, RentalOrderItem, Payment } from '@/models/sequelize';
-import { getCurrentUser, isAdmin, canEditContent } from '@/lib/auth';
+import { getCurrentUser } from '@/lib/auth';
 import { getRentalFee, hasOngoingRental, isUnavailableForRental } from '@/lib/artwork';
 import { ExtendRentalOrderDTO } from '@/models/RentalOrder';
 import { fmtDate } from '@/lib/formatter';

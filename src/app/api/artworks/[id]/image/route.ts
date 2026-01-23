@@ -1,7 +1,8 @@
 import ImageService from '@/services/ImageService';
 import { NextRequest, NextResponse } from 'next/server';
 import { Artwork, ArtworkImage } from '@/models/sequelize';
-import { getCurrentUser, isAdmin, canEditContent } from '@/lib/auth';
+import { getCurrentUser } from '@/lib/auth';
+import { isAdmin, canEditContent } from '@/lib/role';
 import { ARTWORK_STATUSES } from '@/lib/constants';
 
 // Todo: test

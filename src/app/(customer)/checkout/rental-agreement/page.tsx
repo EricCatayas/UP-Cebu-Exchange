@@ -2,6 +2,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { useRentalOrder } from '@/contexts/RentalOrderContext';
+import { useSession } from '@/contexts/SessionContext';
 import { DELIVERY_FEE, DELIVERY_METHOD } from '@/lib/constants';
 import { getDimension, getImageUrl } from '@/lib/artwork';
 import { eventApi } from '@/lib/api/event';
@@ -20,12 +21,19 @@ function RentalAgreement() {
     setContractSigned,
   } = useRentalOrder();
 
+  const { sessionId } = useSession();
+
   const router = useRouter();
 
   const handleSignAgreement = () => {
     setContractSigned(true);
-    eventApi.signRentalAgreement();
+    logSignAgreementEvent();
     router.push('/checkout');
+  };
+
+  const logSignAgreementEvent = () => {
+    if (!sessionId) return;
+    eventApi.signRentalAgreement();
   };
 
   return (

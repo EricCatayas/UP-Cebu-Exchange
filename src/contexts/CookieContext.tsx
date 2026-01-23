@@ -7,7 +7,7 @@ interface CookieContextType {
   hasChosenPreference: boolean;
   acceptCookies: () => void;
   rejectCookies: () => void;
-  canTrack: () => boolean;
+  canTrack: boolean;
 }
 
 const CookieContext = createContext<CookieContextType | undefined>(undefined);
@@ -15,40 +15,28 @@ const CookieContext = createContext<CookieContextType | undefined>(undefined);
 export function CookieProvider({ children }: { children: React.ReactNode }) {
   const [cookiePreference, setCookiePreferenceState] = useState<'accept' | 'reject' | null>(null);
   const [hasChosenPreference, setHasChosenPreference] = useState(false);
+  const [canTrack, setCanTrack] = useState(false);
 
   // Initialize from localStorage on client
   useEffect(() => {
     const preference = getCookiePreference();
     setCookiePreferenceState(preference);
     setHasChosenPreference(hasUserChosenCookiePreference());
+    setCanTrack(preference === 'accept');
   }, []);
 
   const acceptCookies = async () => {
     setCookiePreference('accept');
     setCookiePreferenceState('accept');
-    await setCookiePreferenceServer('accept');
     setHasChosenPreference(true);
+    setCanTrack(true);
   };
 
   const rejectCookies = async () => {
     setCookiePreference('reject');
     setCookiePreferenceState('reject');
-    await setCookiePreferenceServer('reject');
     setHasChosenPreference(true);
-  };
-
-  const canTrack = () => {
-    return cookiePreference === 'accept';
-  };
-
-  const setCookiePreferenceServer = async (preference: 'accept' | 'reject') => {
-    await fetch('/api/session/cookies', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ preference }),
-    });
+    setCanTrack(false);
   };
 
   return (

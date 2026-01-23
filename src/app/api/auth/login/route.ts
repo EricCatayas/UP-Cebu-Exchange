@@ -1,7 +1,8 @@
 import EventService from '@/services/EventService';
 import { NextRequest, NextResponse } from 'next/server';
 import { User, Role } from '@/models/sequelize';
-import { isAdmin, verifyPassword, generateAuthToken, setAuthCookie } from '@/lib/auth';
+import { verifyPassword, generateAuthToken, setAuthCookie } from '@/lib/auth';
+import { isAdmin, canEditContent } from '@/lib/role';
 import { getCurrentSession, updateSessionUser } from '@/lib/session';
 import { ERROR_MESSAGE } from '@/lib/constants';
 

@@ -10,7 +10,8 @@ import {
   RentalPlan,
 } from '@/models/sequelize';
 import { RentalOrderCreateDTO } from '@/models/RentalOrder';
-import { getCurrentUser, isAdmin, canEditContent } from '@/lib/auth';
+import { getCurrentUser } from '@/lib/auth';
+import { isAdmin, canEditContent } from '@/lib/role';
 import { getRentalFee } from '@/lib/artwork';
 import { ORDER_STATUS, PAYMENT_STATUS } from '@/lib/constants';
 

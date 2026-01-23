@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Address, UserAddress } from '@/models/sequelize';
-import { getCurrentUser, isAdmin } from '@/lib/auth';
+import { getCurrentUser } from '@/lib/auth';
+import { isAdmin, canEditContent } from '@/lib/role';
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {

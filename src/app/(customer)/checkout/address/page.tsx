@@ -4,13 +4,20 @@ import { useUserAddress } from '@/contexts/UserAddressContext';
 import AddAddressForm from '@/components/form/Address/AddAddress';
 import EditAddressForm from '@/components/form/Address/EditAddress';
 import { AddressDTO } from '@/models/Address';
+import { useSession } from '@/contexts/SessionContext';
 import { eventApi } from '@/lib/api/event';
 
 export default function CheckoutAddressPage() {
   const { address, setAddress } = useUserAddress();
+  const { sessionId } = useSession();
 
   const handleSetAddress = (newAddress: AddressDTO) => {
     setAddress(newAddress);
+    logSetAddressEvent();
+  };
+
+  const logSetAddressEvent = () => {
+    if (!sessionId) return;
     eventApi.setAddress();
   };
 

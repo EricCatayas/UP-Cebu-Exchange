@@ -52,9 +52,10 @@ export default function ArtworksFilterBar({ mediums, styles }: { mediums: string
 
   const applyFilter = () => {
     const params = new URLSearchParams();
+    const trimmedSearch = searchQuery.trim();
 
-    if (searchQuery.trim()) {
-      params.set('search', searchQuery.trim());
+    if (trimmedSearch) {
+      params.set('search', trimmedSearch);
     }
 
     if (sortBy) {
@@ -69,12 +70,17 @@ export default function ArtworksFilterBar({ mediums, styles }: { mediums: string
       params.set('mediums', selectedMediums.join(','));
     }
 
-    eventApi.searchArtworks({
-      search: searchQuery.trim(),
-      sort: sortBy,
-      styleIds: selectedStyleIds,
-      mediums: selectedMediums,
-    });
+    // Only apply filter and track event if there are actual filter values
+    const hasAnyFilter = trimmedSearch || sortBy || selectedStyleIds.length > 0 || selectedMediums.length > 0;
+
+    if (hasAnyFilter) {
+      eventApi.searchArtworks({
+        search: trimmedSearch,
+        sort: sortBy,
+        styleIds: selectedStyleIds,
+        mediums: selectedMediums,
+      });
+    }
 
     // Update URL with new parameters
     router.push(`?${params.toString()}`, { scroll: false });
@@ -89,10 +95,16 @@ export default function ArtworksFilterBar({ mediums, styles }: { mediums: string
   };
 
   useEffect(() => {
-    applyFilter();
+    // Only apply filter if there are actual values to filter by
+    if (sortBy || selectedStyleIds.length > 0 || selectedMediums.length > 0) {
+      applyFilter();
+    }
   }, [sortBy, selectedStyleIds, selectedMediums]);
 
   useEffect(() => {
+    // Only apply filter if search query is not empty
+    if (!searchQuery.trim()) return;
+
     const delayDebounceFn = setTimeout(() => {
       applyFilter();
     }, 500);

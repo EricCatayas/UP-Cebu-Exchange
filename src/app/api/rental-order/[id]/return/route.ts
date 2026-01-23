@@ -1,6 +1,7 @@
 import RentalOrderService from '@/services/RentalOrderService';
 import { RentalOrder } from '@/models/sequelize';
-import { getCurrentUser, isAdmin, canEditContent } from '@/lib/auth';
+import { getCurrentUser } from '@/lib/auth';
+import { isAdmin, canEditContent } from '@/lib/role';
 import { isOrderReturnable } from '@/lib/order';
 import { ORDER_STATUS, PAYMENT_STATUS } from '@/lib/constants';
 import { orderReturnRequestNotification } from '@/lib/notifications';

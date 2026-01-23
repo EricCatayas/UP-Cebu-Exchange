@@ -1,7 +1,7 @@
 import RentalOrderService from '@/services/RentalOrderService';
 import { RentalOrder, RentalOrderItem } from '@/models/sequelize';
 import { RentalOrderItemDTO } from '@/models/RentalOrderItem';
-import { getCurrentUser, isAdmin, canEditContent } from '@/lib/auth';
+import { getCurrentUser } from '@/lib/auth';
 import { isOrderReturnable } from '@/lib/order';
 import { getImageUrls } from '@/lib/artwork';
 import { ORDER_STATUS, PAYMENT_STATUS } from '@/lib/constants';

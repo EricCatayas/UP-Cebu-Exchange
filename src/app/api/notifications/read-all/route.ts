@@ -1,6 +1,7 @@
 import NotificationService from '@/services/NotificationService';
 import { NextResponse } from 'next/server';
-import { getCurrentUser, isAdmin } from '@/lib/auth';
+import { getCurrentUser } from '@/lib/auth';
+import { isAdmin } from '@/lib/role';
 
 export async function PUT() {
   const currentUser = await getCurrentUser();

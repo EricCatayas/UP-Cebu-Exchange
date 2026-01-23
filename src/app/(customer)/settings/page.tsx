@@ -1,9 +1,12 @@
 'use client';
+import { useAuth } from '@/contexts/AuthContext';
 import { useCookie } from '@/contexts/CookieContext';
 import { useModal } from '@/contexts/ModalContext';
+import { isAdmin } from '@/lib/role';
 
 export default function SettingsPage() {
   const { cookiePreference, acceptCookies, rejectCookies } = useCookie();
+  const { user } = useAuth();
   const hasAcceptedCookies = cookiePreference === 'accept';
   const hasRejectedCookies = cookiePreference === 'reject';
   const { openConfirmation } = useModal();
@@ -27,6 +30,10 @@ export default function SettingsPage() {
         message: 'Are you sure you want to reject cookies?',
       },
       async () => {
+        if (user && isAdmin(user)) {
+          alert('Staff members are required to accept cookies to use the application.');
+          return;
+        }
         await rejectCookies();
       }
     );

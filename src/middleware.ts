@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { isAdmin, verifyToken } from '@/lib/auth';
+import { verifyToken } from '@/lib/auth';
+import { isAdmin } from '@/lib/role';
 import { matchesRoute } from '@/lib/paths';
 
 const publicRoutes = [

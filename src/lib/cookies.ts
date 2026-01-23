@@ -56,3 +56,7 @@ export function clearCookiePreference(): void {
     localStorage.removeItem(COOKIE_PREFERENCE_KEY);
   }
 }
+
+export function canTrackCookies(): boolean {
+  return areCookiesAccepted();
+}

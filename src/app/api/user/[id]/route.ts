@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { User, Role } from '@/models/sequelize';
 import { hashPassword } from '@/lib/auth';
 import { USER_ROLES, USER_STATUS } from '@/lib/constants';
-import { getCurrentUser, isAdmin, canEditContent } from '@/lib/auth';
+import { getCurrentUser } from '@/lib/auth';
+import { isAdmin, canEditContent } from '@/lib/role';
 
 // Both admin and the user themselves can update user info
 // but only admin can change roles

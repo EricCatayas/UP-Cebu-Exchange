@@ -4,7 +4,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Op } from 'sequelize';
 import { Artwork, Artist, ArtworkImage, ArtworkTag, RentalPlan, Tag, Style } from '@/models/sequelize';
 import { ArtworkCreateDTO } from '@/models/Artwork';
-import { getCurrentUser, isAdmin, canEditContent } from '@/lib/auth';
+import { getCurrentUser } from '@/lib/auth';
+import { isAdmin, canEditContent } from '@/lib/role';
 import { ARTWORK_STATUS } from '@/lib/constants';
 
 export async function POST(request: NextRequest) {

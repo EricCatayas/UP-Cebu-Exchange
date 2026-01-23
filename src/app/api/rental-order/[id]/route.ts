@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Address, RentalOrder, Payment } from '@/models/sequelize';
-import { getCurrentUser, isAdmin, canEditContent } from '@/lib/auth';
+import { getCurrentUser } from '@/lib/auth';
+import { isAdmin, canEditContent } from '@/lib/role';
 
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
