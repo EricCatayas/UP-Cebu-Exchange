@@ -54,7 +54,7 @@ function isApiRoute(pathname: string): boolean {
 }
 
 function redirectToLogin(request: NextRequest, pathname: string) {
-  const loginUrl = isAdminRoute(pathname) ? '/admin-login' : '/login';
+  const loginUrl = '/login';
   const searchParams = new URLSearchParams({ callbackUrl: pathname });
   return NextResponse.redirect(new URL(`${loginUrl}?${searchParams}`, request.url));
 }
