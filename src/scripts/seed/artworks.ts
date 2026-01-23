@@ -1,112 +1,14 @@
-import sequelize from '@/config/database';
-import User from '@/models/sequelize/User';
-import Role from '@/models/sequelize/Role';
 import Artist from '@/models/sequelize/Artist';
 import Artwork from '@/models/sequelize/Artwork';
 import ArtworkImage from '@/models/sequelize/ArtworkImage';
 import ArtworkTag from '@/models/sequelize/ArtworkTag';
 import RentalPlan from '@/models/sequelize/RentalPlan';
 import Style from '@/models/sequelize/Style';
+
 import Tag from '@/models/sequelize/Tag';
-import { ARTWORK_MEDIUM, ARTWORK_STATUS, USER_ROLE } from '@/lib/constants';
-import { hashPassword } from '@/lib/auth';
+import { ARTWORK_MEDIUM, ARTWORK_STATUS } from '@/lib/constants';
 
-async function seedDefaultRoles() {
-  try {
-    console.log('🌱 Seeding default roles...');
-
-    const defaultRoles = [
-      { name: USER_ROLE.HEAD, description: 'Administrator with read-only access' },
-      { name: USER_ROLE.STAFF, description: 'Staff who can modify content' },
-      { name: USER_ROLE.CUSTOMER, description: 'Customer who can rent artworks' },
-    ];
-
-    for (const roleData of defaultRoles) {
-      const [role, created] = await Role.findOrCreate({
-        where: { name: roleData.name },
-        defaults: roleData,
-      });
-
-      if (created) {
-        console.log(`✅ Created role: ${role.name}`);
-      } else {
-        console.log(`ℹ️  Role already exists: ${role.name}`);
-      }
-    }
-  } catch (error) {
-    console.error('❌ Error seeding roles:', error);
-    throw error;
-  }
-}
-
-async function seedUsers() {
-  try {
-    const customerRole = await Role.findOne({
-      where: { name: USER_ROLE.CUSTOMER },
-    });
-    const adminRole = await Role.findOne({
-      where: { name: USER_ROLE.STAFF },
-    });
-
-    // customer account
-    const userPassword = await hashPassword('user123');
-    await User.findOrCreate({
-      where: { email: 'user1@test.com' },
-      defaults: {
-        email: 'user1@test.com',
-        fullName: 'User One',
-        password: userPassword,
-        phoneNumber: '123-456-7890',
-        roleId: customerRole.id,
-        status: 'Active',
-      },
-    });
-    // admin account
-    const adminPassword = await hashPassword('admin123');
-    await User.findOrCreate({
-      where: { email: 'admin@test.com' },
-      defaults: {
-        email: 'admin@test.com',
-        fullName: 'Admin User',
-        password: adminPassword,
-        phoneNumber: '987-654-3210',
-        roleId: adminRole.id,
-        status: 'Active',
-      },
-    });
-  } catch (error) {
-    console.error('❌ Error seeding users:', error);
-    throw error;
-  }
-}
-
-async function seedStyles() {
-  try {
-    const styles = [
-      'Contemporary',
-      'Realism',
-      'Abstract',
-      'Expressionism',
-      'Impressionism',
-      'Minimalism',
-      'Surrealism',
-      'Abstract Expressionism',
-      'Botanical Art',
-      'Folk Art',
-    ];
-    for (const styleName of styles) {
-      await Style.findOrCreate({
-        where: { name: styleName },
-        defaults: { name: styleName },
-      });
-    }
-  } catch (error) {
-    console.error('❌ Error seeding styles:', error);
-    throw error;
-  }
-}
-
-async function seedArtworks() {
+export async function seedArtworks() {
   try {
     const artistsData = [
       {
@@ -980,18 +882,4 @@ async function seedArtworks() {
     console.error('❌ Error seeding artworks:', error);
     throw error;
   }
-}
-
-export async function seedDatabase() {
-  // Seed default roles
-  await seedDefaultRoles();
-
-  // Seed test accounts
-  await seedUsers();
-
-  // Seed styles
-  await seedStyles();
-
-  // Seed artworks
-  await seedArtworks();
 }

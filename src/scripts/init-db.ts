@@ -7,7 +7,7 @@ import '@/models/sequelize';
 
 import DatabaseService from '@/lib/database';
 
-import { seedDatabase } from './seed';
+import { seedDatabase } from './seed/index';
 
 async function initializeDatabase() {
   try {
