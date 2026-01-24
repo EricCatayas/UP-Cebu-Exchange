@@ -74,6 +74,8 @@ export enum EVENT_NAME {
   SIGN_RENTAL_AGREEMENT = 'sign_rental_agreement',
   PLACE_ORDER = 'place_order',
   CANCEL_ORDER = 'cancel_order',
+  ORDER_RECEIVED = 'order_received',
+  REQUEST_RETURN_ITEMS = 'return_items',
   COMPLETE_PAYMENT = 'complete_payment',
   COMPLETE_ORDER = 'complete_order',
 }

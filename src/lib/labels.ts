@@ -1,4 +1,5 @@
 import { EVENT_NAME } from '@/lib/constants';
+import { ORDER_STATUS } from '@/lib/constants';
 
 export const timeframes = [
   { value: '', label: 'All time' },
@@ -11,6 +12,19 @@ export const timeframes = [
 ];
 
 export const timeframeDefault = timeframes[0].value;
+
+export const orderStatus = {
+  [ORDER_STATUS.PENDING]: { label: 'Pending' },
+  [ORDER_STATUS.RESERVED]: { label: 'Reserved' },
+  [ORDER_STATUS.TORECEIVE]: { label: 'To Receive' },
+  'Overdue Receive': { label: 'Overdue Receive' },
+  [ORDER_STATUS.ONGOING]: { label: 'Ongoing' },
+  [ORDER_STATUS.TORETURN]: { label: 'To Return' },
+  'Overdue Return': { label: 'Overdue Return' },
+  'Payment Pending': { label: 'Payment Pending' },
+  [ORDER_STATUS.COMPLETED]: { label: 'Completed' },
+  [ORDER_STATUS.CANCELLED]: { label: 'Cancelled' },
+};
 
 export const funnelStages = [
   { value: EVENT_NAME.VISIT_SITE, label: 'Visit Site' },
