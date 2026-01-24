@@ -3,7 +3,6 @@ import jwt from 'jsonwebtoken';
 import { cookies } from 'next/headers';
 import { jwtVerify } from 'jose';
 import { JWTPayload, User } from '@/types/auth';
-import { ADMIN_ROLES, ADMIN_EDITOR_ROLES, USER_ROLE } from './constants';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-key';
 const SALT_ROUNDS = 12;
@@ -84,19 +83,4 @@ export const getCurrentUser = async (): Promise<JWTPayload | null> => {
   if (!token) return null;
 
   return verifyToken(token);
-};
-
-export const isAdmin = (user: JWTPayload | User | null): boolean => {
-  const roleName = user?.roleName?.toLowerCase() || user?.role?.name?.toLowerCase();
-  return ADMIN_ROLES.includes(roleName || '');
-};
-
-export const isCustomer = (user: JWTPayload | User | null): boolean => {
-  const roleName = user?.roleName?.toLowerCase() || user?.role?.name?.toLowerCase();
-  return roleName === USER_ROLE.CUSTOMER.toLowerCase();
-};
-
-export const canEditContent = (user: JWTPayload | User | null): boolean => {
-  const roleName = user?.roleName?.toLowerCase() || user?.role?.name?.toLowerCase();
-  return ADMIN_EDITOR_ROLES.includes(roleName || '');
 };
