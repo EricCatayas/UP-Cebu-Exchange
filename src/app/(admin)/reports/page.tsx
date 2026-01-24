@@ -22,114 +22,11 @@ async function Reports({ searchParams }: { searchParams: { [key: string]: string
   const { artworks, popularityScores } = await productDemandService.getArtworksPopularityScores();
 
   const funnelAnalysisService = new FunnelAnalyticsService(timeframe);
-  // const funnelMetrics = await funnelAnalysisService.getFunnelMetrics();
-  const funnelMetrics = {
-    visit_site: {
-      count: 1000,
-      conversionRate: 100,
-      cumulativeConversionRate: 100,
-    },
-    browse_artworks: {
-      count: 700,
-      conversionRate: 70,
-      cumulativeConversionRate: 70,
-    },
-    view_artwork: {
-      count: 500,
-      conversionRate: 40,
-      cumulativeConversionRate: 50,
-    },
-    create_account: {
-      count: 100,
-      conversionRate: 20,
-      cumulativeConversionRate: 10,
-    },
-    verify_email: {
-      count: 30,
-      conversionRate: 30,
-      cumulativeConversionRate: 3.25,
-    },
-    begin_checkout: {
-      count: 20,
-      conversionRate: 67,
-      cumulativeConversionRate: 25,
-    },
-    sign_rental_agreement: {
-      count: 18,
-      conversionRate: 90,
-      cumulativeConversionRate: 1.8,
-    },
-    place_order: {
-      count: 15,
-      conversionRate: 83,
-      cumulativeConversionRate: 1.5,
-    },
-    complete_payment: {
-      count: 12,
-      conversionRate: 80,
-      cumulativeConversionRate: 1.2,
-    },
-    complete_order: {
-      count: 10,
-      conversionRate: 83,
-      cumulativeConversionRate: 1.0,
-    },
-  };
+  const funnelMetrics = await funnelAnalysisService.getFunnelMetrics();
 
   console.log('Funnel Metrics in Reports page:', funnelMetrics);
 
-  // const { count, monthly, daily } = await funnelAnalysisService.getVisitorMetrics(year, month);
-  const visitorMetrics = {
-    count: {
-      total: 1000,
-      registered: 150,
-      guests: 850,
-    },
-    monthly: {
-      labels: ['Jan 2026', 'Feb 2026', 'Mar 2026', 'Apr 2026'],
-      data: [200, 250, 300, 250],
-    },
-    daily: {
-      labels: [
-        '1',
-        '2',
-        '3',
-        '4',
-        '5',
-        '6',
-        '7',
-        '8',
-        '9',
-        '10',
-        '11',
-        '12',
-        '13',
-        '14',
-        '15',
-        '16',
-        '17',
-        '18',
-        '19',
-        '20',
-        '21',
-        '22',
-        '23',
-        '24',
-        '25',
-        '26',
-        '27',
-        '28',
-        '29',
-        '30',
-        '31',
-      ],
-      data: [
-        20, 18, 15, 32, 71, 29, 3, 4, 5, 108, 29, 29, 31, 32, 30, 28, 34, 35, 33, 31, 29, 30, 32, 34, 33, 31, 29, 28,
-        30, 32, 31,
-      ],
-    },
-  };
-  const { count, monthly, daily } = visitorMetrics;
+  const { count, monthly, daily } = await funnelAnalysisService.getVisitorMetrics(year, month);
 
   return (
     <div className="px-8 py-6">
