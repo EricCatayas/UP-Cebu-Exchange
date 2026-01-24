@@ -25,12 +25,39 @@ class EventService {
     });
   }
 
-  async setCookiePreference(preference: 'accept' | 'reject') {
+  async browseArtworks() {
     await Event.create({
       sessionId: this.sessionId,
-      name: EVENT_NAME.COOKIE_PREFERENCE,
-      category: EVENT_CATEGORY.SYSTEM,
-      metadata: JSON.stringify({ preference }),
+      name: EVENT_NAME.BROWSE_ARTWORKS,
+      category: EVENT_CATEGORY.DISCOVERY,
+    });
+  }
+
+  async viewArtwork(artworkId: number) {
+    await Event.create({
+      sessionId: this.sessionId,
+      name: EVENT_NAME.VIEW_ARTWORK,
+      category: EVENT_CATEGORY.ENGAGEMENT,
+      entityType: EVENT_ENTITY_TYPE.ARTWORK,
+      entityId: artworkId,
+    });
+  }
+
+  async addArtworkToCart(artworkId: number) {
+    await Event.create({
+      sessionId: this.sessionId,
+      name: EVENT_NAME.ADD_TO_CART,
+      category: EVENT_CATEGORY.INTEREST,
+      entityType: EVENT_ENTITY_TYPE.ARTWORK,
+      entityId: artworkId,
+    });
+  }
+
+  async beginCheckout() {
+    await Event.create({
+      sessionId: this.sessionId,
+      name: EVENT_NAME.BEGIN_CHECKOUT,
+      category: EVENT_CATEGORY.INTENT,
     });
   }
 
@@ -64,6 +91,14 @@ class EventService {
     });
   }
 
+  async signRentalAgreement() {
+    await Event.create({
+      sessionId: this.sessionId,
+      name: EVENT_NAME.SIGN_RENTAL_AGREEMENT,
+      category: EVENT_CATEGORY.INTENT,
+    });
+  }
+
   async placeOrder(rentalOrderId: number) {
     await Event.create({
       sessionId: this.sessionId,
@@ -91,6 +126,16 @@ class EventService {
       category: EVENT_CATEGORY.CONVERSION,
       entityType: EVENT_ENTITY_TYPE.PAYMENT,
       entityId: paymentId,
+    });
+  }
+
+  async orderReceived(rentalOrderId: number) {
+    await Event.create({
+      sessionId: this.sessionId,
+      name: EVENT_NAME.ORDER_RECEIVED,
+      category: EVENT_CATEGORY.CONVERSION,
+      entityType: EVENT_ENTITY_TYPE.RENTAL_ORDER,
+      entityId: rentalOrderId,
     });
   }
 

@@ -1,3 +1,4 @@
+import sequelize from '@/config/database';
 import ArtworkRepository from '@/repositories/ArtworkRepository';
 import ArtistService from './ArtistService';
 import TagsService from '@/services/TagsService';
@@ -18,7 +19,6 @@ import {
   RentalPlan,
   ArtworkTag,
 } from '@/models/sequelize';
-import sequelize from '@/config/database';
 import { ArtworkDTO, PaginatedArtworks, ArtworkQueryParams } from '@/models/Artwork';
 import { similarityScore } from '@/lib/recommendations';
 import { ARTWORK_STATUS, PAGE_SIZE, SIMILAR_ARTWORK_SCORE_THRESHOLD } from '@/lib/constants';
