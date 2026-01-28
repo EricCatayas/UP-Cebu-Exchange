@@ -1,5 +1,6 @@
 import CartService from '@/services/CartService';
-import { getCurrentUser, isCustomer } from '@/lib/auth';
+import { getCurrentUser } from '@/lib/auth';
+import { isCustomer } from '@/lib/role';
 
 export async function GET(request: Request) {
   try {

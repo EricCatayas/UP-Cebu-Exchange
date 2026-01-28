@@ -1,5 +1,6 @@
 import WishlistService from '@/services/WishlistService';
-import { getCurrentUser, isCustomer } from '@/lib/auth';
+import { getCurrentUser } from '@/lib/auth';
+import { isCustomer } from '@/lib/role';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
