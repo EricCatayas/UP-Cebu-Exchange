@@ -41,9 +41,9 @@ type VisitorCountGraphProps = {
 export default function VisitorCountGraph({
   year,
   month,
-  totalVisitors,
-  registeredVisitors,
-  guestVisitors,
+  customers,
+  admins,
+  guests,
   monthly,
   daily,
 }: VisitorCountGraphProps) {
@@ -76,15 +76,17 @@ export default function VisitorCountGraph({
   const monthOptionList = monthOptions(currentYear);
   const yearOptionsList = yearsOptions(2025);
 
-  const labels = ['Registered Users', 'Guest Users'];
+  const total = guests + customers;
+
+  const labels = ['Guests', 'Customers'];
   const data = {
     labels,
     datasets: [
       {
         label: 'Visitors',
-        data: [registeredVisitors, guestVisitors],
-        backgroundColor: ['#4F46E5', '#22C55E'],
-        borderColor: ['#4338CA', '#16A34A'],
+        data: [guests, customers, admins],
+        backgroundColor: ['#22C55E', '#4F46E5'],
+        borderColor: ['#16A34A', '#4338CA'],
         borderWidth: 1,
       },
     ],
@@ -136,7 +138,7 @@ export default function VisitorCountGraph({
   return (
     <div className="space-y-8">
       <div>
-        <div className="mb-2 text-sm text-gray-600">Total Visitors: {totalVisitors}</div>
+        <div className="mb-2 text-sm text-gray-600">Total Visitors: {total}</div>
         <Pie data={data} options={options} />
       </div>
       <div>

@@ -3,18 +3,24 @@ import sequelize from '@/config/database';
 import { Op } from 'sequelize';
 import { Event, RentalOrder, Payment, Session, User } from '@/models/sequelize';
 import { FunnelMetrics } from '@/types/analytics';
-import { EVENT_NAME, ORDER_STATUS, PAYMENT_STATUS } from '@/lib/constants';
+import { EVENT_NAME, ORDER_STATUS, PAYMENT_STATUS, USER_ROLE } from '@/lib/constants';
 import { getConversionRate } from '@/lib/analytics';
 import { opTimeframe } from '@/lib/orm';
+import { fmtDate } from '@/lib/formatter';
 
 class FunnelAnalyticsService {
   private timeframe?: string;
+  private customerRoleId?: number;
 
   constructor(timeframe?: string) {
     this.timeframe = timeframe;
   }
 
   async getFunnelMetrics({ unique = false }: { unique?: boolean } = {}): Promise<FunnelMetrics> {
+    const userService = new UserService();
+    const customerRoleId = await userService.getRoleIdByName(USER_ROLE.CUSTOMER);
+    this.customerRoleId = customerRoleId ?? undefined;
+
     const visitCount = await this.getVisitCount(unique);
     const browseCount = await this.getBrowseArtworksCount(unique);
     const viewCount = await this.getArtworkViewCount(unique);
@@ -90,6 +96,8 @@ class FunnelAnalyticsService {
       total: number;
       registered: number;
       guests: number;
+      customers: number;
+      admins: number;
     };
     monthly: {
       labels: string[];
@@ -101,7 +109,7 @@ class FunnelAnalyticsService {
     };
   }> => {
     const userService = new UserService();
-    const customerRoleId = await userService.getRoleIdByName('customer');
+    const customerRoleId = await userService.getRoleIdByName(USER_ROLE.CUSTOMER);
     const guests = await Session.count({
       where: {
         userId: {
@@ -110,7 +118,7 @@ class FunnelAnalyticsService {
         ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
       },
     });
-    const registered = await Session.count({
+    const groupCustomers = await Session.count({
       where: {
         userId: {
           [Op.not]: null,
@@ -127,57 +135,62 @@ class FunnelAnalyticsService {
           },
         },
       ],
+      group: [sequelize.col('session.userId')],
     });
-    const total = guests + registered;
+
+    const customers = Array.isArray(groupCustomers) ? groupCustomers.length : 0;
+
+    const groupAdmins = await Session.count({
+      where: {
+        userId: {
+          [Op.not]: null,
+        },
+        ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
+      },
+      include: [
+        {
+          model: User,
+          as: 'user',
+          required: true,
+          where: {
+            roleId: {
+              [Op.ne]: customerRoleId,
+            },
+          },
+        },
+      ],
+      group: [sequelize.col('session.userId')],
+    });
+
+    const admins = Array.isArray(groupAdmins) ? groupAdmins.length : 0;
+
+    const registered = customers + admins;
+
+    const total = guests + customers;
 
     // Get visitors per month for selected year and month
-    const monthlySessionData = await Session.findAll({
-      attributes: [
-        [sequelize.fn('DATE_FORMAT', sequelize.col('createdAt'), '%Y-%m'), 'month'],
-        [sequelize.fn('COUNT', sequelize.col('id')), 'count'],
-      ],
-      where: {
-        createdAt: {
-          [Op.gte]: new Date(year, 0, 1),
-          [Op.lt]: new Date(year + 1, 0, 1),
-        },
-      },
-      group: [sequelize.fn('DATE_FORMAT', sequelize.col('createdAt'), '%Y-%m')],
-      raw: true,
-    });
+    const monthlySessionData = await this.getMonthlySessions(year);
+
+    const monthlyLabels = [];
+    const monthlyData = [];
+
+    for (let m = 1; m <= 12; m++) {
+      const monthData = monthlySessionData.find((data) => parseInt(data.month) === m);
+      const date = new Date(year, m - 1, 1);
+      monthlyLabels.push(date.toLocaleDateString('en-US', { month: 'short' }));
+      monthlyData.push(monthData ? monthData.count : 0);
+    }
 
     // Get visitors per day for selected month
-    const dailySessionData = await Session.findAll({
-      attributes: [
-      [sequelize.fn('DATE_FORMAT', sequelize.col('createdAt'), '%Y-%m-%d'), 'day'],
-      [sequelize.fn('COUNT', sequelize.col('id')), 'count'],
-      ],
-      where: {
-      createdAt: {
-        [Op.gte]: new Date(year, month - 1, 1),
-        [Op.lt]: new Date(year, month, 1),
-      },
-      },
-      group: [sequelize.fn('DATE_FORMAT', sequelize.col('createdAt'), '%Y-%m-%d')],
-      order: [[sequelize.fn('DATE_FORMAT', sequelize.col('createdAt'), '%Y-%m-%d'), 'ASC']],
-      raw: true,
-    });
-
-    const monthlyLabels = (monthlySessionData as any[]).map((row) => {
-      const [y, m] = row.month.split('-');
-      const date = new Date(parseInt(y), parseInt(m) - 1);
-      return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-    });
-    const monthlyData = (monthlySessionData as any[]).map((row) => parseInt(row.count));
+    const dailySessionData = await this.getDailySessions(year, month);
 
     const dailyLabels = (dailySessionData as any[]).map((row) => {
-      const date = new Date(row.day);
-      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      return row.day;
     });
     const dailyData = (dailySessionData as any[]).map((row) => parseInt(row.count));
 
     return {
-      count: { total, registered, guests },
+      count: { total, registered, guests, customers, admins },
       monthly: { labels: monthlyLabels, data: monthlyData },
       daily: { labels: dailyLabels, data: dailyData },
     };
@@ -186,250 +199,153 @@ class FunnelAnalyticsService {
     // Implementation for user retention metrics can be added here
   };
 
-  private async getVisitCount(unique: boolean = false) {
-    if (unique) {
-      const uniqueVisitCount = await Event.count({
-        where: {
-          name: EVENT_NAME.VISIT_SITE,
-          ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
+  private async getMonthlySessions(year: number) {
+    const monthlySessions = await Session.findAll({
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: ['roleId'],
+          required: false,
         },
-        include: [
-          {
-            model: Session,
-            as: 'session',
-            attributes: [],
-          },
-        ],
-        group: [sequelize.fn('COALESCE', sequelize.col('session.userId'), sequelize.col('session.sessionId'))],
-        distinct: true,
-      });
-      const visitCount = Array.isArray(uniqueVisitCount) ? uniqueVisitCount.length : 0;
-      return visitCount;
-    }
-
-    const visitCount = await Event.count({
+      ],
       where: {
-        name: EVENT_NAME.VISIT_SITE,
-        ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
+        createdAt: {
+          [Op.gte]: new Date(year, 0, 1),
+          [Op.lt]: new Date(year + 1, 0, 1),
+        },
+        [Op.or]: [
+          { userId: { [Op.is]: null } },
+          sequelize.where(sequelize.col('user.roleId'), Op.eq, this.customerRoleId),
+        ],
       },
+      raw: true,
+    });
+    // Group by month in JavaScript
+    const monthlyMap = new Map<string, number>();
+    monthlySessions.forEach((session: any) => {
+      const monthNumber = new Date(session.createdAt).getMonth() + 1;
+      monthlyMap.set(monthNumber.toString(), (monthlyMap.get(monthNumber.toString()) || 0) + 1);
     });
 
-    return visitCount;
+    const monthlySessionData = Array.from(monthlyMap).map(([month, count]) => ({
+      month,
+      count,
+    }));
+
+    return monthlySessionData;
   }
 
-  private async getBrowseArtworksCount(unique: boolean = false) {
-    if (unique) {
-      const uniqueBrowseArtworksCount = await Event.count({
-        where: {
-          name: EVENT_NAME.BROWSE_ARTWORKS,
-          ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
+  private async getDailySessions(year: number, month: number) {
+    const dailySessions = await Session.findAll({
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: ['roleId'],
+          required: false,
         },
-        include: [
-          {
-            model: Session,
-            as: 'session',
-            attributes: [],
-          },
+      ],
+      where: {
+        createdAt: {
+          [Op.gte]: new Date(year, month - 1, 1),
+          [Op.lt]: new Date(year, month, 1),
+        },
+        [Op.or]: [
+          { userId: { [Op.is]: null } },
+          sequelize.where(sequelize.col('user.roleId'), Op.eq, this.customerRoleId),
         ],
-        group: [sequelize.fn('COALESCE', sequelize.col('session.userId'), sequelize.col('session.sessionId'))],
-        distinct: true,
+      },
+      raw: true,
+    });
+    // fix: start from 1 to end of month
+    const daysInMonth = new Date(year, month, 0).getDate();
+    // Group by day in JavaScript
+    const dailyMap = new Map<string, number>();
+    for (let day = 1; day <= daysInMonth; day++) {
+      const daySessions = dailySessions.filter((session: any) => {
+        return new Date(session.createdAt).getDate() === day;
       });
-      const browseArtworksCount = Array.isArray(uniqueBrowseArtworksCount) ? uniqueBrowseArtworksCount.length : 0;
-      return browseArtworksCount;
+      dailyMap.set(day.toString(), daySessions.length);
     }
 
-    const browseArtworksCount = await Event.count({
-      where: {
-        name: EVENT_NAME.BROWSE_ARTWORKS,
-        ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
-      },
-    });
-    return browseArtworksCount;
+    const dailySessionData = Array.from(dailyMap).map(([day, count]) => ({
+      day,
+      count,
+    }));
+
+    return dailySessionData;
   }
 
-  private async getArtworkViewCount(unique: boolean = false) {
-    if (unique) {
-      const uniqueArtworkViewCount = await Event.count({
-        where: {
-          name: EVENT_NAME.VIEW_ARTWORK,
-          ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
+  private async getEventCount(eventName: string, unique: boolean) {
+    const events = await Event.findAll({
+      where: {
+        name: eventName,
+        ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
+      },
+      include: [
+        {
+          model: Session,
+          as: 'session',
+          attributes: ['userId', 'sessionId'],
+          required: true,
+          include: [
+            {
+              model: User,
+              as: 'user',
+              attributes: ['roleId'],
+              required: false,
+            },
+          ],
         },
-        include: [
-          {
-            model: Session,
-            as: 'session',
-            attributes: [],
-          },
-        ],
-        group: [sequelize.fn('COALESCE', sequelize.col('session.userId'), sequelize.col('session.sessionId'))],
-        distinct: true,
-      });
-      const artworkViewCount = Array.isArray(uniqueArtworkViewCount) ? uniqueArtworkViewCount.length : 0;
-      return artworkViewCount;
-    }
-
-    const artworkViewCount = await Event.count({
-      where: {
-        name: EVENT_NAME.VIEW_ARTWORK,
-        ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
-      },
+      ],
+      attributes: ['sessionId'],
+      raw: true,
     });
 
-    return artworkViewCount;
-  }
-  private async getCreateAccountCount(unique: boolean = false) {
-    if (unique) {
-      const uniqueCreateAccountCount = await Event.count({
-        where: {
-          name: EVENT_NAME.CREATE_ACCOUNT,
-          ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
-        },
-        include: [
-          {
-            model: Session,
-            as: 'session',
-            attributes: [],
-          },
-        ],
-        group: [sequelize.fn('COALESCE', sequelize.col('session.userId'), sequelize.col('session.sessionId'))],
-        distinct: true,
-      });
-      const createAccountCount = Array.isArray(uniqueCreateAccountCount) ? uniqueCreateAccountCount.length : 0;
-      return createAccountCount;
-    }
-
-    const createAccountCount = await Event.count({
-      where: {
-        name: EVENT_NAME.CREATE_ACCOUNT,
-        ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
-      },
+    const filteredEvents = events.filter((event: any) => {
+      // Include guests (no user) or customers (exclude admins)
+      return !event['session.userId'] || event['session.user.roleId'] === this.customerRoleId;
     });
-    return createAccountCount;
+
+    return unique
+      ? new Set(filteredEvents.map((event: any) => event['session.userId'] || event['session.sessionId'])).size
+      : filteredEvents.length;
   }
 
-  private async getVerifyEmailCount(unique: boolean = false) {
-    if (unique) {
-      const uniqueVerifyEmailCount = await Event.count({
-        where: {
-          name: EVENT_NAME.VERIFY_EMAIL,
-          ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
-        },
-        include: [
-          {
-            model: Session,
-            as: 'session',
-            attributes: [],
-          },
-        ],
-        group: [sequelize.fn('COALESCE', sequelize.col('session.userId'), sequelize.col('session.sessionId'))],
-        distinct: true,
-      });
-      const verifyEmailCount = Array.isArray(uniqueVerifyEmailCount) ? uniqueVerifyEmailCount.length : 0;
-      return verifyEmailCount;
-    }
-
-    const verifyEmailCount = await Event.count({
-      where: {
-        name: EVENT_NAME.VERIFY_EMAIL,
-        ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
-      },
-    });
-    return verifyEmailCount;
+  private async getVisitCount(unique: boolean) {
+    return this.getEventCount(EVENT_NAME.VISIT_SITE, unique);
   }
 
-  private async getBeginCheckoutCount(unique: boolean = false) {
-    if (unique) {
-      const uniqueBeginCheckoutCount = await Event.count({
-        where: {
-          name: EVENT_NAME.BEGIN_CHECKOUT,
-          ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
-        },
-        include: [
-          {
-            model: Session,
-            as: 'session',
-            attributes: [],
-          },
-        ],
-        group: [sequelize.fn('COALESCE', sequelize.col('session.userId'), sequelize.col('session.sessionId'))],
-        distinct: true,
-      });
-      const beginCheckoutCount = Array.isArray(uniqueBeginCheckoutCount) ? uniqueBeginCheckoutCount.length : 0;
-      return beginCheckoutCount;
-    }
-
-    const beginCheckoutCount = await Event.count({
-      where: {
-        name: EVENT_NAME.BEGIN_CHECKOUT,
-        ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
-      },
-    });
-    return beginCheckoutCount;
+  private async getBrowseArtworksCount(unique: boolean) {
+    return this.getEventCount(EVENT_NAME.BROWSE_ARTWORKS, unique);
   }
 
-  private async getSignRentalAgreementCount(unique: boolean = false) {
-    if (unique) {
-      const uniqueSignRentalAgreementCount = await Event.count({
-        where: {
-          name: EVENT_NAME.SIGN_RENTAL_AGREEMENT,
-          ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
-        },
-        include: [
-          {
-            model: Session,
-            as: 'session',
-            attributes: [],
-          },
-        ],
-        group: [sequelize.fn('COALESCE', sequelize.col('session.userId'), sequelize.col('session.sessionId'))],
-        distinct: true,
-      });
-      const signRentalAgreementCount = Array.isArray(uniqueSignRentalAgreementCount)
-        ? uniqueSignRentalAgreementCount.length
-        : 0;
-      return signRentalAgreementCount;
-    }
-
-    const signRentalAgreementCount = await Event.count({
-      where: {
-        name: EVENT_NAME.SIGN_RENTAL_AGREEMENT,
-        ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
-      },
-    });
-    return signRentalAgreementCount;
+  private async getArtworkViewCount(unique: boolean) {
+    return this.getEventCount(EVENT_NAME.VIEW_ARTWORK, unique);
   }
 
-  private async getPlaceOrderCount(unique: boolean = false) {
-    if (unique) {
-      const uniquePlaceOrderCount = await Event.count({
-        where: {
-          name: EVENT_NAME.PLACE_ORDER,
-          ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
-        },
-        include: [
-          {
-            model: Session,
-            as: 'session',
-            attributes: [],
-          },
-        ],
-        group: [sequelize.fn('COALESCE', sequelize.col('session.userId'), sequelize.col('session.sessionId'))],
-        distinct: true,
-      });
-      const placeOrderCount = Array.isArray(uniquePlaceOrderCount) ? uniquePlaceOrderCount.length : 0;
-      return placeOrderCount;
-    }
-
-    const placeOrderCount = await Event.count({
-      where: {
-        name: EVENT_NAME.PLACE_ORDER,
-        ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
-      },
-    });
-    return placeOrderCount;
+  private async getCreateAccountCount(unique: boolean) {
+    return this.getEventCount(EVENT_NAME.CREATE_ACCOUNT, unique);
   }
 
-  private async getCompletePaymentCount(unique: boolean = false) {
+  private async getVerifyEmailCount(unique: boolean) {
+    return this.getEventCount(EVENT_NAME.VERIFY_EMAIL, unique);
+  }
+
+  private async getBeginCheckoutCount(unique: boolean) {
+    return this.getEventCount(EVENT_NAME.BEGIN_CHECKOUT, unique);
+  }
+
+  private async getSignRentalAgreementCount(unique: boolean) {
+    return this.getEventCount(EVENT_NAME.SIGN_RENTAL_AGREEMENT, unique);
+  }
+
+  private async getPlaceOrderCount(unique: boolean) {
+    return this.getEventCount(EVENT_NAME.PLACE_ORDER, unique);
+  }
+
+  private async getCompletePaymentCount(unique: boolean) {
     if (unique) {
       const uniqueCompletePaymentCount = await Payment.count({
         where: {
@@ -450,15 +366,9 @@ class FunnelAnalyticsService {
       },
     });
     return completePaymentCount;
-    // return await Event.count({
-    //   where: {
-    //     name: EVENT_NAME.COMPLETE_PAYMENT,
-    //     ...(this.timeframe && { updatedAt: opTimeframe(this.timeframe) }),
-    //   },
-    // });
   }
 
-  private async getCompleteOrderCount(unique: boolean = false) {
+  private async getCompleteOrderCount(unique: boolean) {
     if (unique) {
       const uniqueCompleteOrderCount = await RentalOrder.count({
         where: {
@@ -479,12 +389,6 @@ class FunnelAnalyticsService {
       },
     });
     return completeOrderCount;
-    // return await Event.count({
-    //   where: {
-    //     name: EVENT_NAME.COMPLETE_ORDER,
-    //     ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
-    //   },
-    // });
   }
 }
 

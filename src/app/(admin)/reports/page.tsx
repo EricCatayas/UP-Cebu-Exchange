@@ -45,9 +45,9 @@ async function Reports({ searchParams }: { searchParams: { [key: string]: string
           <VisitorCountGraph
             year={year}
             month={month}
-            totalVisitors={count.total}
-            registeredVisitors={count.registered}
-            guestVisitors={count.guests}
+            customers={count.customers}
+            admins={count.admins}
+            guests={count.guests}
             monthly={monthly}
             daily={daily}
           />
