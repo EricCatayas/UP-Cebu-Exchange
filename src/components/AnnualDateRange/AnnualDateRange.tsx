@@ -65,6 +65,7 @@ export default function AnnualDateRange({ dateRanges, onYearChange }: AnnualDate
         totalDays,
         label,
         status,
+        statusColor: range.statusColor,
         remainingDays,
       };
     }
@@ -107,9 +108,7 @@ export default function AnnualDateRange({ dateRanges, onYearChange }: AnnualDate
               return (
                 <div
                   key={`${month}-${index}-cell`}
-                  className={`month-cell ${coverage.covered ? 'covered' : ''} ${
-                    coverage.covered ? `bg-${coverage.status?.toLowerCase()}` : ''
-                  }`}
+                  className={`month-cell ${coverage.covered ? 'covered' : ''} ${coverage.statusColor || ''}`}
                 >
                   {coverage.covered && <div className="coverage-label">{coverage.label}</div>}
                 </div>

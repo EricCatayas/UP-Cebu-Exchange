@@ -3,6 +3,7 @@ interface OrderDateRange {
   endDate: Date;
   remainingDays?: number;
   status: string;
+  statusColor?: string;
 }
 
 export type { OrderDateRange };

@@ -5,11 +5,12 @@ import { fmtDate } from '@/lib/formatter';
 
 const RentalOrderCard = ({ order, children }: { order: RentalOrderDTO; children?: React.ReactNode }) => {
   const daysLeft = getDaysRemaining(order);
+  const orderStatus = getOrderStatus(order);
   return (
     <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
       {/* Header */}
       <div
-        className={`rounded-t-xl py-2 px-4 mb-4 flex items-center justify-between border-b border-b-gray-200 bg-${order.status.toLowerCase()}`}
+        className={`rounded-t-xl py-2 px-4 mb-4 flex items-center justify-between border-b border-b-gray-200 ${orderStatus.color}`}
       >
         <span className="text-sm text-gray-600">Order ID: {order.id}</span>
         <span className="text-sm font-medium text-gray-800">{daysLeft} days left</span>
@@ -43,7 +44,7 @@ const RentalOrderCard = ({ order, children }: { order: RentalOrderDTO; children?
         </div>
         <div className="flex justify-between">
           <dt className="text-gray-500">Status</dt>
-          <dd className="text-gray-900">{getOrderStatus(order).label}</dd>
+          <dd className="text-gray-900">{orderStatus.label}</dd>
         </div>
         <div className="flex justify-between">
           <dt className="text-gray-500">Payment Method</dt>

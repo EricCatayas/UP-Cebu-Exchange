@@ -14,13 +14,13 @@ export function getDaysRemaining(order: RentalOrderDTO): number {
   }
 }
 
-export function getOrderStatus(order: RentalOrderDTO): { label: string; value: string } | string {
+export function getOrderStatus(order: RentalOrderDTO): { label: string; value: string; color: string } {
   const today = new Date();
   const startDate = new Date(order.startDate);
   const endDate = new Date(order.endDate);
 
   if (order.status === ORDER_STATUS.CANCELLED) {
-    return { label: 'Order Cancelled', value: order.status };
+    return { label: 'Order Cancelled', value: order.status, color: orderStatus.cancelled.color };
   }
 
   if (order.payment.status === PAYMENT_STATUS.PENDING) {
@@ -53,7 +53,11 @@ export function getOrderStatus(order: RentalOrderDTO): { label: string; value: s
     return orderStatus.toReturn;
   }
 
-  return { label: order.status, value: order.status };
+  return {
+    label: order.status,
+    value: order.status,
+    color: orderStatus[order.status.toLowerCase()]?.color || 'bg-gray-100 text-gray-800',
+  };
 }
 
 export const getUnavailableReason = (status: CART_STATUS) => {

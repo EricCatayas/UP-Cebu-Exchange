@@ -18,6 +18,7 @@ async function CalendarPage() {
     endDate: new Date(order.endDate),
     remainingDays: getDaysRemaining(order),
     status: order.status,
+    statusColor: getOrderStatus(order).color,
   }));
 
   return (

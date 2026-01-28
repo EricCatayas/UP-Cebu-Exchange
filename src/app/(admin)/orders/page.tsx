@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import RentalOrderService from '@/services/RentalOrderService';
 import RentalOrderCard from '@/components/cards/RentalOrder/RentalOrder';
+import { getOrderStatus } from '@/lib/order';
 
 async function OrdersPage() {
   const rentalOrderService = new RentalOrderService();
@@ -13,6 +14,7 @@ async function OrdersPage() {
     userName: order.user?.fullName || 'N/A',
     userEmail: order.user?.email || 'N/A',
     status: order.status,
+    statusColor: getOrderStatus(order).color,
     startDate: order.startDate,
     endDate: order.endDate,
     deliveryMethod: order.deliveryMethod || 'N/A',
@@ -20,6 +22,7 @@ async function OrdersPage() {
     paymentAmount: order.payment?.amount || '0.00',
     paymentStatus: order.payment?.status || 'Pending',
     paymentMethod: order.payment?.method || 'N/A',
+    paymentStatusColor: getOrderStatus(order).color,
     createdAt: order.createdAt,
   }));
 
@@ -83,15 +86,7 @@ async function OrdersPage() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span
-                            className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ₱{
-                            order.status === 'Completed'
-                              ? 'bg-green-100 text-green-800'
-                              : order.status === 'Confirmed'
-                              ? 'bg-blue-100 text-blue-800'
-                              : order.status === 'Cancelled'
-                              ? 'bg-red-100 text-red-800'
-                              : 'bg-yellow-100 text-yellow-800'
-                          }`}
+                            className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${order.statusColor}`}
                           >
                             {order.status}
                           </span>
@@ -119,13 +114,7 @@ async function OrdersPage() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span
-                            className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ₱{
-                            order.paymentStatus === 'Paid'
-                              ? 'bg-green-100 text-green-800'
-                              : order.paymentStatus === 'Failed'
-                              ? 'bg-red-100 text-red-800'
-                              : 'bg-yellow-100 text-yellow-800'
-                          }`}
+                            className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${order.paymentStatusColor}`}
                           >
                             {order.paymentStatus}
                           </span>
