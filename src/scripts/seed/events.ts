@@ -104,6 +104,7 @@ class VisitorFactory {
 
       if (eventNumber > 1) {
         const artwork = await Artwork.findOne({
+          where: { status: ARTWORK_STATUS.AVAILABLE },
           include: ['rentalPlans'],
           order: [sequelize.literal('RAND()')],
         });
@@ -234,6 +235,7 @@ class VisitorFactory {
 
       if (eventNumber > 1) {
         const artwork = await Artwork.findOne({
+          where: { status: ARTWORK_STATUS.AVAILABLE },
           include: ['rentalPlans'],
           order: [sequelize.literal('RAND()')],
         });
