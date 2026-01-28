@@ -24,11 +24,11 @@ export function getOrderStatus(order: RentalOrderDTO): { label: string; value: s
   }
 
   if (order.payment.status === PAYMENT_STATUS.PENDING) {
-    return orderStatus.paymentPending;
+    return orderStatus['Payment Pending'];
   }
 
   if (order.payment.status === PAYMENT_STATUS.FAILED) {
-    return orderStatus.paymentFailed;
+    return orderStatus['Payment Failed'];
   }
 
   // Todo: auto update status based on date and condition. Then remove these lines later.
@@ -39,24 +39,24 @@ export function getOrderStatus(order: RentalOrderDTO): { label: string; value: s
   ) {
     // if today is one week after start date: overdue receive
     if ((today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24) > 7) {
-      return orderStatus.toReceiveOverdue;
+      return orderStatus['To Receive Overdue'];
     }
-    return orderStatus.toReceive;
+    return orderStatus[ORDER_STATUS.TORECEIVE];
   }
 
   if (today > endDate && (order.status === ORDER_STATUS.ONGOING || order.status !== ORDER_STATUS.COMPLETED)) {
     // if today is two weeks after end date: overdue return
     if ((today.getTime() - endDate.getTime()) / (1000 * 60 * 60 * 24) > 14) {
-      return orderStatus.toReturnOverdue;
+      return orderStatus['Overdue Return'];
     }
     // if today is one week after end date: to return
-    return orderStatus.toReturn;
+    return orderStatus[ORDER_STATUS.TORETURN];
   }
 
   return {
     label: order.status,
     value: order.status,
-    color: orderStatus[order.status.toLowerCase()]?.color || 'bg-gray-100 text-gray-800',
+    color: orderStatus[order.status]?.color || 'bg-gray-100 text-gray-800',
   };
 }
 

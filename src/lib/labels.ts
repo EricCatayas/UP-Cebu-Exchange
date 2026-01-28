@@ -14,17 +14,21 @@ export const timeframes = [
 export const timeframeDefault = timeframes[0].value;
 
 export const orderStatus = {
-  pending: { label: 'Pending', value: ORDER_STATUS.PENDING, color: 'bg-yellow-100 text-yellow-800' },
-  reserved: { label: 'Reserved', value: ORDER_STATUS.RESERVED, color: 'bg-blue-100 text-blue-800' },
-  toReceive: { label: 'To Receive', value: ORDER_STATUS.TORECEIVE, color: 'bg-indigo-100 text-indigo-800' },
-  toReceiveOverdue: { label: 'Overdue Receive', value: 'Overdue Receive', color: 'bg-red-100 text-red-800' },
-  ongoing: { label: 'Ongoing', value: ORDER_STATUS.ONGOING, color: 'bg-purple-100 text-purple-800' },
-  toReturn: { label: 'To Return', value: ORDER_STATUS.TORETURN, color: 'bg-pink-100 text-pink-800' },
-  toReturnOverdue: { label: 'Overdue Return', value: 'Overdue Return', color: 'bg-red-100 text-red-800' },
-  paymentPending: { label: 'Payment Pending', value: 'Payment Pending', color: 'bg-yellow-100 text-yellow-800' },
-  paymentFailed: { label: 'Payment Failed', value: 'Payment Failed', color: 'bg-red-100 text-red-800' },
-  completed: { label: 'Completed', value: ORDER_STATUS.COMPLETED, color: 'bg-green-100 text-green-800' },
-  cancelled: { label: 'Cancelled', value: ORDER_STATUS.CANCELLED, color: 'bg-gray-100 text-gray-800' },
+  [ORDER_STATUS.PENDING]: { label: 'Pending', value: ORDER_STATUS.PENDING, color: 'bg-yellow-100 text-yellow-800' },
+  [ORDER_STATUS.RESERVED]: { label: 'Reserved', value: ORDER_STATUS.RESERVED, color: 'bg-blue-100 text-blue-800' },
+  [ORDER_STATUS.TORECEIVE]: {
+    label: 'To Receive',
+    value: ORDER_STATUS.TORECEIVE,
+    color: 'bg-indigo-100 text-indigo-800',
+  },
+  ['To Receive Overdue']: { label: 'Overdue Receive', value: 'Overdue Receive', color: 'bg-red-100 text-red-800' },
+  [ORDER_STATUS.ONGOING]: { label: 'Ongoing', value: ORDER_STATUS.ONGOING, color: 'bg-purple-100 text-purple-800' },
+  [ORDER_STATUS.TORETURN]: { label: 'To Return', value: ORDER_STATUS.TORETURN, color: 'bg-pink-100 text-pink-800' },
+  ['Overdue Return']: { label: 'Overdue Return', value: 'Overdue Return', color: 'bg-red-100 text-red-800' },
+  ['Payment Pending']: { label: 'Payment Pending', value: 'Payment Pending', color: 'bg-yellow-100 text-yellow-800' },
+  ['Payment Failed']: { label: 'Payment Failed', value: 'Payment Failed', color: 'bg-red-100 text-red-800' },
+  [ORDER_STATUS.COMPLETED]: { label: 'Completed', value: ORDER_STATUS.COMPLETED, color: 'bg-green-100 text-green-800' },
+  [ORDER_STATUS.CANCELLED]: { label: 'Cancelled', value: ORDER_STATUS.CANCELLED, color: 'bg-gray-100 text-gray-800' },
 };
 
 export const funnelStages = [
