@@ -90,7 +90,8 @@ class FunnelAnalyticsService {
   // todo: year, month filter
   getVisitorMetrics = async (
     year: number,
-    month: number
+    month: number,
+    unique: boolean = true
   ): Promise<{
     count: {
       total: number;
@@ -110,6 +111,7 @@ class FunnelAnalyticsService {
   }> => {
     const userService = new UserService();
     const customerRoleId = await userService.getRoleIdByName(USER_ROLE.CUSTOMER);
+    this.customerRoleId = customerRoleId ?? undefined;
     const guests = await Session.count({
       where: {
         userId: {
@@ -118,55 +120,12 @@ class FunnelAnalyticsService {
         ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
       },
     });
-    const groupCustomers = await Session.count({
-      where: {
-        userId: {
-          [Op.not]: null,
-        },
-        ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
-      },
-      include: [
-        {
-          model: User,
-          as: 'user',
-          required: true,
-          where: {
-            roleId: customerRoleId,
-          },
-        },
-      ],
-      group: [sequelize.col('session.userId')],
-    });
-
-    const customers = Array.isArray(groupCustomers) ? groupCustomers.length : 0;
-
-    const groupAdmins = await Session.count({
-      where: {
-        userId: {
-          [Op.not]: null,
-        },
-        ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
-      },
-      include: [
-        {
-          model: User,
-          as: 'user',
-          required: true,
-          where: {
-            roleId: {
-              [Op.ne]: customerRoleId,
-            },
-          },
-        },
-      ],
-      group: [sequelize.col('session.userId')],
-    });
-
-    const admins = Array.isArray(groupAdmins) ? groupAdmins.length : 0;
+    const customers = await this.getCustomerVisitorCount(unique);
+    const admins = await this.getAdminVisitorCount(unique);
 
     const registered = customers + admins;
 
-    const total = guests + customers;
+    const total = guests + registered;
 
     // Get visitors per month for selected year and month
     const monthlySessionData = await this.getMonthlySessions(year);
@@ -198,6 +157,52 @@ class FunnelAnalyticsService {
   getUserRetentionMetrics = async (): Promise<any> => {
     // Implementation for user retention metrics can be added here
   };
+
+  private async getCustomerVisitorCount(unique: boolean) {
+    const customerSessions = await Session.findAll({
+      where: {
+        userId: {
+          [Op.not]: null,
+        },
+        ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
+      },
+      include: [
+        {
+          model: User,
+          as: 'user',
+          required: true,
+          where: {
+            roleId: this.customerRoleId,
+          },
+        },
+      ],
+    });
+
+    return unique ? new Set(customerSessions.map((session) => session.userId)).size : customerSessions.length;
+  }
+
+  private async getAdminVisitorCount(unique: boolean) {
+    const customerSessions = await Session.findAll({
+      where: {
+        userId: {
+          [Op.not]: null,
+        },
+        ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
+      },
+      include: [
+        {
+          model: User,
+          as: 'user',
+          required: true,
+          where: {
+            roleId: { [Op.ne]: this.customerRoleId },
+          },
+        },
+      ],
+    });
+
+    return unique ? new Set(customerSessions.map((session) => session.userId)).size : customerSessions.length;
+  }
 
   private async getMonthlySessions(year: number) {
     const monthlySessions = await Session.findAll({
