@@ -17,6 +17,7 @@ const publicRoutes = [
   '/verify-email',
   '/settings',
   '/themes', // todo: remove later
+  '/team',
   '/faq',
   // api routes
   '/api/auth/login',
