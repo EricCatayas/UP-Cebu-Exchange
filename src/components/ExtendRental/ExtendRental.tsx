@@ -152,7 +152,6 @@ function ExtendRental({
                         alt={artwork.title}
                         className="w-full h-full object-cover rounded-md cursor-pointer"
                       />
-                      )
                     </div>
                     <div className="flex-1 cursor-pointer" onClick={() => navigateToArtwork(artwork.id)}>
                       <h3 className="font-semibold">{artwork.title}</h3>
