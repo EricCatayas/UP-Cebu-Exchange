@@ -3,8 +3,10 @@ import sequelize from '@/config/database';
 import { RentalOrderAttributes } from '@/models/RentalOrder';
 import { ORDER_STATUS } from '@/lib/constants';
 
-interface RentalOrderCreationAttributes
-  extends Optional<RentalOrderAttributes, 'id' | 'status' | 'createdAt' | 'updatedAt'> {}
+interface RentalOrderCreationAttributes extends Optional<
+  RentalOrderAttributes,
+  'id' | 'status' | 'createdAt' | 'updatedAt'
+> {}
 
 class RentalOrder extends Model<RentalOrderAttributes, RentalOrderCreationAttributes> implements RentalOrderAttributes {
   declare id: number;
@@ -20,31 +22,11 @@ class RentalOrder extends Model<RentalOrderAttributes, RentalOrderCreationAttrib
   declare updatedAt: Date;
 
   // Instance methods
-  public isActive(): boolean {
-    return this.status === 'Confirmed' && new Date() <= this.endDate;
-  }
-
-  public isOverdue(): boolean {
-    return this.status === 'Confirmed' && new Date() > this.endDate;
-  }
-
   public getDaysRemaining(): number {
     if (this.status !== 'Confirmed') return 0;
     const today = new Date();
     const timeDiff = this.endDate.getTime() - today.getTime();
     return Math.max(0, Math.ceil(timeDiff / (1000 * 3600 * 24)));
-  }
-
-  // Static method
-  public static async findActiveRentals(): Promise<RentalOrder[]> {
-    return this.findAll({
-      where: {
-        status: 'Confirmed',
-        endDate: {
-          [Op.gte]: new Date(),
-        },
-      },
-    });
   }
 }
 
