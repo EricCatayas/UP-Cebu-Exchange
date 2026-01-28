@@ -149,16 +149,17 @@ class FunnelAnalyticsService {
     // Get visitors per day for selected month
     const dailySessionData = await Session.findAll({
       attributes: [
-        [sequelize.fn('DATE_FORMAT', sequelize.col('createdAt'), '%Y-%m-%d'), 'day'],
-        [sequelize.fn('COUNT', sequelize.col('id')), 'count'],
+      [sequelize.fn('DATE_FORMAT', sequelize.col('createdAt'), '%Y-%m-%d'), 'day'],
+      [sequelize.fn('COUNT', sequelize.col('id')), 'count'],
       ],
       where: {
-        createdAt: {
-          [Op.gte]: new Date(year, month - 1, 1),
-          [Op.lt]: new Date(year, month, 1),
-        },
+      createdAt: {
+        [Op.gte]: new Date(year, month - 1, 1),
+        [Op.lt]: new Date(year, month, 1),
+      },
       },
       group: [sequelize.fn('DATE_FORMAT', sequelize.col('createdAt'), '%Y-%m-%d')],
+      order: [[sequelize.fn('DATE_FORMAT', sequelize.col('createdAt'), '%Y-%m-%d'), 'ASC']],
       raw: true,
     });
 
