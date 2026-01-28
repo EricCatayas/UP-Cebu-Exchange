@@ -43,7 +43,7 @@ const RentalOrderCard = ({ order, children }: { order: RentalOrderDTO; children?
         </div>
         <div className="flex justify-between">
           <dt className="text-gray-500">Status</dt>
-          <dd className="text-gray-900">{getOrderStatus(order)}</dd>
+          <dd className="text-gray-900">{getOrderStatus(order).label}</dd>
         </div>
         <div className="flex justify-between">
           <dt className="text-gray-500">Payment Method</dt>

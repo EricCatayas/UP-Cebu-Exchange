@@ -14,16 +14,17 @@ export const timeframes = [
 export const timeframeDefault = timeframes[0].value;
 
 export const orderStatus = {
-  [ORDER_STATUS.PENDING]: { label: 'Pending' },
-  [ORDER_STATUS.RESERVED]: { label: 'Reserved' },
-  [ORDER_STATUS.TORECEIVE]: { label: 'To Receive' },
-  'Overdue Receive': { label: 'Overdue Receive' },
-  [ORDER_STATUS.ONGOING]: { label: 'Ongoing' },
-  [ORDER_STATUS.TORETURN]: { label: 'To Return' },
-  'Overdue Return': { label: 'Overdue Return' },
-  'Payment Pending': { label: 'Payment Pending' },
-  [ORDER_STATUS.COMPLETED]: { label: 'Completed' },
-  [ORDER_STATUS.CANCELLED]: { label: 'Cancelled' },
+  pending: { label: 'Pending', value: ORDER_STATUS.PENDING },
+  reserved: { label: 'Reserved', value: ORDER_STATUS.RESERVED },
+  toReceive: { label: 'To Receive', value: ORDER_STATUS.TORECEIVE },
+  toReceiveOverdue: { label: 'Overdue Receive', value: 'Overdue Receive' },
+  ongoing: { label: 'Ongoing', value: ORDER_STATUS.ONGOING },
+  toReturn: { label: 'To Return', value: ORDER_STATUS.TORETURN },
+  toReturnOverdue: { label: 'Overdue Return', value: 'Overdue Return' },
+  paymentPending: { label: 'Payment Pending', value: 'Payment Pending' },
+  paymentFailed: { label: 'Payment Failed', value: 'Payment Failed' },
+  completed: { label: 'Completed', value: ORDER_STATUS.COMPLETED },
+  cancelled: { label: 'Cancelled', value: ORDER_STATUS.CANCELLED },
 };
 
 export const funnelStages = [

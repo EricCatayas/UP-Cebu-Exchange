@@ -1,6 +1,7 @@
 import { RentalOrderDTO } from '@/models/RentalOrder';
 import { ORDER_STATUS, PAYMENT_STATUS } from '@/lib/constants';
 import { CART_STATUS } from '@/models/CartItem';
+import { orderStatus } from '@/lib/labels';
 
 export function getDaysRemaining(order: RentalOrderDTO): number {
   const today = new Date();
@@ -13,21 +14,21 @@ export function getDaysRemaining(order: RentalOrderDTO): number {
   }
 }
 
-export function getOrderStatus(order: RentalOrderDTO): string {
+export function getOrderStatus(order: RentalOrderDTO): { label: string; value: string } | string {
   const today = new Date();
   const startDate = new Date(order.startDate);
   const endDate = new Date(order.endDate);
 
   if (order.status === ORDER_STATUS.CANCELLED) {
-    return ORDER_STATUS.CANCELLED;
+    return { label: 'Order Cancelled', value: order.status };
   }
 
   if (order.payment.status === PAYMENT_STATUS.PENDING) {
-    return `Payment ${ORDER_STATUS.PENDING}`;
+    return orderStatus.paymentPending;
   }
 
   if (order.payment.status === PAYMENT_STATUS.FAILED) {
-    return `Payment ${PAYMENT_STATUS.FAILED}`;
+    return orderStatus.paymentFailed;
   }
 
   // Todo: auto update status based on date and condition. Then remove these lines later.
@@ -36,14 +37,23 @@ export function getOrderStatus(order: RentalOrderDTO): string {
     order.payment.status === PAYMENT_STATUS.COMPLETED &&
     order.status === ORDER_STATUS.RESERVED
   ) {
-    return ORDER_STATUS.TORECEIVE;
+    // if today is one week after start date: overdue receive
+    if ((today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24) > 7) {
+      return orderStatus.toReceiveOverdue;
+    }
+    return orderStatus.toReceive;
   }
 
   if (today > endDate && (order.status === ORDER_STATUS.ONGOING || order.status !== ORDER_STATUS.COMPLETED)) {
-    return ORDER_STATUS.TORETURN;
+    // if today is two weeks after end date: overdue return
+    if ((today.getTime() - endDate.getTime()) / (1000 * 60 * 60 * 24) > 14) {
+      return orderStatus.toReturnOverdue;
+    }
+    // if today is one week after end date: to return
+    return orderStatus.toReturn;
   }
 
-  return order.status;
+  return { label: order.status, value: order.status };
 }
 
 export const getUnavailableReason = (status: CART_STATUS) => {
