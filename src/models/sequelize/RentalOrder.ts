@@ -1,5 +1,6 @@
-import { DataTypes, Model, Optional, Op } from 'sequelize';
 import sequelize from '@/config/database';
+import RentalOrderExtension from './RentalOrderExtension';
+import { DataTypes, Model, Optional, Op } from 'sequelize';
 import { RentalOrderAttributes } from '@/models/RentalOrder';
 import { ORDER_STATUS } from '@/lib/constants';
 
@@ -20,6 +21,7 @@ class RentalOrder extends Model<RentalOrderAttributes, RentalOrderCreationAttrib
   declare status: string;
   declare createdAt: Date;
   declare updatedAt: Date;
+  declare extension?: RentalOrderExtension;
 
   // Instance methods
   public getDaysRemaining(): number {
@@ -27,6 +29,10 @@ class RentalOrder extends Model<RentalOrderAttributes, RentalOrderCreationAttrib
     const today = new Date();
     const timeDiff = this.endDate.getTime() - today.getTime();
     return Math.max(0, Math.ceil(timeDiff / (1000 * 3600 * 24)));
+  }
+
+  public hasExtension(): boolean {
+    return this.extension !== undefined;
   }
 }
 

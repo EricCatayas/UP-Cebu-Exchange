@@ -12,6 +12,7 @@ import Event from './Event';
 import Notification from './Notification';
 import Payment from './Payment';
 import RentalOrder from './RentalOrder';
+import RentalOrderExtension from './RentalOrderExtension';
 import RentalOrderItem from './RentalOrderItem';
 import RentalPlan from './RentalPlan';
 import Role from './Role';
@@ -203,6 +204,21 @@ const initializeAssociations = () => {
     as: 'payment',
   });
 
+  RentalOrderExtension.belongsTo(RentalOrder, {
+    foreignKey: 'originalOrderId',
+    as: 'originalOrder',
+  });
+
+  RentalOrderExtension.belongsTo(RentalOrder, {
+    foreignKey: 'extensionOrderId',
+    as: 'extensionOrder',
+  });
+
+  RentalOrder.hasOne(RentalOrderExtension, {
+    foreignKey: 'originalOrderId',
+    as: 'extension',
+  });
+
   // RentalOrder belongs to Address
   RentalOrder.belongsTo(Address, {
     foreignKey: 'addressId',
@@ -269,6 +285,7 @@ export {
   Notification,
   Payment,
   RentalOrder,
+  RentalOrderExtension,
   RentalOrderItem,
   RentalPlan,
   Role,
@@ -296,6 +313,7 @@ export default {
   Notification,
   Payment,
   RentalOrder,
+  RentalOrderExtension,
   RentalOrderItem,
   RentalPlan,
   Role,
