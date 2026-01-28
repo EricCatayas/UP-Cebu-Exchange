@@ -33,6 +33,7 @@ import {
   PAYMENT_METHOD,
   DELIVERY_METHOD,
   ORDER_STATUS,
+  ARTWORK_STATUS,
 } from '@/lib/constants';
 import { getRentalFee } from '@/lib/artwork';
 
@@ -300,18 +301,19 @@ class VisitorFactory {
                     if (eventNumber > 9) {
                       await eventService.completePayment(payment.id);
                       await payment.update({ status: PAYMENT_STATUS.COMPLETED });
-
                       await rentalOrder.update({ status: ORDER_STATUS.RESERVED });
+                      await artwork.update({ status: ARTWORK_STATUS.RESERVED });
 
                       if (eventNumber > 10) {
                         await eventService.orderReceived(rentalOrder.id);
-
                         await rentalOrder.update({ status: ORDER_STATUS.ONGOING });
+                        await artwork.update({ status: ARTWORK_STATUS.RENTED });
 
                         if (eventNumber > 11) {
                           await eventService.completeOrder(rentalOrder.id);
 
                           rentalOrder.update({ status: ORDER_STATUS.COMPLETED });
+                          artwork.update({ status: ARTWORK_STATUS.AVAILABLE });
                         }
                       }
                     }
