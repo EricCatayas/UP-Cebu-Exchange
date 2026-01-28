@@ -14,17 +14,17 @@ class FunnelAnalyticsService {
     this.timeframe = timeframe;
   }
 
-  async getFunnelMetrics(): Promise<FunnelMetrics> {
-    const visitCount = await this.getVisitCount();
-    const browseCount = await this.getBrowseArtworksCount();
-    const viewCount = await this.getArtworkViewCount();
-    const createAccountCount = await this.getCreateAccountCount();
-    const verifyEmailCount = await this.getVerifyEmailCount();
-    const beginCheckoutCount = await this.getBeginCheckoutCount();
-    const signRentalAgreementCount = await this.getSignRentalAgreementCount();
-    const placeOrderCount = await this.getPlaceOrderCount();
-    const completePaymentCount = await this.getCompletePaymentCount();
-    const completeOrderCount = await this.getCompleteOrderCount();
+  async getFunnelMetrics({ unique = false }: { unique?: boolean } = {}): Promise<FunnelMetrics> {
+    const visitCount = await this.getVisitCount(unique);
+    const browseCount = await this.getBrowseArtworksCount(unique);
+    const viewCount = await this.getArtworkViewCount(unique);
+    const createAccountCount = await this.getCreateAccountCount(unique);
+    const verifyEmailCount = await this.getVerifyEmailCount(unique);
+    const beginCheckoutCount = await this.getBeginCheckoutCount(unique);
+    const signRentalAgreementCount = await this.getSignRentalAgreementCount(unique);
+    const placeOrderCount = await this.getPlaceOrderCount(unique);
+    const completePaymentCount = await this.getCompletePaymentCount(unique);
+    const completeOrderCount = await this.getCompleteOrderCount(unique);
 
     const result = {
       [EVENT_NAME.VISIT_SITE]: {
@@ -42,9 +42,14 @@ class FunnelAnalyticsService {
         conversionRate: getConversionRate(viewCount, browseCount),
         cumulativeConversionRate: getConversionRate(viewCount, visitCount),
       },
+      [EVENT_NAME.BEGIN_CHECKOUT]: {
+        count: beginCheckoutCount,
+        conversionRate: getConversionRate(beginCheckoutCount, viewCount),
+        cumulativeConversionRate: getConversionRate(beginCheckoutCount, visitCount),
+      },
       [EVENT_NAME.CREATE_ACCOUNT]: {
         count: createAccountCount,
-        conversionRate: getConversionRate(createAccountCount, viewCount),
+        conversionRate: getConversionRate(createAccountCount, beginCheckoutCount),
         cumulativeConversionRate: getConversionRate(createAccountCount, visitCount),
       },
       [EVENT_NAME.VERIFY_EMAIL]: {
@@ -52,14 +57,9 @@ class FunnelAnalyticsService {
         conversionRate: getConversionRate(verifyEmailCount, createAccountCount),
         cumulativeConversionRate: getConversionRate(verifyEmailCount, visitCount),
       },
-      [EVENT_NAME.BEGIN_CHECKOUT]: {
-        count: beginCheckoutCount,
-        conversionRate: getConversionRate(beginCheckoutCount, verifyEmailCount),
-        cumulativeConversionRate: getConversionRate(beginCheckoutCount, visitCount),
-      },
       [EVENT_NAME.SIGN_RENTAL_AGREEMENT]: {
         count: signRentalAgreementCount,
-        conversionRate: getConversionRate(signRentalAgreementCount, beginCheckoutCount),
+        conversionRate: getConversionRate(signRentalAgreementCount, verifyEmailCount),
         cumulativeConversionRate: getConversionRate(signRentalAgreementCount, visitCount),
       },
       [EVENT_NAME.PLACE_ORDER]: {
@@ -185,88 +185,270 @@ class FunnelAnalyticsService {
     // Implementation for user retention metrics can be added here
   };
 
-  private async getVisitCount() {
-    return await Event.count({
+  private async getVisitCount(unique: boolean = false) {
+    if (unique) {
+      const uniqueVisitCount = await Event.count({
+        where: {
+          name: EVENT_NAME.VISIT_SITE,
+          ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
+        },
+        include: [
+          {
+            model: Session,
+            as: 'session',
+            attributes: [],
+          },
+        ],
+        group: [sequelize.fn('COALESCE', sequelize.col('session.userId'), sequelize.col('session.sessionId'))],
+        distinct: true,
+      });
+      const visitCount = Array.isArray(uniqueVisitCount) ? uniqueVisitCount.length : 0;
+      return visitCount;
+    }
+
+    const visitCount = await Event.count({
       where: {
         name: EVENT_NAME.VISIT_SITE,
         ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
       },
     });
+
+    return visitCount;
   }
 
-  private async getBrowseArtworksCount() {
-    return await Event.count({
+  private async getBrowseArtworksCount(unique: boolean = false) {
+    if (unique) {
+      const uniqueBrowseArtworksCount = await Event.count({
+        where: {
+          name: EVENT_NAME.BROWSE_ARTWORKS,
+          ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
+        },
+        include: [
+          {
+            model: Session,
+            as: 'session',
+            attributes: [],
+          },
+        ],
+        group: [sequelize.fn('COALESCE', sequelize.col('session.userId'), sequelize.col('session.sessionId'))],
+        distinct: true,
+      });
+      const browseArtworksCount = Array.isArray(uniqueBrowseArtworksCount) ? uniqueBrowseArtworksCount.length : 0;
+      return browseArtworksCount;
+    }
+
+    const browseArtworksCount = await Event.count({
       where: {
         name: EVENT_NAME.BROWSE_ARTWORKS,
         ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
       },
     });
+    return browseArtworksCount;
   }
 
-  private async getArtworkViewCount() {
-    return await Event.count({
+  private async getArtworkViewCount(unique: boolean = false) {
+    if (unique) {
+      const uniqueArtworkViewCount = await Event.count({
+        where: {
+          name: EVENT_NAME.VIEW_ARTWORK,
+          ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
+        },
+        include: [
+          {
+            model: Session,
+            as: 'session',
+            attributes: [],
+          },
+        ],
+        group: [sequelize.fn('COALESCE', sequelize.col('session.userId'), sequelize.col('session.sessionId'))],
+        distinct: true,
+      });
+      const artworkViewCount = Array.isArray(uniqueArtworkViewCount) ? uniqueArtworkViewCount.length : 0;
+      return artworkViewCount;
+    }
+
+    const artworkViewCount = await Event.count({
       where: {
         name: EVENT_NAME.VIEW_ARTWORK,
         ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
       },
     });
-  }
 
-  private async getCreateAccountCount() {
-    return await Event.count({
+    return artworkViewCount;
+  }
+  private async getCreateAccountCount(unique: boolean = false) {
+    if (unique) {
+      const uniqueCreateAccountCount = await Event.count({
+        where: {
+          name: EVENT_NAME.CREATE_ACCOUNT,
+          ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
+        },
+        include: [
+          {
+            model: Session,
+            as: 'session',
+            attributes: [],
+          },
+        ],
+        group: [sequelize.fn('COALESCE', sequelize.col('session.userId'), sequelize.col('session.sessionId'))],
+        distinct: true,
+      });
+      const createAccountCount = Array.isArray(uniqueCreateAccountCount) ? uniqueCreateAccountCount.length : 0;
+      return createAccountCount;
+    }
+
+    const createAccountCount = await Event.count({
       where: {
         name: EVENT_NAME.CREATE_ACCOUNT,
         ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
       },
     });
+    return createAccountCount;
   }
 
-  private async getVerifyEmailCount() {
-    return await Event.count({
+  private async getVerifyEmailCount(unique: boolean = false) {
+    if (unique) {
+      const uniqueVerifyEmailCount = await Event.count({
+        where: {
+          name: EVENT_NAME.VERIFY_EMAIL,
+          ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
+        },
+        include: [
+          {
+            model: Session,
+            as: 'session',
+            attributes: [],
+          },
+        ],
+        group: [sequelize.fn('COALESCE', sequelize.col('session.userId'), sequelize.col('session.sessionId'))],
+        distinct: true,
+      });
+      const verifyEmailCount = Array.isArray(uniqueVerifyEmailCount) ? uniqueVerifyEmailCount.length : 0;
+      return verifyEmailCount;
+    }
+
+    const verifyEmailCount = await Event.count({
       where: {
         name: EVENT_NAME.VERIFY_EMAIL,
         ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
       },
     });
+    return verifyEmailCount;
   }
 
-  private async getBeginCheckoutCount() {
-    const groupedBeginCheckoutEvent = await Event.count({
+  private async getBeginCheckoutCount(unique: boolean = false) {
+    if (unique) {
+      const uniqueBeginCheckoutCount = await Event.count({
+        where: {
+          name: EVENT_NAME.BEGIN_CHECKOUT,
+          ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
+        },
+        include: [
+          {
+            model: Session,
+            as: 'session',
+            attributes: [],
+          },
+        ],
+        group: [sequelize.fn('COALESCE', sequelize.col('session.userId'), sequelize.col('session.sessionId'))],
+        distinct: true,
+      });
+      const beginCheckoutCount = Array.isArray(uniqueBeginCheckoutCount) ? uniqueBeginCheckoutCount.length : 0;
+      return beginCheckoutCount;
+    }
+
+    const beginCheckoutCount = await Event.count({
       where: {
         name: EVENT_NAME.BEGIN_CHECKOUT,
         ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
       },
-      group: ['entityId'],
     });
-    const beginCheckoutCount = Array.isArray(groupedBeginCheckoutEvent) ? groupedBeginCheckoutEvent.length : 0;
     return beginCheckoutCount;
   }
 
-  private async getSignRentalAgreementCount() {
-    return await Event.count({
+  private async getSignRentalAgreementCount(unique: boolean = false) {
+    if (unique) {
+      const uniqueSignRentalAgreementCount = await Event.count({
+        where: {
+          name: EVENT_NAME.SIGN_RENTAL_AGREEMENT,
+          ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
+        },
+        include: [
+          {
+            model: Session,
+            as: 'session',
+            attributes: [],
+          },
+        ],
+        group: [sequelize.fn('COALESCE', sequelize.col('session.userId'), sequelize.col('session.sessionId'))],
+        distinct: true,
+      });
+      const signRentalAgreementCount = Array.isArray(uniqueSignRentalAgreementCount)
+        ? uniqueSignRentalAgreementCount.length
+        : 0;
+      return signRentalAgreementCount;
+    }
+
+    const signRentalAgreementCount = await Event.count({
       where: {
         name: EVENT_NAME.SIGN_RENTAL_AGREEMENT,
         ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
       },
     });
+    return signRentalAgreementCount;
   }
 
-  private async getPlaceOrderCount() {
-    return await Event.count({
+  private async getPlaceOrderCount(unique: boolean = false) {
+    if (unique) {
+      const uniquePlaceOrderCount = await Event.count({
+        where: {
+          name: EVENT_NAME.PLACE_ORDER,
+          ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
+        },
+        include: [
+          {
+            model: Session,
+            as: 'session',
+            attributes: [],
+          },
+        ],
+        group: [sequelize.fn('COALESCE', sequelize.col('session.userId'), sequelize.col('session.sessionId'))],
+        distinct: true,
+      });
+      const placeOrderCount = Array.isArray(uniquePlaceOrderCount) ? uniquePlaceOrderCount.length : 0;
+      return placeOrderCount;
+    }
+
+    const placeOrderCount = await Event.count({
       where: {
         name: EVENT_NAME.PLACE_ORDER,
         ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
       },
     });
+    return placeOrderCount;
   }
 
-  private async getCompletePaymentCount() {
-    return await Payment.count({
+  private async getCompletePaymentCount(unique: boolean = false) {
+    if (unique) {
+      const uniqueCompletePaymentCount = await Payment.count({
+        where: {
+          status: PAYMENT_STATUS.COMPLETED,
+          ...(this.timeframe && { updatedAt: opTimeframe(this.timeframe) }),
+        },
+        group: ['userId'],
+        distinct: true,
+      });
+      const completePaymentCount = Array.isArray(uniqueCompletePaymentCount) ? uniqueCompletePaymentCount.length : 0;
+      return completePaymentCount;
+    }
+
+    const completePaymentCount = await Payment.count({
       where: {
         status: PAYMENT_STATUS.COMPLETED,
         ...(this.timeframe && { updatedAt: opTimeframe(this.timeframe) }),
       },
     });
+    return completePaymentCount;
     // return await Event.count({
     //   where: {
     //     name: EVENT_NAME.COMPLETE_PAYMENT,
@@ -275,13 +457,27 @@ class FunnelAnalyticsService {
     // });
   }
 
-  private async getCompleteOrderCount() {
-    return await RentalOrder.count({
+  private async getCompleteOrderCount(unique: boolean = false) {
+    if (unique) {
+      const uniqueCompleteOrderCount = await RentalOrder.count({
+        where: {
+          status: ORDER_STATUS.COMPLETED,
+          ...(this.timeframe && { updatedAt: opTimeframe(this.timeframe) }),
+        },
+        group: ['userId'],
+        distinct: true,
+      });
+      const completeOrderCount = Array.isArray(uniqueCompleteOrderCount) ? uniqueCompleteOrderCount.length : 0;
+      return completeOrderCount;
+    }
+
+    const completeOrderCount = await RentalOrder.count({
       where: {
         status: ORDER_STATUS.COMPLETED,
         ...(this.timeframe && { updatedAt: opTimeframe(this.timeframe) }),
       },
     });
+    return completeOrderCount;
     // return await Event.count({
     //   where: {
     //     name: EVENT_NAME.COMPLETE_ORDER,

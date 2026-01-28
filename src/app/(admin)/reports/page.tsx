@@ -22,7 +22,7 @@ async function Reports({ searchParams }: { searchParams: { [key: string]: string
   const { artworks, popularityScores } = await productDemandService.getArtworksPopularityScores();
 
   const funnelAnalysisService = new FunnelAnalyticsService(timeframe);
-  const funnelMetrics = await funnelAnalysisService.getFunnelMetrics();
+  const funnelMetrics = await funnelAnalysisService.getFunnelMetrics({ unique: true });
 
   console.log('Funnel Metrics in Reports page:', funnelMetrics);
 
