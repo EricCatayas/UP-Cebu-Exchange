@@ -66,7 +66,7 @@ export async function seedEvents() {
 
 class VisitorFactory {
   customerRoleId: number;
-  withinLastDays: number = 7; // Days range for session creation date
+  withinLastDays: number = 30; // Days range for session creation date
 
   constructor(customerRoleId: number) {
     this.customerRoleId = customerRoleId;
