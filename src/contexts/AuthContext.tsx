@@ -27,6 +27,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     checkSession();
   }, []);
 
+  // Check if user is admin
+  useEffect(() => {
+    if (user && isAdmin(user)) {
+      acceptCookies();
+    }
+  }, [user, acceptCookies]);
+
   const isLoggedIn = useMemo(() => !!user, [user]);
 
   const checkSession = async () => {
@@ -35,9 +42,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (response.ok) {
         const data = await response.json();
         setUser(data.user);
-        if (isAdmin(data.user)) {
-          acceptCookies();
-        }
       } else {
         setUser(null);
       }
