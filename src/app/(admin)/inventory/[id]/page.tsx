@@ -2,8 +2,11 @@ import React from 'react';
 import Link from 'next/link';
 import AnalyticsCard from '@/components/AnalyticsCard/AnalyticsCard';
 import ArtworkService from '@/services/ArtworkService';
+import RentalOrderService from '@/services/RentalOrderService';
+import ProductDemandService from '@/services/ProductDemandService';
 import { FaEye, FaEdit } from 'react-icons/fa';
 import { ArtworkDTO } from '@/models/Artwork';
+import { ARTWORK_STATUS } from '@/lib/constants';
 import { notFound } from 'next/navigation';
 import { fmtMoney } from '@/lib/formatter';
 
@@ -16,11 +19,23 @@ async function InventoryDetails({ params }: { params: { id: string } }) {
     return notFound();
   }
 
-  // todo:
-  const viewCount = 50;
-  const rentedCount = 50;
-  const wishlistCount = 50;
-  const shoppingCartCount = 50;
+  const productDemandService = new ProductDemandService();
+
+  const [viewCount, rentedCount, wishlistCount, shoppingCartCount] = await Promise.all([
+    productDemandService.getArtworkViewCount(artwork.id),
+    productDemandService.getArtworkRentedCount(artwork.id),
+    productDemandService.getArtworkWishlistCount(artwork.id),
+    productDemandService.getArtworkCartCount(artwork.id),
+  ]);
+
+  const isCurrentlyRented = artwork.status === ARTWORK_STATUS.RENTED;
+  let ongoingRentalOrderId: number | null = null;
+
+  if (isCurrentlyRented) {
+    const rentalOrderService = new RentalOrderService();
+    const ongoingOrder = await rentalOrderService.getOngoingRentalByArtworkId(artwork.id);
+    ongoingRentalOrderId = ongoingOrder ? ongoingOrder.id : null;
+  }
 
   return (
     <div className="px-8 py-6">
@@ -28,6 +43,15 @@ async function InventoryDetails({ params }: { params: { id: string } }) {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">{artwork.title || 'Untitled Artwork'}</h1>
         <span className="flex gap-4">
+          {isCurrentlyRented && (
+            // Link to ongoing rental order details
+            <Link
+              href={`/orders/${ongoingRentalOrderId}`}
+              className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+            >
+              <FaEdit /> View Ongoing Rental
+            </Link>
+          )}
           <Link
             href={`/artworks/${artwork.id}`}
             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
@@ -97,10 +121,10 @@ async function InventoryDetails({ params }: { params: { id: string } }) {
                     artwork.status === 'Available'
                       ? 'bg-green-100 text-green-800'
                       : artwork.status === 'Rented'
-                      ? 'bg-blue-100 text-blue-800'
-                      : artwork.status === 'Maintenance'
-                      ? 'bg-yellow-100 text-yellow-800'
-                      : 'bg-red-100 text-red-800'
+                        ? 'bg-blue-100 text-blue-800'
+                        : artwork.status === 'Maintenance'
+                          ? 'bg-yellow-100 text-yellow-800'
+                          : 'bg-red-100 text-red-800'
                   }`}
                 >
                   {artwork.status}

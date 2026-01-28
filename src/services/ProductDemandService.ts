@@ -94,7 +94,7 @@ class ProductDemandService {
           model: RentalOrder,
           as: 'rentalOrder',
           where: {
-            status: ORDER_STATUS.COMPLETED,
+            status: { [Op.in]: [ORDER_STATUS.ONGOING, ORDER_STATUS.TORETURN, ORDER_STATUS.COMPLETED] },
           },
         },
       ],
