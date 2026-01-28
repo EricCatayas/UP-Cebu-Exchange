@@ -105,15 +105,4 @@ export const rentalOrderApi = {
     }
     return await response.json();
   },
-  hasExtension: async (orderId: number): Promise<boolean> => {
-    const response = await fetch(`/api/rental-order/${orderId}/extend`, {
-      method: 'GET',
-    });
-    const data = await response.json();
-    if (!response.ok) {
-      throw new Error(data.error || 'Failed to check existing extension');
-    }
-    const { existingExtension } = data;
-    return existingExtension;
-  },
 };

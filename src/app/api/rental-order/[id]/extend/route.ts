@@ -8,28 +8,6 @@ import { fmtDate } from '@/lib/formatter';
 import { DELIVERY_METHOD } from '@/lib/constants';
 import { Op } from 'sequelize';
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
-  try {
-    const currentUser = await getCurrentUser();
-    if (!currentUser) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
-    }
-    const orderId = parseInt((await params).id);
-
-    const rentalOrderService = new RentalOrderService();
-    const rentalOrder = await rentalOrderService.getOrderDetails(orderId);
-    const existingExtensionOrder = await rentalOrderService.getExtensionFromUserOrder(orderId, currentUser.userId);
-    if (existingExtensionOrder) {
-      return new Response(JSON.stringify({ existingExtension: true }), { status: 200 });
-    } else {
-      return new Response(JSON.stringify({ existingExtension: false }), { status: 200 });
-    }
-  } catch (error) {
-    console.error('Error checking existing extension:', error);
-    return new Response(JSON.stringify({ error: 'Internal Server Error' }), { status: 500 });
-  }
-}
-
 export async function POST(request: Request, { params }: { params: { id: string } }) {
   try {
     const currentUser = await getCurrentUser();
