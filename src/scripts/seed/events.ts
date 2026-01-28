@@ -10,6 +10,7 @@ import {
   generateRandomDuration,
   generateRandomNumber,
   generateRandomString,
+  generateStartAndEndDates,
 } from '@/lib/seed';
 import {
   Artwork,
@@ -47,17 +48,17 @@ export async function seedEvents() {
 
     // Seed multiple sessions with varying events
     for (let i = 1; i <= 40; i++) {
-      const randomNumber = Math.floor(Math.random() * Math.random() * 11);
+      const randomNumber = Math.floor(Math.random() * Math.random() * 12);
       await sessionFactory.CreateNewVisitorSession(randomNumber);
     }
 
     for (let i = 1; i <= 5; i++) {
-      const randomNumber = Math.floor(Math.random() * Math.random() * 11);
+      const randomNumber = Math.floor(Math.random() * Math.random() * 12);
       await sessionFactory.CreateReturningVisitorSession(randomNumber);
     }
 
-    await sessionFactory.CreateNewVisitorSession(12); // Full funnel session
-    await sessionFactory.CreateReturningVisitorSession(12); // Full funnel session
+    await sessionFactory.CreateNewVisitorSession(13); // Full funnel session
+    await sessionFactory.CreateReturningVisitorSession(13); // Full funnel session
   } catch (error) {
     console.error('❌ Error seeding events:', error);
     throw error;
@@ -82,7 +83,8 @@ class VisitorFactory {
   // event 8 - signs agreement
   // event 9 - user places order
   // event 10 - user completes payment
-  // event 11 - user completes order
+  // event 11 - user receives order
+  // event 12 - user completes order
   async CreateNewVisitorSession(eventNumber: number) {
     const createdAt = new Date();
     createdAt.setDate(createdAt.getDate() - Math.floor(Math.random() * this.withinLastDays));
@@ -101,6 +103,7 @@ class VisitorFactory {
 
       if (eventNumber > 1) {
         const artwork = await Artwork.findOne({
+          include: ['rentalPlans'],
           order: [sequelize.literal('RAND()')],
         });
         if (!artwork) return;
@@ -148,30 +151,48 @@ class VisitorFactory {
                       const payment = await Payment.create({
                         userId: user.id,
                         amount: generateRandomNumber(100, 1000),
-                        status: PAYMENT_STATUS.COMPLETED,
+                        status: PAYMENT_STATUS.PENDING,
                         method: PAYMENT_METHOD.ONLINE,
                       });
+
+                      const durationMonths = generateRandomDuration();
+                      const { startDate, endDate } = generateStartAndEndDates(durationMonths);
 
                       const rentalOrder = await RentalOrder.create({
                         userId: user.id,
                         addressId: address1.id,
                         paymentId: payment.id,
-                        startDate: new Date(),
-                        endDate: new Date(),
-                        durationMonths: generateRandomDuration(),
+                        startDate: startDate,
+                        endDate: endDate,
+                        durationMonths: durationMonths,
                         deliveryMethod: DELIVERY_METHOD.DELIVERY,
                         status: ORDER_STATUS.PENDING,
+                      });
+
+                      const rentalOrderItem = await RentalOrderItem.create({
+                        rentalOrderId: rentalOrder.id,
+                        artworkId: artwork.id,
+                        amount: getRentalFee(artwork, durationMonths),
                       });
 
                       await eventService.placeOrder(rentalOrder.id);
 
                       if (eventNumber > 9) {
                         await eventService.completePayment(payment.id);
+                        await payment.update({ status: PAYMENT_STATUS.COMPLETED });
+
+                        await rentalOrder.update({ status: ORDER_STATUS.RESERVED });
 
                         if (eventNumber > 10) {
-                          await eventService.completeOrder(rentalOrder.id);
+                          await eventService.orderReceived(rentalOrder.id);
 
-                          rentalOrder.update({ status: ORDER_STATUS.COMPLETED });
+                          await rentalOrder.update({ status: ORDER_STATUS.ONGOING });
+
+                          if (eventNumber > 11) {
+                            await eventService.completeOrder(rentalOrder.id);
+
+                            rentalOrder.update({ status: ORDER_STATUS.COMPLETED });
+                          }
                         }
                       }
                     }
@@ -212,7 +233,7 @@ class VisitorFactory {
 
       if (eventNumber > 1) {
         const artwork = await Artwork.findOne({
-          // MySQL uses RAND() for random ordering
+          include: ['rentalPlans'],
           order: [sequelize.literal('RAND()')],
         });
         if (!artwork) return;
@@ -250,30 +271,48 @@ class VisitorFactory {
                     const payment = await Payment.create({
                       userId: user.id,
                       amount: generateRandomNumber(100, 1000),
-                      status: PAYMENT_STATUS.COMPLETED,
+                      status: PAYMENT_STATUS.PENDING,
                       method: PAYMENT_METHOD.ONLINE,
                     });
+
+                    const durationMonths = generateRandomDuration();
+                    const { startDate, endDate } = generateStartAndEndDates(durationMonths);
 
                     const rentalOrder = await RentalOrder.create({
                       userId: user.id,
                       addressId: address1.id,
                       paymentId: payment.id,
-                      startDate: new Date(),
-                      endDate: new Date(),
-                      durationMonths: generateRandomDuration(),
+                      startDate: startDate,
+                      endDate: endDate,
+                      durationMonths: durationMonths,
                       deliveryMethod: DELIVERY_METHOD.DELIVERY,
                       status: ORDER_STATUS.PENDING,
+                    });
+
+                    const rentalOrderItem = await RentalOrderItem.create({
+                      rentalOrderId: rentalOrder.id,
+                      artworkId: artwork.id,
+                      amount: getRentalFee(artwork, durationMonths),
                     });
 
                     await eventService.placeOrder(rentalOrder.id);
 
                     if (eventNumber > 9) {
                       await eventService.completePayment(payment.id);
+                      await payment.update({ status: PAYMENT_STATUS.COMPLETED });
+
+                      await rentalOrder.update({ status: ORDER_STATUS.RESERVED });
 
                       if (eventNumber > 10) {
-                        await eventService.completeOrder(rentalOrder.id);
+                        await eventService.orderReceived(rentalOrder.id);
 
-                        rentalOrder.update({ status: ORDER_STATUS.COMPLETED });
+                        await rentalOrder.update({ status: ORDER_STATUS.ONGOING });
+
+                        if (eventNumber > 11) {
+                          await eventService.completeOrder(rentalOrder.id);
+
+                          rentalOrder.update({ status: ORDER_STATUS.COMPLETED });
+                        }
                       }
                     }
                   }

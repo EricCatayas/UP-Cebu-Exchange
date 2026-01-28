@@ -32,8 +32,14 @@ export function generatePhoneNumber(): string {
 }
 
 export function generateRandomDuration(): number {
-  const durations = DURATION_OPTIONS.map((option) => option);
-  return durations[Math.floor(Math.random() * durations.length)];
+  return DURATION_OPTIONS[Math.floor(Math.random() * DURATION_OPTIONS.length)];
+}
+
+export function generateStartAndEndDates(durationMonths: number): { startDate: Date; endDate: Date } {
+  const startDate = new Date();
+  const endDate = new Date();
+  endDate.setMonth(endDate.getMonth() + durationMonths);
+  return { startDate, endDate };
 }
 
 export function generateRandomNumber(min: number, max: number): number {
