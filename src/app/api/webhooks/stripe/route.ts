@@ -2,7 +2,7 @@ import Stripe from 'stripe';
 import EventService from '@/services/EventService';
 import RentalOrderService from '@/services/RentalOrderService';
 import { Artwork, Payment, RentalOrder } from '@/models/sequelize';
-import { PAYMENT_STATUS } from '@/lib/constants';
+import { PAYMENT_METHOD, PAYMENT_STATUS } from '@/lib/constants';
 import { stripe } from '@/lib/stripe';
 import { paymentCompletedNotification } from '@/lib/notifications';
 
@@ -46,6 +46,10 @@ export async function POST(req: Request) {
 
     // PAYMENT SUCCESSFUL
     await payment.update({ status: PAYMENT_STATUS.COMPLETED });
+
+    if (payment.method !== PAYMENT_METHOD.ONLINE) {
+      await payment.update({ method: PAYMENT_METHOD.ONLINE });
+    }
 
     if (orderId) {
       const rentalOrderService = new RentalOrderService();
