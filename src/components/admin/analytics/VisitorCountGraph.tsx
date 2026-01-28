@@ -25,9 +25,8 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 type VisitorCountGraphProps = {
   year: number;
   month: number;
-  totalVisitors: number;
-  registeredVisitors: number;
-  guestVisitors: number;
+  customers: number;
+  guests: number;
   monthly: {
     labels: string[];
     data: number[];
@@ -38,15 +37,7 @@ type VisitorCountGraphProps = {
   };
 };
 
-export default function VisitorCountGraph({
-  year,
-  month,
-  customers,
-  admins,
-  guests,
-  monthly,
-  daily,
-}: VisitorCountGraphProps) {
+export default function VisitorCountGraph({ year, month, customers, guests, monthly, daily }: VisitorCountGraphProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -84,7 +75,7 @@ export default function VisitorCountGraph({
     datasets: [
       {
         label: 'Visitors',
-        data: [guests, customers, admins],
+        data: [guests, customers],
         backgroundColor: ['#22C55E', '#4F46E5'],
         borderColor: ['#16A34A', '#4338CA'],
         borderWidth: 1,
