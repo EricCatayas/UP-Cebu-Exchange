@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import RentalOrderService from '@/services/RentalOrderService';
-import { Address, RentalOrder, RentalOrderItem, Payment } from '@/models/sequelize';
+import { Address, RentalOrder, RentalOrderExtension, RentalOrderItem, Payment } from '@/models/sequelize';
 import { getCurrentUser } from '@/lib/auth';
 import { getRentalFee, hasOngoingRental, isUnavailableForRental } from '@/lib/artwork';
 import { ExtendRentalOrderDTO } from '@/models/RentalOrder';
 import { fmtDate } from '@/lib/formatter';
-import { DELIVERY_METHOD } from '@/lib/constants';
+import { DELIVERY_METHOD, PAYMENT_STATUS } from '@/lib/constants';
 import { Op } from 'sequelize';
 
 export async function POST(request: Request, { params }: { params: { id: string } }) {
@@ -61,8 +61,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
       }
     }
 
-    const existingExtensionOrder = await rentalOrderService.getExtensionFromUserOrder(orderId, currentUser.userId);
-    if (existingExtensionOrder) {
+    if (rentalOrder.extension) {
       return new Response(JSON.stringify({ error: 'An extension for this rental order already exists' }), {
         status: 400,
       });
@@ -82,7 +81,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
       userId: rentalOrder.userId,
       amount: totalAmount,
       method: paymentMethod,
-      status: 'Pending',
+      status: PAYMENT_STATUS.PENDING,
     });
 
     // Create new rental order as extension
@@ -104,6 +103,12 @@ export async function POST(request: Request, { params }: { params: { id: string 
         amount: getRentalFee(artwork, durationMonths),
       });
     }
+
+    // Create RentalOrderExtension record
+    await RentalOrderExtension.create({
+      originalOrderId: rentalOrder.id,
+      extensionOrderId: newRentalOrder.id,
+    });
 
     return new Response(
       JSON.stringify({ success: true, message: 'Rental order extended successfully', rentalOrder: newRentalOrder }),

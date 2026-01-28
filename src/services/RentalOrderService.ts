@@ -4,6 +4,7 @@ import {
   Address,
   Artwork,
   RentalOrder,
+  RentalOrderExtension,
   RentalOrderItem,
   User,
   Payment,
@@ -46,6 +47,10 @@ export default class RentalOrderService {
             },
           ],
         },
+        {
+          model: RentalOrderExtension,
+          as: 'extension',
+        },
       ],
       order: [['startDate', 'ASC']],
     });
@@ -82,6 +87,10 @@ export default class RentalOrderService {
           model: Address,
           as: 'address',
         },
+        {
+          model: RentalOrderExtension,
+          as: 'extension',
+        },
       ],
     });
 
@@ -112,6 +121,10 @@ export default class RentalOrderService {
         {
           model: Address,
           as: 'address',
+        },
+        {
+          model: RentalOrderExtension,
+          as: 'extension',
         },
       ],
       order: [['startDate', 'ASC']],
@@ -148,6 +161,10 @@ export default class RentalOrderService {
           model: Address,
           as: 'address',
         },
+        {
+          model: RentalOrderExtension,
+          as: 'extension',
+        },
       ],
       order: [['createdAt', 'DESC']],
     });
@@ -178,49 +195,6 @@ export default class RentalOrderService {
     }
     let furthestEndOrder = ongoingOrders[0];
     return furthestEndOrder.toJSON();
-  }
-
-  // TODO: Fix
-  async getExtensionFromUserOrder(orderId: number, userId: number) {
-    const order = await this.getOrderDetails(orderId);
-    if (!order) {
-      return null;
-    }
-    const dayAfterEndDate = new Date(order.endDate);
-    dayAfterEndDate.setDate(dayAfterEndDate.getDate() + 1);
-
-    const extensionOrder = await RentalOrder.findOne({
-      where: {
-        userId: userId,
-        startDate: { [Op.eq]: dayAfterEndDate },
-      },
-      include: [
-        {
-          model: RentalOrderItem,
-          as: 'items',
-          include: [
-            {
-              model: Artwork,
-              as: 'artwork',
-              include: ['artist', 'tags', 'style', 'rentalPlans', 'images'],
-            },
-          ],
-        },
-      ],
-    });
-
-    const artworks = order.items.map((item) => item.artwork);
-    // Verify if all artworks in the original order are in the extension order
-    const extensionArtworks = extensionOrder?.items.map((item) => item.artwork);
-    const allArtworksIncluded = artworks.every((artwork) =>
-      extensionArtworks?.some((extArtwork) => extArtwork.id === artwork.id)
-    );
-
-    if (extensionOrder && allArtworksIncluded) {
-      return extensionOrder.toJSON();
-    } else {
-      return null;
-    }
   }
 
   async markOrderAsPending(orderId: number): Promise<void> {
