@@ -87,11 +87,10 @@ class FunnelAnalyticsService {
     return result;
   }
 
-  // todo: year, month filter
   getVisitorMetrics = async (
     year: number,
     month: number,
-    unique: boolean = true
+    unique: boolean = false
   ): Promise<{
     count: {
       total: number;
