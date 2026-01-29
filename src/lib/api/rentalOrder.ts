@@ -29,13 +29,13 @@ export const rentalOrderApi = {
     }
     return (await response.json()).rentalOrder;
   },
-  updateStatus: async (orderId: number, status: string): Promise<RentalOrderDTO> => {
+  updateStatus: async (orderId: number, status: string, itemsStatus: string): Promise<RentalOrderDTO> => {
     const response = await fetch(`/api/rental-order/${orderId}/status`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ status }),
+      body: JSON.stringify({ status, itemsStatus }),
     });
     if (!response.ok) {
       const data = await response.json();

@@ -13,7 +13,7 @@ async function OrdersPage() {
     userId: order.userId,
     userName: order.user?.fullName || 'N/A',
     userEmail: order.user?.email || 'N/A',
-    status: order.status,
+    status: getOrderStatus(order).label,
     statusColor: getOrderStatus(order).color,
     startDate: order.startDate,
     endDate: order.endDate,
@@ -22,7 +22,6 @@ async function OrdersPage() {
     paymentAmount: order.payment?.amount || '0.00',
     paymentStatus: order.payment?.status || 'Pending',
     paymentMethod: order.payment?.method || 'N/A',
-    paymentStatusColor: getOrderStatus(order).color,
     createdAt: order.createdAt,
   }));
 
@@ -56,9 +55,6 @@ async function OrdersPage() {
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Payment Amount
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Payment Status
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Created Date
@@ -111,13 +107,6 @@ async function OrdersPage() {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2,
                           })}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span
-                            className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${order.paymentStatusColor}`}
-                          >
-                            {order.paymentStatus}
-                          </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                           {new Date(order.createdAt).toLocaleDateString('en-US', {

@@ -26,9 +26,11 @@ export const orderStatus = {
   [ORDER_STATUS.TORETURN]: { label: 'To Return', value: ORDER_STATUS.TORETURN, color: 'bg-pink-100 text-pink-800' },
   ['Overdue Return']: { label: 'Overdue Return', value: 'Overdue Return', color: 'bg-red-100 text-red-800' },
   ['Payment Pending']: { label: 'Payment Pending', value: 'Payment Pending', color: 'bg-yellow-100 text-yellow-800' },
+  ['Payment Overdue']: { label: 'Payment Overdue', value: 'Payment Overdue', color: 'bg-red-100 text-red-800' },
   ['Payment Failed']: { label: 'Payment Failed', value: 'Payment Failed', color: 'bg-red-100 text-red-800' },
   [ORDER_STATUS.COMPLETED]: { label: 'Completed', value: ORDER_STATUS.COMPLETED, color: 'bg-green-100 text-green-800' },
   [ORDER_STATUS.CANCELLED]: { label: 'Cancelled', value: ORDER_STATUS.CANCELLED, color: 'bg-gray-100 text-gray-800' },
+  [ORDER_STATUS.EXTENDED]: { label: 'Extended', value: ORDER_STATUS.EXTENDED, color: 'bg-blue-200 text-blue-800' },
 };
 
 export const funnelStages = [

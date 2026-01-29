@@ -3,7 +3,7 @@ import RentalOrderService from '@/services/RentalOrderService';
 import { RentalOrder } from '@/models/sequelize';
 import { getCurrentUser } from '@/lib/auth';
 import { isAdmin, canEditContent } from '@/lib/role';
-import { ORDER_STATUS, ORDER_STATUSES } from '@/lib/constants';
+import { ARTWORK_STATUS, ORDER_STATUS, ORDER_STATUSES } from '@/lib/constants';
 import { getCurrentSession } from '@/lib/session';
 
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
@@ -19,7 +19,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     }
 
     const orderId = parseInt((await params).id);
-    const { status } = await request.json();
+    const { status, itemsStatus } = await request.json();
 
     if (!orderId || isNaN(Number(orderId))) {
       return new Response(JSON.stringify({ error: 'Valid orderId is required' }), { status: 400 });
@@ -35,31 +35,42 @@ export async function PUT(request: Request, { params }: { params: { id: string }
       return new Response(JSON.stringify({ error: 'Rental order not found' }), { status: 404 });
     }
 
-    const oldStatus = rentalOrder.status;
-    if (oldStatus === status) {
-      return new Response(JSON.stringify({ error: 'Rental order already has the specified status' }), { status: 400 });
-    }
-
     const session = await getCurrentSession();
 
     const rentalOrderService = new RentalOrderService();
+
     if (status === ORDER_STATUS.PENDING) {
-      await rentalOrderService.markOrderAsPending(rentalOrder.id);
+      await rentalOrder.update({ status: ORDER_STATUS.PENDING });
     } else if (status === ORDER_STATUS.RESERVED) {
-      await rentalOrderService.markOrderAsReserved(rentalOrder.id);
+      await rentalOrder.update({ status: ORDER_STATUS.RESERVED });
     } else if (status === ORDER_STATUS.TORECEIVE) {
-      await rentalOrderService.markOrderAsToReceive(rentalOrder.id);
+      await rentalOrder.update({ status: ORDER_STATUS.TORECEIVE });
     } else if (status === ORDER_STATUS.ONGOING) {
-      await rentalOrderService.markOrderAsOngoing(rentalOrder.id);
+      await rentalOrder.update({ status: ORDER_STATUS.ONGOING });
     } else if (status === ORDER_STATUS.TORETURN) {
-      await rentalOrderService.markOrderAsToReturn(rentalOrder.id);
+      await rentalOrder.update({ status: ORDER_STATUS.TORETURN });
     } else if (status === ORDER_STATUS.COMPLETED) {
-      await rentalOrderService.markOrderAsCompleted(rentalOrder.id);
+      await rentalOrder.update({ status: ORDER_STATUS.COMPLETED });
     } else if (status === ORDER_STATUS.CANCELLED) {
-      await rentalOrderService.markOrderAsCancelled(rentalOrder.id);
+      await rentalOrderService.cancelRentalOrderAndExtensions(rentalOrder.id);
+    } else if (status === ORDER_STATUS.EXTENDED) {
+      await rentalOrder.update({ status: ORDER_STATUS.EXTENDED });
     } else {
       rentalOrder.status = status;
       await rentalOrder.save();
+    }
+
+    if (itemsStatus === ARTWORK_STATUS.AVAILABLE) {
+      await rentalOrderService.updateRentalOrderItemsStatus(rentalOrder.id, ARTWORK_STATUS.AVAILABLE);
+    }
+    if (itemsStatus === ARTWORK_STATUS.RENTED) {
+      await rentalOrderService.updateRentalOrderItemsStatus(rentalOrder.id, ARTWORK_STATUS.RENTED);
+    }
+    if (itemsStatus === ARTWORK_STATUS.RESERVED) {
+      await rentalOrderService.updateRentalOrderItemsStatus(rentalOrder.id, ARTWORK_STATUS.RESERVED);
+    }
+    if (itemsStatus === ARTWORK_STATUS.UNAVAILABLE) {
+      await rentalOrderService.updateRentalOrderItemsStatus(rentalOrder.id, ARTWORK_STATUS.UNAVAILABLE);
     }
 
     if (status === ORDER_STATUS.COMPLETED && session) {

@@ -20,10 +20,16 @@ export function getOrderStatus(order: RentalOrderDTO): { label: string; value: s
   const endDate = new Date(order.endDate);
 
   if (order.status === ORDER_STATUS.CANCELLED) {
-    return { label: 'Order Cancelled', value: order.status, color: orderStatus.cancelled.color };
+    return {
+      ...orderStatus[ORDER_STATUS.CANCELLED],
+      label: 'Order Cancelled',
+    };
   }
 
   if (order.payment.status === PAYMENT_STATUS.PENDING) {
+    if (today > startDate) {
+      return orderStatus['Payment Overdue'];
+    }
     return orderStatus['Payment Pending'];
   }
 
@@ -31,7 +37,6 @@ export function getOrderStatus(order: RentalOrderDTO): { label: string; value: s
     return orderStatus['Payment Failed'];
   }
 
-  // Todo: auto update status based on date and condition. Then remove these lines later.
   if (
     today >= startDate &&
     order.payment.status === PAYMENT_STATUS.COMPLETED &&
@@ -42,6 +47,14 @@ export function getOrderStatus(order: RentalOrderDTO): { label: string; value: s
       return orderStatus['To Receive Overdue'];
     }
     return orderStatus[ORDER_STATUS.TORECEIVE];
+  }
+
+  // If today is after end date and order has an extension
+  if (today > endDate && order.extension) {
+    return {
+      ...orderStatus['Extended'],
+      label: `Extended to #${order.extension.extensionOrderId}`,
+    };
   }
 
   if (today > endDate && (order.status === ORDER_STATUS.ONGOING || order.status !== ORDER_STATUS.COMPLETED)) {
@@ -58,6 +71,14 @@ export function getOrderStatus(order: RentalOrderDTO): { label: string; value: s
     value: order.status,
     color: orderStatus[order.status]?.color || 'bg-gray-100 text-gray-800',
   };
+}
+
+export function getArtworkStatus(order: RentalOrderDTO): string {
+  if (!order.items || order.items.length === 0) {
+    return 'Unknown';
+  }
+  const status = order.items[0].artwork.status;
+  return status;
 }
 
 export const getUnavailableReason = (status: CART_STATUS) => {
@@ -97,7 +118,8 @@ export function isOrderCancelable(order: RentalOrderDTO): boolean {
 export function isOrderExtendable(order: RentalOrderDTO): boolean {
   const today = new Date();
   const endDate = new Date(order.endDate);
-  return order.status !== ORDER_STATUS.CANCELLED && order.status !== ORDER_STATUS.COMPLETED;
+  const hasExtension = order.extension !== undefined && order.extension !== null;
+  return order.status !== ORDER_STATUS.CANCELLED && order.status !== ORDER_STATUS.COMPLETED && !hasExtension;
 }
 
 export function isOrderReturnable(order: RentalOrderDTO): boolean {

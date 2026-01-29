@@ -1,19 +1,34 @@
 'use client';
 import RentalOrderDetails from '@/components/RentalOrderDetails/RentalOrderDetails';
 import { useState, useEffect } from 'react';
-import { ORDER_STATUS, ORDER_STATUSES, PAYMENT_STATUS, PAYMENT_STATUSES } from '@/lib/constants';
+import { useModal } from '@/contexts/ModalContext';
+import { redirect } from 'next/navigation';
 import { rentalOrderApi } from '@/lib/api/rentalOrder';
 import { paymentApi } from '@/lib/api/payment';
-import { redirect } from 'next/navigation';
+import { getArtworkStatus } from '@/lib/order';
 import { RentalOrderDTO } from '@/models/RentalOrder';
-import { useModal } from '@/contexts/ModalContext';
 import { getImageUrl } from '@/lib/artwork';
+import {
+  ARTWORK_STATUS,
+  ARTWORK_STATUSES,
+  ORDER_STATUS,
+  ORDER_STATUSES,
+  PAYMENT_STATUS,
+  PAYMENT_STATUSES,
+} from '@/lib/constants';
 
 export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrderDTO }) {
+  const prevItemsStatus = getArtworkStatus(order);
+  const prevOrderStatus = order.status;
+  const [itemsStatus, setItemsStatus] = useState(prevItemsStatus || '');
   const [orderStatus, setOrderStatus] = useState(order.status || '');
   const [paymentStatus, setPaymentStatus] = useState(order.payment.status || '');
   const [hasEdited, setHasEdited] = useState(false);
   const { openConfirmation } = useModal();
+
+  function navigateToInventoryDetails(item) {
+    redirect(`/inventory/${item.artwork.id}`);
+  }
 
   const handleSelectStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newStatus = e.target.value;
@@ -24,9 +39,14 @@ export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrde
     }
   };
 
-  function navigateToInventoryDetails(item) {
-    redirect(`/inventory/${item.artwork.id}`);
-  }
+  const handleSelectItemsStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newStatus = e.target.value;
+    try {
+      setItemsStatus(newStatus);
+    } catch (error) {
+      console.error('Failed to update items status:', error);
+    }
+  };
 
   const handleSelectPaymentStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newStatus = e.target.value;
@@ -42,34 +62,26 @@ export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrde
       if (!order || !hasEdited) return;
       let message = `Are you sure you want to update the order status to "${orderStatus}" and payment status to "${paymentStatus}"?`;
       // todo: validate status transitions
-      if (orderStatus === ORDER_STATUS.PENDING && order.status !== ORDER_STATUS.PENDING) {
-        message = 'Warning: Changing the order status to "PENDING" will mark the items as available in inventory.';
+      if (itemsStatus === ARTWORK_STATUS.AVAILABLE && prevItemsStatus !== ARTWORK_STATUS.AVAILABLE) {
+        message =
+          'Warning: Changing the items status from "AVAILABLE" will mark the items as available for rent. Other users will be able to view and rent these items.';
       }
-      if (orderStatus === ORDER_STATUS.RESERVED && order.status !== ORDER_STATUS.RESERVED) {
-        message = 'Warning: Changing the order status to "RESERVED" will mark the items as reserved in inventory.';
+      if (itemsStatus === ARTWORK_STATUS.RESERVED && prevItemsStatus !== ARTWORK_STATUS.RESERVED) {
+        message =
+          'Warning: Changing the items status from "RESERVED" will mark the items as reserved for rent. Other users will not be able to rent these items.';
       }
-      if (orderStatus === ORDER_STATUS.TORECEIVE && order.status !== ORDER_STATUS.TORECEIVE) {
-        message = 'Warning: Changing the order status to "TO RECEIVE" will mark the items as reserved in inventory.';
+      if (itemsStatus === ARTWORK_STATUS.RENTED && prevItemsStatus !== ARTWORK_STATUS.RENTED) {
+        message =
+          'Warning: Changing the items status from "RENTED" will mark the items as currently rented out. Other users will not be able to rent these items.';
       }
-      if (orderStatus === ORDER_STATUS.ONGOING && order.status !== ORDER_STATUS.ONGOING) {
-        message = 'Warning: Changing the order status to "ONGOING" will mark the items as rented.';
+      if (itemsStatus === ARTWORK_STATUS.UNAVAILABLE && prevItemsStatus !== ARTWORK_STATUS.UNAVAILABLE) {
+        message =
+          'Warning: Changing the items status from "UNAVAILABLE" will mark the items as not available for rent. Users will not be able to view or rent these items.';
       }
-      if (orderStatus === ORDER_STATUS.TORETURN && order.status !== ORDER_STATUS.TORETURN) {
-        message = 'Warning: Changing the order status to "TO RETURN" will mark the items as rented.';
-      }
-      if (orderStatus === ORDER_STATUS.COMPLETED && order.status !== ORDER_STATUS.COMPLETED) {
-        message = 'Warning: Changing the order status to "COMPLETED" will mark the items as available in inventory.';
-      }
+
       if (orderStatus === ORDER_STATUS.CANCELLED && order.status !== ORDER_STATUS.CANCELLED) {
-        message = 'Warning: Changing the order status to "CANCELLED" will mark the items as available in inventory.';
-      }
-      if (paymentStatus === PAYMENT_STATUS.COMPLETED && order.payment.status !== PAYMENT_STATUS.COMPLETED) {
         message =
-          'Warning: Changing the payment status to "COMPLETED" will mark the order and items as reserved in inventory.';
-      }
-      if (paymentStatus === PAYMENT_STATUS.FAILED && order.payment.status !== PAYMENT_STATUS.FAILED) {
-        message =
-          'Warning: Changing the payment status to "FAILED" will mark the order as "CANCELLED" and will mark the items as available in inventory.';
+          'Warning: Changing the order status to "CANCELLED" is irreversible and cannot be changed back. Any associated extensions will also be removed.';
       }
 
       openConfirmation(
@@ -79,8 +91,8 @@ export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrde
         },
         async () => {
           try {
-            if (order.status !== orderStatus) {
-              const updatedOrder = await rentalOrderApi.updateStatus(order.id, orderStatus);
+            if (orderStatus !== prevOrderStatus || itemsStatus !== prevItemsStatus) {
+              const updatedOrder = await rentalOrderApi.updateStatus(order.id, orderStatus, itemsStatus);
             }
             if (order.payment.status !== paymentStatus) {
               const updatedPayment = await paymentApi.updateStatus(order.payment.id, paymentStatus);
@@ -89,7 +101,7 @@ export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrde
             alert(`Order has been updated`);
             redirect('/orders');
           } catch (error) {
-            console.error('Failed to update statuses:', error);
+            alert(error.message);
           }
         }
       );
@@ -117,48 +129,77 @@ export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrde
   };
 
   useEffect(() => {
-    if (orderStatus !== order.status || paymentStatus !== order.payment.status) {
+    if (
+      orderStatus !== order.status ||
+      paymentStatus !== order.payment.status ||
+      itemsStatus !== getArtworkStatus(order)
+    ) {
       setHasEdited(true);
     } else {
       setHasEdited(false);
     }
-  }, [orderStatus, paymentStatus]);
+  }, [orderStatus, paymentStatus, itemsStatus]);
 
   return (
     <div className="container px-8 py-6 max-w-7xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">Rental Order Details</h1>
       <RentalOrderDetails order={order} onItemClicked={navigateToInventoryDetails} />
       <div className="mt-6">
-        <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-2">
-          Update Status
-        </label>
-        <select
-          id="status"
-          value={orderStatus}
-          onChange={handleSelectStatus}
-          className="mt-1 block w-64 pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-        >
-          {ORDER_STATUSES.map((statusOption) => (
-            <option key={statusOption} value={statusOption}>
-              {statusOption}
-            </option>
-          ))}
-        </select>
-        <label htmlFor="paymentStatus" className="block text-sm font-medium text-gray-700 mb-2">
-          Update Payment Status
-        </label>
-        <select
-          id="paymentStatus"
-          value={paymentStatus}
-          onChange={handleSelectPaymentStatus}
-          className="mt-4 block w-64 pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-        >
-          {PAYMENT_STATUSES.map((statusOption) => (
-            <option key={statusOption} value={statusOption}>
-              {statusOption}
-            </option>
-          ))}
-        </select>
+        <div>
+          <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-2">
+            Update Status
+          </label>
+          {prevOrderStatus === ORDER_STATUS.CANCELLED ? (
+            <p className="text-red-600 mb-2">This order has been cancelled. Status changes are not allowed.</p>
+          ) : (
+            <select
+              id="status"
+              value={orderStatus}
+              onChange={handleSelectStatus}
+              className="mt-1 block w-64 pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+            >
+              {ORDER_STATUSES.map((statusOption) => (
+                <option key={statusOption} value={statusOption}>
+                  {statusOption}
+                </option>
+              ))}
+            </select>
+          )}
+        </div>
+        <div>
+          <label htmlFor="itemsStatus" className="block text-sm font-medium text-gray-700 mb-2">
+            Update Items Status
+          </label>
+          <select
+            id="itemsStatus"
+            value={itemsStatus}
+            onChange={handleSelectItemsStatus}
+            className="mt-4 block w-64 pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+          >
+            {ARTWORK_STATUSES.map((statusOption) => (
+              <option key={statusOption} value={statusOption}>
+                {statusOption}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label htmlFor="paymentStatus" className="block text-sm font-medium text-gray-700 mb-2">
+            Update Payment Status
+          </label>
+          <select
+            id="paymentStatus"
+            value={paymentStatus}
+            onChange={handleSelectPaymentStatus}
+            className="mt-4 block w-64 pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+          >
+            {PAYMENT_STATUSES.map((statusOption) => (
+              <option key={statusOption} value={statusOption}>
+                {statusOption}
+              </option>
+            ))}
+          </select>
+        </div>
         {hasEdited && (
           <button
             onClick={handleSaveChanges}

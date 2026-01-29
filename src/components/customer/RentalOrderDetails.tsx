@@ -19,7 +19,8 @@ function RentalOrderDetailsWrapper({ order, action }: { order: RentalOrderDTO; a
     openConfirmation(
       {
         title: 'Cancel Order',
-        message: 'Are you sure you want to cancel this rental order?',
+        message:
+          'Are you sure you want to cancel this rental order? This action cannot be undone. Any associated extensions will also be removed.',
       },
       async () => {
         try {
@@ -35,7 +36,8 @@ function RentalOrderDetailsWrapper({ order, action }: { order: RentalOrderDTO; a
     openConfirmation(
       {
         title: 'Return Items',
-        message: 'Are you sure you want to return the items in this rental order?',
+        message:
+          'Are you sure you want to return the items in this rental order? This action cannot be undone. Any associated extensions will also be removed.',
       },
       async () => {
         try {

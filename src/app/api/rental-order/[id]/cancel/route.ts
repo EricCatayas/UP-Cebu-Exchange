@@ -1,5 +1,6 @@
 import EventService from '@/services/EventService';
-import { RentalOrder, Payment } from '@/models/sequelize';
+import RentalOrderService from '@/services/RentalOrderService';
+import { RentalOrder, RentalOrderExtension, Payment } from '@/models/sequelize';
 import { getCurrentUser } from '@/lib/auth';
 import { isAdmin, canEditContent } from '@/lib/role';
 import { isOrderCancelable } from '@/lib/order';
@@ -33,9 +34,9 @@ export async function POST(request: Request, { params }: { params: { id: string 
       return new Response(JSON.stringify({ error: 'Invalid order status for cancellation' }), { status: 400 });
     }
 
-    // Update rental order status to 'Cancelled'
-    rentalOrder.status = ORDER_STATUS.CANCELLED;
-    await rentalOrder.save();
+    // Cancel rental order and any associated extensions
+    const rentalOrderService = new RentalOrderService();
+    await rentalOrderService.cancelRentalOrderAndExtensions(rentalOrder.id);
 
     // TODO: If there's an associated payment that is completed, send notification for refund processing
 

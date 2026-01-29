@@ -52,7 +52,7 @@ export default class RentalOrderService {
           as: 'extension',
         },
       ],
-      order: [['startDate', 'ASC']],
+      order: [['createdAt', 'ASC']],
     });
     return orders.map((order) => order.toJSON());
   }
@@ -197,64 +197,7 @@ export default class RentalOrderService {
     return furthestEndOrder.toJSON();
   }
 
-  async markOrderAsPending(orderId: number): Promise<void> {
-    const rentalOrder = await RentalOrder.findByPk(orderId);
-    if (rentalOrder) {
-      await rentalOrder.update({ status: ORDER_STATUS.PENDING });
-    }
-    this.updateRentalOrderItemsStatus(orderId, ARTWORK_STATUS.AVAILABLE);
-  }
-  async markOrderAsPaid(orderId: number): Promise<void> {
-    const rentalOrder = await RentalOrder.findByPk(orderId);
-    if (rentalOrder && rentalOrder.status === ORDER_STATUS.PENDING) {
-      await rentalOrder.update({ status: ORDER_STATUS.RESERVED });
-    }
-    this.updateRentalOrderItemsStatus(orderId, ARTWORK_STATUS.RESERVED);
-  }
-  async markOrderAsReserved(orderId: number): Promise<void> {
-    const rentalOrder = await RentalOrder.findByPk(orderId);
-    if (rentalOrder) {
-      await rentalOrder.update({ status: ORDER_STATUS.RESERVED });
-    }
-    this.updateRentalOrderItemsStatus(orderId, ARTWORK_STATUS.RESERVED);
-  }
-  async markOrderAsToReceive(orderId: number): Promise<void> {
-    const rentalOrder = await RentalOrder.findByPk(orderId);
-    if (rentalOrder) {
-      await rentalOrder.update({ status: ORDER_STATUS.TORECEIVE });
-    }
-    this.updateRentalOrderItemsStatus(orderId, ARTWORK_STATUS.RESERVED);
-  }
-  async markOrderAsOngoing(orderId: number): Promise<void> {
-    const rentalOrder = await RentalOrder.findByPk(orderId);
-    if (rentalOrder) {
-      await rentalOrder.update({ status: ORDER_STATUS.ONGOING });
-    }
-    this.updateRentalOrderItemsStatus(orderId, ARTWORK_STATUS.RENTED);
-  }
-  async markOrderAsCompleted(orderId: number): Promise<void> {
-    const rentalOrder = await RentalOrder.findByPk(orderId);
-    if (rentalOrder) {
-      await rentalOrder.update({ status: ORDER_STATUS.COMPLETED });
-    }
-    this.updateRentalOrderItemsStatus(orderId, ARTWORK_STATUS.AVAILABLE);
-  }
-  async markOrderAsToReturn(orderId: number): Promise<void> {
-    const rentalOrder = await RentalOrder.findByPk(orderId);
-    if (rentalOrder) {
-      await rentalOrder.update({ status: ORDER_STATUS.TORETURN });
-    }
-    this.updateRentalOrderItemsStatus(orderId, ARTWORK_STATUS.RENTED);
-  }
-  async markOrderAsCancelled(orderId: number): Promise<void> {
-    const rentalOrder = await RentalOrder.findByPk(orderId);
-    if (rentalOrder) {
-      await rentalOrder.update({ status: ORDER_STATUS.CANCELLED });
-    }
-    this.updateRentalOrderItemsStatus(orderId, ARTWORK_STATUS.AVAILABLE);
-  }
-
-  private async updateRentalOrderItemsStatus(orderId: number, newStatus: ARTWORK_STATUS): Promise<void> {
+  async updateRentalOrderItemsStatus(orderId: number, newStatus: ARTWORK_STATUS): Promise<void> {
     const rentalOrderItems = await RentalOrderItem.findAll({
       where: { rentalOrderId: orderId },
       include: [
@@ -268,6 +211,36 @@ export default class RentalOrderService {
       if (item.artwork) {
         await item.artwork.update({ status: newStatus });
       }
+    }
+  }
+
+  async cancelRentalOrderAndExtensions(orderId: number): Promise<void> {
+    const rentalOrder = await RentalOrder.findByPk(orderId);
+
+    const extension = await RentalOrderExtension.findOne({
+      where: { originalOrderId: orderId },
+    });
+
+    // Find last extension and cancel it recursively
+    if (extension) {
+      const extensionOrder = await RentalOrder.findByPk(extension.extensionOrderId);
+      if (extensionOrder) {
+        await this.cancelRentalOrderAndExtensions(extensionOrder.id);
+      }
+    }
+
+    // Recursively delete precedent extension record
+    const precedentExtension = await RentalOrderExtension.findOne({
+      where: { extensionOrderId: orderId },
+    });
+
+    if (precedentExtension) {
+      await precedentExtension.destroy();
+    }
+
+    if (rentalOrder) {
+      rentalOrder.status = ORDER_STATUS.CANCELLED;
+      await rentalOrder.save();
     }
   }
 }

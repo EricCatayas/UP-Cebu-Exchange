@@ -1,5 +1,5 @@
 import RentalOrderService from '@/services/RentalOrderService';
-import { RentalOrder } from '@/models/sequelize';
+import { RentalOrder, RentalOrderExtension } from '@/models/sequelize';
 import { getCurrentUser } from '@/lib/auth';
 import { isAdmin, canEditContent } from '@/lib/role';
 import { isOrderReturnable } from '@/lib/order';
@@ -27,12 +27,14 @@ export async function POST(request: Request, { params }: { params: { id: string 
       return new Response(JSON.stringify({ error: 'Forbidden' }), { status: 403 });
     }
 
-    if (!isOrderReturnable(rentalOrder)) {
-      return new Response(JSON.stringify({ error: 'Invalid order status for return processing' }), { status: 400 });
-    }
-
     // Update rental order status to 'To Return'
     await RentalOrder.update({ status: ORDER_STATUS.TORETURN }, { where: { id: orderId } });
+
+    // If rental order has an extension, cancel all related extensions
+    const extension = await RentalOrderExtension.findOne({ where: { originalOrderId: rentalOrder.id } });
+    if (extension) {
+      await rentalOrderService.cancelRentalOrderAndExtensions(extension.extensionOrderId);
+    }
 
     await orderReturnRequestNotification(rentalOrder.id, {
       id: currentUser.userId,
@@ -43,7 +45,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
       status: 200,
     });
   } catch (error) {
-    console.error('Error updating payment status:', error);
+    console.error('Error updating return status:', error);
     return new Response(JSON.stringify({ error: 'Internal Server Error' }), { status: 500 });
   }
 }
