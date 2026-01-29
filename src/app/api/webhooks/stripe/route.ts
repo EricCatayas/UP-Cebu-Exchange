@@ -2,7 +2,7 @@ import Stripe from 'stripe';
 import EventService from '@/services/EventService';
 import RentalOrderService from '@/services/RentalOrderService';
 import { Artwork, Payment, RentalOrder } from '@/models/sequelize';
-import { ORDER_STATUS, PAYMENT_METHOD, PAYMENT_STATUS } from '@/lib/constants';
+import { ARTWORK_STATUS, ORDER_STATUS, PAYMENT_METHOD, PAYMENT_STATUS } from '@/lib/constants';
 import { stripe } from '@/lib/stripe';
 import { onlinePaymentCompletedNotification } from '@/lib/notifications';
 
@@ -21,7 +21,7 @@ export async function POST(req: Request) {
     const session = event.data.object as Stripe.Checkout.Session;
     console.log('\n\nStripe Checkout Session completed:', session);
     const sessionId = session.id;
-    const orderId = session.metadata?.orderId;
+    const orderId = parseInt(session.metadata?.orderId!);
     const browserSessionId = session.metadata?.sessionId;
     const customerEmail = session.customer_email; // todo: email notification
     const paymentIntentId = session.payment_intent as string;
@@ -55,12 +55,17 @@ export async function POST(req: Request) {
     rentalOrder.status = ORDER_STATUS.RESERVED;
     await rentalOrder.save();
 
+    const rentalOrderService = new RentalOrderService();
+    await rentalOrderService.updateRentalOrderItemsStatus(rentalOrder.id, ARTWORK_STATUS.RESERVED);
+
     if (browserSessionId) {
       const eventService = new EventService(parseInt(browserSessionId));
       await eventService.completePayment(payment.id);
     }
 
-    await onlinePaymentCompletedNotification(payment, { fullName: customerEmail || rentalOrder.user.fullName });
+    await onlinePaymentCompletedNotification(orderId, payment, paymentIntentId, {
+      fullName: customerEmail || rentalOrder.user.fullName,
+    });
   }
 
   return new Response('ok', { status: 200 });

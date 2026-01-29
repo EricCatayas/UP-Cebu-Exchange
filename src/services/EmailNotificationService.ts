@@ -33,7 +33,10 @@ class EmailNotificationService {
   }
 
   // Customer Emails
-  async sendPaymentReceipt(email: string, orderId: number, payment: PaymentDTO) {
+  async sendOnlinePaymentReceipt(email: string, orderId: number, paymentReceiptId: string, amount: number) {
+    // todo
+  }
+  async sendPaymentReceipt(email: string, orderId: number, paymentId: number, amount: number) {
     // todo
   }
   async sendOrderReceived(email: string, orderId: number) {

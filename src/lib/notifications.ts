@@ -49,13 +49,20 @@ export async function orderCancelledNotification(orderId: number, user: { id: nu
   await emailNotificationService.notifyAdminOrderCancelled(orderId, user);
 }
 
-export async function onlinePaymentCompletedNotification(payment: PaymentDTO, user: { fullName: string }) {
+export async function onlinePaymentCompletedNotification(
+  orderId: number,
+  payment: PaymentDTO,
+  paymentReceiptId: string,
+  user: { fullName: string }
+) {
+  const emailNotificationService = new EmailNotificationService();
   const notificationService = new NotificationService();
   const title = 'Payment Completed';
   const type = NOTIFICATION_TYPE.ORDER_UPDATE;
-  const message = `Payment with ID ${payment.id} of amount ₱${payment.amount} has been completed successfully by ${user.fullName}.`;
+  const message = `Payment with ID ${payment.id} of amount ₱${payment.amount} has been completed successfully by ${user.fullName}. Payment Receipt ID: ${paymentReceiptId}.`;
   const metadata = JSON.stringify({ paymentId: payment.id });
   await notificationService.create(title, type, message, metadata);
+  await emailNotificationService.sendOnlinePaymentReceipt(user.fullName, orderId, paymentReceiptId, payment.amount);
 }
 
 export async function orderPaidNotification(orderId: number, payment: PaymentDTO, user: { email: string }) {
@@ -67,7 +74,7 @@ export async function orderPaidNotification(orderId: number, payment: PaymentDTO
   const metadata = JSON.stringify({ paymentId: payment.id });
   await notificationService.create(title, type, message, metadata);
   await emailNotificationService.notifyAdminPaymentReceived(payment);
-  await emailNotificationService.sendPaymentReceipt(user.email, orderId, payment);
+  await emailNotificationService.sendPaymentReceipt(user.email, orderId, payment.id, payment.amount);
 }
 
 export async function orderStartReminderNotification(order: RentalOrderDTO) {

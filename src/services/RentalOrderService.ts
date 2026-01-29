@@ -127,7 +127,7 @@ export default class RentalOrderService {
           as: 'extension',
         },
       ],
-      order: [['startDate', 'ASC']],
+      order: [['createdAt', 'ASC']],
     });
     return orders.map((order) => order.toJSON());
   }
