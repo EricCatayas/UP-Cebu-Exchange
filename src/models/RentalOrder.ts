@@ -1,6 +1,7 @@
 import { AddressDTO, AddressCreateDTO } from '@/models/Address';
 import { PaymentDTO } from '@/models/Payment';
 import { RentalOrderItemDTO } from '@/models/RentalOrderItem';
+import { RentalOrderExtensionDTO } from '@/models/RentalOrderExtension';
 import { UserDTO } from '@/models/User';
 
 export interface RentalOrderAttributes {
@@ -19,6 +20,7 @@ export interface RentalOrderAttributes {
 
 export interface RentalOrderDTO extends RentalOrderAttributes {
   address?: AddressDTO;
+  extension?: RentalOrderExtensionDTO;
   payment?: PaymentDTO;
   user?: UserDTO;
   items?: RentalOrderItemDTO[];

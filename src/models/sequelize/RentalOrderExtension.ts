@@ -1,13 +1,6 @@
 import sequelize from '@/config/database';
 import { DataTypes, Model, Optional, Op } from 'sequelize';
-
-interface RentalOrderExtensionAttributes {
-  id: number;
-  originalOrderId: number;
-  extensionOrderId: number;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import { RentalOrderExtensionAttributes } from '@/models/RentalOrderExtension';
 
 interface RentalOrderExtensionCreationAttributes extends Optional<
   RentalOrderExtensionAttributes,
