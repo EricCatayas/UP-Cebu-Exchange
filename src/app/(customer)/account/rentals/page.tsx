@@ -5,19 +5,28 @@ import PageHeader from '@/components/PageHeader/PageHeader';
 import RentalOrderCard from '@/components/cards/RentalOrder/RentalOrder';
 import RentalOrderService from '@/services/RentalOrderService';
 import { OrderDateRange } from '@/types/OrderDateRange';
-import { getDaysRemaining, isOrderCancelable, isOrderExtendable, isOrderReturnable, isPaymentDue } from '@/lib/order';
+import {
+  getDaysRemaining,
+  getOrderStatus,
+  isOrderCancelable,
+  isOrderExtendable,
+  isOrderReturnable,
+  isPaymentDue,
+} from '@/lib/order';
 import { getCurrentUser } from '@/lib/auth';
 async function RentalsPage() {
   const user = await getCurrentUser();
   const rentalOrderService = new RentalOrderService();
 
   const rentalOrders = await rentalOrderService.getUserOrders(user?.userId);
+  console.log('Fetched rental orders:', rentalOrders);
 
   const dateRanges: OrderDateRange[] = rentalOrders.map((order) => ({
     startDate: new Date(order.startDate),
     endDate: new Date(order.endDate),
     remainingDays: getDaysRemaining(order),
     status: order.status,
+    statusColor: getOrderStatus(order).color,
   }));
 
   return (
