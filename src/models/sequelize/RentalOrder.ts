@@ -3,6 +3,7 @@ import RentalOrderExtension from './RentalOrderExtension';
 import { DataTypes, Model, Optional, Op } from 'sequelize';
 import { RentalOrderAttributes } from '@/models/RentalOrder';
 import { ORDER_STATUS } from '@/lib/constants';
+import User from './User';
 
 interface RentalOrderCreationAttributes extends Optional<
   RentalOrderAttributes,
@@ -21,6 +22,7 @@ class RentalOrder extends Model<RentalOrderAttributes, RentalOrderCreationAttrib
   declare status: string;
   declare createdAt: Date;
   declare updatedAt: Date;
+  declare user: User;
   declare extension?: RentalOrderExtension;
 
   // Instance methods

@@ -1,9 +1,15 @@
 import EventService from '@/services/EventService';
 import RentalOrderService from '@/services/RentalOrderService';
-import { RentalOrder } from '@/models/sequelize';
+import { RentalOrder, RentalOrderExtension } from '@/models/sequelize';
 import { getCurrentUser } from '@/lib/auth';
 import { isAdmin, canEditContent } from '@/lib/role';
 import { ARTWORK_STATUS, ORDER_STATUS, ORDER_STATUSES } from '@/lib/constants';
+import {
+  orderReceivedNotification,
+  orderReturnReminderNotification,
+  orderCompletedNotification,
+  orderCancelledNotification,
+} from '@/lib/notifications';
 import { getCurrentSession } from '@/lib/session';
 
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
@@ -29,7 +35,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
       return new Response(JSON.stringify({ error: 'Valid status is required' }), { status: 400 });
     }
 
-    const rentalOrder = await RentalOrder.findByPk(orderId);
+    const rentalOrder = await RentalOrder.findByPk(orderId, { include: ['user', 'payment'] });
 
     if (!rentalOrder) {
       return new Response(JSON.stringify({ error: 'Rental order not found' }), { status: 404 });
@@ -39,25 +45,53 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 
     const rentalOrderService = new RentalOrderService();
 
+    // PENDING
     if (status === ORDER_STATUS.PENDING) {
       await rentalOrder.update({ status: ORDER_STATUS.PENDING });
-    } else if (status === ORDER_STATUS.RESERVED) {
+    }
+    // RESERVED
+    else if (status === ORDER_STATUS.RESERVED) {
       await rentalOrder.update({ status: ORDER_STATUS.RESERVED });
-    } else if (status === ORDER_STATUS.TORECEIVE) {
+    }
+    // TO RECEIVE
+    else if (status === ORDER_STATUS.TORECEIVE) {
       await rentalOrder.update({ status: ORDER_STATUS.TORECEIVE });
-    } else if (status === ORDER_STATUS.ONGOING) {
+    }
+    // ONGOING
+    else if (status === ORDER_STATUS.ONGOING) {
       await rentalOrder.update({ status: ORDER_STATUS.ONGOING });
-    } else if (status === ORDER_STATUS.TORETURN) {
+
+      await orderReceivedNotification(rentalOrder.id, rentalOrder.user);
+    }
+    // TO RETURN
+    else if (status === ORDER_STATUS.TORETURN) {
       await rentalOrder.update({ status: ORDER_STATUS.TORETURN });
-    } else if (status === ORDER_STATUS.COMPLETED) {
+
+      // If rental order has an extension, cancel all related extensions
+      const extension = await RentalOrderExtension.findOne({ where: { originalOrderId: rentalOrder.id } });
+      if (extension) {
+        await rentalOrderService.cancelRentalOrderAndExtensions(extension.extensionOrderId);
+      }
+
+      await orderReturnReminderNotification(rentalOrder, rentalOrder.user);
+    }
+    // COMPLETED
+    else if (status === ORDER_STATUS.COMPLETED) {
       await rentalOrder.update({ status: ORDER_STATUS.COMPLETED });
-    } else if (status === ORDER_STATUS.CANCELLED) {
+      await orderCompletedNotification(rentalOrder.id, rentalOrder.user);
+    }
+    // CANCELLED
+    else if (status === ORDER_STATUS.CANCELLED) {
       await rentalOrderService.cancelRentalOrderAndExtensions(rentalOrder.id);
-    } else if (status === ORDER_STATUS.EXTENDED) {
+      await orderCancelledNotification(rentalOrder.id, { id: currentUser.userId, fullName: rentalOrder.user.fullName });
+    }
+    // EXTENDED
+    else if (status === ORDER_STATUS.EXTENDED) {
       await rentalOrder.update({ status: ORDER_STATUS.EXTENDED });
-    } else {
-      rentalOrder.status = status;
-      await rentalOrder.save();
+    }
+    // Unhandled status
+    else {
+      return new Response(JSON.stringify({ error: `Unhandled status: ${status}` }), { status: 400 });
     }
 
     if (itemsStatus === ARTWORK_STATUS.AVAILABLE) {

@@ -94,6 +94,13 @@ export const getUnavailableReason = (status: CART_STATUS) => {
   }
 };
 
+export const getReturnDueDate = (order: RentalOrderDTO): Date => {
+  const endDate = new Date(order.endDate);
+  const returnDueDate = new Date(endDate);
+  returnDueDate.setDate(endDate.getDate() + 7);
+  return returnDueDate;
+};
+
 export function isOrderOverdue(order: RentalOrderDTO): boolean {
   const today = new Date();
   const endDate = new Date(order.endDate);

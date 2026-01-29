@@ -4,10 +4,10 @@ import { RentalOrder } from '@/models/sequelize';
 import { Payment } from '@/models/sequelize';
 import { getCurrentUser } from '@/lib/auth';
 import { isAdmin, canEditContent } from '@/lib/role';
-import { PAYMENT_STATUS, PAYMENT_STATUSES } from '@/lib/constants';
+import { ORDER_STATUS, PAYMENT_STATUS, PAYMENT_STATUSES } from '@/lib/constants';
 import { getCurrentSession } from '@/lib/session';
+import { orderPaidNotification } from '@/lib/notifications';
 
-// todo: test
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
   try {
     const currentUser = await getCurrentUser();
@@ -41,10 +41,14 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     payment.status = status;
     await payment.save();
 
-    const rentalOrder = await RentalOrder.findOne({ where: { paymentId: payment.id } });
-    const rentalOrderService = new RentalOrderService();
     if (status === PAYMENT_STATUS.COMPLETED) {
-      if (rentalOrder) await rentalOrderService.markOrderAsPaid(rentalOrder.id);
+      const rentalOrder = await RentalOrder.findOne({ where: { paymentId: payment.id }, include: ['user'] });
+      if (rentalOrder) {
+        rentalOrder.status = ORDER_STATUS.RESERVED;
+        await rentalOrder.save();
+        await orderPaidNotification(rentalOrder.id, payment, rentalOrder.user);
+      }
+
       const session = await getCurrentSession();
       if (session) {
         const eventService = new EventService(session.id);
@@ -52,7 +56,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
       }
     }
     if (status === PAYMENT_STATUS.FAILED) {
-      if (rentalOrder) await rentalOrderService.markOrderAsCancelled(rentalOrder.id);
+      // Handle payment failure logic if needed
     }
     return new Response(JSON.stringify({ payment }), { status: 200 });
   } catch (error) {

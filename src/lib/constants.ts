@@ -111,7 +111,7 @@ export enum ORDER_STATUS {
   RESERVED = 'Reserved',
   TORECEIVE = 'To Receive', // dynamic status
   ONGOING = 'Ongoing',
-  TORETURN = 'To Return', // dynamic status OR user request return items
+  TORETURN = 'To Return',
   COMPLETED = 'Completed',
   CANCELLED = 'Cancelled',
   EXTENDED = 'Extended',
@@ -121,6 +121,7 @@ export const ORDER_STATUSES = [
   ORDER_STATUS.PENDING,
   ORDER_STATUS.RESERVED,
   ORDER_STATUS.ONGOING,
+  ORDER_STATUS.TORETURN,
   ORDER_STATUS.COMPLETED,
   ORDER_STATUS.CANCELLED,
   ORDER_STATUS.EXTENDED,
