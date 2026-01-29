@@ -22,6 +22,9 @@ class EmailNotificationService {
   async notifyAdminPaymentReceived(payment: PaymentDTO) {
     //todo
   }
+  async notifyAdminOnlinePaymentReceived(orderId: number, paymentReceiptId: string, amount: number) {
+    //todo
+  }
   async notifyAdminOrderStartReminder(order: RentalOrderDTO) {
     // todo
   }

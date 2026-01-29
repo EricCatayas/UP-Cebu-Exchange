@@ -23,7 +23,7 @@ export async function POST(req: Request) {
     const sessionId = session.id;
     const orderId = parseInt(session.metadata?.orderId!);
     const browserSessionId = session.metadata?.sessionId;
-    const customerEmail = session.customer_email; // todo: email notification
+    const customerEmail = session.customer_email!;
     const paymentIntentId = session.payment_intent as string;
 
     // Verify Checkout session actually resulted in payment
@@ -64,7 +64,8 @@ export async function POST(req: Request) {
     }
 
     await onlinePaymentCompletedNotification(orderId, payment, paymentIntentId, {
-      fullName: customerEmail || rentalOrder.user.fullName,
+      email: customerEmail,
+      fullName: rentalOrder.user.fullName || customerEmail,
     });
   }
 

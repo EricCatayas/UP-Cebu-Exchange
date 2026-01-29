@@ -53,7 +53,7 @@ export async function onlinePaymentCompletedNotification(
   orderId: number,
   payment: PaymentDTO,
   paymentReceiptId: string,
-  user: { fullName: string }
+  user: { email: string; fullName: string }
 ) {
   const emailNotificationService = new EmailNotificationService();
   const notificationService = new NotificationService();
@@ -62,7 +62,8 @@ export async function onlinePaymentCompletedNotification(
   const message = `Payment with ID ${payment.id} of amount ₱${payment.amount} has been completed successfully by ${user.fullName}. Payment Receipt ID: ${paymentReceiptId}.`;
   const metadata = JSON.stringify({ paymentId: payment.id });
   await notificationService.create(title, type, message, metadata);
-  await emailNotificationService.sendOnlinePaymentReceipt(user.fullName, orderId, paymentReceiptId, payment.amount);
+  await emailNotificationService.notifyAdminOnlinePaymentReceived(orderId, paymentReceiptId, payment.amount);
+  await emailNotificationService.sendOnlinePaymentReceipt(user.email, orderId, paymentReceiptId, payment.amount);
 }
 
 export async function orderPaidNotification(orderId: number, payment: PaymentDTO, user: { email: string }) {
