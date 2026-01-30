@@ -62,7 +62,7 @@ export default function AllArtworks({
         )}
 
         {/* Pagination */}
-        <Pagination currentPage={currentpage} totalPages={totalPages} nextPage={nextPage} previousPage={previousPage} />
+        <Pagination page={currentpage} totalPages={totalPages} nextPage={nextPage} previousPage={previousPage} />
       </div>
     </>
   );

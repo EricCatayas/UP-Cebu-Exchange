@@ -3,13 +3,13 @@ import React from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 interface PaginationProps {
-  currentPage: number;
+  page: number;
   totalPages: number;
   nextPage?: number;
   previousPage?: number;
 }
 
-export default function Pagination({ currentPage, totalPages, nextPage, previousPage }: PaginationProps) {
+export default function Pagination({ page: currentPage, totalPages, nextPage, previousPage }: PaginationProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -20,13 +20,13 @@ export default function Pagination({ currentPage, totalPages, nextPage, previous
   };
 
   const handlePrevious = () => {
-    if (previousPage !== undefined || previousPage !== null) {
+    if (previousPage !== undefined && previousPage !== null) {
       navigateToPage(previousPage);
     }
   };
 
   const handleNext = () => {
-    if (nextPage !== undefined || nextPage !== null) {
+    if (nextPage !== undefined && nextPage !== null) {
       navigateToPage(nextPage);
     }
   };
@@ -67,10 +67,6 @@ export default function Pagination({ currentPage, totalPages, nextPage, previous
 
     return pages;
   };
-
-  if (totalPages <= 1) {
-    return null; // Don't show pagination if only one page
-  }
 
   return (
     <div className="flex items-center justify-center gap-2 mt-8">

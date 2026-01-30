@@ -91,7 +91,7 @@ class ArtworkService {
     if (sort) {
       if (sort === 'popular') {
         const productDemandService = new ProductDemandService();
-        const { artworks: sortedArtworks } = await productDemandService.getArtworksPopularityScores();
+        const { artworks: sortedArtworks } = await productDemandService.getArtworksPopularityScores({});
         const sortedArtworkIds = sortedArtworks.map((a) => a.id);
         order = [[sequelize.literal(`FIELD(\`Artwork\`.\`id\`, ${sortedArtworkIds.join(',')})`), 'ASC']];
       }

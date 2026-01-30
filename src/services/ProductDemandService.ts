@@ -1,33 +1,9 @@
 import { Artwork, Event, WishlistItem, CartItem, RentalOrder, RentalOrderItem } from '@/models/sequelize';
 import { EVENT_CATEGORY, EVENT_NAME, ORDER_STATUS } from '@/lib/constants';
 import { Op } from 'sequelize';
+import { PopularityScore } from '@/types/analytics';
 import { opTimeframe } from '@/lib/orm';
-
-class PopularityScore {
-  rentedCount: number;
-  orderCount: number;
-  wishlistCount: number;
-  cartCount: number;
-  viewCount: number;
-
-  constructor(viewCount: number, wishlistCount: number, cartCount: number, orderCount: number, rentedCount: number) {
-    this.viewCount = viewCount;
-    this.wishlistCount = wishlistCount;
-    this.cartCount = cartCount;
-    this.orderCount = orderCount;
-    this.rentedCount = rentedCount;
-  }
-
-  getScore(weights: { [key: string]: number }): number {
-    return (
-      this.rentedCount * weights.rentedCount +
-      this.orderCount * weights.orderCount +
-      this.wishlistCount * weights.wishlistCount +
-      this.cartCount * weights.cartCount +
-      this.viewCount * weights.viewCount
-    );
-  }
-}
+import { calculatePopularityScore } from '@/lib/analytics';
 
 class ProductDemandService {
   private timeframe?: string;
@@ -211,7 +187,7 @@ class ProductDemandService {
     return rentedCounts;
   }
 
-  async getArtworksPopularityScores(limit?: number) {
+  async getArtworksPopularityScores({ page, limit, sort }: { page?: number; limit?: number; sort?: string }) {
     const [viewCounts, cartCounts, wishlistCounts, orderCounts, rentedCounts] = await Promise.all([
       this.getArtworksViewCounts(),
       this.getArtworksCartCounts(),
@@ -229,28 +205,42 @@ class ProductDemandService {
 
     artworks.forEach((artwork) => {
       const artworkId = artwork.id;
-      popularityScores[artworkId] = new PopularityScore(
-        viewCounts[artworkId] || 0,
-        wishlistCounts[artworkId] || 0,
-        cartCounts[artworkId] || 0,
-        orderCounts[artworkId] || 0,
-        rentedCounts[artworkId] || 0
-      );
+      popularityScores[artworkId] = {
+        viewCount: viewCounts[artworkId] || 0,
+        cartCount: cartCounts[artworkId] || 0,
+        wishlistCount: wishlistCounts[artworkId] || 0,
+        orderCount: orderCounts[artworkId] || 0,
+        rentedCount: rentedCounts[artworkId] || 0,
+      };
     });
 
     const artworksWithScores = artworks.map((artwork) => {
       const artworkId = artwork.id;
-      const score = popularityScores[artworkId].getScore(this.weights);
+      const score = calculatePopularityScore(popularityScores[artworkId], this.weights);
       return {
         ...artwork.toJSON(),
         popularityScore: score,
       };
     });
 
-    const sorted = artworksWithScores.sort((a, b) => b.popularityScore - a.popularityScore);
+    const orderedArtworks =
+      sort && sort === 'popular'
+        ? artworksWithScores.sort((a, b) => b.popularityScore - a.popularityScore)
+        : artworksWithScores;
+
+    const previousPage = page && limit && page > 1 ? page - 1 : undefined;
+    const paginatedArtworks = page && limit ? orderedArtworks.slice((page - 1) * limit, page * limit) : orderedArtworks;
+    const pageSize = paginatedArtworks.length;
+    const totalPages = limit ? Math.ceil(artworks.length / limit) : 1;
+    const nextPage = page && limit && page < totalPages ? page + 1 : undefined;
 
     return {
-      artworks: limit ? sorted.slice(0, limit) : sorted,
+      page,
+      pageSize,
+      nextPage,
+      previousPage,
+      totalPages,
+      artworks: paginatedArtworks,
       popularityScores: popularityScores,
     };
   }

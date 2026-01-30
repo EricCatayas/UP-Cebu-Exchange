@@ -20,3 +20,15 @@ export interface PaymentMetrics {
     };
   };
 }
+
+export interface PopularityScore {
+  rentedCount: number;
+  orderCount: number;
+  wishlistCount: number;
+  cartCount: number;
+  viewCount: number;
+}
+
+export interface PopularityScoreWeights {
+  [key: string]: number;
+}
