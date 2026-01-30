@@ -1,6 +1,7 @@
 import React from 'react';
 import AnalyticsCard from '@/components/AnalyticsCard/AnalyticsCard';
 import Header from '@/components/admin/Header';
+import ToggleSession from '@/components/admin/analytics/ToggleSession';
 import FunnelAnalyticsService from '@/services/FunnelAnalyticsService';
 import ProductDemandService from '@/services/ProductDemandService';
 import FunnelAnalyticsBar from '@/components/admin/analytics/FunnelAnalyticsBar';
@@ -13,6 +14,7 @@ async function Reports({ searchParams }: { searchParams: { [key: string]: string
   const timeframe = (query.timeframe as string) || undefined;
   const year = (query.year as string) ? parseInt(query.year as string) : new Date().getFullYear();
   const month = (query.month as string) ? parseInt(query.month as string) : new Date().getMonth() + 1;
+  const uniqueSession = (query.session as string) === 'unique' ? true : false;
 
   console.log('Timeframe in Reports page:', timeframe);
   console.log('Year in Reports page:', year);
@@ -22,16 +24,17 @@ async function Reports({ searchParams }: { searchParams: { [key: string]: string
   const { artworks, popularityScores } = await productDemandService.getArtworksPopularityScores();
 
   const funnelAnalysisService = new FunnelAnalyticsService(timeframe);
-  const funnelMetrics = await funnelAnalysisService.getFunnelMetrics({ unique: true });
+  const funnelMetrics = await funnelAnalysisService.getFunnelMetrics({ unique: uniqueSession });
 
   console.log('Funnel Metrics in Reports page:', funnelMetrics);
 
-  const { count, monthly, daily } = await funnelAnalysisService.getVisitorMetrics(year, month);
-
+  const { count, monthly, daily } = await funnelAnalysisService.getVisitorMetrics(year, month, uniqueSession);
   return (
     <div className="px-8 py-6">
       {/* Header */}
-      <Header title="Reports" />
+      <Header title="Reports">
+        <ToggleSession />
+      </Header>
 
       <div className="mt-8 space-y-12">
         {/* Funnel Analysis */}
