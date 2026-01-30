@@ -156,7 +156,11 @@ export default function NotificationsTable({
                   <td className="px-6 py-4 text-sm text-gray-900 font-medium max-w-xs truncate">
                     {notification.title}
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-700 max-w-md truncate">{notification.message}</td>
+                  <td className="px-6 py-4 text-sm text-gray-700 max-w-md">
+                    <div className="truncate" title={notification.message}>
+                      {notification.message}
+                    </div>
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
                       className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
