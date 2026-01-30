@@ -7,7 +7,7 @@ import { getReturnDueDate } from '@/lib/order';
 import { fmtDate } from '@/lib/formatter';
 import { UserDTO } from '@/models/User';
 
-export async function newCustomerNotification(user: { id: number; fullName: string }) {
+export async function newCustomerNotification(user: { id: number; fullName: string; email: string }) {
   const emailNotificationService = new EmailNotificationService();
   const notificationService = new NotificationService();
   const title = 'New Customer Registered';
@@ -53,7 +53,7 @@ export async function onlinePaymentCompletedNotification(
   orderId: number,
   payment: PaymentDTO,
   paymentReceiptId: string,
-  user: { email: string; fullName: string }
+  user: { id: number; email: string; fullName: string }
 ) {
   const emailNotificationService = new EmailNotificationService();
   const notificationService = new NotificationService();
@@ -63,10 +63,14 @@ export async function onlinePaymentCompletedNotification(
   const metadata = JSON.stringify({ paymentId: payment.id });
   await notificationService.create(title, type, message, metadata);
   await emailNotificationService.notifyAdminOnlinePaymentReceived(orderId, paymentReceiptId, payment.amount);
-  await emailNotificationService.sendOnlinePaymentReceipt(user.email, orderId, paymentReceiptId, payment.amount);
+  await emailNotificationService.sendOnlinePaymentReceipt(user, orderId, paymentReceiptId, payment.amount);
 }
 
-export async function orderPaidNotification(orderId: number, payment: PaymentDTO, user: { email: string }) {
+export async function orderPaidNotification(
+  orderId: number,
+  payment: PaymentDTO,
+  user: { id: number; email: string; fullName: string }
+) {
   const emailNotificationService = new EmailNotificationService();
   const notificationService = new NotificationService();
   const title = 'Payment Received';
@@ -74,8 +78,8 @@ export async function orderPaidNotification(orderId: number, payment: PaymentDTO
   const message = `Payment with ID ${payment.id} of amount ₱${payment.amount} has been completed successfully for order ID ${orderId}.`;
   const metadata = JSON.stringify({ paymentId: payment.id });
   await notificationService.create(title, type, message, metadata);
-  await emailNotificationService.notifyAdminPaymentReceived(payment);
-  await emailNotificationService.sendPaymentReceipt(user.email, orderId, payment.id, payment.amount);
+  await emailNotificationService.notifyAdminPaymentCompleted(orderId, payment);
+  await emailNotificationService.sendPaymentReceipt(user, orderId, payment.id, payment.amount);
 }
 
 export async function orderStartReminderNotification(order: RentalOrderDTO) {
@@ -102,7 +106,7 @@ export async function orderReceivedNotification(
   const message = `The order with ID ${orderId} has been marked as received by ${user.fullName}.`;
   const metadata = JSON.stringify({ orderId, userId: user.id });
   await notificationService.create(title, type, message, metadata);
-  await emailNotificationService.sendOrderReceived(user.email, orderId);
+  await emailNotificationService.sendOrderReceived(user, orderId);
 }
 
 export async function orderReturnReminderNotification(
@@ -120,7 +124,7 @@ export async function orderReturnReminderNotification(
   const metadata = JSON.stringify({ orderId: order.id, userId: order.userId });
   await notificationService.create(title, type, message, metadata);
   await emailNotificationService.notifyAdminOrderReturnReminder(order);
-  await emailNotificationService.sendRentalReturnReminder(user.email, order);
+  await emailNotificationService.sendRentalReturnReminder(user, order);
 }
 
 export async function orderReturnRequestNotification(
@@ -148,5 +152,5 @@ export async function orderCompletedNotification(
   const message = `The order with ID ${orderId} has been marked as completed.`;
   const metadata = JSON.stringify({ orderId, userId: user.id });
   await notificationService.create(title, type, message, metadata);
-  await emailNotificationService.sendOrderCompleted(user.email, orderId);
+  await emailNotificationService.sendOrderCompleted(user, orderId);
 }

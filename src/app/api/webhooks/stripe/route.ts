@@ -64,6 +64,7 @@ export async function POST(req: Request) {
     }
 
     await onlinePaymentCompletedNotification(orderId, payment, paymentIntentId, {
+      id: rentalOrder.userId,
       email: customerEmail,
       fullName: rentalOrder.user.fullName || customerEmail,
     });

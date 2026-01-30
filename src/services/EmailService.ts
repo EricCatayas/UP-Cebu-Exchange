@@ -98,7 +98,6 @@ class EmailService {
         return { success: false, error: err?.message || 'Failed to send email verification' };
       });
 
-    console.log(`Sending email verification to ${email} with token ${token}`);
     return Promise.resolve({ success: true, error: null });
   }
 
