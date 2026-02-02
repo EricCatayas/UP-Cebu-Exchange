@@ -1023,81 +1023,78 @@ class EmailNotificationService {
             `${paymentReceiptLink}\n\n` +
             `Automated notification from ${APP_NAME}.`,
           HTMLPart: `
-              <!DOCTYPE html>
-              <html>
-                <head>
-                  <meta charset="utf-8">
-                  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                  <title>Payment Receipt</title>
-                </head>
-                <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
-                  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f4f4; padding: 20px 0;">
-                    <tr>
-                      <td align="center">
-                        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                          
-                          <tr>
-                            <td style="background-color: #0D9488; padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
-                              <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: bold;">Payment Received</h1>
-                            </td>
-                          </tr>
-                          
-                          <tr>
-                            <td style="padding: 40px 30px;">
-                              <p style="margin: 0 0 20px 0; font-size: 16px; line-height: 24px; color: #333333;">
-                                An online payment has been successfully processed for <strong>${APP_NAME}</strong>.
-                              </p>
-                              
-                              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f9fafb; border-radius: 6px; margin: 20px 0;">
-                                <tr>
-                                  <td style="padding: 20px;">
-                                    <h2 style="margin: 0 0 15px 0; font-size: 18px; color: #1f2937;">Transaction Details</h2>
-                                    <p style="margin: 8px 0; font-size: 15px; line-height: 22px; color: #4b5563;">
-                                      <strong>Amount:</strong> ${amount}
-                                    </p>
-                                    <p style="margin: 8px 0; font-size: 15px; line-height: 22px; color: #4b5563;">
-                                      <strong>Order ID:</strong> #${orderId}
-                                    </p>
-                                    <p style="margin: 8px 0; font-size: 15px; line-height: 22px; color: #4b5563;">
-                                      <strong>Receipt ID:</strong> ${paymentReceiptId}
-                                    </p>
-                                    <p style="margin: 8px 0; font-size: 15px; line-height: 22px; color: #4b5563;">
-                                      <strong>Customer:</strong> ${user.fullName}
-                                    </p>
-                                    <p style="margin: 8px 0; font-size: 15px; line-height: 22px; color: #4b5563;">
-                                      <strong>Email:</strong> ${user.email}
-                                    </p>
-                                  </td>
-                                </tr>
-                              </table>
-                              
-                              <p style="margin: 20px 0; font-size: 16px; line-height: 24px; color: #333333;">
-                                Transaction details can be managed via the link below:
-                              </p>
-                              
-                              <table width="100%" cellpadding="0" cellspacing="0" style="margin: 25px 0;">
-                                <tr>
-                                  <td align="center">
-                                    <a href="${paymentReceiptLink}" target="_blank" rel="noopener" style="display: inline-block; padding: 14px 32px; background-color: #0D9488; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">View Transaction</a>
-                                  </td>
-                                </tr>
-                              </table>
-                            </td>
-                          </tr>
-                          
-                          <tr>
-                            <td style="padding: 20px 30px; background-color: #f9fafb; border-radius: 0 0 8px 8px; text-align: center;">
-                              <p style="margin: 0; font-size: 14px; line-height: 20px; color: #6b7280;">
-                                Automated notification from ${APP_NAME}.
-                              </p>
-                            </td>
-                          </tr>
-                        </table>
-                      </td>
-                    </tr>
-                  </table>
-                </body>
-              </html>
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Payment Receipt</title>
+            </head>
+            <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; background-color: #f8f9fa;">
+              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f8f9fa; padding: 40px 0;">
+                <tr>
+                  <td align="center">
+                    <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-top: 6px solid #8E1537;">
+                      
+                      <tr>
+                        <td style="padding: 40px 30px 20px 30px; text-align: center;">
+                          <div style="background-color: #fdf2f2; width: 60px; height: 60px; line-height: 60px; border-radius: 50%; margin: 0 auto 20px; color: #8E1537; font-size: 30px;">✓</div>
+                          <h1 style="margin: 0; color: #1a1a1a; font-size: 26px; font-weight: 700;">Payment Successful</h1>
+                          <p style="margin: 10px 0 0 0; color: #666666; font-size: 16px;">Thanks for your payment to <strong>${APP_NAME}</strong></p>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td align="center" style="padding: 0 30px;">
+                          <div style="background-color: #fcfcfc; border: 1px dashed #e0e0e0; border-radius: 8px; padding: 20px; margin: 10px 0;">
+                            <span style="display: block; font-size: 14px; color: #888888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">Total Paid</span>
+                            <span style="display: block; font-size: 36px; font-weight: bold; color: #8E1537;">${amount}</span>
+                          </div>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td style="padding: 30px;">
+                          <table width="100%" cellpadding="0" cellspacing="0">
+                            <tr>
+                              <td style="padding: 12px 0; border-bottom: 1px solid #eeeeee; color: #666666; font-size: 14px;">Order ID</td>
+                              <td align="right" style="padding: 12px 0; border-bottom: 1px solid #eeeeee; color: #1a1a1a; font-weight: 600; font-size: 14px;">#${orderId}</td>
+                            </tr>
+                            <tr>
+                              <td style="padding: 12px 0; border-bottom: 1px solid #eeeeee; color: #666666; font-size: 14px;">Receipt ID</td>
+                              <td align="right" style="padding: 12px 0; border-bottom: 1px solid #eeeeee; color: #1a1a1a; font-size: 14px;">${paymentReceiptId}</td>
+                            </tr>
+                            <tr>
+                              <td style="padding: 12px 0; border-bottom: 1px solid #eeeeee; color: #666666; font-size: 14px;">Customer</td>
+                              <td align="right" style="padding: 12px 0; border-bottom: 1px solid #eeeeee; color: #1a1a1a; font-size: 14px;">${user.fullName}</td>
+                            </tr>
+                            <tr>
+                              <td style="padding: 12px 0; color: #666666; font-size: 14px;">Email</td>
+                              <td align="right" style="padding: 12px 0; color: #1a1a1a; font-size: 14px;">${user.email}</td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+                      
+                      <tr>
+                        <td align="center" style="padding: 10px 30px 40px 30px;">
+                          <a href="${paymentReceiptLink}" target="_blank" rel="noopener" style="display: inline-block; padding: 16px 40px; background-color: #FF6F00; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold; box-shadow: 0 2px 4px rgba(255,111,0,0.3);">View Full Receipt</a>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td style="padding: 20px; background-color: #8E1537; text-align: center;">
+                          <p style="margin: 0; font-size: 16px; color: #ffffff; opacity: 0.8;">
+                            &copy; Automated notification from ${APP_NAME}.
+                          </p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </body>
+            </html>
               `,
           CustomID: 'online_payment_receipt',
         },
@@ -1155,81 +1152,87 @@ class EmailNotificationService {
             `${paymentReceiptLink}\n\n` +
             `Automated notification from ${APP_NAME}.`,
           HTMLPart: `
-              <!DOCTYPE html>
-              <html>
-                <head>
-                  <meta charset="utf-8">
-                  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                  <title>Payment Receipt</title>
-                </head>
-                <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
-                  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f4f4; padding: 20px 0;">
-                    <tr>
-                      <td align="center">
-                        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                          
-                          <tr>
-                            <td style="background-color: #0D9488; padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
-                              <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: bold;">Payment Received</h1>
-                            </td>
-                          </tr>
-                          
-                          <tr>
-                            <td style="padding: 40px 30px;">
-                              <p style="margin: 0 0 20px 0; font-size: 16px; line-height: 24px; color: #333333;">
-                                A payment has been successfully processed for <strong>${APP_NAME}</strong>.
-                              </p>
-                              
-                              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f9fafb; border-radius: 6px; margin: 20px 0;">
-                                <tr>
-                                  <td style="padding: 20px;">
-                                    <h2 style="margin: 0 0 15px 0; font-size: 18px; color: #1f2937;">Transaction Details</h2>
-                                    <p style="margin: 8px 0; font-size: 15px; line-height: 22px; color: #4b5563;">
-                                      <strong>Amount:</strong> ${amount}
-                                    </p>
-                                    <p style="margin: 8px 0; font-size: 15px; line-height: 22px; color: #4b5563;">
-                                      <strong>Order ID:</strong> #${orderId}
-                                    </p>
-                                    <p style="margin: 8px 0; font-size: 15px; line-height: 22px; color: #4b5563;">
-                                      <strong>Receipt ID:</strong> ${paymentId}
-                                    </p>
-                                    <p style="margin: 8px 0; font-size: 15px; line-height: 22px; color: #4b5563;">
-                                      <strong>Customer:</strong> ${user.fullName}
-                                    </p>
-                                    <p style="margin: 8px 0; font-size: 15px; line-height: 22px; color: #4b5563;">
-                                      <strong>Email:</strong> ${user.email}
-                                    </p>
-                                  </td>
-                                </tr>
-                              </table>
-                              
-                              <p style="margin: 20px 0; font-size: 16px; line-height: 24px; color: #333333;">
-                                Transaction details can be managed via the link below:
-                              </p>
-                              
-                              <table width="100%" cellpadding="0" cellspacing="0" style="margin: 25px 0;">
-                                <tr>
-                                  <td align="center">
-                                    <a href="${paymentReceiptLink}" target="_blank" rel="noopener" style="display: inline-block; padding: 14px 32px; background-color: #0D9488; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">View Transaction</a>
-                                  </td>
-                                </tr>
-                              </table>
-                            </td>
-                          </tr>
-                          
-                          <tr>
-                            <td style="padding: 20px 30px; background-color: #f9fafb; border-radius: 0 0 8px 8px; text-align: center;">
-                              <p style="margin: 0; font-size: 14px; line-height: 20px; color: #6b7280;">
-                                Automated notification from ${APP_NAME}.
-                              </p>
-                            </td>
-                          </tr>
-                        </table>
-                      </td>
-                    </tr>
-                  </table>
-                </body>
-              </html>
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Payment Receipt</title>
+            </head>
+            <body style="margin: 0; padding: 0; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f4f4f4;">
+              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f4f4; padding: 40px 0;">
+                <tr>
+                  <td align="center">
+                    <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                      
+                      <tr>
+                        <td height="8" style="background-color: #8E1537;"></td>
+                      </tr>
+
+                      <tr>
+                        <td style="padding: 40px 30px 20px 30px; text-align: center;">
+                          <h1 style="margin: 0; color: #8E1537; font-size: 28px; font-weight: bold; letter-spacing: -0.5px;">Payment Received</h1>
+                          <p style="margin: 15px 0 0 0; font-size: 16px; color: #555555; line-height: 1.5;">
+                            A payment has been successfully processed for <strong>${APP_NAME}</strong>.
+                          </p>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td align="center" style="padding: 0 30px 30px 30px;">
+                          <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #fffaf7; border: 1px solid #ffe8d6; border-radius: 10px;">
+                            <tr>
+                              <td style="padding: 25px; text-align: center;">
+                                <span style="display: block; font-size: 13px; color: #FF6F00; font-weight: bold; text-transform: uppercase; margin-bottom: 8px;">Total Amount</span>
+                                <span style="display: block; font-size: 42px; font-weight: 800; color: #1a1a1a;">${amount}</span>
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td style="padding: 0 40px 30px 40px;">
+                          <table width="100%" cellpadding="0" cellspacing="0" style="font-size: 15px; color: #444444;">
+                            <tr>
+                              <td style="padding: 12px 0; border-bottom: 1px solid #f0f0f0;"><strong>Customer</strong></td>
+                              <td align="right" style="padding: 12px 0; border-bottom: 1px solid #f0f0f0; color: #1a1a1a;">${user.fullName}</td>
+                            </tr>
+                            <tr>
+                              <td style="padding: 12px 0; border-bottom: 1px solid #f0f0f0;"><strong>Order ID</strong></td>
+                              <td align="right" style="padding: 12px 0; border-bottom: 1px solid #f0f0f0; color: #1a1a1a;">#${orderId}</td>
+                            </tr>
+                            <tr>
+                              <td style="padding: 12px 0; border-bottom: 1px solid #f0f0f0;"><strong>Payment ID</strong></td>
+                              <td align="right" style="padding: 12px 0; border-bottom: 1px solid #f0f0f0; color: #1a1a1a;">${paymentId}</td>
+                            </tr>
+                            <tr>
+                              <td style="padding: 12px 0; color: #666666;"><strong>Email</strong></td>
+                              <td align="right" style="padding: 12px 0; color: #1a1a1a;">${user.email}</td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td align="center" style="padding: 10px 30px 40px 30px;">
+                          <a href="${paymentReceiptLink}" target="_blank" rel="noopener" style="display: inline-block; background-color: #FF6F00; color: #ffffff; padding: 16px 45px; font-size: 16px; font-weight: bold; text-decoration: none; border-radius: 8px; box-shadow: 0 4px 6px rgba(255,111,0,0.2);">Manage Transaction</a>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td style="padding: 30px; background-color: #fdfdfd; text-align: center; border-top: 1px solid #eeeeee;">
+                          <p style="margin: 0; font-size: 13px; color: #999999; line-height: 1.4;">
+                            This is an automated receipt from <strong>${APP_NAME}</strong>.<br>
+                          </p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </body>
+            </html>
               `,
           CustomID: 'payment_receipt',
         },
@@ -1280,78 +1283,86 @@ class EmailNotificationService {
             `${orderLink}\n\n` +
             `Automated notification from ${APP_NAME}.`,
           HTMLPart: `
-              <!DOCTYPE html>
-              <html>
-                <head>
-                  <meta charset="utf-8">
-                  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                  <title>Order Received</title>
-                </head>
-                <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
-                  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f4f4; padding: 20px 0;">
-                    <tr>
-                      <td align="center">
-                        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                          
-                          <tr>
-                            <td style="background-color: #4F46E5; padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
-                              <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: bold;">Order Received</h1>
-                            </td>
-                          </tr>
-                          
-                          <tr>
-                            <td style="padding: 40px 30px;">
-                              <p style="margin: 0 0 20px 0; font-size: 16px; line-height: 24px; color: #333333;">
-                                A new order has been successfully received from <strong>${APP_NAME}</strong>.
-                              </p>
-                              
-                              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f9fafb; border-radius: 6px; margin: 20px 0;">
-                                <tr>
-                                  <td style="padding: 20px;">
-                                    <h2 style="margin: 0 0 15px 0; font-size: 18px; color: #1f2937;">Order Details</h2>
-                                    <p style="margin: 8px 0; font-size: 15px; line-height: 22px; color: #4b5563;">
-                                      <strong>Order ID:</strong> #${orderId}
-                                    </p>
-                                    <p style="margin: 8px 0; font-size: 15px; line-height: 22px; color: #4b5563;">
-                                      <strong>Customer Name:</strong> ${user.fullName}
-                                    </p>
-                                    <p style="margin: 8px 0; font-size: 15px; line-height: 22px; color: #4b5563;">
-                                      <strong>Customer Email:</strong> ${user.email}
-                                    </p>
-                                    <p style="margin: 8px 0; font-size: 15px; line-height: 22px; color: #4b5563;">
-                                      <strong>Customer ID:</strong> ${user.id}
-                                    </p>
-                                  </td>
-                                </tr>
-                              </table>
-                              
-                              <p style="margin: 20px 0; font-size: 16px; line-height: 24px; color: #333333;">
-                                Review the order details here:
-                              </p>
-                              
-                              <table width="100%" cellpadding="0" cellspacing="0" style="margin: 25px 0;">
-                                <tr>
-                                  <td align="center">
-                                    <a href="${orderLink}" target="_blank" rel="noopener" style="display: inline-block; padding: 14px 32px; background-color: #4F46E5; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">Review Order Details</a>
-                                  </td>
-                                </tr>
-                              </table>
-                            </td>
-                          </tr>
-                          
-                          <tr>
-                            <td style="padding: 20px 30px; background-color: #f9fafb; border-radius: 0 0 8px 8px; text-align: center;">
-                              <p style="margin: 0; font-size: 14px; line-height: 20px; color: #6b7280;">
-                                Automated notification from ${APP_NAME}.
-                              </p>
-                            </td>
-                          </tr>
-                        </table>
-                      </td>
-                    </tr>
-                  </table>
-                </body>
-              </html>
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Order Received</title>
+            </head>
+            <body style="margin: 0; padding: 0; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f4f4f4;">
+              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f4f4; padding: 40px 0;">
+                <tr>
+                  <td align="center">
+                    <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                      
+                      <tr>
+                        <td style="background-color: #8E1537; padding: 30px; text-align: center;">
+                          <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">Order Received</h1>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td style="padding: 40px 40px 20px 40px;">
+                          <p style="margin: 0; font-size: 16px; line-height: 24px; color: #333333; text-align: center;">
+                            A new order has been successfully placed with <strong>${APP_NAME}</strong>.
+                          </p>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td style="padding: 0 40px 30px 40px;">
+                          <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px;">
+                            <tr>
+                              <td style="padding: 20px;">
+                                <h2 style="margin: 0 0 15px 0; font-size: 14px; color: #8E1537; text-transform: uppercase; letter-spacing: 0.5px;">Order & Customer Details</h2>
+                                
+                                <table width="100%" cellpadding="0" cellspacing="0" style="font-size: 15px; line-height: 28px; color: #4b5563;">
+                                  <tr>
+                                    <td width="40%"><strong>Order ID:</strong></td>
+                                    <td style="color: #1a1a1a;">#${orderId}</td>
+                                  </tr>
+                                  <tr>
+                                    <td><strong>Customer Name:</strong></td>
+                                    <td style="color: #1a1a1a;">${user.fullName}</td>
+                                  </tr>
+                                  <tr>
+                                    <td><strong>Customer Email:</strong></td>
+                                    <td style="color: #1a1a1a;">${user.email}</td>
+                                  </tr>
+                                  <tr>
+                                    <td><strong>Customer ID:</strong></td>
+                                    <td style="color: #1a1a1a;">${user.id}</td>
+                                  </tr>
+                                </table>
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td align="center" style="padding: 0 40px 40px 40px;">
+                          <p style="margin: 0 0 20px 0; font-size: 15px; color: #666666;">
+                            Review your complete order details here:
+                          </p>
+                          <a href="${orderLink}" target="_blank" rel="noopener" style="display: inline-block; padding: 16px 36px; background-color: #FF6F00; color: #ffffff; text-decoration: none; border-radius: 8px; font-size: 16px; font-weight: bold; box-shadow: 0 4px 6px rgba(255,111,0,0.2);">Review Order Details</a>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td style="padding: 25px 30px; background-color: #f9fafb; border-top: 1px solid #eeeeee; text-align: center;">
+                          <p style="margin: 0; font-size: 13px; line-height: 20px; color: #9ca3af;">
+                            Automated notification from <strong>${APP_NAME}</strong>.
+                          </p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </body>
+            </html>
               `,
           CustomID: 'order_received',
         },
@@ -1393,7 +1404,7 @@ class EmailNotificationService {
           Subject: `Return Reminder for Order #${order.id}`,
           TextPart:
             `Return Reminder for Order #${order.id}\n\n` +
-            `This is a reminder regarding a pending return request on ${APP_NAME}. We are currently awaiting the shipment of the items listed below.\n\n` +
+            `Don't forget to complete your return for ${APP_NAME}. Please see the details below to get started.\n\n` +
             `Order Details:\n` +
             `--------------------------\n` +
             `Order ID: #${order.id}\n` +
@@ -1407,75 +1418,85 @@ class EmailNotificationService {
           HTMLPart: `
               <!DOCTYPE html>
               <html>
-                <head>
-                  <meta charset="utf-8">
-                  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                  <title>Order Return Reminder</title>
-                </head>
-                <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
-                  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f4f4; padding: 20px 0;">
-                    <tr>
-                      <td align="center">
-                        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                          
-                          <tr>
-                            <td style="background-color: #1D4ED8; padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
-                              <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: bold;">Return Reminder</h1>
-                            </td>
-                          </tr>
-                          
-                          <tr>
-                            <td style="padding: 40px 30px;">
-                              <p style="margin: 0 0 20px 0; font-size: 16px; line-height: 24px; color: #333333;">
-                                This is a reminder regarding a pending return request on <strong>${APP_NAME}</strong>. We are currently awaiting the shipment of the items listed below.
-                              </p>
-                              
-                              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f9fafb; border-radius: 6px; margin: 20px 0;">
-                                <tr>
-                                  <td style="padding: 20px;">
-                                    <h2 style="margin: 0 0 15px 0; font-size: 18px; color: #1f2937;">Order Details:</h2>
-                                    <p style="margin: 8px 0; font-size: 15px; line-height: 22px; color: #4b5563;">
-                                      <strong>Customer:</strong> ${user.fullName}
-                                    </p>
-                                    <p style="margin: 8px 0; font-size: 15px; line-height: 22px; color: #4b5563;">
-                                      <strong>Email:</strong> ${user.email}
-                                    </p>
-                                    <p style="margin: 8px 0; font-size: 15px; line-height: 22px; color: #4b5563;">
-                                      <strong>Address:</strong> ${order.address}
-                                    </p>
-                                    <p style="margin: 8px 0; font-size: 15px; line-height: 22px; color: #4b5563;">
-                                      <strong>Customer ID:</strong> ${user.id}
-                                    </p>
-                                  </td>
-                                </tr>
-                              </table>
-                              
-                              <p style="margin: 25px 0 10px 0; font-size: 16px; line-height: 24px; color: #333333;">
-                                View the order details here:
-                              </p>
-                              
-                              <table width="100%" cellpadding="0" cellspacing="0" style="margin: 25px 0;">
-                                <tr>
-                                  <td align="center">
-                                    <a href="${orderLink}" target="_blank" rel="noopener" style="display: inline-block; padding: 14px 32px; background-color: #1D4ED8; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">View Order Details</a>
-                                  </td>
-                                </tr>
-                              </table>
-                            </td>
-                          </tr>
-                          
-                          <tr>
-                            <td style="padding: 20px 30px; background-color: #f9fafb; border-radius: 0 0 8px 8px; text-align: center;">
-                              <p style="margin: 0; font-size: 14px; line-height: 20px; color: #6b7280;">
-                                This is an automated notification from ${APP_NAME}.
-                              </p>
-                            </td>
-                          </tr>
-                        </table>
-                      </td>
-                    </tr>
-                  </table>
-                </body>
+              <head>
+                <meta charset="utf-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Return Follow-up</title>
+              </head>
+              <body style="margin: 0; padding: 0; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f4f4f4;">
+                <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f4f4; padding: 40px 0;">
+                  <tr>
+                    <td align="center">
+                      <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                        
+                        <tr>
+                          <td style="background-color: #8E1537; padding: 35px 30px; text-align: center;">
+                            <h1 style="margin: 0; color: #ffffff; font-size: 22px; font-weight: bold; text-transform: uppercase; letter-spacing: 1.5px;">Return Follow-Up</h1>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td style="padding: 40px 40px 10px 40px;">
+                            <p style="margin: 0; font-size: 16px; line-height: 24px; color: #333333;">
+                            Don't forget to complete your return for <strong>${APP_NAME}</strong>. Please see the details below to get started.
+                            </p>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td style="padding: 20px 40px 30px 40px;">
+                            <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #fcfcfc; border: 1px solid #eeeeee; border-radius: 8px;">
+                              <tr>
+                                <td style="padding: 25px;">
+                                  <h2 style="margin: 0 0 15px 0; font-size: 13px; color: #8E1537; text-transform: uppercase; font-weight: bold;">Reference Details</h2>
+                                  
+                                  <table width="100%" cellpadding="0" cellspacing="0" style="font-size: 14px; line-height: 24px; color: #555555;">
+                                    <tr>
+                                      <td width="30%" style="padding-bottom: 8px;"><strong>Customer:</strong></td>
+                                      <td style="color: #1a1a1a; padding-bottom: 8px;">${user.fullName}</td>
+                                    </tr>
+                                                          <tr>
+                                      <td style="padding-bottom: 8px;"><strong>Customer Email:</strong></td>
+                                      <td style="color: #1a1a1a; padding-bottom: 8px;">${user.email}</td>
+                                    <tr>
+                                      <td style="padding-bottom: 8px;"><strong>Address:</strong></td>
+                                      <td style="color: #1a1a1a; padding-bottom: 8px;">${order.address}</td>
+                                    </tr>
+                                    <tr>
+                                      <td><strong>Customer ID:</strong></td>
+                                      <td style="color: #1a1a1a;">#${user.id}</td>
+                                    </tr>
+                                  </table>
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td align="center" style="padding: 0 40px 40px 40px;">
+                            <p style="margin: 0 0 20px 0; font-size: 15px; color: #666666;">
+                              You can review the full order details here:
+                            </p>
+                            <a href="${orderLink}" target="_blank" rel="noopener" style="display: inline-block; padding: 16px 40px; background-color: #FF6F00; color: #ffffff; text-decoration: none; border-radius: 8px; font-size: 16px; font-weight: bold; box-shadow: 0 4px 6px rgba(255,111,0,0.2);">View Order Details</a>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td style="padding: 30px; background-color: #f9fafb; border-top: 1px solid #eeeeee; text-align: center;">
+                            <p style="margin: 0 0 10px 0; font-size: 13px; color: #6b7280;">
+                              If you have already sent your items, please disregard this message.
+                            </p>
+                            <p style="margin: 0; font-size: 12px; color: #9ca3af;">
+                              Automated reminder from ${APP_NAME}.
+                            </p>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </body>
               </html>
               `,
           CustomID: 'order_return_reminder',
@@ -1519,7 +1540,7 @@ class EmailNotificationService {
           Subject: `Order Completed - Order #${orderId}`,
           TextPart:
             `Order Completed - Order #${orderId}\n\n` +
-            `Great news! An order has been successfully fulfilled and marked as completed on ${APP_NAME}.\n\n` +
+            `An order has been successfully fulfilled and marked as completed on ${APP_NAME}.\n\n` +
             `Order Summary:\n` +
             `--------------------------\n` +
             `Order ID: #${orderId}\n` +
@@ -1530,78 +1551,86 @@ class EmailNotificationService {
             `${customerOrderLink}\n\n` +
             `This is an automated notification from ${APP_NAME}.`,
           HTMLPart: `
-              <!DOCTYPE html>
-              <html>
-                <head>
-                  <meta charset="utf-8">
-                  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                  <title>Order Completed</title>
-                </head>
-                <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
-                  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f4f4; padding: 20px 0;">
-                    <tr>
-                      <td align="center">
-                        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                          
-                          <tr>
-                            <td style="background-color: #10B981; padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
-                              <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: bold;">Order Completed</h1>
-                            </td>
-                          </tr>
-                          
-                          <tr>
-                            <td style="padding: 40px 30px;">
-                              <p style="margin: 0 0 20px 0; font-size: 16px; line-height: 24px; color: #333333;">
-                                Great news! An order has been successfully fulfilled and marked as completed on <strong>${APP_NAME}</strong>.
-                              </p>
-                              
-                              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f9fafb; border-radius: 6px; margin: 20px 0;">
-                                <tr>
-                                  <td style="padding: 20px;">
-                                    <h2 style="margin: 0 0 15px 0; font-size: 18px; color: #1f2937;">Order Summary</h2>
-                                    <p style="margin: 8px 0; font-size: 15px; line-height: 22px; color: #4b5563;">
-                                      <strong>Order ID:</strong> #${orderId}
-                                    </p>
-                                    <p style="margin: 8px 0; font-size: 15px; line-height: 22px; color: #4b5563;">
-                                      <strong>Customer:</strong> ${user.fullName}
-                                    </p>
-                                    <p style="margin: 8px 0; font-size: 15px; line-height: 22px; color: #4b5563;">
-                                      <strong>Customer Email:</strong> ${user.email}
-                                    </p>
-                                    <p style="margin: 8px 0; font-size: 15px; line-height: 22px; color: #4b5563;">
-                                      <strong>Customer ID:</strong> ${user.id}
-                                    </p>
-                                  </td>
-                                </tr>
-                              </table>
-                              
-                              <p style="margin: 20px 0; font-size: 16px; line-height: 24px; color: #333333;">
-                                You can view the full transaction history and details in the admin portal:
-                              </p>
-                              
-                              <table width="100%" cellpadding="0" cellspacing="0" style="margin: 25px 0;">
-                                <tr>
-                                  <td align="center">
-                                    <a href="${customerOrderLink}" target="_blank" rel="noopener" style="display: inline-block; padding: 14px 32px; background-color: #10B981; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">View Completed Order</a>
-                                  </td>
-                                </tr>
-                              </table>
-                            </td>
-                          </tr>
-                          
-                          <tr>
-                            <td style="padding: 20px 30px; background-color: #f9fafb; border-radius: 0 0 8px 8px; text-align: center;">
-                              <p style="margin: 0; font-size: 14px; line-height: 20px; color: #6b7280;">
-                                This is an automated notification from ${APP_NAME}.
-                              </p>
-                            </td>
-                          </tr>
-                        </table>
-                      </td>
-                    </tr>
-                  </table>
-                </body>
-              </html>
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Order Completed</title>
+            </head>
+            <body style="margin: 0; padding: 0; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f4f4f4;">
+              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f4f4; padding: 40px 0;">
+                <tr>
+                  <td align="center">
+                    <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                      
+                      <tr>
+                        <td style="background-color: #8E1537; padding: 35px 30px; text-align: center;">
+                          <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: bold; text-transform: uppercase; letter-spacing: 1.5px;">Order Completed</h1>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td style="padding: 40px 40px 20px 40px; text-align: center;">
+                          <p style="margin: 0; font-size: 16px; line-height: 24px; color: #333333;">
+                            Great news! An order has been successfully fulfilled and marked as completed on <strong>${APP_NAME}</strong>.
+                          </p>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td style="padding: 0 40px 30px 40px;">
+                          <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px;">
+                            <tr>
+                              <td style="padding: 25px;">
+                                <h2 style="margin: 0 0 15px 0; font-size: 14px; color: #8E1537; text-transform: uppercase; font-weight: bold;">Order Summary</h2>
+                                
+                                <table width="100%" cellpadding="0" cellspacing="0" style="font-size: 15px; line-height: 28px; color: #4b5563;">
+                                  <tr>
+                                    <td width="40%"><strong>Order ID:</strong></td>
+                                    <td style="color: #1a1a1a;">#${orderId}</td>
+                                  </tr>
+                                  <tr>
+                                    <td><strong>Customer:</strong></td>
+                                    <td style="color: #1a1a1a;">${user.fullName}</td>
+                                  </tr>
+                                  <tr>
+                                    <td><strong>Customer Email:</strong></td>
+                                    <td style="color: #1a1a1a;">${user.email}</td>
+                                  </tr>
+                                  <tr>
+                                    <td><strong>Customer ID:</strong></td>
+                                    <td style="color: #1a1a1a;">${user.id}</td>
+                                  </tr>
+                                </table>
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td align="center" style="padding: 0 40px 40px 40px;">
+                          <p style="margin: 0 0 20px 0; font-size: 15px; color: #666666;">
+                            You can view the full transaction history and details here:
+                          </p>
+                          <a href="${customerOrderLink}" target="_blank" rel="noopener" style="display: inline-block; padding: 16px 40px; background-color: #FF6F00; color: #ffffff; text-decoration: none; border-radius: 8px; font-size: 16px; font-weight: bold; box-shadow: 0 4px 6px rgba(255,111,0,0.2);">View Completed Order</a>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td style="padding: 25px 30px; background-color: #f9fafb; border-top: 1px solid #eeeeee; text-align: center;">
+                          <p style="margin: 0; font-size: 13px; line-height: 20px; color: #9ca3af;">
+                            This is an automated notification from <strong>${APP_NAME}</strong>.
+                          </p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </body>
+            </html>
               `,
           CustomID: 'order_completed',
         },
