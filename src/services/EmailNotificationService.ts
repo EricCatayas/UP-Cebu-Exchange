@@ -89,7 +89,7 @@ class EmailNotificationService {
                             <table width="100%" cellpadding="0" cellspacing="0" style="margin: 25px 0;">
                               <tr>
                                 <td align="center">
-                                  <a href="${adminOrderLink}" style="display: inline-block; padding: 14px 32px; background-color: #4F46E5; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">View Order</a>
+                                  <a href="${adminOrderLink}" target="_blank" rel="noopener" style="display: inline-block; padding: 14px 32px; background-color: #4F46E5; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">View Order</a>
                                 </td>
                               </tr>
                             </table>
@@ -137,7 +137,6 @@ class EmailNotificationService {
 
     const newUserLink = `${APP_BASE_URL}/users/${user.id}`;
 
-    //todo
     const request = mailjet.post('send', { version: 'v3.1' }).request({
       Messages: [
         {
@@ -147,16 +146,17 @@ class EmailNotificationService {
           },
           To: [{ Email: APP_EMAIL, Name: APP_NAME }],
           Subject: `New Customer Registered - ${user.fullName}`,
-          TextPart: `New Customer Registered\n\n` +
-                    `Exciting news! A new user has just created an account on ${APP_NAME}.\n\n` +
-                    `User Profile:\n` +
-                    `--------------------------\n` +
-                    `User ID: ${user.id}\n` +
-                    `Name: ${user.fullName}\n` +
-                    `Email: ${user.email}\n\n` +
-                    `You can view the full user profile and manage permissions in the admin panel:\n` +
-                    `${APP_BASE_URL}/admin/users/${user.id}\n\n` +
-                    `This is an automated notification from ${APP_NAME}.`,
+          TextPart:
+            `New Customer Registered\n\n` +
+            `Exciting news! A new user has just created an account on ${APP_NAME}.\n\n` +
+            `User Profile:\n` +
+            `--------------------------\n` +
+            `User ID: ${user.id}\n` +
+            `Name: ${user.fullName}\n` +
+            `Email: ${user.email}\n\n` +
+            `You can view the full user profile and manage permissions in the admin panel:\n` +
+            `${APP_BASE_URL}/admin/users/${user.id}\n\n` +
+            `This is an automated notification from ${APP_NAME}.`,
           HTMLPart: `
                 <!DOCTYPE html>
                   <html>
@@ -206,7 +206,7 @@ class EmailNotificationService {
                                   <table width="100%" cellpadding="0" cellspacing="0" style="margin: 25px 0;">
                                     <tr>
                                       <td align="center">
-                                        <a href="${APP_BASE_URL}/admin/users/${user.id}" style="display: inline-block; padding: 14px 32px; background-color: #10B981; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">View User Profile</a>
+                                        <a href="${APP_BASE_URL}/admin/users/${user.id}" target="_blank" rel="noopener" style="display: inline-block; padding: 14px 32px; background-color: #10B981; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">View User Profile</a>
                                       </td>
                                     </tr>
                                   </table>
@@ -253,7 +253,6 @@ class EmailNotificationService {
 
     const adminOrderLink = `${APP_BASE_URL}/orders/${orderId}`;
 
-    //todo
     const request = mailjet.post('send', { version: 'v3.1' }).request({
       Messages: [
         {
@@ -263,16 +262,17 @@ class EmailNotificationService {
           },
           To: [{ Email: APP_EMAIL, Name: APP_NAME }],
           Subject: `Order Cancelled - Order #${orderId}`,
-          TextPart: `Order Cancelled - Action Required\n\n` +
-                    `An order has been cancelled on ${APP_NAME}.\n\n` +
-                    `Cancellation Details:\n` +
-                    `--------------------------\n` +
-                    `Order ID: #${orderId}\n` +
-                    `User ID: #${user.id}\n` +
-                    `Customer: ${user.fullName}\n\n` +
-                    `Review the order history to see if any further action is required:\n` +
-                    `${adminOrderLink}\n\n` +
-                    `Sent via ${APP_NAME} Admin Notifications.`,
+          TextPart:
+            `Order Cancelled - Action Required\n\n` +
+            `An order has been cancelled on ${APP_NAME}.\n\n` +
+            `Cancellation Details:\n` +
+            `--------------------------\n` +
+            `Order ID: #${orderId}\n` +
+            `User ID: #${user.id}\n` +
+            `Customer: ${user.fullName}\n\n` +
+            `Review the order history to see if any further action is required:\n` +
+            `${adminOrderLink}\n\n` +
+            `Sent via ${APP_NAME} Admin Notifications.`,
           HTMLPart: `
               <!DOCTYPE html>
                 <html>
@@ -322,7 +322,7 @@ class EmailNotificationService {
                                 <table width="100%" cellpadding="0" cellspacing="0" style="margin: 25px 0;">
                                   <tr>
                                     <td align="center">
-                                      <a href="${adminOrderLink}" style="display: inline-block; padding: 14px 32px; background-color: #374151; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">Review Order</a>
+                                      <a href="${adminOrderLink}" target="_blank" rel="noopener" style="display: inline-block; padding: 14px 32px; background-color: #374151; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">Review Order</a>
                                     </td>
                                   </tr>
                                 </table>
@@ -368,7 +368,6 @@ class EmailNotificationService {
       config: { version: 'v3.1' },
     });
     const adminOrderLink = `${APP_BASE_URL}/orders/${orderId}`;
-    //todo
     const request = mailjet.post('send', { version: 'v3.1' }).request({
       Messages: [
         {
@@ -378,20 +377,21 @@ class EmailNotificationService {
           },
           To: [{ Email: APP_EMAIL, Name: APP_NAME }],
           Subject: `New Payment Completed - Order #${orderId}`,
-          TextPart: `New Payment Completed - Order #${orderId}\n\n` +
-                    `A new payment has been successfully processed via ${APP_NAME}. Here are the transaction details:\n\n` +
-                    `Transaction Details:\n` +
-                    `--------------------------\n` +
-                    `Payment ID: #${payment.id}\n` +
-                    `User ID: #${payment.userId}\n` +
-                    `Amount: ${payment.amount}\n` +
-                    `Method: ${payment.method}\n` +
-                    `Status: ${payment.status}\n` +
-                    `Date: ${payment.createdAt}\n\n` +
-                    `You can view the full transaction history and manage this payment in the dashboard:\n` +
-                    `${adminOrderLink}\n\n` +
-                    `Sent via ${APP_NAME} Admin Notifications.\n` +
-                    `Last updated: ${payment.updatedAt}`,
+          TextPart:
+            `New Payment Completed - Order #${orderId}\n\n` +
+            `A new payment has been successfully processed via ${APP_NAME}. Here are the transaction details:\n\n` +
+            `Transaction Details:\n` +
+            `--------------------------\n` +
+            `Payment ID: #${payment.id}\n` +
+            `User ID: #${payment.userId}\n` +
+            `Amount: ${payment.amount}\n` +
+            `Method: ${payment.method}\n` +
+            `Status: ${payment.status}\n` +
+            `Date: ${payment.createdAt}\n\n` +
+            `You can view the full transaction history and manage this payment in the dashboard:\n` +
+            `${adminOrderLink}\n\n` +
+            `Sent via ${APP_NAME} Admin Notifications.\n` +
+            `Last updated: ${payment.updatedAt}`,
           HTMLPart: `
               <!DOCTYPE html>
                 <html>
@@ -451,7 +451,7 @@ class EmailNotificationService {
                                 <table width="100%" cellpadding="0" cellspacing="0" style="margin: 25px 0;">
                                   <tr>
                                     <td align="center">
-                                      <a href="${adminOrderLink}" style="display: inline-block; padding: 14px 32px; background-color: #111827; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">View Transaction</a>
+                                      <a href="${adminOrderLink}" target="_blank" rel="noopener" style="display: inline-block; padding: 14px 32px; background-color: #111827; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">View Transaction</a>
                                     </td>
                                   </tr>
                                 </table>
@@ -498,7 +498,7 @@ class EmailNotificationService {
       config: { version: 'v3.1' },
     });
     const adminOrderLink = `${APP_BASE_URL}/orders/${orderId}`;
-    //todo
+
     const request = mailjet.post('send', { version: 'v3.1' }).request({
       Messages: [
         {
@@ -508,16 +508,17 @@ class EmailNotificationService {
           },
           To: [{ Email: APP_EMAIL, Name: APP_NAME }],
           Subject: `Online Payment Received - Order #${orderId}`,
-          TextPart: `Online Payment Received\n\n` +
-                    `A new online payment has been successfully processed for ${APP_NAME}.\n\n` +
-                    `Transaction Summary:\n` +
-                    `--------------------------\n` +
-                    `Total Amount: ${amount}\n` +
-                    `Payment Receipt ID: ${paymentReceiptId}\n` +
-                    `Order Reference: #${orderId}\n\n` +
-                    `This payment has been logged against the order. You can view the details in order details:\n` +
-                    `${adminOrderLink}\n\n` +
-                    `This is a system-generated confirmation for ${APP_NAME}.`,
+          TextPart:
+            `Online Payment Received\n\n` +
+            `A new online payment has been successfully processed for ${APP_NAME}.\n\n` +
+            `Transaction Summary:\n` +
+            `--------------------------\n` +
+            `Total Amount: ${amount}\n` +
+            `Payment Receipt ID: ${paymentReceiptId}\n` +
+            `Order Reference: #${orderId}\n\n` +
+            `This payment has been logged against the order. You can view the details in order details:\n` +
+            `${adminOrderLink}\n\n` +
+            `This is a system-generated confirmation for ${APP_NAME}.`,
           HTMLPart: `
               <!DOCTYPE html>
               <html>
@@ -575,7 +576,7 @@ class EmailNotificationService {
                               <table width="100%" cellpadding="0" cellspacing="0" style="margin: 25px 0;">
                                 <tr>
                                   <td align="center">
-                                    <a href="${adminOrderLink}" style="display: inline-block; padding: 14px 32px; background-color: #1E40AF; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">View Order Details</a>
+                                    <a href="${adminOrderLink}" target="_blank" rel="noopener" style="display: inline-block; padding: 14px 32px; background-color: #1E40AF; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">View Order Details</a>
                                   </td>
                                 </tr>
                               </table>
@@ -622,7 +623,6 @@ class EmailNotificationService {
     });
 
     const adminOrderLink = `${APP_BASE_URL}/orders/${order.id}`;
-    //todo
     const request = mailjet.post('send', { version: 'v3.1' }).request({
       Messages: [
         {
@@ -632,20 +632,21 @@ class EmailNotificationService {
           },
           To: [{ Email: APP_EMAIL, Name: APP_NAME }],
           Subject: `New Order Started - Order #${order.id}`,
-          TextPart: `Order Start Reminder - Order #${order.id}\n\n` +
-                    `This is a reminder that an order is scheduled to start today.\n\n` +
-                    `Order Details:\n` +
-                    `--------------------------\n` +
-                    `Order ID: ${order.id}\n` +
-                    `Customer: ${order.user}\n` +
-                    `Address: ${order.address}\n` +
-                    `Extension/Unit: ${order.extension}\n` +
-                    `Payment Status: ${order.payment}\n` +
-                    `Items: ${order.items}\n\n` +
-                    `Please review the full order details here:\n` +
-                    `${adminOrderLink}\n\n` +
-                    `Automated Order Start Notification.`,
-                    
+          TextPart:
+            `Order Start Reminder - Order #${order.id}\n\n` +
+            `This is a reminder that an order is scheduled to start today.\n\n` +
+            `Order Details:\n` +
+            `--------------------------\n` +
+            `Order ID: ${order.id}\n` +
+            `Customer: ${order.user}\n` +
+            `Address: ${order.address}\n` +
+            `Extension/Unit: ${order.extension}\n` +
+            `Payment Status: ${order.payment}\n` +
+            `Items: ${order.items}\n\n` +
+            `Please review the full order details here:\n` +
+            `${adminOrderLink}\n\n` +
+            `Automated Order Start Notification.`,
+
           HTMLPart: `
             <!DOCTYPE html>
             <html>
@@ -702,7 +703,7 @@ class EmailNotificationService {
                             <table width="100%" cellpadding="0" cellspacing="0" style="margin: 25px 0;">
                                 <tr>
                                   <td align="center">
-                                    <a href="${adminOrderLink}" style="display: inline-block; padding: 14px 32px; background-color: #1E40AF; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">View Order Details</a>
+                                    <a href="${adminOrderLink}" target="_blank" rel="noopener" style="display: inline-block; padding: 14px 32px; background-color: #1E40AF; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">View Order Details</a>
                                   </td>
                                 </tr>
                               </table>
@@ -750,8 +751,8 @@ class EmailNotificationService {
       config: { version: 'v3.1' },
     });
 
-     const adminOrderLink = `${APP_BASE_URL}/orders/${order.id}`;
-    //todo
+    const adminOrderLink = `${APP_BASE_URL}/orders/${order.id}`;
+
     const request = mailjet.post('send', { version: 'v3.1' }).request({
       Messages: [
         {
@@ -761,17 +762,18 @@ class EmailNotificationService {
           },
           To: [{ Email: APP_EMAIL, Name: APP_NAME }],
           Subject: `Order Returned - Order #${order.id}`,
-          TextPart: `Order Return Initiated - Order #${order.id}\n\n` +
-                    `An item return has been requested for an order on ${APP_NAME}.\n\n` +
-                    `Return Details:\n` +
-                    `--------------------------\n` +
-                    `Order ID: #${order.id}\n` +
-                    `Customer: ${order.user}\n` +
-                    `Payment: ${order.payment}\n` +
-                    `Address: ${order.address}\n\n` +
-                    `View the returned order details here:\n` +
-                    `${adminOrderLink}\n\n` +
-                    `This is an automated notification from ${APP_NAME}.`,
+          TextPart:
+            `Order Return Initiated - Order #${order.id}\n\n` +
+            `An item return has been requested for an order on ${APP_NAME}.\n\n` +
+            `Return Details:\n` +
+            `--------------------------\n` +
+            `Order ID: #${order.id}\n` +
+            `Customer: ${order.user}\n` +
+            `Payment: ${order.payment}\n` +
+            `Address: ${order.address}\n\n` +
+            `View the returned order details here:\n` +
+            `${adminOrderLink}\n\n` +
+            `This is an automated notification from ${APP_NAME}.`,
           HTMLPart: `
               <!DOCTYPE html>
                 <html>
@@ -826,7 +828,7 @@ class EmailNotificationService {
                                 <table width="100%" cellpadding="0" cellspacing="0" style="margin: 25px 0;">
                                   <tr>
                                     <td align="center">
-                                      <a href="${adminOrderLink}" style="display: inline-block; padding: 14px 32px; background-color: #EA580C; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">View Order Details</a>
+                                      <a href="${adminOrderLink}" target="_blank" rel="noopener" style="display: inline-block; padding: 14px 32px; background-color: #EA580C; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">View Order Details</a>
                                     </td>
                                   </tr>
                                 </table>
@@ -873,7 +875,7 @@ class EmailNotificationService {
     });
 
     const adminOrderLink = `${APP_BASE_URL}/orders/${orderId}`;
-    //todo
+
     const request = mailjet.post('send', { version: 'v3.1' }).request({
       Messages: [
         {
@@ -883,16 +885,17 @@ class EmailNotificationService {
           },
           To: [{ Email: APP_EMAIL, Name: APP_NAME }],
           Subject: `Order Return Request - Order #${orderId}`,
-          TextPart: `Order Return Request - Order #${orderId}\n\n` +
-                    `A customer has submitted a request to return items from their order on ${APP_NAME}.\n\n` +
-                    `Request Details:\n` +
-                    `--------------------------\n` +
-                    `Order ID: #${orderId}\n` +
-                    `Customer Name: ${user.fullName}\n` +
-                    `Customer ID: ${user.id}\n\n` +
-                    `Review the return request here:\n` +
-                    `${adminOrderLink}\n\n` +
-                    `This is an automated notification from ${APP_NAME}.`,
+          TextPart:
+            `Order Return Request - Order #${orderId}\n\n` +
+            `A customer has submitted a request to return items from their order on ${APP_NAME}.\n\n` +
+            `Request Details:\n` +
+            `--------------------------\n` +
+            `Order ID: #${orderId}\n` +
+            `Customer Name: ${user.fullName}\n` +
+            `Customer ID: ${user.id}\n\n` +
+            `Review the return request here:\n` +
+            `${adminOrderLink}\n\n` +
+            `This is an automated notification from ${APP_NAME}.`,
           HTMLPart: `
               <!DOCTYPE html>
               <html>
@@ -943,7 +946,7 @@ class EmailNotificationService {
                               <table width="100%" cellpadding="0" cellspacing="0" style="margin: 25px 0;">
                                 <tr>
                                   <td align="center">
-                                    <a href="${adminOrderLink}" style="display: inline-block; padding: 14px 32px; background-color: #EA580C; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">Review Return Request</a>
+                                    <a href="${adminOrderLink}" target="_blank" rel="noopener" style="display: inline-block; padding: 14px 32px; background-color: #EA580C; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">Review Return Request</a>
                                   </td>
                                 </tr>
                               </table>
@@ -994,8 +997,9 @@ class EmailNotificationService {
       config: { version: 'v3.1' },
     });
 
-    const adminOrderLink = `${APP_BASE_URL}/orders/${orderId}`;
-    //todo
+    // todo: link to order details or payment receipt page
+    const paymentReceiptLink = `${APP_BASE_URL}/account/payments/${paymentReceiptId}`;
+
     const request = mailjet.post('send', { version: 'v3.1' }).request({
       Messages: [
         {
@@ -1005,18 +1009,19 @@ class EmailNotificationService {
           },
           To: [{ Email: user.email, Name: user.fullName }],
           Subject: `Online Payment Receipt for Order #${orderId}`,
-          TextPart: `Online Payment Receipt for Order #${orderId}\n\n` +
-                    `An online payment has been successfully processed for ${APP_NAME}.\n\n` +
-                    `Transaction Details:\n` +
-                    `--------------------------\n` +
-                    `Amount: ${amount}\n` +
-                    `Order ID: #${orderId}\n` +
-                    `Receipt ID: ${paymentReceiptId}\n` +
-                    `Customer: ${user.fullName}\n` +
-                    `Email: ${user.email}\n\n` +
-                    `Transaction details can be managed via the link below:\n` +
-                    `${adminOrderLink}\n\n` +
-                    `Automated notification from ${APP_NAME}.`,
+          TextPart:
+            `Online Payment Receipt for Order #${orderId}\n\n` +
+            `An online payment has been successfully processed for ${APP_NAME}.\n\n` +
+            `Transaction Details:\n` +
+            `--------------------------\n` +
+            `Amount: ${amount}\n` +
+            `Order ID: #${orderId}\n` +
+            `Receipt ID: ${paymentReceiptId}\n` +
+            `Customer: ${user.fullName}\n` +
+            `Email: ${user.email}\n\n` +
+            `Transaction details can be managed via the link below:\n` +
+            `${paymentReceiptLink}\n\n` +
+            `Automated notification from ${APP_NAME}.`,
           HTMLPart: `
               <!DOCTYPE html>
               <html>
@@ -1073,7 +1078,7 @@ class EmailNotificationService {
                               <table width="100%" cellpadding="0" cellspacing="0" style="margin: 25px 0;">
                                 <tr>
                                   <td align="center">
-                                    <a href="${adminOrderLink}" style="display: inline-block; padding: 14px 32px; background-color: #0D9488; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">View Transaction</a>
+                                    <a href="${paymentReceiptLink}" target="_blank" rel="noopener" style="display: inline-block; padding: 14px 32px; background-color: #0D9488; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">View Transaction</a>
                                   </td>
                                 </tr>
                               </table>
@@ -1123,9 +1128,10 @@ class EmailNotificationService {
       apiSecret: EMAIL_SECRET,
       config: { version: 'v3.1' },
     });
-    
-    const adminOrderLink = `${APP_BASE_URL}/orders/${orderId}`;
+
     //todo
+    const paymentReceiptLink = `${APP_BASE_URL}/account/payments/${paymentId}`;
+
     const request = mailjet.post('send', { version: 'v3.1' }).request({
       Messages: [
         {
@@ -1135,18 +1141,19 @@ class EmailNotificationService {
           },
           To: [{ Email: user.email, Name: user.fullName }],
           Subject: `Payment Receipt for Order #${orderId}`,
-          TextPart: `Payment Receipt for Order #${orderId}\n\n` +
-                    `A payment has been successfully processed for ${APP_NAME}.\n\n` +
-                    `Transaction Details:\n` +
-                    `--------------------------\n` +
-                    `Amount: ${amount}\n` +
-                    `Order ID: #${orderId}\n` +
-                    `Receipt ID: ${paymentId}\n` +
-                    `Customer: ${user.fullName}\n` +
-                    `Email: ${user.email}\n\n` +
-                    `Transaction details can be managed via the link below:\n` +
-                    `${adminOrderLink}\n\n` +
-                    `Automated notification from ${APP_NAME}.`,
+          TextPart:
+            `Payment Receipt for Order #${orderId}\n\n` +
+            `A payment has been successfully processed for ${APP_NAME}.\n\n` +
+            `Transaction Details:\n` +
+            `--------------------------\n` +
+            `Amount: ${amount}\n` +
+            `Order ID: #${orderId}\n` +
+            `Receipt ID: ${paymentId}\n` +
+            `Customer: ${user.fullName}\n` +
+            `Email: ${user.email}\n\n` +
+            `Transaction details can be managed via the link below:\n` +
+            `${paymentReceiptLink}\n\n` +
+            `Automated notification from ${APP_NAME}.`,
           HTMLPart: `
               <!DOCTYPE html>
               <html>
@@ -1203,7 +1210,7 @@ class EmailNotificationService {
                               <table width="100%" cellpadding="0" cellspacing="0" style="margin: 25px 0;">
                                 <tr>
                                   <td align="center">
-                                    <a href="${adminOrderLink}" style="display: inline-block; padding: 14px 32px; background-color: #0D9488; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">View Transaction</a>
+                                    <a href="${paymentReceiptLink}" target="_blank" rel="noopener" style="display: inline-block; padding: 14px 32px; background-color: #0D9488; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">View Transaction</a>
                                   </td>
                                 </tr>
                               </table>
@@ -1249,8 +1256,8 @@ class EmailNotificationService {
       config: { version: 'v3.1' },
     });
 
-    const adminOrderLink = `${APP_BASE_URL}/orders/${orderId}`;
-    //todo
+    const orderLink = `${APP_BASE_URL}/account/rentals/${orderId}`;
+
     const request = mailjet.post('send', { version: 'v3.1' }).request({
       Messages: [
         {
@@ -1260,17 +1267,18 @@ class EmailNotificationService {
           },
           To: [{ Email: user.email, Name: user.fullName }],
           Subject: `Order Received - Order #${orderId}`,
-          TextPart: `Order Received - Order #${orderId}\n\n` +
-                    `A new order has been successfully received from ${APP_NAME}.\n\n` +
-                    `Order Details:\n` +
-                    `--------------------------\n` +
-                    `Order ID: #${orderId}\n` +
-                    `Customer Name: ${user.fullName}\n` +
-                    `Customer Email: ${user.email}\n` +
-                    `Customer ID: ${user.id}\n\n` +
-                    `Review the order details here:\n` +
-                    `${adminOrderLink}\n\n` +
-                    `Automated notification from ${APP_NAME}.`,
+          TextPart:
+            `Order Received - Order #${orderId}\n\n` +
+            `A new order has been successfully received from ${APP_NAME}.\n\n` +
+            `Order Details:\n` +
+            `--------------------------\n` +
+            `Order ID: #${orderId}\n` +
+            `Customer Name: ${user.fullName}\n` +
+            `Customer Email: ${user.email}\n` +
+            `Customer ID: ${user.id}\n\n` +
+            `Review the order details here:\n` +
+            `${orderLink}\n\n` +
+            `Automated notification from ${APP_NAME}.`,
           HTMLPart: `
               <!DOCTYPE html>
               <html>
@@ -1324,7 +1332,7 @@ class EmailNotificationService {
                               <table width="100%" cellpadding="0" cellspacing="0" style="margin: 25px 0;">
                                 <tr>
                                   <td align="center">
-                                    <a href="${adminOrderLink}" style="display: inline-block; padding: 14px 32px; background-color: #4F46E5; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">Review Order Details</a>
+                                    <a href="${orderLink}" target="_blank" rel="noopener" style="display: inline-block; padding: 14px 32px; background-color: #4F46E5; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">Review Order Details</a>
                                   </td>
                                 </tr>
                               </table>
@@ -1362,7 +1370,7 @@ class EmailNotificationService {
     return Promise.resolve({ success: true, error: null });
   }
 
-  // Send Rental Return Reminder to Customer
+  // Todo: Send Rental Return Reminder to Customer
   async sendRentalReturnReminder(user: { id: number; email: string; fullName: string }, order: RentalOrderDTO) {
     const mailjet = new Mailjet({
       apiKey: EMAIL_API,
@@ -1374,8 +1382,6 @@ class EmailNotificationService {
     const returnDueDate = getReturnDueDate(order);
     const orderLink = `${APP_BASE_URL}/account/rentals/${order.id}`;
 
-    const adminOrderLink = `${APP_BASE_URL}/orders/${order.id}`;
-    //todo
     const request = mailjet.post('send', { version: 'v3.1' }).request({
       Messages: [
         {
@@ -1385,18 +1391,19 @@ class EmailNotificationService {
           },
           To: [{ Email: user.email, Name: user.fullName }],
           Subject: `Return Reminder for Order #${order.id}`,
-          TextPart: `Return Reminder for Order #${order.id}\n\n` +
-                    `This is a reminder regarding a pending return request on ${APP_NAME}. We are currently awaiting the shipment of the items listed below.\n\n` +
-                    `Order Details:\n` +
-                    `--------------------------\n` +
-                    `Order ID: #${order.id}\n` +
-                    `Customer: ${user.fullName}\n` +
-                    `Email: ${user.email}\n` +
-                    `Address: ${order.address}\n` +
-                    `Customer ID: ${user.id}\n\n` +
-                    `View the order details here:\n` +
-                    `${adminOrderLink}\n\n` +
-                    `This is an automated notification from ${APP_NAME}.`,
+          TextPart:
+            `Return Reminder for Order #${order.id}\n\n` +
+            `This is a reminder regarding a pending return request on ${APP_NAME}. We are currently awaiting the shipment of the items listed below.\n\n` +
+            `Order Details:\n` +
+            `--------------------------\n` +
+            `Order ID: #${order.id}\n` +
+            `Customer: ${user.fullName}\n` +
+            `Email: ${user.email}\n` +
+            `Address: ${order.address}\n` +
+            `Customer ID: ${user.id}\n\n` +
+            `View the order details here:\n` +
+            `${orderLink}\n\n` +
+            `This is an automated notification from ${APP_NAME}.`,
           HTMLPart: `
               <!DOCTYPE html>
               <html>
@@ -1450,7 +1457,7 @@ class EmailNotificationService {
                               <table width="100%" cellpadding="0" cellspacing="0" style="margin: 25px 0;">
                                 <tr>
                                   <td align="center">
-                                    <a href="${adminOrderLink}" style="display: inline-block; padding: 14px 32px; background-color: #1D4ED8; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">View Order Details</a>
+                                    <a href="${orderLink}" target="_blank" rel="noopener" style="display: inline-block; padding: 14px 32px; background-color: #1D4ED8; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">View Order Details</a>
                                   </td>
                                 </tr>
                               </table>
@@ -1499,7 +1506,7 @@ class EmailNotificationService {
       config: { version: 'v3.1' },
     });
 
-    const adminOrderLink = `${APP_BASE_URL}/orders/${orderId}`;
+    const customerOrderLink = `${APP_BASE_URL}/account/rentals/${orderId}`;
     //todo
     const request = mailjet.post('send', { version: 'v3.1' }).request({
       Messages: [
@@ -1510,17 +1517,18 @@ class EmailNotificationService {
           },
           To: [{ Email: user.email, Name: user.fullName }],
           Subject: `Order Completed - Order #${orderId}`,
-          TextPart: `Order Completed - Order #${orderId}\n\n` +
-                    `Great news! An order has been successfully fulfilled and marked as completed on ${APP_NAME}.\n\n` +
-                    `Order Summary:\n` +
-                    `--------------------------\n` +
-                    `Order ID: #${orderId}\n` +
-                    `Customer: ${user.fullName}\n` +
-                    `Customer Email: ${user.email}\n` +
-                    `Customer ID: ${user.id}\n\n` +
-                    `You can view the full transaction history and details in the admin portal here:\n` +
-                    `${adminOrderLink}\n\n` +
-                    `This is an automated notification from ${APP_NAME}.`,
+          TextPart:
+            `Order Completed - Order #${orderId}\n\n` +
+            `Great news! An order has been successfully fulfilled and marked as completed on ${APP_NAME}.\n\n` +
+            `Order Summary:\n` +
+            `--------------------------\n` +
+            `Order ID: #${orderId}\n` +
+            `Customer: ${user.fullName}\n` +
+            `Customer Email: ${user.email}\n` +
+            `Customer ID: ${user.id}\n\n` +
+            `You can view the full transaction history and details in the admin portal here:\n` +
+            `${customerOrderLink}\n\n` +
+            `This is an automated notification from ${APP_NAME}.`,
           HTMLPart: `
               <!DOCTYPE html>
               <html>
@@ -1574,7 +1582,7 @@ class EmailNotificationService {
                               <table width="100%" cellpadding="0" cellspacing="0" style="margin: 25px 0;">
                                 <tr>
                                   <td align="center">
-                                    <a href="${adminOrderLink}" style="display: inline-block; padding: 14px 32px; background-color: #10B981; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">View Completed Order</a>
+                                    <a href="${customerOrderLink}" target="_blank" rel="noopener" style="display: inline-block; padding: 14px 32px; background-color: #10B981; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">View Completed Order</a>
                                   </td>
                                 </tr>
                               </table>
