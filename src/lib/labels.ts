@@ -77,3 +77,10 @@ export const paymentMethods = [
   { value: 'paymaya', label: 'PayMaya' },
   { value: 'other', label: 'Other' },
 ];
+
+export const transactionTypes = [
+  { value: 'payment', label: 'Payment' },
+  { value: 'refund', label: 'Refund' },
+  { value: 'downpayment', label: 'Downpayment' },
+  { value: 'other', label: 'Other' },
+];

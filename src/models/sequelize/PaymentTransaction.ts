@@ -4,7 +4,7 @@ import { PaymentTransactionAttributes } from '@/models/PaymentTransaction';
 
 interface PaymentTransactionCreationAttributes extends Optional<
   PaymentTransactionAttributes,
-  'id' | 'status' | 'currency' | 'metadata' | 'createdAt' | 'updatedAt'
+  'id' | 'method' | 'currency' | 'metadata' | 'createdAt' | 'updatedAt'
 > {}
 
 class PaymentTransaction
@@ -16,11 +16,11 @@ class PaymentTransaction
   declare transactionType: string;
   declare amount: number;
   declare currency: string;
-  declare status: 'pending' | 'completed' | 'failed' | 'refunded';
+  declare method: string;
 
   // Manual payment fields
   declare recordedByUserId?: number;
-  declare paymentProofUrl?: string;
+  declare imageUrl?: string;
 
   // Common metadata
   declare metadata?: Record<string, any>;
@@ -62,10 +62,9 @@ PaymentTransaction.init(
       allowNull: false,
       defaultValue: 'PHP',
     },
-    status: {
-      type: DataTypes.ENUM('pending', 'completed', 'failed', 'refunded'),
+    method: {
+      type: DataTypes.STRING(50),
       allowNull: false,
-      defaultValue: 'pending',
     },
     // Manual payment fields
     recordedByUserId: {
@@ -78,7 +77,7 @@ PaymentTransaction.init(
       onUpdate: 'CASCADE',
       onDelete: 'SET NULL',
     },
-    paymentProofUrl: {
+    imageUrl: {
       type: DataTypes.TEXT,
       allowNull: true,
     },
@@ -115,10 +114,7 @@ PaymentTransaction.init(
         fields: ['transactionType'],
       },
       {
-        fields: ['status'],
-      },
-      {
-        fields: ['transactionDate'],
+        fields: ['method'],
       },
       {
         fields: ['recordedByUserId'],

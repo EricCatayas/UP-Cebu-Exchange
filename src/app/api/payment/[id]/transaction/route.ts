@@ -1,6 +1,5 @@
 import PaymentTransactionService from '@/services/PaymentTransactionService';
 import ImageService from '@/services/ImageService';
-import RentalOrderService from '@/services/RentalOrderService';
 import { NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth';
 import { isAdmin } from '@/lib/role';
@@ -30,8 +29,9 @@ export async function POST(request: Request, { params }: { params: { id: string 
     const imageFile = formData.get('imageFile') as File | null;
     const amount = formData.get('amount') as string;
     const currency = (formData.get('currency') as string) || 'PHP';
-    const transactionType = (formData.get('transactionType') as string) || 'cash';
-    const paymentProofUrl = (formData.get('paymentProofUrl') as string) || '';
+    const transactionType = formData.get('transactionType') as string;
+    let imageUrl = (formData.get('imageUrl') as string) || '';
+    const method = formData.get('method') as string;
     const notes = (formData.get('notes') as string) || '';
     const transactionDate = formData.get('transactionDate') as string;
 
@@ -40,11 +40,14 @@ export async function POST(request: Request, { params }: { params: { id: string 
       return new Response(JSON.stringify({ error: 'Valid paymentId is required' }), { status: 400 });
     }
 
-    if (!amount) {
-      return NextResponse.json({ error: 'Missing required fields: amount is required' }, { status: 400 });
+    if (!amount || !method || !transactionType) {
+      return NextResponse.json(
+        { error: 'Missing required fields: amount, method, and transactionType are required' },
+        { status: 400 }
+      );
     }
 
-    if (!paymentProofUrl && !imageFile) {
+    if (!imageUrl && !imageFile) {
       return NextResponse.json(
         { error: 'Missing required fields: image file or payment proof url is required' },
         { status: 400 }
@@ -71,7 +74,6 @@ export async function POST(request: Request, { params }: { params: { id: string 
       return NextResponse.json({ error: 'Payment has already been completed' }, { status: 400 });
     }
 
-    let imageUrl = '';
     // If image file is provided, upload it and get the URL
     if (imageFile) {
       const arrayBuffer = await Promise.resolve(imageFile.arrayBuffer());
@@ -84,11 +86,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
       } else {
         return NextResponse.json({ error: 'Failed to upload image' }, { status: 500 });
       }
-    } else {
-      imageUrl = paymentProofUrl;
     }
-
-    console.log('\n\nPayment Proof Image URL:', imageUrl);
 
     // Create the manual transaction
     const paymentTransactionService = new PaymentTransactionService();
@@ -98,7 +96,8 @@ export async function POST(request: Request, { params }: { params: { id: string 
       currency: currency,
       transactionType: transactionType,
       recordedByUserId: user.userId,
-      paymentProofUrl: imageUrl,
+      method: method,
+      imageUrl: imageUrl,
       notes,
       transactionDate: transactionDate ? new Date(transactionDate) : new Date(),
     });
@@ -111,7 +110,8 @@ export async function POST(request: Request, { params }: { params: { id: string 
           paymentId: transaction.paymentId,
           amount: transaction.amount,
           currency: transaction.currency,
-          status: transaction.status,
+          method: transaction.method,
+          imageUrl: transaction.imageUrl,
           transactionDate: transaction.transactionDate,
         },
       },

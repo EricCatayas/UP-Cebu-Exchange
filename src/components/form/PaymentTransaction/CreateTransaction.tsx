@@ -3,15 +3,16 @@
 import { useRouter } from 'next/navigation';
 import { paymentApi } from '@/lib/api/payment';
 import { useState, FormEvent } from 'react';
-import { paymentMethods } from '@/lib/labels';
+import { paymentMethods, transactionTypes } from '@/lib/labels';
 
 export default function CreateTransaction({ paymentId, amount }: { paymentId: number; amount: number }) {
   const router = useRouter();
   const [formData, setFormData] = useState({
     amount: amount.toString(),
     currency: 'PHP',
-    transactionType: 'cash',
-    paymentProofUrl: '',
+    transactionType: 'payment',
+    method: 'cash',
+    imageUrl: '',
     notes: '',
     transactionDate: new Date().toISOString().slice(0, 16),
   });
@@ -31,9 +32,10 @@ export default function CreateTransaction({ paymentId, amount }: { paymentId: nu
         paymentId,
         amount: parseFloat(formData.amount),
         currency: formData.currency,
+        method: formData.method,
         transactionType: formData.transactionType,
         imageFile: imageFile || undefined,
-        paymentProofUrl: formData.paymentProofUrl || undefined,
+        imageUrl: formData.imageUrl || undefined,
         notes: formData.notes || undefined,
         transactionDate: formData.transactionDate,
       });
@@ -95,12 +97,31 @@ export default function CreateTransaction({ paymentId, amount }: { paymentId: nu
 
       <div>
         <label htmlFor="transactionType" className="block text-sm font-medium text-gray-700 mb-1">
-          Payment Method
+          Transaction Type
         </label>
         <select
           id="transactionType"
           name="transactionType"
           value={formData.transactionType}
+          onChange={handleChange}
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        >
+          {transactionTypes.map((type) => (
+            <option key={type.value} value={type.value}>
+              {type.label}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <label htmlFor="method" className="block text-sm font-medium text-gray-700 mb-1">
+          Payment Method
+        </label>
+        <select
+          id="method"
+          name="method"
+          value={formData.method}
           onChange={handleChange}
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         >
@@ -117,7 +138,7 @@ export default function CreateTransaction({ paymentId, amount }: { paymentId: nu
           Transaction Date
         </label>
         <input
-          type="datetime-local"
+          type="date"
           id="transactionDate"
           name="transactionDate"
           value={formData.transactionDate}
@@ -127,14 +148,14 @@ export default function CreateTransaction({ paymentId, amount }: { paymentId: nu
       </div>
 
       <div>
-        <label htmlFor="paymentProofUrl" className="block text-sm font-medium text-gray-700 mb-1">
-          Payment Proof URL
+        <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700 mb-1">
+          Image URL
         </label>
         <input
           type="url"
-          id="paymentProofUrl"
-          name="paymentProofUrl"
-          value={formData.paymentProofUrl}
+          id="imageUrl"
+          name="imageUrl"
+          value={formData.imageUrl}
           onChange={handleChange}
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           placeholder="https://example.com/receipt.jpg"
@@ -144,7 +165,7 @@ export default function CreateTransaction({ paymentId, amount }: { paymentId: nu
 
       <div>
         <label htmlFor="imageFile" className="block text-sm font-medium text-gray-700 mb-1">
-          Upload Payment Proof Image
+          Upload Image
         </label>
         <input
           type="file"

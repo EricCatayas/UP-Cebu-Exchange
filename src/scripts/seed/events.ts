@@ -196,11 +196,9 @@ class VisitorFactory {
                           amount: payment.amount,
                           currency: 'PHP',
                           metadata: {
-                            orderId: rentalOrder.id,
                             paymentIntentId: paymentIntentId,
                             paymentMethod: 'card',
                             browserSessionId: session.sessionId,
-                            customerEmail: user.email,
                           },
                           transactionDate: new Date(),
                         });

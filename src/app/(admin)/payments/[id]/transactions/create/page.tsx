@@ -34,7 +34,7 @@ export default async function CreateTransactionPage({ params }: { params: { id: 
         </div>
       </div>
       <div className="max-w-2xl mx-auto p-6">
-        <h1 className="text-2xl font-bold text-gray-900">Create Manual Payment Transaction</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Create Payment Transaction</h1>
         <CreateTransaction paymentId={paymentId} amount={payment.amount} />
       </div>
     </div>

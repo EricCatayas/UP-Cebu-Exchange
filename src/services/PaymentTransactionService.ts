@@ -5,9 +5,10 @@ interface CreateManualTransactionParams {
   paymentId: number;
   transactionType: string;
   amount: number;
+  method: string;
   currency?: string;
   recordedByUserId: number;
-  paymentProofUrl: string;
+  imageUrl: string;
   notes?: string;
   transactionDate?: Date;
 }
@@ -35,8 +36,9 @@ class PaymentTransactionService {
       amount,
       currency,
       transactionType,
+      method,
       recordedByUserId,
-      paymentProofUrl,
+      imageUrl,
       notes,
       transactionDate = new Date(),
     } = params;
@@ -58,8 +60,8 @@ class PaymentTransactionService {
       transactionType: transactionType,
       amount,
       currency,
-      status: 'completed',
-      paymentProofUrl,
+      method,
+      imageUrl,
       transactionDate,
       recordedByUserId,
       metadata: {
@@ -84,10 +86,10 @@ class PaymentTransactionService {
     }
     const transaction = await PaymentTransaction.create({
       paymentId,
-      transactionType: 'stripe',
+      transactionType: 'payment',
       amount,
       currency,
-      status: 'completed',
+      method: 'stripe',
       metadata,
       transactionDate,
     });

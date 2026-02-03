@@ -4,11 +4,11 @@ export interface PaymentTransactionAttributes {
   transactionType: string;
   amount: number;
   currency: string;
-  status: 'pending' | 'completed' | 'failed' | 'refunded';
+  method: string;
 
   // Manual payment fields
   recordedByUserId?: number; // Admin who recorded the payment
-  paymentProofUrl?: string; // Receipt/proof image URL
+  imageUrl?: string; // Receipt/proof image URL
 
   // Common metadata
   metadata?: Record<string, any>;

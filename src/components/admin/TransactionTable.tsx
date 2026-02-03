@@ -5,12 +5,12 @@ import { useState } from 'react';
 interface Transaction {
   id: number;
   paymentId: number;
-  transactionType: 'stripe' | 'manual';
+  transactionType: string;
   amount: string;
   currency: string;
-  status: string;
+  method: string;
   recordedByUserId?: number | null;
-  paymentProofUrl?: string | null;
+  imageUrl?: string | null;
   metadata?: Record<string, any> | null;
 }
 
@@ -18,26 +18,11 @@ interface TransactionTableProps {
   transactions: Transaction[];
 }
 
-const getTransactionStatusColor = (status: string) => {
-  switch (status?.toLowerCase()) {
-    case 'completed':
-      return 'bg-green-100 text-green-800';
-    case 'pending':
-      return 'bg-yellow-100 text-yellow-800';
-    case 'failed':
-      return 'bg-red-100 text-red-800';
-    case 'refunded':
-      return 'bg-purple-100 text-purple-800';
-    default:
-      return 'bg-gray-100 text-gray-800';
-  }
-};
-
 const getTransactionTypeColor = (type: string) => {
   switch (type?.toLowerCase()) {
-    case 'stripe':
+    case 'payment':
       return 'bg-blue-100 text-blue-800';
-    case 'manual':
+    case 'refund':
       return 'bg-orange-100 text-orange-800';
     default:
       return 'bg-gray-100 text-gray-800';
@@ -67,7 +52,7 @@ export default function TransactionTable({ transactions }: TransactionTableProps
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Method</th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
           </tr>
@@ -92,10 +77,8 @@ export default function TransactionTable({ transactions }: TransactionTableProps
                   })}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <span
-                    className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getTransactionStatusColor(transaction.status)}`}
-                  >
-                    {transaction.status}
+                  <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full">
+                    {transaction.method}
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -125,13 +108,13 @@ export default function TransactionTable({ transactions }: TransactionTableProps
                       <h4 className="font-semibold text-gray-900 text-sm">Transaction Details</h4>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {transaction.paymentProofUrl && (
+                        {transaction.imageUrl && (
                           <div className="bg-white rounded p-3 border border-gray-200">
                             <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold mb-2">
                               Payment Proof
                             </p>
                             <a
-                              href={transaction.paymentProofUrl}
+                              href={transaction.imageUrl}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-sm text-blue-600 hover:underline break-all"
@@ -166,7 +149,7 @@ export default function TransactionTable({ transactions }: TransactionTableProps
                             {transaction.metadata['paymentMethod'] && (
                               <div className="bg-white rounded p-3 border border-gray-200">
                                 <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold mb-2">
-                                  Payment Method
+                                  Stripe Payment Method
                                 </p>
                                 <p className="text-sm text-gray-900">{transaction.metadata['paymentMethod']}</p>
                               </div>

@@ -31,9 +31,10 @@ export const paymentApi = {
     paymentId: number;
     amount: number;
     currency?: string;
-    transactionType?: string;
+    transactionType: string;
+    method: string;
     imageFile?: File;
-    paymentProofUrl?: string;
+    imageUrl?: string;
     notes?: string;
     transactionDate?: string;
   }) => {
@@ -41,11 +42,12 @@ export const paymentApi = {
     formData.append('amount', data.amount.toString());
     formData.append('currency', data.currency || 'PHP');
     formData.append('transactionType', data.transactionType || 'cash');
+    formData.append('method', data.method);
     if (data.imageFile) {
       formData.append('imageFile', data.imageFile);
     }
-    if (data.paymentProofUrl) {
-      formData.append('paymentProofUrl', data.paymentProofUrl);
+    if (data.imageUrl) {
+      formData.append('imageUrl', data.imageUrl);
     }
     if (data.notes) {
       formData.append('notes', data.notes);

@@ -146,7 +146,6 @@ export const PAGE_SIZE = 12;
 
 export const PAYMENT_TRANSACTION_KEYS = {
   paymentIntentId: 'Stripe Payment Intent ID',
-  paymentMethod: 'Stripe Payment Method',
   browserSessionId: 'Browser Session ID',
   recordedBy: {
     id: 'ID',
