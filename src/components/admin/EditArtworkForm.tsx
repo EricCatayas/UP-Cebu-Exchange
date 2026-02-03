@@ -11,7 +11,6 @@ import { ARTWORK_STATUS, ARTWORK_STATUSES } from '@/lib/constants';
 import { FaPlus } from 'react-icons/fa';
 import { getRentalFee, getPrimaryImage, getTagNames } from '@/lib/artwork';
 
-// Todo: test
 function EditArtworkForm({
   artwork,
   artists,
@@ -122,8 +121,6 @@ function EditArtworkForm({
       // Create preview URLs
       const previewUrls = fileArray.map((file) => URL.createObjectURL(file));
       setImagePreviews(previewUrls);
-
-      // todo: set artwork tags based on image analysis
     }
   };
 

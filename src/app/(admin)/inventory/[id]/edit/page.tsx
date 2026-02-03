@@ -18,7 +18,7 @@ async function EditInventory({ params }: { params: { id: string } }) {
 
   const allArtists = await ArtistService.getAllArtists();
   const artworkStyles = await StylesService.getAllStyles();
-  // todo: make tags dynamic based on image upload
+
   const allTags = await TagsService.getAllTags();
   const artworkTags = allTags.map((tag) => tag.name);
   const artworkMediums = ARTWORK_MEDIUMS;

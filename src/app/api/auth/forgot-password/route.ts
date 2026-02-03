@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { User, UserPasswordReset } from '@/models/sequelize';
 import { generateToken } from '@/lib/auth';
 
-// TODO: Test API
 export async function POST(request: NextRequest) {
   try {
     const { email } = await request.json();

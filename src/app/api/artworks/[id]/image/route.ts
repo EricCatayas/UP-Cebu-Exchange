@@ -5,7 +5,6 @@ import { getCurrentUser } from '@/lib/auth';
 import { isAdmin, canEditContent } from '@/lib/role';
 import { ARTWORK_STATUSES } from '@/lib/constants';
 
-// Todo: test
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const currentUser = await getCurrentUser();

@@ -221,7 +221,6 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-// TODO: Test API
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     // Check authentication and admin authorization

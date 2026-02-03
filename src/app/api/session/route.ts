@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth';
 import { createSession, getCurrentSession } from '@/lib/session';
 
-// TODO: Test API
 export async function GET(request: NextRequest) {
   try {
     const session = await getCurrentSession();

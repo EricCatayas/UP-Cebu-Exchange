@@ -8,7 +8,6 @@ import { USER_ROLE, USER_STATUS } from '@/lib/constants';
 import { getCurrentSession } from '@/lib/session';
 import { newCustomerNotification } from '@/lib/notifications';
 
-// TODO: Test API
 export async function POST(request: NextRequest) {
   try {
     const { email, password, fullName, phoneNumber } = await request.json();

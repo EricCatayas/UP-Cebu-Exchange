@@ -50,7 +50,7 @@ export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrde
     try {
       if (!order || !hasEdited) return;
       let message = `Are you sure you want to update the order status to "${orderStatus}" and payment status to "${paymentStatus}"?`;
-      // todo: validate status transitions
+
       if (itemsStatus === ARTWORK_STATUS.AVAILABLE && prevItemsStatus !== ARTWORK_STATUS.AVAILABLE) {
         message =
           'Warning: Changing the items status from "AVAILABLE" will mark the items as available for rent. Other users will be able to view and rent these items.';

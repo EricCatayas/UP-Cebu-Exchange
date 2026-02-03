@@ -4,7 +4,6 @@ import { User, UserPasswordReset } from '@/models/sequelize';
 import { ERROR_MESSAGE } from '@/lib/constants';
 import { hashPassword } from '@/lib/auth';
 
-// TODO: Test API
 export async function POST(request: NextRequest) {
   try {
     const { token, newPassword } = await request.json();

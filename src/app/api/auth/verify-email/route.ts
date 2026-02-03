@@ -4,7 +4,7 @@ import { User, UserEmailVerification } from '@/models/sequelize';
 import { ERROR_MESSAGE } from '@/lib/constants';
 import { getCurrentSession } from '@/lib/session';
 import { verifiedEmailNotification } from '@/lib/notifications';
-// TODO: Test API
+
 export async function POST(request: NextRequest) {
   // Read token from query.
   const { token } = await request.json();

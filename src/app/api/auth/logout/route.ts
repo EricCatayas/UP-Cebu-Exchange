@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { removeAuthCookie } from '@/lib/auth';
 import { endSession } from '@/lib/session';
-// TODO: Test API
+
 export async function POST(request: NextRequest) {
   try {
     // Remove auth cookie
