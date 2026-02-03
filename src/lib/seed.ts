@@ -52,3 +52,7 @@ export function generateRandomString(length: number): string {
     .toString('hex')
     .slice(0, length);
 }
+
+export function generatePaymentIntentId(): string {
+  return `pi_${generateRandomString(24)}`;
+}

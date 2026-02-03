@@ -122,6 +122,10 @@ export function isOrderCancelable(order: RentalOrderDTO): boolean {
   );
 }
 
+export function isOrderPaid(order: RentalOrderDTO): boolean {
+  return order.payment?.status === PAYMENT_STATUS.COMPLETED;
+}
+
 export function isOrderExtendable(order: RentalOrderDTO): boolean {
   const today = new Date();
   const endDate = new Date(order.endDate);

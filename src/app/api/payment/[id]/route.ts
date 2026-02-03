@@ -22,7 +22,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 
     const paymentId = parseInt((await params).id);
 
-    const { status } = await request.json();
+    const { amount, status, method } = await request.json();
 
     if (!paymentId || isNaN(Number(paymentId))) {
       return new Response(JSON.stringify({ error: 'Valid paymentId is required' }), { status: 400 });
@@ -30,12 +30,20 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     if (!status || !PAYMENT_STATUSES.includes(status)) {
       return new Response(JSON.stringify({ error: 'Valid status is required' }), { status: 400 });
     }
+    if (!amount || isNaN(Number(amount))) {
+      return new Response(JSON.stringify({ error: 'Valid amount is required' }), { status: 400 });
+    }
+    if (!method) {
+      return new Response(JSON.stringify({ error: 'Payment method is required' }), { status: 400 });
+    }
     const payment = await Payment.findByPk(paymentId);
     if (!payment) {
       return new Response(JSON.stringify({ error: 'Payment not found' }), { status: 404 });
     }
 
     payment.status = status;
+    payment.amount = amount;
+    payment.method = method;
     await payment.save();
 
     if (status === PAYMENT_STATUS.COMPLETED) {

@@ -11,6 +11,7 @@ import CartItem from './CartItem';
 import Event from './Event';
 import Notification from './Notification';
 import Payment from './Payment';
+import PaymentTransaction from './PaymentTransaction';
 import RentalOrder from './RentalOrder';
 import RentalOrderExtension from './RentalOrderExtension';
 import RentalOrderItem from './RentalOrderItem';
@@ -255,6 +256,30 @@ const initializeAssociations = () => {
     as: 'user',
   });
 
+  // Do not uncomment: Allow payment to be associated with different models for flexibility
+  // Payment.hasOne(RentalOrder, {
+  //   foreignKey: 'paymentId',
+  //   as: 'rentalOrder',
+  // });
+
+  // Payment has many PaymentTransactions
+  Payment.hasMany(PaymentTransaction, {
+    foreignKey: 'paymentId',
+    as: 'transactions',
+  });
+
+  // PaymentTransaction belongs to Payment
+  PaymentTransaction.belongsTo(Payment, {
+    foreignKey: 'paymentId',
+    as: 'payment',
+  });
+
+  // PaymentTransaction belongs to User (for recordedBy)
+  PaymentTransaction.belongsTo(User, {
+    foreignKey: 'recordedByUserId',
+    as: 'recordedBy',
+  });
+
   // Session belongs to User
   Session.belongsTo(User, {
     foreignKey: 'userId',
@@ -284,6 +309,7 @@ export {
   Event,
   Notification,
   Payment,
+  PaymentTransaction,
   RentalOrder,
   RentalOrderExtension,
   RentalOrderItem,
@@ -312,6 +338,7 @@ export default {
   Event,
   Notification,
   Payment,
+  PaymentTransaction,
   RentalOrder,
   RentalOrderExtension,
   RentalOrderItem,

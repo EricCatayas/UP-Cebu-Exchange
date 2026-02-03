@@ -11,6 +11,7 @@ import {
   isOrderCancelable,
   isOrderExtendable,
   isOrderReturnable,
+  isOrderPaid,
   isPaymentDue,
 } from '@/lib/order';
 import { getCurrentUser } from '@/lib/auth';
@@ -46,6 +47,11 @@ async function RentalsPage() {
                 {isPaymentDue(order) && (
                   <Link href={`/account/rentals/${order.id}?action=pay`} className="text-blue-600 hover:underline">
                     Pay Now
+                  </Link>
+                )}
+                {isOrderPaid(order) && (
+                  <Link href={`/account/rentals/${order.id}/payment`} className="text-blue-600 hover:underline">
+                    View Receipt
                   </Link>
                 )}
                 {isOrderCancelable(order) && (

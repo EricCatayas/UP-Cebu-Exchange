@@ -39,11 +39,12 @@ const adminRoutes = [
   '/dashboard',
   '/calendar',
   '/inventory',
-  '/notifications',
   '/orders',
+  '/users',
+  '/payments',
+  '/notifications',
   '/reports',
   '/themes',
-  '/users',
 ];
 
 function isAdminRoute(pathname: string): boolean {

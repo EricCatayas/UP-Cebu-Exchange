@@ -67,3 +67,13 @@ export const yearsOptions = (startYear: number) => {
   }
   return years;
 };
+
+// Do not use in customer-facing components
+export const paymentMethods = [
+  { value: 'cash', label: 'Cash' },
+  { value: 'bank_transfer', label: 'Bank Transfer' },
+  { value: 'check', label: 'Check' },
+  { value: 'gcash', label: 'GCash' },
+  { value: 'paymaya', label: 'PayMaya' },
+  { value: 'other', label: 'Other' },
+];
