@@ -20,9 +20,21 @@ const getPaymentStatusColor = (status: string) => {
 export default function RentalOrderDetails({
   order,
   onItemClicked,
+  userButton,
+  paymentButton,
 }: {
   order: RentalOrderDTO;
   onItemClicked?: (item: any) => void;
+  userButton?: {
+    label: string;
+    classes: string;
+    onClick: (user: any) => void;
+  } | null;
+  paymentButton?: {
+    label: string;
+    classes: string;
+    onClick: (payment: any) => void;
+  } | null;
 }) {
   function handleRentalItemClick(item) {
     if (onItemClicked) {
@@ -66,6 +78,14 @@ export default function RentalOrderDetails({
               <p className="text-gray-900 break-all">{order.user?.email || 'N/A'}</p>
             </div>
           </div>
+          {userButton && (
+            <button
+              onClick={() => userButton.onClick(order.user)}
+              className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+            >
+              {userButton.label}
+            </button>
+          )}
         </div>
 
         <div className="bg-white rounded-lg shadow-md p-6">
@@ -104,6 +124,14 @@ export default function RentalOrderDetails({
             <p className="text-gray-900 font-medium mt-1">{order.payment?.method || 'N/A'}</p>
           </div>
         </div>
+        {paymentButton && (
+          <button
+            onClick={() => paymentButton.onClick(order.payment)}
+            className={`mt-4 px-4 py-2 ${paymentButton.classes}`}
+          >
+            {paymentButton.label}
+          </button>
+        )}
       </div>
 
       {/* Delivery Address */}

@@ -90,9 +90,26 @@ function RentalOrderDetailsWrapper({ order, action }: { order: RentalOrderDTO; a
     }
   }, [action]);
 
+  const handlePaymentClick = (payment) => {
+    if (isPaymentDue(order)) {
+      handlePayNow();
+    } else if (isOrderPaid(order)) {
+      router.push(`/account/rentals/${order.id}/payment`);
+    }
+  };
+
+  const paymentButton =
+    isPaymentDue(order) || isOrderPaid(order)
+      ? {
+          label: isPaymentDue(order) ? 'Pay Now' : isOrderPaid(order) ? 'View Receipt' : '',
+          classes: 'bg-green-600 text-white rounded hover:bg-green-700',
+          onClick: handlePaymentClick,
+        }
+      : null;
+
   return (
     <div className="container px-8 py-6 max-w-7xl mx-auto">
-      <RentalOrderDetails order={order} onItemClicked={handleRentalItemClicked} />
+      <RentalOrderDetails order={order} onItemClicked={handleRentalItemClicked} paymentButton={paymentButton} />
 
       <div className="mt-6 flex gap-4">
         {isPaymentDue(order) && (
@@ -103,7 +120,7 @@ function RentalOrderDetailsWrapper({ order, action }: { order: RentalOrderDTO; a
         {isOrderPaid(order) && (
           <button
             onClick={() => router.push(`/account/rentals/${order.id}/payment`)}
-            className="px-6 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
+            className="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700"
           >
             View Receipt
           </button>

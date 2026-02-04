@@ -6,7 +6,7 @@ import { useModal } from '@/contexts/ModalContext';
 import { redirect } from 'next/navigation';
 import { rentalOrderApi } from '@/lib/api/rentalOrder';
 import { paymentApi } from '@/lib/api/payment';
-import { getArtworkStatus } from '@/lib/order';
+import { getArtworkStatus, isOrderPaid } from '@/lib/order';
 import { RentalOrderDTO } from '@/models/RentalOrder';
 import { getImageUrl } from '@/lib/artwork';
 import {
@@ -133,10 +133,34 @@ export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrde
     }
   }, [orderStatus, paymentStatus, itemsStatus]);
 
+  const userButtonLabel = 'View User';
+  const handleUserClick = (user) => {
+    redirect(`/users/${user.id}`);
+  };
+
+  const userButton = {
+    label: userButtonLabel,
+    classes: 'bg-blue-600 text-white rounded hover:bg-blue-700',
+    onClick: handleUserClick,
+  };
+
+  const paymentButton = {
+    label: isOrderPaid(order) ? 'View Receipt' : 'Manage Payment',
+    classes: 'bg-green-600 text-white rounded hover:bg-green-700',
+    onClick: () => {
+      redirect(`/payments/${order.paymentId}`);
+    },
+  };
+
   return (
     <div className="container px-8 py-6 max-w-7xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">Rental Order Details</h1>
-      <RentalOrderDetails order={order} onItemClicked={navigateToInventoryDetails} />
+      <RentalOrderDetails
+        order={order}
+        onItemClicked={navigateToInventoryDetails}
+        userButton={userButton}
+        paymentButton={paymentButton}
+      />
       <div className="mt-6">
         <div>
           <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-2">
@@ -207,12 +231,11 @@ export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrde
         >
           Delete Order
         </button>
-        {/* Link: Manage Payments href="/payments/${order.paymentId}" */}
         <Link
           href={`/payments/${order.paymentId}`}
           className="ml-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
         >
-          Manage Payment
+          {isOrderPaid(order) ? 'View Receipt' : 'Manage Payment'}
         </Link>
       </div>
     </div>
