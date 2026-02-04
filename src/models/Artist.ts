@@ -1,7 +1,7 @@
 export interface ArtistAttributes {
   id: number;
   name: string;
-  biography?: string;
+  biography?: string | null;
   createdAt: Date;
   updatedAt: Date;
 }

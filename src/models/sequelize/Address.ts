@@ -12,7 +12,7 @@ class Address extends Model<AddressAttributes, AddressCreationAttributes> implem
   declare province: string;
   declare postalCode: string;
   declare addressLine1: string;
-  declare addressLine2?: string;
+  declare addressLine2?: string | null;
   declare createdAt: Date;
   declare updatedAt: Date;
 }

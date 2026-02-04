@@ -19,11 +19,11 @@ class PaymentTransaction
   declare method: string;
 
   // Manual payment fields
-  declare recordedByUserId?: number;
-  declare imageUrl?: string;
+  declare recordedByUserId?: number | null;
+  declare imageUrl?: string | null;
 
   // Common metadata
-  declare metadata?: Record<string, any>;
+  declare metadata?: Record<string, any> | null;
   declare transactionDate: Date;
   declare createdAt: Date;
   declare updatedAt: Date;

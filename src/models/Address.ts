@@ -4,7 +4,7 @@ export interface AddressAttributes {
   province: string;
   postalCode: string;
   addressLine1: string;
-  addressLine2?: string;
+  addressLine2?: string | null;
   createdAt: Date;
   updatedAt: Date;
 }

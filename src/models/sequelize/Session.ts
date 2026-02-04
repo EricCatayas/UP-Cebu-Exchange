@@ -7,7 +7,7 @@ interface SessionCreationAttributes extends Optional<SessionAttributes, 'id' | '
 class Session extends Model<SessionAttributes, SessionCreationAttributes> implements SessionAttributes {
   declare id: number;
   declare sessionId: string;
-  declare userId?: number;
+  declare userId?: number | null;
   declare createdAt: Date;
 }
 

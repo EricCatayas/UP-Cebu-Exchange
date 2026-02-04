@@ -3,8 +3,10 @@ import { DataTypes, Model, Optional } from 'sequelize';
 import { NotificationAttributes } from '@/models/Notification';
 
 // Define creation attributes
-interface NotificationCreationAttributes
-  extends Optional<NotificationAttributes, 'id' | 'metadata' | 'readAt' | 'readBy' | 'createdAt'> {}
+interface NotificationCreationAttributes extends Optional<
+  NotificationAttributes,
+  'id' | 'metadata' | 'readAt' | 'readBy' | 'createdAt'
+> {}
 
 // Define the Notification model class
 class Notification
@@ -16,10 +18,10 @@ class Notification
   declare type: string;
   declare message: string;
   declare isRead: boolean;
-  declare metadata?: string;
+  declare metadata?: string | null;
   declare createdAt: Date;
-  declare readAt?: Date;
-  declare readBy?: number;
+  declare readAt?: Date | null;
+  declare readBy?: number | null;
 }
 
 // Initialize the Notification model

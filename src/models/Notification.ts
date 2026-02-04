@@ -4,10 +4,10 @@ export interface NotificationAttributes {
   type: string;
   message: string;
   isRead: boolean;
-  metadata?: string; // JSON string
+  metadata?: string | null; // JSON string
   createdAt: Date;
-  readAt?: Date;
-  readBy?: number;
+  readAt?: Date | null;
+  readBy?: number | null;
 }
 
 export interface NotificationDTO extends NotificationAttributes {}

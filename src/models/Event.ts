@@ -3,9 +3,9 @@ export interface EventAttributes {
   sessionId: number;
   name: string;
   category: string;
-  entityType?: string;
-  entityId?: number;
-  metadata?: string; // JSON string
+  entityType?: string | null;
+  entityId?: number | null;
+  metadata?: string | null; // JSON string
   createdAt: Date;
 }
 

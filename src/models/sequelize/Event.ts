@@ -3,8 +3,10 @@ import { DataTypes, Model, Optional } from 'sequelize';
 import { EventAttributes } from '@/models/Event';
 
 // Define creation attributes
-interface EventCreationAttributes
-  extends Optional<EventAttributes, 'id' | 'entityType' | 'entityId' | 'metadata' | 'createdAt'> {}
+interface EventCreationAttributes extends Optional<
+  EventAttributes,
+  'id' | 'entityType' | 'entityId' | 'metadata' | 'createdAt'
+> {}
 
 // Define the Event model class
 class Event extends Model<EventAttributes, EventCreationAttributes> implements EventAttributes {
@@ -12,9 +14,9 @@ class Event extends Model<EventAttributes, EventCreationAttributes> implements E
   declare sessionId: number;
   declare name: string;
   declare category: string;
-  declare entityType?: string;
-  declare entityId?: number;
-  declare metadata?: string;
+  declare entityType?: string | null;
+  declare entityId?: number | null;
+  declare metadata?: string | null;
   declare createdAt: Date;
 }
 

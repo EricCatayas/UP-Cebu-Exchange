@@ -9,7 +9,7 @@ interface ArtistCreationAttributes extends Optional<ArtistAttributes, 'id' | 'bi
 class Artist extends Model<ArtistAttributes, ArtistCreationAttributes> implements ArtistAttributes {
   declare id: number;
   declare name: string;
-  declare biography: string;
+  declare biography?: string | null;
   declare createdAt: Date;
   declare updatedAt: Date;
 }

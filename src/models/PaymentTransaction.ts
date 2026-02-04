@@ -7,11 +7,11 @@ export interface PaymentTransactionAttributes {
   method: string;
 
   // Manual payment fields
-  recordedByUserId?: number; // Admin who recorded the payment
-  imageUrl?: string; // Receipt/proof image URL
+  recordedByUserId?: number | null; // Admin who recorded the payment
+  imageUrl?: string | null; // Receipt/proof image URL
 
   // Common metadata
-  metadata?: Record<string, any>;
+  metadata?: Record<string, any> | null;
   transactionDate: Date;
   createdAt: Date;
   updatedAt: Date;
