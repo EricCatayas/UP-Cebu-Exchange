@@ -144,6 +144,17 @@ export const PAYMENT_METHODS = [PAYMENT_METHOD.CASH, PAYMENT_METHOD.ONLINE];
 
 export const PAGE_SIZE = 12;
 
+export const PAYMENT_TRANSACTION_KEYS = {
+  paymentIntentId: 'Stripe Payment Intent ID',
+  browserSessionId: 'Browser Session ID',
+  recordedBy: {
+    id: 'ID',
+    email: 'Email',
+    fullName: 'Full Name',
+  },
+  notes: 'Notes',
+};
+
 export enum USER_ROLE {
   // ADMIN = 'admin',
   HEAD = 'head',

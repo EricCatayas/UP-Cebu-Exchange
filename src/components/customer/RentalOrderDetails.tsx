@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { RentalOrderDTO } from '@/models/RentalOrder';
 import { useModal } from '@/contexts/ModalContext';
 import { rentalOrderApi } from '@/lib/api/rentalOrder';
-import { isOrderCancelable, isOrderExtendable, isOrderReturnable, isPaymentDue } from '@/lib/order';
+import { isOrderCancelable, isOrderExtendable, isOrderPaid, isOrderReturnable, isPaymentDue } from '@/lib/order';
 
 function RentalOrderDetailsWrapper({ order, action }: { order: RentalOrderDTO; action: string | undefined }) {
   const router = useRouter();
@@ -98,6 +98,14 @@ function RentalOrderDetailsWrapper({ order, action }: { order: RentalOrderDTO; a
         {isPaymentDue(order) && (
           <button onClick={handlePayNow} className="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700">
             Pay Now
+          </button>
+        )}
+        {isOrderPaid(order) && (
+          <button
+            onClick={() => router.push(`/account/rentals/${order.id}/payment`)}
+            className="px-6 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
+          >
+            View Receipt
           </button>
         )}
         {isOrderCancelable(order) && (

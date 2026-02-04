@@ -6,7 +6,7 @@ import { getOrderStatus } from '@/lib/order';
 
 const getPaymentStatusColor = (status: string) => {
   switch (status?.toLowerCase()) {
-    case 'paid':
+    case 'completed':
       return 'bg-green-100 text-green-800';
     case 'pending':
       return 'bg-yellow-100 text-yellow-800';
@@ -126,7 +126,7 @@ export default function RentalOrderDetails({
 
       {/* Rental Items */}
       <div className="bg-white rounded-lg shadow-md p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Rental Items</h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Items</h3>
         <div className="space-y-3">
           {order.items?.length ? (
             order.items.map((item) => (

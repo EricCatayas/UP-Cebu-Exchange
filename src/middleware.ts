@@ -16,7 +16,6 @@ const publicRoutes = [
   '/terms-of-use',
   '/verify-email',
   '/settings',
-  '/themes', // todo: remove later
   '/team',
   '/faq',
   // api routes
@@ -40,11 +39,12 @@ const adminRoutes = [
   '/dashboard',
   '/calendar',
   '/inventory',
-  '/notifications',
   '/orders',
-  '/reports',
-  // '/themes',
   '/users',
+  '/payments',
+  '/notifications',
+  '/reports',
+  '/themes',
 ];
 
 function isAdminRoute(pathname: string): boolean {

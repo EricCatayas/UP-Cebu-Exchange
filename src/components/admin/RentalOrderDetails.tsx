@@ -1,5 +1,6 @@
 'use client';
 import RentalOrderDetails from '@/components/RentalOrderDetails/RentalOrderDetails';
+import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useModal } from '@/contexts/ModalContext';
 import { redirect } from 'next/navigation';
@@ -32,29 +33,17 @@ export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrde
 
   const handleSelectStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newStatus = e.target.value;
-    try {
-      setOrderStatus(newStatus);
-    } catch (error) {
-      console.error('Failed to update order status:', error);
-    }
+    setOrderStatus(newStatus);
   };
 
   const handleSelectItemsStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newStatus = e.target.value;
-    try {
-      setItemsStatus(newStatus);
-    } catch (error) {
-      console.error('Failed to update items status:', error);
-    }
+    setItemsStatus(newStatus);
   };
 
   const handleSelectPaymentStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newStatus = e.target.value;
-    try {
-      setPaymentStatus(newStatus);
-    } catch (error) {
-      console.error('Failed to update payment status:', error);
-    }
+    setPaymentStatus(newStatus);
   };
 
   const handleSaveChanges = async () => {
@@ -218,6 +207,13 @@ export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrde
         >
           Delete Order
         </button>
+        {/* Link: Manage Payments href="/payments/${order.paymentId}" */}
+        <Link
+          href={`/payments/${order.paymentId}`}
+          className="ml-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+        >
+          Manage Payment
+        </Link>
       </div>
     </div>
   );

@@ -1,3 +1,5 @@
+import { UserDTO } from './User';
+
 export interface PaymentAttributes {
   id: number;
   userId: number;
@@ -5,7 +7,9 @@ export interface PaymentAttributes {
   status: 'Pending' | 'Completed' | 'Failed';
   method: string;
   createdAt: Date;
-  updatedAt?: Date;
+  updatedAt: Date;
 }
 
-export interface PaymentDTO extends PaymentAttributes {}
+export interface PaymentDTO extends PaymentAttributes {
+  user?: UserDTO;
+}

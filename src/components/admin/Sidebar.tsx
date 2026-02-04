@@ -2,7 +2,17 @@
 import React from 'react';
 import Link from 'next/link';
 import { useNotification } from '@/contexts/NotificationContext';
-import { FaTachometerAlt, FaCalendarAlt, FaBox, FaUsers, FaBell, FaChartBar, FaPalette, FaTruck } from 'react-icons/fa';
+import {
+  FaTachometerAlt,
+  FaCalendarAlt,
+  FaBox,
+  FaUsers,
+  FaMoneyBillWave,
+  FaBell,
+  FaChartBar,
+  FaPalette,
+  FaTruck,
+} from 'react-icons/fa';
 
 const Sidebar: React.FC = () => {
   const { hasNewNotifications } = useNotification();
@@ -43,6 +53,12 @@ const Sidebar: React.FC = () => {
             <Link href="/users" className="flex items-center p-2 hover:bg-gray-700">
               <FaUsers className="mr-2" />
               Users
+            </Link>
+          </li>
+          <li>
+            <Link href="/payments" className="flex items-center p-2 hover:bg-gray-700">
+              <FaMoneyBillWave className="mr-2" />
+              Payments
             </Link>
           </li>
           <li>

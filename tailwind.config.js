@@ -12,10 +12,6 @@ module.exports = {
         primary: '#8E1537',
         secondary: '#FF6F00',
         tertiary: '#FAAF40',
-        confirmed: '#94FFAB',
-        pending: '#fde047',
-        completed: '#93c5fd',
-        cancelled: '#fca5a5',
       },
       fontFamily: {
         rajdhani: ['Rajdhani', 'sans-serif'],

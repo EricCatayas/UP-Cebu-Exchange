@@ -40,6 +40,37 @@ export default class ImageService {
     }
   }
 
+  async uploadImage(
+    Uint8ArrayFiles: Uint8Array,
+    options = {}
+  ): Promise<{ success: boolean; result?: UploadApiResponse; error?: string }> {
+    try {
+      const result = await new Promise((resolve, reject) => {
+        cloudinary.uploader
+          .upload_stream(
+            {
+              folder: FOLDER_NAME,
+              ...options,
+            },
+            function (error, result) {
+              if (error) {
+                console.error('Image upload error:', error);
+                reject({ success: false, error: 'Failed to upload image' });
+              } else {
+                resolve(result);
+              }
+            }
+          )
+          .end(Uint8ArrayFiles);
+      });
+
+      return { success: true, result: result as UploadApiResponse };
+    } catch (error) {
+      console.error('Image upload error:', error);
+      return { success: false, error: 'Failed to upload image' };
+    }
+  }
+
   async deleteImage(publicId: string) {
     try {
       await cloudinary.uploader.destroy(publicId);

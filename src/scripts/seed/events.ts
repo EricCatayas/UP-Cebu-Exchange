@@ -1,6 +1,7 @@
 import sequelize from '@/config/database';
 import crypto from 'crypto';
 import EventService from '@/services/EventService';
+import PaymentTransactionService from '@/services/PaymentTransactionService';
 import {
   generatePassword,
   generateEmail,
@@ -11,6 +12,7 @@ import {
   generateRandomNumber,
   generateRandomString,
   generateStartAndEndDates,
+  generatePaymentIntentId,
 } from '@/lib/seed';
 import {
   Artwork,
@@ -20,6 +22,7 @@ import {
   User,
   Role,
   Payment,
+  PaymentTransaction,
   RentalOrder,
   RentalOrderItem,
 } from '@/models/sequelize/index';
@@ -142,6 +145,9 @@ class VisitorFactory {
                     await eventService.signRentalAgreement();
 
                     if (eventNumber > 8) {
+                      const durationMonths = generateRandomDuration();
+                      const rentalFee = getRentalFee(artwork, durationMonths);
+
                       const address1 = await Address.create({
                         city: generateRandomString(6),
                         province: generateRandomString(6),
@@ -152,12 +158,11 @@ class VisitorFactory {
 
                       const payment = await Payment.create({
                         userId: user.id,
-                        amount: generateRandomNumber(100, 1000),
+                        amount: rentalFee,
                         status: PAYMENT_STATUS.PENDING,
                         method: PAYMENT_METHOD.ONLINE,
                       });
 
-                      const durationMonths = generateRandomDuration();
                       const { startDate, endDate } = generateStartAndEndDates(durationMonths);
 
                       const rentalOrder = await RentalOrder.create({
@@ -174,7 +179,7 @@ class VisitorFactory {
                       const rentalOrderItem = await RentalOrderItem.create({
                         rentalOrderId: rentalOrder.id,
                         artworkId: artwork.id,
-                        amount: getRentalFee(artwork, durationMonths),
+                        amount: rentalFee,
                       });
 
                       await eventService.placeOrder(rentalOrder.id);
@@ -182,6 +187,21 @@ class VisitorFactory {
                       if (eventNumber > 9) {
                         await eventService.completePayment(payment.id);
                         await payment.update({ status: PAYMENT_STATUS.COMPLETED });
+
+                        const paymentIntentId = generatePaymentIntentId();
+
+                        const paymentTransactionService = new PaymentTransactionService();
+                        await paymentTransactionService.createStripeTransaction({
+                          paymentId: payment.id,
+                          amount: payment.amount,
+                          currency: 'PHP',
+                          metadata: {
+                            paymentIntentId: paymentIntentId,
+                            paymentMethod: 'card',
+                            browserSessionId: session.sessionId,
+                          },
+                          transactionDate: new Date(),
+                        });
 
                         await rentalOrder.update({ status: ORDER_STATUS.RESERVED });
 

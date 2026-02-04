@@ -58,8 +58,20 @@ export default class RentalOrderService {
   }
 
   async getOrderDetails(orderId: number): Promise<RentalOrderDTO | null> {
+    return this.getOrderWithIncludeAll({ id: orderId });
+  }
+
+  async getPaymentOrderDetails(paymentId: number): Promise<RentalOrderDTO | null> {
+    return this.getOrderWithIncludeAll({ paymentId });
+  }
+
+  async getUserOrderDetails(userId: number, orderId: number): Promise<RentalOrderDTO | null> {
+    return this.getOrderWithIncludeAll({ id: orderId, userId });
+  }
+
+  private async getOrderWithIncludeAll(where: any): Promise<RentalOrderDTO | null> {
     const order = await RentalOrder.findOne({
-      where: { id: orderId },
+      where,
       include: [
         {
           model: User,
@@ -92,6 +104,7 @@ export default class RentalOrderService {
           as: 'extension',
         },
       ],
+      order: [['createdAt', 'DESC']],
     });
 
     return order?.toJSON() || null;
@@ -132,44 +145,6 @@ export default class RentalOrderService {
     return orders.map((order) => order.toJSON());
   }
 
-  async getUserOrderDetails(userId: number, orderId: number): Promise<RentalOrderDTO | null> {
-    const order = await RentalOrder.findOne({
-      where: { id: orderId, userId },
-      include: [
-        {
-          model: User,
-          as: 'user',
-          attributes: ['id', 'fullName', 'email'],
-        },
-        {
-          model: Payment,
-          as: 'payment',
-          attributes: ['id', 'amount', 'status', 'method'],
-        },
-        {
-          model: RentalOrderItem,
-          as: 'items',
-          include: [
-            {
-              model: Artwork,
-              as: 'artwork',
-              include: ['artist', 'images', 'rentalPlans'],
-            },
-          ],
-        },
-        {
-          model: Address,
-          as: 'address',
-        },
-        {
-          model: RentalOrderExtension,
-          as: 'extension',
-        },
-      ],
-      order: [['createdAt', 'DESC']],
-    });
-    return order?.toJSON() || null;
-  }
   // Returns the furthest end date of ongoing rentals for a given artwork
   async getOngoingRentalByArtworkId(artworkId: number): Promise<RentalOrderDTO | null> {
     const rentalOrderItems = await RentalOrderItem.findAll({
