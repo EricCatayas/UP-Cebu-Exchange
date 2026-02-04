@@ -17,7 +17,9 @@ export function calculatePopularityScore(score: PopularityScore, weights: Popula
   );
 }
 
-export function getFunnelMilestones(funnelMetrics: FunnelMetrics): MilestoneMetrics {
+export function getFunnelMilestones(funnelMetrics: {
+  [event: string]: { count: number; reachedAt?: Date };
+}): MilestoneMetrics {
   const milestones: MilestoneMetrics = {};
 
   // Find the furthest stage reached (last stage with count > 0)
@@ -35,6 +37,7 @@ export function getFunnelMilestones(funnelMetrics: FunnelMetrics): MilestoneMetr
   funnelStages.forEach((stage, index) => {
     milestones[stage.value] = {
       hasReached: index <= furthestStageIndex,
+      reachedAt: funnelMetrics[stage.value]?.reachedAt || undefined,
     };
   });
 

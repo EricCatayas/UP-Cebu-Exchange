@@ -3,6 +3,7 @@ import React from 'react';
 import { funnelStages } from '@/lib/labels';
 import type { MilestoneMetrics } from '@/types/analytics';
 import { FaCheckCircle, FaCircle } from 'react-icons/fa';
+import { fmtDate } from '@/lib/formatter';
 
 interface UserMilestonesProps {
   milestones: MilestoneMetrics;
@@ -15,6 +16,7 @@ function UserMilestones({ milestones }: UserMilestonesProps) {
       <div className="flex items-start justify-between gap-2 overflow-x-auto pb-4">
         {funnelStages.map((stage, index) => {
           const hasReached = milestones[stage.value]?.hasReached || false;
+          const reachedAt = milestones[stage.value]?.reachedAt;
           const isLast = index === funnelStages.length - 1;
 
           return (
@@ -30,6 +32,7 @@ function UserMilestones({ milestones }: UserMilestonesProps) {
                     {stage.label}
                   </p>
                   <p className="text-[10px] text-gray-500 mt-1">{hasReached ? 'Completed' : 'Not reached'}</p>
+                  {reachedAt && <p className="text-[10px] text-gray-400 mt-1">{fmtDate(reachedAt)}</p>}
                 </div>
               </div>
               {!isLast && <div className={`h-0.5 w-8 mx-1 ${hasReached ? 'bg-green-600' : 'bg-gray-200'}`} />}

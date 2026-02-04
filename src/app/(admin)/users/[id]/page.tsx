@@ -23,13 +23,11 @@ export default async function UserPage({ params }: { params: { id: string } }) {
 
   if (isCustomer(userData)) {
     const funnelAnalyticsService = new FunnelAnalyticsService();
-    const funnelData = await funnelAnalyticsService.getUserFunnelMetrics(id);
     const userMilestones = await funnelAnalyticsService.getUserMilestones(id);
 
     const rentalOrderService = new RentalOrderService();
     const rentalOrders = await rentalOrderService.getUserOrders(id);
 
-    console.log('Funnel Data for User:', funnelData);
     console.log('Milestones for User:', userMilestones);
 
     return (
