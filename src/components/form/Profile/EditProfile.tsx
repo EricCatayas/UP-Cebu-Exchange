@@ -37,7 +37,7 @@ function EditProfileForm({ user }: { user: UserDTO }) {
     }
     setSubmitting(true);
     try {
-      const res = await fetch(`/api/user/${user.id}`, {
+      const res = await fetch(`/api/user/${user.id}/profile`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

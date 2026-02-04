@@ -1,84 +1,100 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { User, Role } from '@/models/sequelize';
 import { hashPassword } from '@/lib/auth';
-import { USER_ROLES, USER_STATUS } from '@/lib/constants';
+import { USER_ROLE, USER_STATUS } from '@/lib/constants';
 import { getCurrentUser } from '@/lib/auth';
 import { isAdmin, canEditContent } from '@/lib/role';
 
-// Both admin and the user themselves can update user info
-// but only admin can change roles
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const currentUser = await getCurrentUser();
-    if (!currentUser) {
+    if (!currentUser || !isAdmin(currentUser)) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-    const userId = parseInt((await params).id);
 
-    if (currentUser.userId != userId && !canEditContent(currentUser)) {
-      return NextResponse.json({ error: 'Unauthorized to update user' }, { status: 401 });
+    if (!canEditContent(currentUser)) {
+      return NextResponse.json({ error: 'Admin editor access required' }, { status: 403 });
     }
 
+    const userId = parseInt((await params).id);
+
+    if (!userId || isNaN(userId)) {
+      return NextResponse.json({ error: 'Invalid user ID' }, { status: 400 });
+    }
+
+    const { fullName, phoneNumber, status, role } = await request.json();
+
+    // Validate input
+    if (!fullName || !phoneNumber || !status || !role) {
+      return NextResponse.json({ error: 'Full name, phone number, status, and role are required' }, { status: 400 });
+    }
+
+    // Find user
     const user = await User.findByPk(userId);
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    const { fullName, phoneNumber, password, newPassword, role } = await request.json();
+    // Find user role
+    const userRole = await Role.findOne({
+      where: { name: role },
+    });
 
-    if (role && !canEditContent(currentUser)) {
-      return NextResponse.json({ error: 'Unauthorized to change role' }, { status: 401 });
-    }
-    if (role && !USER_ROLES.includes(role)) {
-      return NextResponse.json({ error: 'Invalid role' }, { status: 400 });
-    }
-
-    // Validate password strength
-    if (newPassword && newPassword.length < 6) {
-      return NextResponse.json({ error: 'Password must be at least 6 characters long' }, { status: 400 });
-    }
-    // Password must contain at least one letter and one number
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).+$/;
-    if (newPassword && !passwordRegex.test(newPassword)) {
-      return NextResponse.json({ error: 'Password must contain at least one letter and one number' }, { status: 400 });
+    if (!userRole) {
+      return NextResponse.json({ error: 'User role not found. Please contact administrator.' }, { status: 500 });
     }
 
-    const hashedPassword = await hashPassword(password);
-
-    if (password && user.password !== hashedPassword) {
-      return NextResponse.json({ error: 'Current password is incorrect' }, { status: 400 });
-    }
-
-    const hashedNewPassword = await hashPassword(newPassword);
-
-    const userRole = role
-      ? await Role.findOne({
-          where: { name: role },
-        })
-      : await Role.findByPk(user.roleId);
-
-    const updatedUser = await user.update({
-      fullName: fullName || user.fullName,
-      phoneNumber: phoneNumber || user.phoneNumber,
-      password: newPassword ? hashedNewPassword : user.password,
-      roleId: userRole ? userRole.id : user.roleId,
+    // Update user
+    await user.update({
+      phoneNumber,
+      fullName,
+      status,
+      roleId: userRole.id,
     });
 
     return NextResponse.json(
       {
-        message: 'User update successful',
+        message: 'User updated successfully',
         user: {
-          id: updatedUser.id,
-          email: updatedUser.email,
-          fullName: updatedUser.fullName,
+          id: user.id,
+          email: user.email,
+          fullName: user.fullName,
+          phoneNumber: user.phoneNumber,
+          status: user.status,
           roleName: userRole.name,
         },
       },
-      { status: 201 }
+      { status: 200 }
     );
   } catch (error) {
-    console.error('Registration error:', error);
+    console.error('Update user error:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const currentUser = await getCurrentUser();
+    if (!currentUser || !isAdmin(currentUser)) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    if (!canEditContent(currentUser)) {
+      return NextResponse.json({ error: 'Admin editor access required' }, { status: 403 });
+    }
+
+    const userId = parseInt((await params).id);
+    if (!userId || isNaN(userId)) {
+      return NextResponse.json({ error: 'Invalid user ID' }, { status: 400 });
+    }
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+    await user.destroy();
+    return NextResponse.json({ message: 'User deleted successfully' }, { status: 200 });
+  } catch (error) {
+    console.error('Error deleting user:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
