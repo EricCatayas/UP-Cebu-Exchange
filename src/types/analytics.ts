@@ -6,6 +6,12 @@ export interface FunnelMetrics {
   };
 }
 
+export interface MilestoneMetrics {
+  [event: string]: {
+    hasReached: boolean;
+  };
+}
+
 export interface PaymentMetrics {
   revenue: {
     total: number;

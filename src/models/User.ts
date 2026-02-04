@@ -23,6 +23,13 @@ export interface UserCreateDTO {
   role: string;
 }
 
+export interface UserEditDTO {
+  fullName: string;
+  status: string;
+  phoneNumber: string;
+  role: string;
+}
+
 export interface UserUpdateDTO {
   fullName?: string;
   phoneNumber?: string;

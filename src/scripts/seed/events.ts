@@ -136,6 +136,7 @@ class VisitorFactory {
 
               if (eventNumber > 5) {
                 await eventService.verifyEmail(user.id);
+                await user.update({ status: USER_STATUS.ACTIVE });
 
                 if (eventNumber > 6) {
                   await eventService.login(user.id);

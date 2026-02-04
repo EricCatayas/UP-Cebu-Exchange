@@ -2,9 +2,9 @@ import UserService from './UserService';
 import sequelize from '@/config/database';
 import { Op } from 'sequelize';
 import { Event, RentalOrder, Payment, Session, User } from '@/models/sequelize';
-import { FunnelMetrics } from '@/types/analytics';
+import { FunnelMetrics, MilestoneMetrics } from '@/types/analytics';
 import { EVENT_NAME, ORDER_STATUS, PAYMENT_STATUS, USER_ROLE } from '@/lib/constants';
-import { getConversionRate } from '@/lib/analytics';
+import { getConversionRate, getFunnelMilestones } from '@/lib/analytics';
 import { opTimeframe } from '@/lib/orm';
 import { fmtDate } from '@/lib/formatter';
 
@@ -14,23 +14,156 @@ class FunnelAnalyticsService {
 
   constructor(timeframe?: string) {
     this.timeframe = timeframe;
+    this.initializeCustomerRoleId();
+  }
+
+  private async initializeCustomerRoleId() {
+    if (!this.customerRoleId) {
+      const userService = new UserService();
+      const customerRoleId = await userService.getRoleIdByName(USER_ROLE.CUSTOMER);
+      this.customerRoleId = customerRoleId ?? undefined;
+    }
   }
 
   async getFunnelMetrics({ unique = false }: { unique?: boolean } = {}): Promise<FunnelMetrics> {
-    const userService = new UserService();
-    const customerRoleId = await userService.getRoleIdByName(USER_ROLE.CUSTOMER);
-    this.customerRoleId = customerRoleId ?? undefined;
+    await this.initializeCustomerRoleId();
 
-    const visitCount = await this.getVisitCount(unique);
-    const browseCount = await this.getBrowseArtworksCount(unique);
-    const viewCount = await this.getArtworkViewCount(unique);
-    const createAccountCount = await this.getCreateAccountCount(unique);
-    const verifyEmailCount = await this.getVerifyEmailCount(unique);
-    const beginCheckoutCount = await this.getBeginCheckoutCount(unique);
-    const signRentalAgreementCount = await this.getSignRentalAgreementCount(unique);
-    const placeOrderCount = await this.getPlaceOrderCount(unique);
-    const completePaymentCount = await this.getCompletePaymentCount(unique);
-    const completeOrderCount = await this.getCompleteOrderCount(unique);
+    const visitCount = await this.getVisitCount({ unique });
+    const browseCount = await this.getBrowseArtworksCount({ unique });
+    const viewCount = await this.getArtworkViewCount({ unique });
+    const createAccountCount = await this.getCreateAccountCount({ unique });
+    const verifyEmailCount = await this.getVerifyEmailCount({ unique });
+    const beginCheckoutCount = await this.getBeginCheckoutCount({ unique });
+    const signRentalAgreementCount = await this.getSignRentalAgreementCount({ unique });
+    const placeOrderCount = await this.getPlaceOrderCount({ unique });
+    const completePaymentCount = await this.getCompletePaymentCount({ unique });
+    const completeOrderCount = await this.getCompleteOrderCount({ unique });
+
+    const result = {
+      [EVENT_NAME.VISIT_SITE]: {
+        count: visitCount,
+        conversionRate: 100,
+        cumulativeConversionRate: 100,
+      },
+      [EVENT_NAME.BROWSE_ARTWORKS]: {
+        count: browseCount,
+        conversionRate: getConversionRate(browseCount, visitCount),
+        cumulativeConversionRate: getConversionRate(browseCount, visitCount),
+      },
+      [EVENT_NAME.VIEW_ARTWORK]: {
+        count: viewCount,
+        conversionRate: getConversionRate(viewCount, browseCount),
+        cumulativeConversionRate: getConversionRate(viewCount, visitCount),
+      },
+      [EVENT_NAME.BEGIN_CHECKOUT]: {
+        count: beginCheckoutCount,
+        conversionRate: getConversionRate(beginCheckoutCount, viewCount),
+        cumulativeConversionRate: getConversionRate(beginCheckoutCount, visitCount),
+      },
+      [EVENT_NAME.CREATE_ACCOUNT]: {
+        count: createAccountCount,
+        conversionRate: getConversionRate(createAccountCount, beginCheckoutCount),
+        cumulativeConversionRate: getConversionRate(createAccountCount, visitCount),
+      },
+      [EVENT_NAME.VERIFY_EMAIL]: {
+        count: verifyEmailCount,
+        conversionRate: getConversionRate(verifyEmailCount, createAccountCount),
+        cumulativeConversionRate: getConversionRate(verifyEmailCount, visitCount),
+      },
+      [EVENT_NAME.SIGN_RENTAL_AGREEMENT]: {
+        count: signRentalAgreementCount,
+        conversionRate: getConversionRate(signRentalAgreementCount, verifyEmailCount),
+        cumulativeConversionRate: getConversionRate(signRentalAgreementCount, visitCount),
+      },
+      [EVENT_NAME.PLACE_ORDER]: {
+        count: placeOrderCount,
+        conversionRate: getConversionRate(placeOrderCount, signRentalAgreementCount),
+        cumulativeConversionRate: getConversionRate(placeOrderCount, visitCount),
+      },
+      [EVENT_NAME.COMPLETE_PAYMENT]: {
+        count: completePaymentCount,
+        conversionRate: getConversionRate(completePaymentCount, placeOrderCount),
+        cumulativeConversionRate: getConversionRate(completePaymentCount, visitCount),
+      },
+      [EVENT_NAME.COMPLETE_ORDER]: {
+        count: completeOrderCount,
+        conversionRate: getConversionRate(completeOrderCount, completePaymentCount),
+        cumulativeConversionRate: getConversionRate(completeOrderCount, visitCount),
+      },
+    };
+    return result;
+  }
+
+  async getUserFunnelMetrics(userId: number): Promise<FunnelMetrics> {
+    await this.initializeCustomerRoleId();
+    const sessionIds = await this.getUserSessionIds(userId);
+
+    const visitCount = await this.getVisitCount({
+      where: {
+        sessionId: {
+          [Op.in]: sessionIds,
+        },
+      },
+    });
+    const browseCount = await this.getBrowseArtworksCount({
+      where: {
+        sessionId: {
+          [Op.in]: sessionIds,
+        },
+      },
+    });
+    const viewCount = await this.getArtworkViewCount({
+      where: {
+        sessionId: {
+          [Op.in]: sessionIds,
+        },
+      },
+    });
+    const createAccountCount = await this.getCreateAccountCount({
+      where: {
+        sessionId: {
+          [Op.in]: sessionIds,
+        },
+      },
+    });
+    const verifyEmailCount = await this.getVerifyEmailCount({
+      where: {
+        sessionId: {
+          [Op.in]: sessionIds,
+        },
+      },
+    });
+    const beginCheckoutCount = await this.getBeginCheckoutCount({
+      where: {
+        sessionId: {
+          [Op.in]: sessionIds,
+        },
+      },
+    });
+    const signRentalAgreementCount = await this.getSignRentalAgreementCount({
+      where: {
+        sessionId: {
+          [Op.in]: sessionIds,
+        },
+      },
+    });
+    const placeOrderCount = await this.getPlaceOrderCount({
+      where: {
+        sessionId: {
+          [Op.in]: sessionIds,
+        },
+      },
+    });
+    const completePaymentCount = await this.getCompletePaymentCount({
+      where: {
+        userId: userId,
+      },
+    });
+    const completeOrderCount = await this.getCompleteOrderCount({
+      where: {
+        userId: userId,
+      },
+    });
 
     const result = {
       [EVENT_NAME.VISIT_SITE]: {
@@ -108,9 +241,8 @@ class FunnelAnalyticsService {
       data: number[];
     };
   }> => {
-    const userService = new UserService();
-    const customerRoleId = await userService.getRoleIdByName(USER_ROLE.CUSTOMER);
-    this.customerRoleId = customerRoleId ?? undefined;
+    await this.initializeCustomerRoleId();
+
     const guests = await Session.count({
       where: {
         userId: {
@@ -156,6 +288,12 @@ class FunnelAnalyticsService {
   getUserRetentionMetrics = async (): Promise<any> => {
     // Implementation for user retention metrics can be added here
   };
+
+  async getUserMilestones(userId: number): Promise<MilestoneMetrics> {
+    const userFunnelMetrics = await this.getUserFunnelMetrics(userId);
+    const milestones = getFunnelMilestones(userFunnelMetrics);
+    return milestones;
+  }
 
   private async getCustomerVisitorCount(unique: boolean) {
     const customerSessions = await Session.findAll({
@@ -281,10 +419,12 @@ class FunnelAnalyticsService {
     return dailySessionData;
   }
 
-  private async getEventCount(eventName: string, unique: boolean) {
+  private async getEventCount(eventName: string, options: { unique?: boolean; where?: any } = {}) {
+    const { unique = false, where = {} } = options;
     const events = await Event.findAll({
       where: {
         name: eventName,
+        ...where,
         ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
       },
       include: [
@@ -303,12 +443,11 @@ class FunnelAnalyticsService {
           ],
         },
       ],
-      attributes: ['sessionId'],
       raw: true,
     });
 
     const filteredEvents = events.filter((event: any) => {
-      // Include guests (no user) or customers (exclude admins)
+      // Only guests (no user) and customers; Exclude admins
       return !event['session.userId'] || event['session.user.roleId'] === this.customerRoleId;
     });
 
@@ -317,43 +456,45 @@ class FunnelAnalyticsService {
       : filteredEvents.length;
   }
 
-  private async getVisitCount(unique: boolean) {
-    return this.getEventCount(EVENT_NAME.VISIT_SITE, unique);
+  private async getVisitCount(options: { unique?: boolean; where?: any } = {}) {
+    return this.getEventCount(EVENT_NAME.VISIT_SITE, options);
   }
 
-  private async getBrowseArtworksCount(unique: boolean) {
-    return this.getEventCount(EVENT_NAME.BROWSE_ARTWORKS, unique);
+  private async getBrowseArtworksCount(options: { unique?: boolean; where?: any } = {}) {
+    return this.getEventCount(EVENT_NAME.BROWSE_ARTWORKS, options);
   }
 
-  private async getArtworkViewCount(unique: boolean) {
-    return this.getEventCount(EVENT_NAME.VIEW_ARTWORK, unique);
+  private async getArtworkViewCount(options: { unique?: boolean; where?: any } = {}) {
+    return this.getEventCount(EVENT_NAME.VIEW_ARTWORK, options);
   }
 
-  private async getCreateAccountCount(unique: boolean) {
-    return this.getEventCount(EVENT_NAME.CREATE_ACCOUNT, unique);
+  private async getCreateAccountCount(options: { unique?: boolean; where?: any } = {}) {
+    return this.getEventCount(EVENT_NAME.CREATE_ACCOUNT, options);
   }
 
-  private async getVerifyEmailCount(unique: boolean) {
-    return this.getEventCount(EVENT_NAME.VERIFY_EMAIL, unique);
+  private async getVerifyEmailCount(options: { unique?: boolean; where?: any } = {}) {
+    return this.getEventCount(EVENT_NAME.VERIFY_EMAIL, options);
   }
 
-  private async getBeginCheckoutCount(unique: boolean) {
-    return this.getEventCount(EVENT_NAME.BEGIN_CHECKOUT, unique);
+  private async getBeginCheckoutCount(options: { unique?: boolean; where?: any } = {}) {
+    return this.getEventCount(EVENT_NAME.BEGIN_CHECKOUT, options);
   }
 
-  private async getSignRentalAgreementCount(unique: boolean) {
-    return this.getEventCount(EVENT_NAME.SIGN_RENTAL_AGREEMENT, unique);
+  private async getSignRentalAgreementCount(options: { unique?: boolean; where?: any } = {}) {
+    return this.getEventCount(EVENT_NAME.SIGN_RENTAL_AGREEMENT, options);
   }
 
-  private async getPlaceOrderCount(unique: boolean) {
-    return this.getEventCount(EVENT_NAME.PLACE_ORDER, unique);
+  private async getPlaceOrderCount(options: { unique?: boolean; where?: any } = {}) {
+    return this.getEventCount(EVENT_NAME.PLACE_ORDER, options);
   }
 
-  private async getCompletePaymentCount(unique: boolean) {
+  private async getCompletePaymentCount(options: { unique?: boolean; where?: any } = {}) {
+    const { unique = false, where = {} } = options;
     if (unique) {
       const uniqueCompletePaymentCount = await Payment.count({
         where: {
           status: PAYMENT_STATUS.COMPLETED,
+          ...where,
           ...(this.timeframe && { updatedAt: opTimeframe(this.timeframe) }),
         },
         group: ['userId'],
@@ -366,17 +507,20 @@ class FunnelAnalyticsService {
     const completePaymentCount = await Payment.count({
       where: {
         status: PAYMENT_STATUS.COMPLETED,
+        ...where,
         ...(this.timeframe && { updatedAt: opTimeframe(this.timeframe) }),
       },
     });
     return completePaymentCount;
   }
 
-  private async getCompleteOrderCount(unique: boolean) {
+  private async getCompleteOrderCount(options: { unique?: boolean; where?: any } = {}) {
+    const { unique = false, where = {} } = options;
     if (unique) {
       const uniqueCompleteOrderCount = await RentalOrder.count({
         where: {
           status: ORDER_STATUS.COMPLETED,
+          ...where,
           ...(this.timeframe && { updatedAt: opTimeframe(this.timeframe) }),
         },
         group: ['userId'],
@@ -389,10 +533,23 @@ class FunnelAnalyticsService {
     const completeOrderCount = await RentalOrder.count({
       where: {
         status: ORDER_STATUS.COMPLETED,
+        ...where,
         ...(this.timeframe && { updatedAt: opTimeframe(this.timeframe) }),
       },
     });
     return completeOrderCount;
+  }
+
+  private async getUserSessionIds(userId: number) {
+    const sessions = await Session.findAll({
+      where: {
+        userId,
+        ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
+      },
+      attributes: ['id'],
+      raw: true,
+    });
+    return sessions.map((session) => session.id);
   }
 }
 
