@@ -37,11 +37,7 @@ export function getOrderStatus(order: RentalOrderDTO): { label: string; value: s
     return orderStatus['Payment Failed'];
   }
 
-  if (
-    today >= startDate &&
-    order.payment.status === PAYMENT_STATUS.COMPLETED &&
-    order.status === ORDER_STATUS.RESERVED
-  ) {
+  if (isOrderDueReceive(order)) {
     // if today is one week after start date: overdue receive
     if ((today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24) > 7) {
       return orderStatus['To Receive Overdue'];
@@ -50,14 +46,14 @@ export function getOrderStatus(order: RentalOrderDTO): { label: string; value: s
   }
 
   // If today is after end date and order has an extension
-  if (today > endDate && order.extension) {
+  if (isOrderExtended(order)) {
     return {
       ...orderStatus['Extended'],
       label: `Extended to #${order.extension.extensionOrderId}`,
     };
   }
 
-  if (today > endDate && (order.status === ORDER_STATUS.ONGOING || order.status !== ORDER_STATUS.COMPLETED)) {
+  if (isOrderOverdue(order)) {
     // if today is two weeks after end date: overdue return
     if ((today.getTime() - endDate.getTime()) / (1000 * 60 * 60 * 24) > 14) {
       return orderStatus['Overdue Return'];
@@ -94,17 +90,26 @@ export const getUnavailableReason = (status: CART_STATUS) => {
   }
 };
 
-export const getReturnDueDate = (order: RentalOrderDTO): Date => {
+export const getReturnDueDate = (order: { endDate: Date }): Date => {
   const endDate = new Date(order.endDate);
   const returnDueDate = new Date(endDate);
   returnDueDate.setDate(endDate.getDate() + 7);
   return returnDueDate;
 };
 
+export function isOrderDueReceive(order: RentalOrderDTO): boolean {
+  const today = new Date();
+  const startDate = new Date(order.startDate);
+  return (
+    today >= startDate && order.payment.status === PAYMENT_STATUS.COMPLETED && order.status === ORDER_STATUS.RESERVED
+  );
+}
+
 export function isOrderOverdue(order: RentalOrderDTO): boolean {
   const today = new Date();
   const endDate = new Date(order.endDate);
-  return today > endDate && order.status === ORDER_STATUS.ONGOING;
+  return today > endDate && (order.status === ORDER_STATUS.ONGOING || order.status !== ORDER_STATUS.COMPLETED);
+  // return today > endDate && order.status === ORDER_STATUS.ONGOING;
 }
 
 export function isPaymentDue(order: RentalOrderDTO): boolean {
@@ -127,10 +132,19 @@ export function isOrderPaid(order: RentalOrderDTO): boolean {
 }
 
 export function isOrderExtendable(order: RentalOrderDTO): boolean {
-  const today = new Date();
-  const endDate = new Date(order.endDate);
   const hasExtension = order.extension !== undefined && order.extension !== null;
   return order.status !== ORDER_STATUS.CANCELLED && order.status !== ORDER_STATUS.COMPLETED && !hasExtension;
+}
+
+export function isOrderExtended(order: RentalOrderDTO): boolean {
+  const today = new Date();
+  const endDate = new Date(order.endDate);
+  return (
+    today > endDate &&
+    order.extension !== undefined &&
+    order.extension !== null &&
+    order.status === ORDER_STATUS.ONGOING
+  );
 }
 
 export function isOrderReturnable(order: RentalOrderDTO): boolean {

@@ -106,6 +106,43 @@ export enum NOTIFICATION_TYPE {
   SYSTEM_ALERT = 'System Alert',
 }
 
+/**
+ * Order status flow and transitions
+ *
+ * @description Defines the lifecycle states of a rental order and their valid transitions:
+ *
+ * **Flow Diagram:**
+ * - A. PENDING: New order, payment not yet received
+ *   - → RESERVED (payment successful)
+ *   - → CANCELLED (order cancelled)
+ *
+ * - B. RESERVED: Payment received, awaiting customer pickup/delivery
+ *   - → TORECEIVE (rental period starts)
+ *   - → CANCELLED (order cancelled before receipt)
+ *
+ * - C. TORECEIVE: Rental period active, awaiting customer to receive items
+ *   - → ONGOING (customer receives items)
+ *   - → CANCELLED (rental cancelled before receipt)
+ *
+ * - D. ONGOING: Customer has received items, rental in progress
+ *   - → TORETURN (rental period ends or customer requests return)
+ *   - → EXTENDED (customer extends rental duration)
+ *
+ * - E. EXTENDED: Rental duration extended, back to active rental state
+ *   - → COMPLETED (items returned and confirmed)
+ *   - → CANCELLED (extended rental cancelled)
+ *
+ * - F. TORETURN: Rental period ended, items awaiting return
+ *   - → COMPLETED (items returned and confirmed)
+ *
+ * - G. COMPLETED: Order fulfilled, all items returned
+ *   - (Terminal state)
+ *
+ * - H. CANCELLED: Order cancelled at any point
+ *   - (Terminal state)
+ *
+ * @enum {string}
+ */
 export enum ORDER_STATUS {
   PENDING = 'Pending',
   RESERVED = 'Reserved',

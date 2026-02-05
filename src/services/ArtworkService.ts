@@ -255,16 +255,25 @@ class ArtworkService {
     return sortedArtworks.map((entry) => entry.artwork);
   }
 
-  async getFavoriteArtworks() {
+  // todo
+  async getPopularArtworks() {
     const artworks = await ArtworkRepository.findAll({ limit: 20 });
     const shuffled = artworks.sort(() => 0.5 - Math.random());
     return shuffled.slice(0, 3);
   }
 
+  // todo
   async getRecommendedArtworks() {
     const artworks = await ArtworkRepository.findAll({ limit: 20 });
     const shuffled = artworks.sort(() => 0.5 - Math.random());
     return shuffled.slice(0, 3);
+  }
+
+  async getArtworksCount(): Promise<{ total: number; available: number; rented: number }> {
+    const total = await ArtworkRepository.count();
+    const available = await ArtworkRepository.count({ where: { status: ARTWORK_STATUS.AVAILABLE } });
+    const rented = await ArtworkRepository.count({ where: { status: ARTWORK_STATUS.RENTED } });
+    return { total, available, rented };
   }
 
   private async getUserCartArtworkIds() {

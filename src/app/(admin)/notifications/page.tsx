@@ -35,7 +35,7 @@ async function Notifications({ searchParams }: { searchParams: { [key: string]: 
         <section className="flex items-start gap-6">
           <div className="w-28 text-gray-700 font-medium pt-2">Notifications</div>
           <div className="flex flex-wrap gap-6">
-            <AnalyticsCard title="Unread" value={unreadCount} />
+            <AnalyticsCard header="Unread" value={unreadCount} />
           </div>
         </section>
 

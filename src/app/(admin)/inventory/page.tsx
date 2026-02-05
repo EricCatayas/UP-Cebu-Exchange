@@ -41,8 +41,8 @@ async function Inventory() {
         <section className="flex items-start gap-6">
           <div className="w-28 text-gray-700 font-medium pt-2">Inventory</div>
           <div className="flex flex-wrap gap-6">
-            <AnalyticsCard title="Available" value={availableCount} />
-            <AnalyticsCard title="Rented" value={rentedCount} />
+            <AnalyticsCard header="Available" value={availableCount} />
+            <AnalyticsCard header="Rented" value={rentedCount} />
           </div>
         </section>
 

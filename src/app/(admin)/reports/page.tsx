@@ -8,7 +8,7 @@ import Pagination from '@/components/Pagination/Pagination';
 import ProductDemandService from '@/services/ProductDemandService';
 import FunnelAnalyticsBar from '@/components/admin/analytics/FunnelAnalyticsBar';
 import VisitorCountGraph from '@/components/admin/analytics/VisitorCountGraph';
-import { getImageUrl } from '@/lib/artwork';
+import { recentTimeframe } from '@/lib/labels';
 
 async function Reports({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) {
   const query = await searchParams;
@@ -58,6 +58,15 @@ async function Reports({ searchParams }: { searchParams: { [key: string]: string
             monthly={monthly}
             daily={daily}
           />
+        </section>
+        <section className="flex items-start gap-6">
+          <div className="w-28 text-gray-700 font-medium pt-2">Users</div>
+          <div className="flex flex-wrap gap-6">
+            <AnalyticsCard header="Customers" value={count.customers} />
+            <AnalyticsCard header="New Customers" value={count.newCustomers} subheader={recentTimeframe.label} />
+            <AnalyticsCard header="Returning Customers" value={count.returningCustomers} />
+            <AnalyticsCard header="Guests" value={count.guests} />
+          </div>
         </section>
 
         {/* Product Demand */}

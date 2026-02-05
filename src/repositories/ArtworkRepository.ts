@@ -78,6 +78,13 @@ class ArtworkRepository {
     });
     return artworks.map((artwork) => artwork.toJSON());
   }
+
+  async count(options = {}) {
+    const total = await Artwork.count({
+      ...options,
+    });
+    return total;
+  }
 }
 
 export default new ArtworkRepository();

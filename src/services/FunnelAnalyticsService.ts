@@ -6,6 +6,7 @@ import { FunnelMetrics, MilestoneMetrics } from '@/types/analytics';
 import { EVENT_NAME, ORDER_STATUS, PAYMENT_STATUS, USER_ROLE } from '@/lib/constants';
 import { getConversionRate, getFunnelMilestones } from '@/lib/analytics';
 import { opTimeframe } from '@/lib/orm';
+import { recentTimeframe } from '@/lib/labels';
 
 class FunnelAnalyticsService {
   private timeframe?: string;
@@ -103,6 +104,8 @@ class FunnelAnalyticsService {
       registered: number;
       guests: number;
       customers: number;
+      newCustomers: number;
+      returningCustomers: number;
       admins: number;
     };
     monthly: {
@@ -124,7 +127,16 @@ class FunnelAnalyticsService {
         ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
       },
     });
-    const customers = await this.getCustomerVisitorCount(unique);
+    const totalCustomerVisits = await this.getCustomerVisitorCount(false);
+    const groupedCustomerVisits = await this.getCustomerVisitorCount(true);
+    const customers = unique ? groupedCustomerVisits : totalCustomerVisits;
+    const returningCustomers = totalCustomerVisits - groupedCustomerVisits;
+
+    const prevTimeFrame = this.timeframe;
+    this.timeframe = recentTimeframe.value;
+    const newCustomers = await this.getCustomerVisitorCount(unique);
+    this.timeframe = prevTimeFrame;
+
     const admins = await this.getAdminVisitorCount(unique);
 
     const registered = customers + admins;
@@ -153,13 +165,10 @@ class FunnelAnalyticsService {
     const dailyData = (dailySessionData as any[]).map((row) => parseInt(row.count));
 
     return {
-      count: { total, registered, guests, customers, admins },
+      count: { total, registered, guests, customers, admins, newCustomers, returningCustomers },
       monthly: { labels: monthlyLabels, data: monthlyData },
       daily: { labels: dailyLabels, data: dailyData },
     };
-  };
-  getUserRetentionMetrics = async (): Promise<any> => {
-    // Implementation for user retention metrics can be added here
   };
 
   async getUserMilestones(userId: number): Promise<MilestoneMetrics> {

@@ -2,8 +2,10 @@ import sequelize from '@/config/database';
 import RentalOrderExtension from './RentalOrderExtension';
 import { DataTypes, Model, Optional, Op } from 'sequelize';
 import { RentalOrderAttributes } from '@/models/RentalOrder';
-import { ORDER_STATUS } from '@/lib/constants';
+import { ORDER_STATUS, PAYMENT_STATUS } from '@/lib/constants';
+import { getReturnDueDate, isOrderDueReceive, isOrderOverdue, isOrderExtended } from '@/lib/order';
 import User from './User';
+import Payment from './Payment';
 
 interface RentalOrderCreationAttributes extends Optional<
   RentalOrderAttributes,
@@ -23,9 +25,48 @@ class RentalOrder extends Model<RentalOrderAttributes, RentalOrderCreationAttrib
   declare createdAt: Date;
   declare updatedAt: Date;
   declare user: User;
+  declare payment: Payment;
   declare extension?: RentalOrderExtension;
 
   // Instance methods
+
+  public getStatus(): string {
+    // const today = new Date();
+    // const startDate = new Date(this.startDate);
+    // const endDate = new Date(this.endDate);
+
+    if ([ORDER_STATUS.CANCELLED].includes(this.status as ORDER_STATUS)) {
+      return this.status;
+    }
+
+    if (isOrderExtended(this)) {
+      return ORDER_STATUS.EXTENDED;
+    }
+
+    if (isOrderDueReceive(this)) {
+      return ORDER_STATUS.TORECEIVE;
+    }
+
+    if (isOrderOverdue(this)) {
+      return ORDER_STATUS.TORETURN;
+    }
+
+    return this.status;
+  }
+
+  public getDueDate(): Date | null {
+    const status = this.getStatus();
+
+    if ([ORDER_STATUS.PENDING, ORDER_STATUS.RESERVED, ORDER_STATUS.TORECEIVE].includes(this.status as ORDER_STATUS)) {
+      return this.startDate;
+    }
+
+    if ([ORDER_STATUS.ONGOING, ORDER_STATUS.TORETURN].includes(this.status as ORDER_STATUS)) {
+      return getReturnDueDate(this);
+    }
+    return null;
+  }
+
   public getDaysRemaining(): number {
     if (this.status !== 'Confirmed') return 0;
     const today = new Date();

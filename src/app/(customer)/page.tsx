@@ -11,7 +11,7 @@ import Link from 'next/link';
 // todo: log browse event when user clicks paintings?
 export default async function Page() {
   const artworkService = new ArtworkService();
-  const favorite_artworks = await artworkService.getFavoriteArtworks();
+  const popular_artworks = await artworkService.getPopularArtworks();
   const recommended_artworks = await artworkService.getRecommendedArtworks();
 
   const categories = [
@@ -80,7 +80,7 @@ export default async function Page() {
       <div className="container px-8 py-6 max-w-7xl mx-auto">
         <section className="pb-12">
           <h2 className="text-3xl font-bold mb-6 slide-right-delay-600">A Few of our Favorites</h2>
-          <ArtworksDisplay artworks={favorite_artworks} />
+          <ArtworksDisplay artworks={popular_artworks} />
           {/* <ArtworksRandomized artworks={favorite_artworks} /> */}
         </section>
         <section className="py-12">

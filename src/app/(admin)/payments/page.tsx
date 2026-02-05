@@ -3,12 +3,15 @@ import Link from 'next/link';
 import AnalyticsCard from '@/components/AnalyticsCard/AnalyticsCard';
 import Header from '@/components/admin/Header';
 import PaymentService from '@/services/PaymentService';
+import PaymentAnalyticsService from '@/services/PaymentAnalyticsService';
 import { fmtMoney } from '@/lib/formatter';
 
 async function PaymentsPage() {
   const paymentService = new PaymentService();
   const payments = await paymentService.getAllPayments();
-  const { totalPayments, totalRevenue, completedPayments, pendingPayments } = await paymentService.getAnalyticsData();
+
+  const paymentAnalyticsService = new PaymentAnalyticsService();
+  const { totalRevenue, completedPayments, pendingPayments } = await paymentAnalyticsService.getAnalyticsData();
 
   const getPaymentStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
@@ -45,9 +48,9 @@ async function PaymentsPage() {
         <section className="flex items-start gap-6">
           <div className="w-28 text-gray-700 font-medium pt-2">Overview</div>
           <div className="flex flex-wrap gap-6">
-            <AnalyticsCard title="Total Revenue" value={fmtMoney(totalRevenue)} />
-            <AnalyticsCard title="Completed Payments" value={completedPayments.toString()} />
-            <AnalyticsCard title="Pending Payments" value={pendingPayments.toString()} />
+            <AnalyticsCard header="Total Revenue" value={fmtMoney(totalRevenue)} />
+            <AnalyticsCard header="Completed Payments" value={completedPayments.toString()} />
+            <AnalyticsCard header="Pending Payments" value={pendingPayments.toString()} />
           </div>
         </section>
 

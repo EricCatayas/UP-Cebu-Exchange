@@ -12,6 +12,7 @@ export const timeframes = [
 ];
 
 export const timeframeDefault = timeframes[0].value;
+export const recentTimeframe = timeframes[3]; // Past 3 months
 
 export const orderStatus = {
   [ORDER_STATUS.PENDING]: { label: 'Pending', value: ORDER_STATUS.PENDING, color: 'bg-yellow-100 text-yellow-800' },

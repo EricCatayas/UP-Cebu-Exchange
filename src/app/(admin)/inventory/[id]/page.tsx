@@ -72,10 +72,10 @@ async function InventoryDetails({ params }: { params: { id: string } }) {
         <section className="flex items-start gap-6">
           <div className="flex flex-wrap gap-6">
             <div className="w-28 text-gray-700 font-medium pt-2">Popularity</div>
-            <AnalyticsCard title="Views" value={viewCount} />
-            <AnalyticsCard title="Rented" value={rentedCount} />
-            <AnalyticsCard title="In Wishlists" value={wishlistCount} />
-            <AnalyticsCard title="In Shopping Carts" value={shoppingCartCount} />
+            <AnalyticsCard header="Views" value={viewCount} />
+            <AnalyticsCard header="Rented" value={rentedCount} />
+            <AnalyticsCard header="In Wishlists" value={wishlistCount} />
+            <AnalyticsCard header="In Shopping Carts" value={shoppingCartCount} />
           </div>
         </section>
 

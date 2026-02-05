@@ -34,8 +34,8 @@ async function Users() {
         <section className="flex items-start gap-6">
           <div className="w-28 text-gray-700 font-medium pt-2">Customer Accounts</div>
           <div className="flex flex-wrap gap-6">
-            <AnalyticsCard title="Active" value={activeCustomerCount} />
-            <AnalyticsCard title="Pending" value={pendingCustomerCount} />
+            <AnalyticsCard header="Active" value={activeCustomerCount} />
+            <AnalyticsCard header="Pending" value={pendingCustomerCount} />
           </div>
         </section>
 
