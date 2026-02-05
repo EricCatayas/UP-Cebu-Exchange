@@ -146,6 +146,7 @@ async function Dashboard({ searchParams }: { searchParams: { [key: string]: stri
         <section className="flex items-start gap-6">
           <div className="w-28 text-gray-700 font-medium pt-2">Users</div>
           <div className="flex flex-wrap gap-6">
+            <AnalyticsCard header="Guests" value={individualCount.guests} />
             <AnalyticsCard header="Customers" value={individualCount.customers} />
             <AnalyticsCard
               header="New Customers"
@@ -153,7 +154,6 @@ async function Dashboard({ searchParams }: { searchParams: { [key: string]: stri
               subheader={recentTimeframe.label}
             />
             <AnalyticsCard header="Returning Customers" value={individualCount.returningCustomers} />
-            <AnalyticsCard header="Guests" value={individualCount.guests} />
           </div>
         </section>
       </div>

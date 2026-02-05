@@ -127,10 +127,8 @@ class FunnelAnalyticsService {
         ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
       },
     });
-    const totalCustomerVisits = await this.getCustomerVisitorCount(false);
-    const groupedCustomerVisits = await this.getCustomerVisitorCount(true);
-    const customers = unique ? groupedCustomerVisits : totalCustomerVisits;
-    const returningCustomers = totalCustomerVisits - groupedCustomerVisits;
+    const customers = await this.getCustomerVisitorCount(unique);
+    const returningCustomers = await this.getReturningCustomersCount();
 
     const prevTimeFrame = this.timeframe;
     this.timeframe = recentTimeframe.value;
@@ -311,6 +309,37 @@ class FunnelAnalyticsService {
     });
 
     return unique ? new Set(customerSessions.map((session) => session.userId)).size : customerSessions.length;
+  }
+
+  private async getReturningCustomersCount() {
+    const customerSessions = await Session.findAll({
+      where: {
+        userId: {
+          [Op.not]: null,
+        },
+        ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
+      },
+      include: [
+        {
+          model: User,
+          as: 'user',
+          required: true,
+          where: {
+            roleId: this.customerRoleId,
+          },
+        },
+      ],
+    });
+
+    const userVisitCounts: { [userId: number]: number } = {};
+    customerSessions.forEach((session) => {
+      const userId = session.userId as number;
+      userVisitCounts[userId] = (userVisitCounts[userId] || 0) + 1;
+    });
+
+    const returningCustomers = Object.values(userVisitCounts).filter((count) => count > 1).length;
+
+    return returningCustomers;
   }
 
   private async getAdminVisitorCount(unique: boolean) {
