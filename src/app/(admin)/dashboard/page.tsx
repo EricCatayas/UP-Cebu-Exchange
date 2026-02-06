@@ -47,7 +47,7 @@ async function Dashboard({ searchParams }: { searchParams: { [key: string]: stri
       </Header>
 
       <div className="mt-8 space-y-12">
-        <section className="flex items-start gap-6">
+        <section className="grid grid-cols-[112px_1fr] items-start gap-6">
           <div className="w-28 text-gray-700 font-medium pt-2">Orders</div>
           <div className="flex flex-wrap gap-6">
             <AnalyticsCard header="Total Revenue" value={fmtMoney(totalRevenue)} />
@@ -99,7 +99,7 @@ async function Dashboard({ searchParams }: { searchParams: { [key: string]: stri
           />
         </section>
         {/* Orders */}
-        <section className="flex items-start gap-6">
+        <section className="grid grid-cols-[112px_1fr] items-start gap-6">
           <div className="w-28 text-gray-700 font-medium pt-2">Orders</div>
           <div className="flex flex-wrap gap-6">
             <AnalyticsCard
@@ -143,7 +143,7 @@ async function Dashboard({ searchParams }: { searchParams: { [key: string]: stri
         </section>
 
         {/* Users */}
-        <section className="flex items-start gap-6">
+        <section className="grid grid-cols-[112px_1fr] items-start gap-6">
           <div className="w-28 text-gray-700 font-medium pt-2">Users</div>
           <div className="flex flex-wrap gap-6">
             <AnalyticsCard header="Guests" value={individualCount.guests} />
