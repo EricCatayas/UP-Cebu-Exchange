@@ -1,5 +1,6 @@
 import { User, Role } from '@/models/sequelize';
 import { UserDTO } from '@/models/User';
+import { USER_ROLE } from '@/lib/constants';
 
 class UserService {
   async getUserById(userId: number): Promise<UserDTO | null> {
@@ -20,7 +21,7 @@ class UserService {
   }
 
   async getCustomers(): Promise<UserDTO[]> {
-    return this.getUsersByRole('customer');
+    return this.getUsersByRole(USER_ROLE.CUSTOMER);
   }
 
   async getUsersByRole(role: string): Promise<UserDTO[]> {
@@ -43,7 +44,16 @@ class UserService {
     });
   }
 
-  async getRoleIdByName(roleName: string): Promise<number | null> {
+  async getCustomerRoleId(): Promise<number> {
+    const id = await this.getRoleIdByName(USER_ROLE.CUSTOMER);
+    if (!id) {
+      throw new Error('Customer role not found');
+    }
+    console.log('Customer Role ID:', id);
+    return id;
+  }
+
+  private async getRoleIdByName(roleName: string): Promise<number | null> {
     const role = await Role.findOne({ where: { name: roleName } });
     return role ? role.id : null;
   }

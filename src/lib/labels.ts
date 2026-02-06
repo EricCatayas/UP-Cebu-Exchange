@@ -69,6 +69,32 @@ export const yearsOptions = (startYear: number) => {
   return years;
 };
 
+export function getMostRecentTimeframe(timeframe1?: string, timeframe2?: string) {
+  if (!timeframe1 && !timeframe2) {
+    return recentTimeframe;
+  }
+  if (timeframe1 && !timeframe2) {
+    return timeframes.find((tf) => tf.value === timeframe1) || recentTimeframe;
+  }
+
+  if (!timeframe1 && timeframe2) {
+    return timeframes.find((tf) => tf.value === timeframe2) || recentTimeframe;
+  }
+
+  const timeframeOrder = ['1d', '1wk', '2wk', '1m', '3m', '6m', '1y', ''];
+
+  const index1 = timeframeOrder.indexOf(timeframe1);
+  const index2 = timeframeOrder.indexOf(timeframe2);
+
+  const mostRecentValue = index1 < index2 ? timeframe1 : timeframe2;
+  const mostRecentLabel = timeframes.find((tf) => tf.value === mostRecentValue);
+
+  return {
+    value: mostRecentValue,
+    label: mostRecentLabel?.label || '',
+  };
+}
+
 // Do not use in customer-facing components
 export const paymentMethods = [
   { value: 'cash', label: 'Cash' },

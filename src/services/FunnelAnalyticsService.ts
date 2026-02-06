@@ -1,26 +1,25 @@
 import UserService from './UserService';
-import sequelize from '@/config/database';
 import { Op } from 'sequelize';
 import { Event, RentalOrder, Payment, Session, User } from '@/models/sequelize';
 import { FunnelMetrics, MilestoneMetrics } from '@/types/analytics';
 import { EVENT_NAME, ORDER_STATUS, PAYMENT_STATUS, USER_ROLE } from '@/lib/constants';
 import { getConversionRate, getFunnelMilestones } from '@/lib/analytics';
 import { opTimeframe } from '@/lib/orm';
-import { recentTimeframe } from '@/lib/labels';
 
 class FunnelAnalyticsService {
   private timeframe?: string;
   private customerRoleId?: number;
 
-  constructor(timeframe?: string) {
+  constructor(timeframe?: string, customerRoleId?: number) {
     this.timeframe = timeframe;
-    this.initializeCustomerRoleId();
+    this.customerRoleId = customerRoleId;
   }
 
+  // Ensure customerRoleId is initialized before any method that needs it is called
   private async initializeCustomerRoleId() {
     if (!this.customerRoleId) {
       const userService = new UserService();
-      const customerRoleId = await userService.getRoleIdByName(USER_ROLE.CUSTOMER);
+      const customerRoleId = await userService.getCustomerRoleId();
       this.customerRoleId = customerRoleId ?? undefined;
     }
   }
@@ -93,81 +92,6 @@ class FunnelAnalyticsService {
     };
     return result;
   }
-
-  getVisitorMetrics = async (
-    year: number,
-    month: number,
-    unique: boolean = false
-  ): Promise<{
-    count: {
-      total: number;
-      registered: number;
-      guests: number;
-      customers: number;
-      newCustomers: number;
-      returningCustomers: number;
-      admins: number;
-    };
-    monthly: {
-      labels: string[];
-      data: number[];
-    };
-    daily: {
-      labels: string[];
-      data: number[];
-    };
-  }> => {
-    await this.initializeCustomerRoleId();
-
-    const guests = await Session.count({
-      where: {
-        userId: {
-          [Op.is]: null,
-        },
-        ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
-      },
-    });
-    const customers = await this.getCustomerVisitorCount(unique);
-    const returningCustomers = await this.getReturningCustomersCount();
-
-    const prevTimeFrame = this.timeframe;
-    this.timeframe = recentTimeframe.value;
-    const newCustomers = await this.getCustomerVisitorCount(unique);
-    this.timeframe = prevTimeFrame;
-
-    const admins = await this.getAdminVisitorCount(unique);
-
-    const registered = customers + admins;
-
-    const total = guests + registered;
-
-    // Get visitors per month for selected year and month
-    const monthlySessionData = await this.getMonthlySessions(year);
-
-    const monthlyLabels = [];
-    const monthlyData = [];
-
-    for (let m = 1; m <= 12; m++) {
-      const monthData = monthlySessionData.find((data) => parseInt(data.month) === m);
-      const date = new Date(year, m - 1, 1);
-      monthlyLabels.push(date.toLocaleDateString('en-US', { month: 'short' }));
-      monthlyData.push(monthData ? monthData.count : 0);
-    }
-
-    // Get visitors per day for selected month
-    const dailySessionData = await this.getDailySessions(year, month);
-
-    const dailyLabels = (dailySessionData as any[]).map((row) => {
-      return row.day;
-    });
-    const dailyData = (dailySessionData as any[]).map((row) => parseInt(row.count));
-
-    return {
-      count: { total, registered, guests, customers, admins, newCustomers, returningCustomers },
-      monthly: { labels: monthlyLabels, data: monthlyData },
-      daily: { labels: dailyLabels, data: dailyData },
-    };
-  };
 
   async getUserMilestones(userId: number): Promise<MilestoneMetrics> {
     await this.initializeCustomerRoleId();
@@ -286,161 +210,6 @@ class FunnelAnalyticsService {
 
     const milestones = getFunnelMilestones(userFunnelMetrics);
     return milestones;
-  }
-
-  private async getCustomerVisitorCount(unique: boolean) {
-    const customerSessions = await Session.findAll({
-      where: {
-        userId: {
-          [Op.not]: null,
-        },
-        ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
-      },
-      include: [
-        {
-          model: User,
-          as: 'user',
-          required: true,
-          where: {
-            roleId: this.customerRoleId,
-          },
-        },
-      ],
-    });
-
-    return unique ? new Set(customerSessions.map((session) => session.userId)).size : customerSessions.length;
-  }
-
-  private async getReturningCustomersCount() {
-    const customerSessions = await Session.findAll({
-      where: {
-        userId: {
-          [Op.not]: null,
-        },
-        ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
-      },
-      include: [
-        {
-          model: User,
-          as: 'user',
-          required: true,
-          where: {
-            roleId: this.customerRoleId,
-          },
-        },
-      ],
-    });
-
-    const userVisitCounts: { [userId: number]: number } = {};
-    customerSessions.forEach((session) => {
-      const userId = session.userId as number;
-      userVisitCounts[userId] = (userVisitCounts[userId] || 0) + 1;
-    });
-
-    const returningCustomers = Object.values(userVisitCounts).filter((count) => count > 1).length;
-
-    return returningCustomers;
-  }
-
-  private async getAdminVisitorCount(unique: boolean) {
-    const customerSessions = await Session.findAll({
-      where: {
-        userId: {
-          [Op.not]: null,
-        },
-        ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
-      },
-      include: [
-        {
-          model: User,
-          as: 'user',
-          required: true,
-          where: {
-            roleId: { [Op.ne]: this.customerRoleId },
-          },
-        },
-      ],
-    });
-
-    return unique ? new Set(customerSessions.map((session) => session.userId)).size : customerSessions.length;
-  }
-
-  private async getMonthlySessions(year: number) {
-    const monthlySessions = await Session.findAll({
-      include: [
-        {
-          model: User,
-          as: 'user',
-          attributes: ['roleId'],
-          required: false,
-        },
-      ],
-      where: {
-        createdAt: {
-          [Op.gte]: new Date(year, 0, 1),
-          [Op.lt]: new Date(year + 1, 0, 1),
-        },
-        [Op.or]: [
-          { userId: { [Op.is]: null } },
-          sequelize.where(sequelize.col('user.roleId'), Op.eq, this.customerRoleId),
-        ],
-      },
-      raw: true,
-    });
-    // Group by month in JavaScript
-    const monthlyMap = new Map<string, number>();
-    monthlySessions.forEach((session: any) => {
-      const monthNumber = new Date(session.createdAt).getMonth() + 1;
-      monthlyMap.set(monthNumber.toString(), (monthlyMap.get(monthNumber.toString()) || 0) + 1);
-    });
-
-    const monthlySessionData = Array.from(monthlyMap).map(([month, count]) => ({
-      month,
-      count,
-    }));
-
-    return monthlySessionData;
-  }
-
-  private async getDailySessions(year: number, month: number) {
-    const dailySessions = await Session.findAll({
-      include: [
-        {
-          model: User,
-          as: 'user',
-          attributes: ['roleId'],
-          required: false,
-        },
-      ],
-      where: {
-        createdAt: {
-          [Op.gte]: new Date(year, month - 1, 1),
-          [Op.lt]: new Date(year, month, 1),
-        },
-        [Op.or]: [
-          { userId: { [Op.is]: null } },
-          sequelize.where(sequelize.col('user.roleId'), Op.eq, this.customerRoleId),
-        ],
-      },
-      raw: true,
-    });
-    // fix: start from 1 to end of month
-    const daysInMonth = new Date(year, month, 0).getDate();
-    // Group by day in JavaScript
-    const dailyMap = new Map<string, number>();
-    for (let day = 1; day <= daysInMonth; day++) {
-      const daySessions = dailySessions.filter((session: any) => {
-        return new Date(session.createdAt).getDate() === day;
-      });
-      dailyMap.set(day.toString(), daySessions.length);
-    }
-
-    const dailySessionData = Array.from(dailyMap).map(([day, count]) => ({
-      day,
-      count,
-    }));
-
-    return dailySessionData;
   }
 
   private async getEventCount(eventName: string, options: { unique?: boolean; where?: any } = {}) {

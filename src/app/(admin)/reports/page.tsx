@@ -7,6 +7,7 @@ import FunnelAnalyticsService from '@/services/FunnelAnalyticsService';
 import Pagination from '@/components/Pagination/Pagination';
 import ProductDemandService from '@/services/ProductDemandService';
 import FunnelAnalyticsBar from '@/components/admin/analytics/FunnelAnalyticsBar';
+import UserAnalyticsService from '@/services/UserAnalyticsService';
 import VisitorCountGraph from '@/components/admin/analytics/VisitorCountGraph';
 import { recentTimeframe } from '@/lib/labels';
 
@@ -33,7 +34,8 @@ async function Reports({ searchParams }: { searchParams: { [key: string]: string
 
   console.log('Funnel Metrics in Reports page:', funnelMetrics);
 
-  const { count, monthly, daily } = await funnelAnalysisService.getVisitorMetrics(year, month, uniqueSession);
+  const userAnalyticsService = new UserAnalyticsService(timeframe);
+  const { count, monthly, daily } = await userAnalyticsService.getVisitorMetrics(year, month, uniqueSession);
   return (
     <div className="px-8 py-6">
       {/* Header */}
@@ -64,7 +66,7 @@ async function Reports({ searchParams }: { searchParams: { [key: string]: string
           <div className="flex flex-wrap gap-6">
             <AnalyticsCard header="Guests" value={count.guests} />
             <AnalyticsCard header="Customers" value={count.customers} />
-            <AnalyticsCard header="New Customers" value={count.newCustomers} subheader={recentTimeframe.label} />
+            <AnalyticsCard header="Recently Registered" value={count.newCustomers} subheader={recentTimeframe.label} />
             <AnalyticsCard header="Returning Customers" value={count.returningCustomers} />
           </div>
         </section>
