@@ -60,7 +60,7 @@ const AnalyticsCard: React.FC<{ header: string; value: string | number; subheade
       {subheader && (
         <div className="border-t-2 border-white">
           <div className="px-6 ">
-            <div className="text-xs text-white mt-1">{subheader}</div>
+            <div className="text-xs text- mt-1">{subheader}</div>
           </div>
         </div>
       )}
