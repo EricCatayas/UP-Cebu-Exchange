@@ -43,7 +43,7 @@ async function Reports({ searchParams }: { searchParams: { [key: string]: string
         <ToggleSession />
       </Header>
 
-      <div className="mt-8 space-y-12">
+      <div className="mt-8 space-y-8">
         {/* Funnel Analysis */}
         <section>
           <h2 className="text-2xl font-semibold mb-4">Funnel Analysis</h2>

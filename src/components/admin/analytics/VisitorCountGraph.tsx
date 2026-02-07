@@ -72,7 +72,7 @@ export default function VisitorCountGraph({ year, month, customers, guests, mont
   };
 
   return (
-    <div className="p-6 bg-gray-50">
+    <div>
       {/* Header Info */}
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-gray-800">Analytics Overview</h2>

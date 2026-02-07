@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useNotification } from '@/contexts/NotificationContext';
 import { useModal } from '@/contexts/ModalContext';
@@ -106,6 +106,10 @@ export default function NotificationsTable({
     });
   };
 
+  useEffect(() => {
+    setNotifications(data);
+  }, [data]);
+
   return (
     <div className="flex flex-col">
       <div className="flex justify-between items-center mb-4">
@@ -124,9 +128,8 @@ export default function NotificationsTable({
         <table className="w-full border-collapse bg-white shadow-sm rounded-lg">
           <thead>
             <tr className="bg-gray-50 border-b">
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Message
               </th>
@@ -143,7 +146,9 @@ export default function NotificationsTable({
             {notifications.length > 0 ? (
               notifications.map((notification) => (
                 <tr key={notification.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{notification.id}</td>
+                  <td className="px-6 py-4 text-sm text-gray-900 font-medium max-w-xs truncate">
+                    {notification.title}
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
                       className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getNotificationTypeColor(
@@ -152,9 +157,6 @@ export default function NotificationsTable({
                     >
                       {notification.type.replace(/_/g, ' ')}
                     </span>
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-900 font-medium max-w-xs truncate">
-                    {notification.title}
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-700 max-w-md">
                     <div className="truncate" title={notification.message}>

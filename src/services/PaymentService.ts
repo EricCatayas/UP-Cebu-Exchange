@@ -1,8 +1,15 @@
 import { Payment } from '@/models/sequelize';
-
+import { opTimeframe } from '@/lib/orm';
 class PaymentService {
+  private timeframe?: string;
+
+  constructor(timeframe?: string) {
+    this.timeframe = timeframe;
+  }
+
   async getAllPayments(): Promise<Payment[]> {
     const payments = await Payment.findAll({
+      where: this.timeframe ? { createdAt: opTimeframe(this.timeframe) } : undefined,
       include: ['user', 'transactions'],
       order: [['createdAt', 'DESC']],
     });

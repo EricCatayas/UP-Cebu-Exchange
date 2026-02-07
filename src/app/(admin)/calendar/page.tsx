@@ -30,7 +30,7 @@ async function CalendarPage() {
           Create New Order
         </Link>
       </div>
-      <div className="mt-8 space-y-12">
+      <div className="mt-8 space-y-8">
         <AnnualDateRange dateRanges={dateRanges} />
 
         <div className="mt-10 mb-10 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">

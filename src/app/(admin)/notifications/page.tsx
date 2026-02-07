@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import Header from '@/components/admin/Header';
 import AnalyticsCard from '@/components/AnalyticsCard/AnalyticsCard';
 import ArtworksTable from '@/components/admin/inventory/ArtworksTable';
 import NotificationsTable from '@/components/admin/notifications/NotificationsTable';
@@ -8,10 +9,11 @@ import NotificationService from '@/services/NotificationService';
 async function Notifications({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) {
   const query = await searchParams;
 
+  const timeframe = (query.timeframe as string) || undefined;
   const page = Number(query.page) || 1;
   const limit = 20;
 
-  const notificationService = new NotificationService();
+  const notificationService = new NotificationService(timeframe);
   const {
     items: notifications,
     pageSize,
@@ -26,11 +28,9 @@ async function Notifications({ searchParams }: { searchParams: { [key: string]: 
   return (
     <div className="px-8 py-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Overview</h1>
-      </div>
+      <Header title="Overview" />
 
-      <div className="mt-8 space-y-12">
+      <div className="mt-8 space-y-8">
         {/* Notifications */}
         <section className="flex items-start gap-6">
           <div className="w-28 text-gray-700 font-medium pt-2">Notifications</div>

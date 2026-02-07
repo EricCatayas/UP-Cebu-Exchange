@@ -6,11 +6,15 @@ import PaymentService from '@/services/PaymentService';
 import PaymentAnalyticsService from '@/services/PaymentAnalyticsService';
 import { fmtMoney } from '@/lib/formatter';
 
-async function PaymentsPage() {
-  const paymentService = new PaymentService();
+async function PaymentsPage({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) {
+  const query = await searchParams;
+
+  const timeframe = (query.timeframe as string) || undefined;
+
+  const paymentService = new PaymentService(timeframe);
   const payments = await paymentService.getAllPayments();
 
-  const paymentAnalyticsService = new PaymentAnalyticsService();
+  const paymentAnalyticsService = new PaymentAnalyticsService(timeframe);
   const { totalRevenue, completedPayments, pendingPayments } = await paymentAnalyticsService.getAnalyticsData();
 
   const getPaymentStatusColor = (status: string) => {
@@ -43,7 +47,7 @@ async function PaymentsPage() {
       {/* Header */}
       <Header title="Payments" />
 
-      <div className="mt-8 space-y-12">
+      <div className="mt-8 space-y-8">
         {/* Analytics Cards */}
         <section className="flex items-start gap-6">
           <div className="w-28 text-gray-700 font-medium pt-2">Overview</div>

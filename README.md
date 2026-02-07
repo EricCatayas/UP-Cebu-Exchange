@@ -1,3 +1,20 @@
+TODO
+[ ] Home page recommendation
+[ ] Save Cart Items for Unsigned Users
+[ ] Admin Dashboard use Real Data
+
+BACKLOG
+[ ] 403 Forbidden: model.userId !== currentUser.userId
+[ ] persist checkout state
+[ ] notifications fix unread count
+[ ] replace notFound()
+[ ] filter for inventory
+[ ] Artwork Tags Management
+[ ] Artwork Artists Management
+[ ] filter, paginate and order popular products
+[ ] System Email + Notification
+[ ] Web Responsiveness
+
 ## Setup
 
 After cloning the git repository, run gitbash command:

@@ -42,7 +42,7 @@ async function OrdersPage() {
         </Link>
       </div>
 
-      <div className="mt-8 space-y-12">
+      <div className="mt-8 space-y-8">
         <section className="flex items-start gap-6">
           <div className="w-28 text-gray-700 font-medium pt-2">Ongoing</div>
           <div className="flex flex-wrap gap-6">

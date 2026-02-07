@@ -29,7 +29,7 @@ async function Users() {
         </Link>
       </div>
 
-      <div className="mt-8 space-y-12">
+      <div className="mt-8 space-y-8">
         {/* Inventory */}
         <section className="flex items-start gap-6">
           <div className="w-28 text-gray-700 font-medium pt-2">Customer Accounts</div>

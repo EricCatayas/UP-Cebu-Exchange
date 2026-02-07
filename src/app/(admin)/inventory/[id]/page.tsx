@@ -67,7 +67,7 @@ async function InventoryDetails({ params }: { params: { id: string } }) {
         </span>
       </div>
 
-      <div className="mt-8 space-y-12">
+      <div className="mt-8 space-y-8">
         {/* Popularity Analytics */}
         <section className="flex items-start gap-6">
           <div className="flex flex-wrap gap-6">

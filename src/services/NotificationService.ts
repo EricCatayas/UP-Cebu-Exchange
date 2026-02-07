@@ -1,8 +1,14 @@
 import { Notification } from '@/models/sequelize';
 import { NotificationDTO, PaginatedNotifications } from '@/models/Notification';
-// import { NOTIFICATION_TYPE } from "@/lib/constants";
+import { opTimeframe } from '@/lib/orm';
 
 class NotificationService {
+  private timeframe?: string;
+
+  constructor(timeframe?: string) {
+    this.timeframe = timeframe;
+  }
+
   async create(title: string, type: string, message: string, metadata?: string): Promise<NotificationDTO> {
     const notification = await Notification.create({
       title,
@@ -16,10 +22,12 @@ class NotificationService {
   async getAll({ page = 1, limit = 20 }): Promise<PaginatedNotifications> {
     const offset = (page - 1) * limit;
     const { count, rows } = await Notification.findAndCountAll({
+      where: this.timeframe ? { createdAt: opTimeframe(this.timeframe) } : {},
       order: [['createdAt', 'DESC']],
       limit,
       offset,
     });
+
     const totalPages = Math.ceil(count / limit);
     return {
       page,
