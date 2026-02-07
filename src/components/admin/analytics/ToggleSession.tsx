@@ -27,7 +27,7 @@ export default function ToggleSession() {
           onChange={() => handleToggleSession('all')}
           className="cursor-pointer"
         />
-        <label htmlFor="session-all" className="cursor-pointer relative group">
+        <label htmlFor="session-all" className="cursor-pointer relative group z-10">
           <span className="font-medium">All Sessions</span>
           <span className="absolute left-0 top-full mt-1 hidden group-hover:block text-sm text-gray-600">
             Count each session separately, including multiple sessions from the same user
@@ -45,7 +45,7 @@ export default function ToggleSession() {
           onChange={() => handleToggleSession('unique')}
           className="cursor-pointer"
         />
-        <label htmlFor="session-unique" className="cursor-pointer relative group">
+        <label htmlFor="session-unique" className="cursor-pointer relative group z-10">
           <span className="font-medium">Unique Users</span>
           <span className="absolute left-0 top-full mt-1 hidden group-hover:block text-sm text-gray-600">
             Count each user once, regardless of the number of sessions
