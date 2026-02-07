@@ -32,71 +32,112 @@ export default async function PaymentPage({ params }: { params: { id: string } }
 
   const paymentTransactions = paymentData.transactions ? paymentData.transactions.map((tx) => tx.toJSON()) : [];
 
-  return (
-    <div className="px-8 py-6">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+return (
+  <div className="mt-12 mb-10 max-w-6xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+    {/* Header Section */}
+    <header className="mb-8">
+      <Link
+        href={`/account/rentals/${order.id}`}
+        className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors mb-4"
+      >
+        <span className="mr-2">←</span> Back to Order
+      </Link>
+      
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <Link
-            href={`/account/rentals/${order.id}`}
-            className="text-sm text-blue-600 hover:underline mb-2 inline-block"
-          >
-            ← Back to Order
-          </Link>
-          <h1 className="text-3xl font-bold text-gray-900">Payment #{payment.id}</h1>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
+            Payment Details
+          </h1>
+          <p className="text-sm text-gray-500 mt-1">
+            Reference ID: <span className="font-mono font-medium text-gray-700">{payment.id}</span>
+          </p>
+        </div>
+        <div className="flex items-center">
+          <span className="bg-gray-100 text-gray-600 px-4 py-2 rounded-full text-xs font-bold tracking-widest uppercase">
+            Official Receipt
+          </span>
         </div>
       </div>
+    </header>
 
-      <div className="space-y-6">
-        {/* Payment Summary Card */}
-        <div>
-          <PaymentCard payment={payment} isReadOnly={true} />
+    <div className="space-y-8">
+      {/* 1. Payment Summary Card */}
+      <section className="bg-white rounded-2xl border border-gray-400 shadow-md overflow-hidden">
+        <PaymentCard payment={payment} isReadOnly={true} />
+      </section>
+
+      {/* 2. Transactions Table Card */}
+      <section className="bg-white rounded-2xl border border-gray-400 shadow-md overflow-hidden">
+        <div className="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+          <h2 className="text-lg font-bold text-gray-900">Transaction History</h2>
         </div>
-
-        {/* Transactions Table */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Transaction History</h2>
+        <div className="overflow-x-auto">
           <TransactionTable transactions={paymentTransactions} />
         </div>
-        {/* Rental Items */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Items</h3>
-          <div className="space-y-3">
+      </section>
+
+      {/* 3. Rental Items Card */}
+      <section className="bg-white rounded-2xl border border-gray-400 shadow-md overflow-hidden">
+        <div className="px-6 py-4 border-b border-gray-100 bg-gray-50/50 flex justify-between items-center">
+          <h3 className="text-lg font-bold text-gray-900">Rented Artworks</h3>
+          <span className="text-xs font-medium text-gray-500 bg-white border border-gray-200 px-2 py-1 rounded">
+            {order.items?.length || 0} Items
+          </span>
+        </div>
+        
+        <div className="p-6">
+          <div className="divide-y divide-gray-100">
             {order.items?.length ? (
               order.items.map((item) => (
                 <div
                   key={item.id}
-                  className="flex items-center p-4 bg-gray-50 hover:bg-blue-50 rounded-lg cursor-pointer transition-colors border border-gray-200 hover:border-blue-300"
+                  className="flex items-center py-4 first:pt-0 last:pb-0 group"
                 >
                   {item.artwork?.images && (
-                    <img
-                      src={getImageUrl(item.artwork)}
-                      alt={item.artwork.title}
-                      className="w-20 h-20 object-cover rounded-lg mr-4 flex-shrink-0"
-                    />
+                    <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg border border-gray-100">
+                      <img
+                        src={getImageUrl(item.artwork)}
+                        alt={item.artwork.title}
+                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
+                      />
+                    </div>
                   )}
-                  <div className="flex-1 min-w-0">
-                    <h4 className="text-lg font-semibold text-gray-900 truncate">{item.artwork?.title}</h4>
-                    <p className="text-sm text-gray-600 mt-1">ID: {item.artwork?.id}</p>
-                  </div>
-                  <div className="flex-shrink-0 text-right ml-4">
-                    <p className="text-xl font-bold text-gray-900">₱{item.amount}</p>
-                    <p className="text-xs text-gray-500 mt-1">Rental Amount</p>
+                  <div className="ml-6 flex flex-1 flex-col">
+                    <div className="flex justify-between">
+                      <div>
+                        <h4 className="text-base font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+                          {item.artwork?.title}
+                        </h4>
+                        <p className="mt-1 text-xs font-mono text-gray-400">SKU: {item.artwork?.id}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-lg font-bold text-gray-900">₱{item.amount}</p>
+                        <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-tighter">Amount Due</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))
             ) : (
-              <p className="text-gray-600 text-center py-8">No items in this order</p>
+              <div className="text-center py-12">
+                <p className="text-gray-500 italic">No items listed in this order.</p>
+              </div>
             )}
           </div>
-          {/* View Order Details Link */}
-          <div className="mt-4 text-right">
-            <Link href={`/orders/${order.id}`} className="text-blue-600 hover:underline font-medium">
-              View Order Details →
+
+          {/* Footer Action */}
+          <div className="mt-8 pt-6 border-t border-gray-100">
+            <Link 
+              href={`/orders/${order.id}`} 
+              className="flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl bg-gray-50 text-sm font-bold text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-all border border-transparent hover:border-blue-100"
+            >
+              View Order Details
+              <span className="text-lg">→</span>
             </Link>
           </div>
         </div>
-      </div>
+      </section>
     </div>
-  );
+  </div>
+);
 }

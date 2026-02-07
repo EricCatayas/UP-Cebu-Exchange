@@ -33,7 +33,7 @@ export default async function UserPage({ params }: { params: { id: string } }) {
     return (
       <div className="px-8 py-6">
         <UserMilestones milestones={userMilestones} />
-        <h1 className="text-3xl font-bold text-gray-900">Customer Details</h1>
+        <h1 className="mt-6 text-3xl font-bold text-gray-900">Customer Details</h1>
         <p className="mt-4 text-gray-700">ID: {userData.id}</p>
         <EditUser user={userData} canEditRole={false} />
         <h2 className="text-2xl font-semibold mt-10 mb-4">Rental Orders</h2>
