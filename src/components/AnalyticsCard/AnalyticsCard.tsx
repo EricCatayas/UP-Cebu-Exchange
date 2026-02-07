@@ -48,7 +48,8 @@ const AnalyticsCard: React.FC<{ header: string; value: string | number; subheade
   const randomBackgroundColor = backgroundColors[Math.floor(Math.random() * backgroundColors.length)];
   return (
     <div
-      className={`rounded-lg text-left w-52 h-28 flex flex-col justify-center text-white relative group`}
+      className={`rounded-lg text-left
+         w-52 h-28 flex flex-col justify-center text-white relative group`}
       style={{
         background: `linear-gradient(135deg, ${randomBackgroundColor.from}, ${randomBackgroundColor.to})`,
       }}
