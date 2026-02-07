@@ -2,7 +2,8 @@
 import { redirect } from 'next/navigation';
 import { RentalOrderDTO } from '@/models/RentalOrder';
 import { getImageUrl } from '@/lib/artwork';
-import { getOrderStatus } from '@/lib/order';
+import { getOrderStatus, getReturnDueDate } from '@/lib/order';
+import { fmtDate } from '@/lib/formatter';
 
 const getPaymentStatusColor = (status: string) => {
   switch (status?.toLowerCase()) {
@@ -98,6 +99,10 @@ export default function RentalOrderDetails({
             <div>
               <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold">Delivery Method</p>
               <p className="text-gray-900 font-medium">{order.deliveryMethod}</p>
+            </div>
+            <div>
+              <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold">Return Date</p>
+              <p className="text-gray-900 font-medium">{fmtDate(getReturnDueDate(order))}</p>
             </div>
           </div>
         </div>

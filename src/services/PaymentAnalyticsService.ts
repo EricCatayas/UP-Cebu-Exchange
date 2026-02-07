@@ -1,9 +1,18 @@
 import { Payment, PaymentTransaction, RentalOrder, User } from '@/models/sequelize';
 import { PAYMENT_STATUS } from '@/lib/constants';
+import { opTimeframe } from '@/lib/orm';
 
 class PaymentAnalyticsService {
+  private timeframe?: string;
+
+  constructor(timeframe?: string) {
+    this.timeframe = timeframe;
+  }
+
   async getAnalyticsData() {
-    const allPayments = await Payment.findAll();
+    const allPayments = await Payment.findAll({
+      where: this.timeframe ? { createdAt: opTimeframe(this.timeframe) } : undefined,
+    });
     const totalPayments = allPayments.length;
     const totalRevenueResult = allPayments
       .filter((payment) => payment.status === PAYMENT_STATUS.COMPLETED)

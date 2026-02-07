@@ -1,8 +1,12 @@
 import React from 'react';
 import Link from 'next/link';
+import AnalyticsCard from '@/components/AnalyticsCard/AnalyticsCard';
 import RentalOrderService from '@/services/RentalOrderService';
+import RentalOrderAnalyticsService from '@/services/RentalOrderAnalyticsService';
 import RentalOrderCard from '@/components/cards/RentalOrder/RentalOrder';
 import { getOrderStatus } from '@/lib/order';
+import { fmtMoney, fmtDate } from '@/lib/formatter';
+import { ORDER_STATUS } from '@/lib/constants';
 
 async function OrdersPage() {
   const rentalOrderService = new RentalOrderService();
@@ -25,6 +29,10 @@ async function OrdersPage() {
     createdAt: order.createdAt,
   }));
 
+  const rentalOrderAnalyticsService = new RentalOrderAnalyticsService();
+  const orderAnalytics = await rentalOrderAnalyticsService.getAnalyticsData();
+  const { count: orderCount, currentOrders } = orderAnalytics;
+
   return (
     <div className="px-8 py-6">
       <div className="flex items-center justify-between">
@@ -35,7 +43,51 @@ async function OrdersPage() {
       </div>
 
       <div className="mt-8 space-y-12">
-        <div className="rounded-lg shadow overflow-hidden">
+        <section className="flex items-start gap-6">
+          <div className="w-28 text-gray-700 font-medium pt-2">Ongoing</div>
+          <div className="flex flex-wrap gap-6">
+            {currentOrders.length > 0 &&
+              currentOrders.map((order) => {
+                let header = '';
+                let value = '';
+                let subheader = '';
+                switch (order.status) {
+                  case ORDER_STATUS.PENDING:
+                    header = `New Order #${order.id}`;
+                    value = `${fmtDate(order.dueDate)}`;
+                    subheader = `Payment Due`;
+                    break;
+                  case ORDER_STATUS.RESERVED:
+                    header = `Reserved Order #${order.id}`;
+                    value = `${fmtDate(order.dueDate)}`;
+                    subheader = `Start Date`;
+                    break;
+                  case ORDER_STATUS.TORECEIVE:
+                    header = `To Receive #${order.id}`;
+                    value = `${fmtDate(order.dueDate)}`;
+                    subheader = `Start Date`;
+                    break;
+                  case ORDER_STATUS.ONGOING:
+                    header = `Ongoing Order #${order.id}`;
+                    value = `${fmtDate(order.dueDate)}`;
+                    subheader = `Return Date - ${order.daysRemaining} days left`;
+                    break;
+                  case ORDER_STATUS.TORETURN:
+                    header = `To Return #${order.id}`;
+                    value = `${fmtDate(order.dueDate)}`;
+                    subheader = `Return Date - ${order.daysRemaining} days left`;
+                    break;
+
+                  default:
+                    header = `Finished Order #${order.id}`;
+                    value = `${fmtDate(order.dueDate)}`;
+                    subheader = `Return Date`;
+                }
+                return <AnalyticsCard key={order.id} header={header} value={value} subheader={subheader} />;
+              })}
+          </div>
+        </section>
+        <section className="rounded-lg shadow overflow-hidden">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
@@ -127,18 +179,20 @@ async function OrdersPage() {
               </tbody>
             </table>
           </div>
-        </div>
-      </div>
-      <div className="mt-10 mb-10 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {rentalOrders.map((order) => (
-          <RentalOrderCard key={order.id} order={order}>
-            <>
-              <Link href={`/orders/${order.id}`} className="text-blue-600 hover:underline">
-                View Details
-              </Link>
-            </>
-          </RentalOrderCard>
-        ))}
+        </section>
+        <section>
+          <div className="mt-10 mb-10 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {rentalOrders.map((order) => (
+              <RentalOrderCard key={order.id} order={order}>
+                <>
+                  <Link href={`/orders/${order.id}`} className="text-blue-600 hover:underline">
+                    View Details
+                  </Link>
+                </>
+              </RentalOrderCard>
+            ))}
+          </div>
+        </section>
       </div>
     </div>
   );

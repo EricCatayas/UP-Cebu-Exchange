@@ -12,10 +12,10 @@ import {
   RentalPlan,
 } from '@/models/sequelize';
 import { ARTWORK_STATUS, ORDER_STATUS } from '@/lib/constants';
-import { getOrderStatus } from '@/lib/order';
+import { getDaysRemaining } from '@/lib/order';
 import { opTimeframe } from '@/lib/orm';
 
-interface DueOrder {
+interface FormattedOrder {
   id: number;
   user: {
     id: number;
@@ -23,23 +23,22 @@ interface DueOrder {
     email: string;
   };
   dueDate: Date;
-  remainingDays: number;
-}
-
-interface OrderStatus {
-  count: number;
-  nextDueOrder: DueOrder | null;
+  status: string;
+  daysRemaining: number;
 }
 
 interface OrderAnalytics {
-  pendingOrders: OrderStatus;
-  reservedOrders: OrderStatus;
-  toReceiveOrders: OrderStatus;
-  ongoingOrders: OrderStatus;
-  toReturnOrders: OrderStatus;
-  totalOrders: number;
-  completedOrders: number;
-  cancelledOrders: number;
+  currentOrders: FormattedOrder[];
+  count: {
+    total: number;
+    pending: number;
+    reserved: number;
+    toReceive: number;
+    ongoing: number;
+    toReturn: number;
+    completed: number;
+    cancelled: number;
+  };
 }
 
 export default class RentalOrderAnalyticsService {
@@ -96,41 +95,20 @@ export default class RentalOrderAnalyticsService {
       order: [['createdAt', 'ASC']],
     });
 
-    const orders = ordersData.map((order) => ({
-      ...order.toJSON(),
-      status: order.getStatus(),
-      dueDate: order.getDueDate(),
-    }));
-
-    // Helper function to find next due order (closest due date)
-    const findNextDueOrder = (filteredOrders: any[]): DueOrder | null => {
-      if (filteredOrders.length === 0) return null;
-
-      const now = new Date();
-      const ordersWithDueDates = filteredOrders
-        .map((order) => {
-          const dueDate = order.dueDate ? new Date(order.dueDate) : null;
-          const remainingDays = dueDate ? Math.ceil((dueDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)) : null;
-
-          return {
-            id: order.id,
-            user: {
-              id: order.user.id,
-              fullName: order.user.fullName,
-              email: order.user.email,
-            },
-            dueDate,
-            remainingDays,
-          };
-        })
-        .filter((order) => order.dueDate !== null)
-        .sort((a, b) => {
-          if (!a.dueDate || !b.dueDate) return 0;
-          return a.dueDate.getTime() - b.dueDate.getTime();
-        });
-
-      return ordersWithDueDates.length > 0 ? ordersWithDueDates[0] : null;
-    };
+    const orders = ordersData.map((orderData) => {
+      const order = orderData.toJSON();
+      return {
+        id: order.id,
+        user: {
+          id: order.user.id,
+          fullName: order.user.fullName,
+          email: order.user.email,
+        },
+        status: orderData.getStatus(),
+        dueDate: orderData.getDueDate(),
+        daysRemaining: getDaysRemaining(order),
+      };
+    });
 
     // Filter orders by status
     const pendingOrders = orders.filter((order) => order.status === ORDER_STATUS.PENDING);
@@ -138,33 +116,29 @@ export default class RentalOrderAnalyticsService {
     const toReceiveOrders = orders.filter((order) => order.status === ORDER_STATUS.TORECEIVE);
     const ongoingOrders = orders.filter((order) => order.status === ORDER_STATUS.ONGOING);
     const toReturnOrders = orders.filter((order) => order.status === ORDER_STATUS.TORETURN);
+
+    const currentOrders = [
+      ...pendingOrders,
+      ...reservedOrders,
+      ...toReceiveOrders,
+      ...ongoingOrders,
+      ...toReturnOrders,
+    ];
     const completedOrders = orders.filter((order) => order.status === ORDER_STATUS.COMPLETED);
     const cancelledOrders = orders.filter((order) => order.status === ORDER_STATUS.CANCELLED);
 
     return {
-      totalOrders: orders.length,
-      pendingOrders: {
-        count: pendingOrders.length,
-        nextDueOrder: findNextDueOrder(pendingOrders),
+      currentOrders: currentOrders,
+      count: {
+        total: orders.length,
+        pending: pendingOrders.length,
+        reserved: reservedOrders.length,
+        toReceive: toReceiveOrders.length,
+        ongoing: ongoingOrders.length,
+        toReturn: toReturnOrders.length,
+        completed: completedOrders.length,
+        cancelled: cancelledOrders.length,
       },
-      reservedOrders: {
-        count: reservedOrders.length,
-        nextDueOrder: findNextDueOrder(reservedOrders),
-      },
-      toReceiveOrders: {
-        count: toReceiveOrders.length,
-        nextDueOrder: findNextDueOrder(toReceiveOrders),
-      },
-      ongoingOrders: {
-        count: ongoingOrders.length,
-        nextDueOrder: findNextDueOrder(ongoingOrders),
-      },
-      toReturnOrders: {
-        count: toReturnOrders.length,
-        nextDueOrder: findNextDueOrder(toReturnOrders),
-      },
-      completedOrders: completedOrders.length,
-      cancelledOrders: cancelledOrders.length,
     };
   }
 }

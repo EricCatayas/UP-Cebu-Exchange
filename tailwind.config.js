@@ -7,7 +7,6 @@ module.exports = {
   ],
   theme: {
     extend: {
-      // TODO: change styling configuration
       colors: {
         primary: '#8E1537',
         secondary: '#FF6F00',
