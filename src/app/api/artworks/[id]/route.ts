@@ -2,7 +2,7 @@ import ArtworkRepository from '@/repositories/ArtworkRepository';
 import ImageService from '@/services/ImageService';
 import { NextRequest, NextResponse } from 'next/server';
 import { Op } from 'sequelize';
-import { Artwork, Artist, ArtworkImage, ArtworkTag, RentalPlan, Tag, Style } from '@/models/sequelize';
+import { Artwork, Artist, ArtworkImage, ArtworkTag, RentalPlan, Tag, Style, RentalOrderItem } from '@/models/sequelize';
 import { ArtworkCreateDTO } from '@/models/Artwork';
 import { getCurrentUser } from '@/lib/auth';
 import { isAdmin, canEditContent } from '@/lib/role';
@@ -242,10 +242,16 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
     if (!artworkId || isNaN(Number(artworkId))) {
       return NextResponse.json({ error: 'Valid artworkId is required' }, { status: 400 });
     }
+
     // Find the artwork
     const artwork = await Artwork.findByPk(artworkId, { include: ['images'] });
     if (!artwork) {
       return NextResponse.json({ error: 'Artwork not found' }, { status: 404 });
+    }
+
+    const rentalOrderItem = await RentalOrderItem.findOne({ where: { artworkId: artworkId } });
+    if (rentalOrderItem) {
+      return NextResponse.json({ error: 'Cannot delete artwork that is part of a rental order' }, { status: 400 });
     }
 
     const imageService = new ImageService();

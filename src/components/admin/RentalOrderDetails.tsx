@@ -34,16 +34,19 @@ export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrde
   const handleSelectStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newStatus = e.target.value;
     setOrderStatus(newStatus);
+    setHasEdited(true);
   };
 
   const handleSelectItemsStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newStatus = e.target.value;
     setItemsStatus(newStatus);
+    setHasEdited(true);
   };
 
   const handleSelectPaymentStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newStatus = e.target.value;
     setPaymentStatus(newStatus);
+    setHasEdited(true);
   };
 
   const handleSaveChanges = async () => {
@@ -102,36 +105,6 @@ export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrde
       console.error('Failed to update order status:', error);
     }
   };
-
-  const handleDeleteOrder = async () => {
-    openConfirmation(
-      {
-        title: 'Confirm Delete',
-        message: 'Are you sure you want to delete this order?',
-      },
-      async () => {
-        try {
-          await rentalOrderApi.delete(order.id);
-          alert('Order has been deleted');
-          redirect('/orders');
-        } catch (error) {
-          alert('Failed to delete order:', error.message);
-        }
-      }
-    );
-  };
-
-  useEffect(() => {
-    if (
-      orderStatus !== order.status ||
-      paymentStatus !== order.payment.status ||
-      itemsStatus !== getArtworkStatus(order)
-    ) {
-      setHasEdited(true);
-    } else {
-      setHasEdited(false);
-    }
-  }, [orderStatus, paymentStatus, itemsStatus]);
 
   const userButtonLabel = 'View User';
   const handleUserClick = (user) => {
@@ -225,12 +198,6 @@ export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrde
             Save Changes
           </button>
         )}
-        <button
-          onClick={handleDeleteOrder}
-          className="ml-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
-        >
-          Delete Order
-        </button>
         <Link
           href={`/payments/${order.paymentId}`}
           className="ml-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
