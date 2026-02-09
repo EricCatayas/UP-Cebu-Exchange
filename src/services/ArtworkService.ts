@@ -20,6 +20,7 @@ import {
   ArtworkTag,
 } from '@/models/sequelize';
 import { ArtworkDTO, PaginatedArtworks, ArtworkQueryParams } from '@/models/Artwork';
+import { getCurrentUser } from '@/lib/auth';
 import { similarityScore } from '@/lib/recommendations';
 import { ARTWORK_STATUS, PAGE_SIZE, SIMILAR_ARTWORK_SCORE_THRESHOLD } from '@/lib/constants';
 
@@ -255,18 +256,30 @@ class ArtworkService {
     return sortedArtworks.map((entry) => entry.artwork);
   }
 
-  // todo
-  async getPopularArtworks() {
-    const artworks = await ArtworkRepository.findAll({ limit: 20 });
-    const shuffled = artworks.sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, 3);
+  async getPopularArtworks(options?: { limit: number }) {
+    const productDemandService = new ProductDemandService();
+    const { artworks } = await productDemandService.getArtworksPopularityScores({
+      page: 1,
+      limit: options?.limit ?? undefined,
+    });
+    return artworks;
   }
 
   // todo
-  async getRecommendedArtworks() {
-    const artworks = await ArtworkRepository.findAll({ limit: 20 });
-    const shuffled = artworks.sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, 3);
+  async getRecommendedArtworks(userId: number, options?: { limit: number }): Promise<ArtworkDTO[]> {
+    const productDemandService = new ProductDemandService();
+    // todo: these are user's current preferences. But we can use these to find similar artworks
+    const result = await productDemandService.getUserDemandArtworks(userId, options);
+
+    return result.artworks;
+  }
+
+  async getRandomArtworks(limit?: number): Promise<ArtworkDTO[]> {
+    const artworks = await ArtworkRepository.findAll({
+      order: [sequelize.random()],
+      ...(limit ? { limit } : {}),
+    });
+    return artworks;
   }
 
   async getArtworksCount(): Promise<{ total: number; available: number; rented: number }> {

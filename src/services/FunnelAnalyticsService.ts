@@ -1,4 +1,5 @@
 import UserService from './UserService';
+import SessionService from './SessionService';
 import { Op } from 'sequelize';
 import { Event, RentalOrder, Payment, Session, User } from '@/models/sequelize';
 import { FunnelMetrics, MilestoneMetrics } from '@/types/analytics';
@@ -95,7 +96,8 @@ class FunnelAnalyticsService {
 
   async getUserMilestones(userId: number): Promise<MilestoneMetrics> {
     await this.initializeCustomerRoleId();
-    const sessionIds = await this.getUserSessionIds(userId);
+    const sessionService = new SessionService(this.timeframe);
+    const sessionIds = await sessionService.getUserSessionIds(userId);
 
     const { count: visitCount, startDate: visitStartDate } = await this.getVisitCount({
       where: {
@@ -323,18 +325,6 @@ class FunnelAnalyticsService {
     const count = unique ? new Set(completeOrders.map((order: any) => order.userId)).size : completeOrders.length;
 
     return { count, startDate: latestDate ? latestDate : null };
-  }
-
-  private async getUserSessionIds(userId: number) {
-    const sessions = await Session.findAll({
-      where: {
-        userId,
-        ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
-      },
-      attributes: ['id'],
-      raw: true,
-    });
-    return sessions.map((session) => session.id);
   }
 }
 

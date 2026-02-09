@@ -1,9 +1,12 @@
+import SessionService from './SessionService';
 import { Artwork, Event, WishlistItem, CartItem, RentalOrder, RentalOrderItem } from '@/models/sequelize';
 import { EVENT_CATEGORY, EVENT_NAME, ORDER_STATUS } from '@/lib/constants';
 import { Op } from 'sequelize';
 import { PopularityScore } from '@/types/analytics';
 import { opTimeframe } from '@/lib/orm';
 import { calculatePopularityScore } from '@/lib/analytics';
+import { ArtworkWithScore } from '@/models/Artwork';
+import ArtworkRepository from '@/repositories/ArtworkRepository';
 
 class ProductDemandService {
   private timeframe?: string;
@@ -98,13 +101,15 @@ class ProductDemandService {
     };
   }
 
-  async getArtworksViewCounts(): Promise<{ [artworkId: number]: number }> {
+  async getArtworksViewCounts(options: any = {}): Promise<{ [artworkId: number]: number }> {
+    const { where = {} } = options;
     const events = await Event.findAll({
       where: {
         name: EVENT_NAME.VIEW_ARTWORK,
         ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
+        ...where,
       },
-      attributes: ['entityId'],
+      attributes: ['entityId', 'sessionId'],
     });
     const viewCounts: { [artworkId: number]: number } = {};
     events.forEach((event) => {
@@ -113,11 +118,13 @@ class ProductDemandService {
     });
     return viewCounts;
   }
-  async getArtworksCartCounts(): Promise<{ [artworkId: number]: number }> {
+  async getArtworksCartCounts(options: any = {}): Promise<{ [artworkId: number]: number }> {
+    const { where = {} } = options;
     const cartItems = await Event.findAll({
       where: {
         name: EVENT_NAME.ADD_TO_CART,
         ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
+        ...where,
       },
       attributes: ['entityId'],
     });
@@ -128,11 +135,13 @@ class ProductDemandService {
     });
     return cartCounts;
   }
-  async getArtworksWishlistCounts(): Promise<{ [artworkId: number]: number }> {
+  async getArtworksWishlistCounts(options: any = {}): Promise<{ [artworkId: number]: number }> {
+    const { where = {} } = options;
     const wishlistItems = await Event.findAll({
       where: {
         name: EVENT_NAME.ADD_TO_WISHLIST,
         ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
+        ...where,
       },
       attributes: ['entityId'],
     });
@@ -143,7 +152,8 @@ class ProductDemandService {
     });
     return wishlistCounts;
   }
-  async getArtworksOrderCounts(): Promise<{ [artworkId: number]: number }> {
+  async getArtworksOrderCounts(options: any = {}): Promise<{ [artworkId: number]: number }> {
+    const { where = {} } = options;
     const orderItems = await RentalOrderItem.findAll({
       include: [
         {
@@ -151,6 +161,7 @@ class ProductDemandService {
           as: 'rentalOrder',
           where: {
             ...(this.timeframe && { createdAt: opTimeframe(this.timeframe) }),
+            ...where,
           },
           attributes: [],
         },
@@ -164,7 +175,8 @@ class ProductDemandService {
     });
     return orderCounts;
   }
-  async getArtworksRentedCounts(): Promise<{ [artworkId: number]: number }> {
+  async getArtworksRentedCounts(options: any = {}): Promise<{ [artworkId: number]: number }> {
+    const { where = {} } = options;
     const rentedItems = await RentalOrderItem.findAll({
       include: [
         {
@@ -173,6 +185,7 @@ class ProductDemandService {
           where: {
             status: ORDER_STATUS.COMPLETED,
             ...(this.timeframe && { updatedAt: opTimeframe(this.timeframe) }),
+            ...where,
           },
           attributes: [],
         },
@@ -187,7 +200,15 @@ class ProductDemandService {
     return rentedCounts;
   }
 
-  async getArtworksPopularityScores({ page, limit, sort }: { page?: number; limit?: number; sort?: string }) {
+  async getArtworksPopularityScores({
+    page,
+    limit,
+    sort = 'popular',
+  }: {
+    page?: number;
+    limit?: number;
+    sort?: string;
+  }) {
     const [viewCounts, cartCounts, wishlistCounts, orderCounts, rentedCounts] = await Promise.all([
       this.getArtworksViewCounts(),
       this.getArtworksCartCounts(),
@@ -196,10 +217,92 @@ class ProductDemandService {
       this.getArtworksRentedCounts(),
     ]);
 
-    // Get all artworks
-    const artworks = await Artwork.findAll({
-      include: ['artist', 'images'],
-    });
+    const { count, artworksWithScores, popularityScores } = await this.getPopularityScores(
+      viewCounts,
+      cartCounts,
+      wishlistCounts,
+      orderCounts,
+      rentedCounts
+    );
+
+    const sortedArtworks =
+      sort && sort === 'popular' ? artworksWithScores.sort((a, b) => b.score - a.score) : artworksWithScores;
+
+    const previousPage = page && limit && page > 1 ? page - 1 : undefined;
+    const paginatedArtworks = page && limit ? sortedArtworks.slice((page - 1) * limit, page * limit) : sortedArtworks;
+    const pageSize = paginatedArtworks.length;
+    const totalPages = limit ? Math.ceil(count.totalArtworks / limit) : 1;
+    const nextPage = page && limit && page < totalPages ? page + 1 : undefined;
+
+    return {
+      page,
+      pageSize,
+      nextPage,
+      previousPage,
+      totalPages,
+      artworks: paginatedArtworks,
+      popularityScores: popularityScores,
+    };
+  }
+
+  async getUserDemandArtworks(userId: number, options?: { limit: number }) {
+    const sessionService = new SessionService();
+    const sessionIds = await sessionService.getUserSessionIds(userId);
+
+    const [viewCounts, cartCounts, wishlistCounts, orderCounts, rentedCounts] = await Promise.all([
+      this.getArtworksViewCounts({
+        where: {
+          sessionId: { [Op.in]: sessionIds },
+        },
+      }),
+      this.getArtworksCartCounts({
+        where: {
+          sessionId: { [Op.in]: sessionIds },
+        },
+      }),
+      this.getArtworksWishlistCounts({
+        where: {
+          sessionId: { [Op.in]: sessionIds },
+        },
+      }),
+      this.getArtworksOrderCounts({
+        where: {
+          userId: userId,
+        },
+      }),
+      this.getArtworksRentedCounts({
+        where: {
+          userId: userId,
+        },
+      }),
+    ]);
+
+    const { count, artworksWithScores, popularityScores } = await this.getPopularityScores(
+      viewCounts,
+      cartCounts,
+      wishlistCounts,
+      orderCounts,
+      rentedCounts
+    );
+
+    const limit = options?.limit || count.scoredArtworks;
+    const artworks = artworksWithScores.sort((a, b) => b.score - a.score).slice(0, limit);
+    console.log('User Demand Artworks:', artworks, popularityScores);
+    return { artworks, popularityScores };
+  }
+
+  private async getPopularityScores(
+    viewCounts: { [artworkId: number]: number },
+    cartCounts: { [artworkId: number]: number },
+    wishlistCounts: { [artworkId: number]: number },
+    orderCounts: { [artworkId: number]: number },
+    rentedCounts: { [artworkId: number]: number }
+  ): Promise<{
+    count: { totalArtworks: number; scoredArtworks: number };
+    artworksWithScores: ArtworkWithScore[];
+    popularityScores: { [artworkId: number]: PopularityScore };
+  }> {
+    const artworks = await ArtworkRepository.findAll();
 
     const popularityScores: { [artworkId: number]: PopularityScore } = {};
 
@@ -218,30 +321,17 @@ class ProductDemandService {
       const artworkId = artwork.id;
       const score = calculatePopularityScore(popularityScores[artworkId], this.weights);
       return {
-        ...artwork.toJSON(),
-        popularityScore: score,
+        ...artwork,
+        score,
       };
     });
-
-    const orderedArtworks =
-      sort && sort === 'popular'
-        ? artworksWithScores.sort((a, b) => b.popularityScore - a.popularityScore)
-        : artworksWithScores;
-
-    const previousPage = page && limit && page > 1 ? page - 1 : undefined;
-    const paginatedArtworks = page && limit ? orderedArtworks.slice((page - 1) * limit, page * limit) : orderedArtworks;
-    const pageSize = paginatedArtworks.length;
-    const totalPages = limit ? Math.ceil(artworks.length / limit) : 1;
-    const nextPage = page && limit && page < totalPages ? page + 1 : undefined;
-
     return {
-      page,
-      pageSize,
-      nextPage,
-      previousPage,
-      totalPages,
-      artworks: paginatedArtworks,
-      popularityScores: popularityScores,
+      artworksWithScores,
+      popularityScores,
+      count: {
+        totalArtworks: artworks.length,
+        scoredArtworks: artworksWithScores.length,
+      },
     };
   }
 }

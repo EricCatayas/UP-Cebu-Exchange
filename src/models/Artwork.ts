@@ -28,6 +28,10 @@ export interface ArtworkDTO extends ArtworkAttributes {
   tags?: TagDTO[];
 }
 
+export interface ArtworkWithScore extends ArtworkDTO {
+  score: number; // similarity score or popularity score
+}
+
 export interface ArtworkCreateDTO {
   title?: string;
   artistId?: number;

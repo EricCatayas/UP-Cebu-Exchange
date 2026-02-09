@@ -6,13 +6,19 @@ import ArtworksDisplay from '@/components/ArtworksDisplay/ArtworksDisplay';
 import HomeSlider from '@/components/Slider/HomeSlider';
 import ArtworkService from '@/services/ArtworkService';
 import StylesService from '@/services/StylesService';
+import { getCurrentUser } from '@/lib/auth';
 import Link from 'next/link';
 
 // todo: log browse event when user clicks paintings?
 export default async function Page() {
   const artworkService = new ArtworkService();
-  const popular_artworks = await artworkService.getPopularArtworks();
-  const recommended_artworks = await artworkService.getRecommendedArtworks();
+  const randomArtworks = await artworkService.getRandomArtworks(3);
+  const user = await getCurrentUser();
+  const userRecommendedArtworks = user ? await artworkService.getRecommendedArtworks(user.userId, { limit: 3 }) : [];
+  const recommendedArtworks =
+    userRecommendedArtworks.length > 0
+      ? userRecommendedArtworks
+      : await artworkService.getPopularArtworks({ limit: 3 });
 
   const categories = [
     {
@@ -79,13 +85,12 @@ export default async function Page() {
       </HeroBackground>
       <div className="container px-8 py-6 max-w-7xl mx-auto">
         <section className="pb-12">
-          <h2 className="text-3xl font-bold mb-6 slide-right-delay-600">A Few of our Favorites</h2>
-          <ArtworksDisplay artworks={popular_artworks} />
-          {/* <ArtworksRandomized artworks={favorite_artworks} /> */}
+          <h2 className="text-3xl font-bold mb-6 slide-right-delay-600">Highlights from the Gallery</h2>
+          <ArtworksDisplay artworks={randomArtworks} />
         </section>
         <section className="py-12">
           <h2 className="text-3xl font-bold mb-6 slide-right-delay-600">Curated for You</h2>
-          <ArtworkCarousel artworks={recommended_artworks} />
+          <ArtworkCarousel artworks={recommendedArtworks} />
         </section>
         <section className="py-12">
           <h2 className="text-3xl font-bold mb-6 slide-right-delay-600">Explore by Category</h2>
