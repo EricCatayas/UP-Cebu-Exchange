@@ -1,5 +1,5 @@
 import { EVENT_NAME } from '@/lib/constants';
-import { ORDER_STATUS, PAYMENT_STATUS } from '@/lib/constants';
+import { NOTIFICATION_TYPE, ORDER_STATUS, PAYMENT_STATUS } from '@/lib/constants';
 
 export const timeframes = [
   { value: '', label: 'All time' },
@@ -32,6 +32,35 @@ export const orderStatus = {
   [ORDER_STATUS.COMPLETED]: { label: 'Completed', value: ORDER_STATUS.COMPLETED, color: 'bg-green-100 text-green-800' },
   [ORDER_STATUS.CANCELLED]: { label: 'Cancelled', value: ORDER_STATUS.CANCELLED, color: 'bg-gray-100 text-gray-800' },
   [ORDER_STATUS.EXTENDED]: { label: 'Extended', value: ORDER_STATUS.EXTENDED, color: 'bg-blue-200 text-blue-800' },
+};
+
+export const notificationTypeUI = (type: NOTIFICATION_TYPE | string) => {
+  switch (type) {
+    case NOTIFICATION_TYPE.SYSTEM_ALERT:
+      return {
+        label: 'System Alert',
+        color: 'bg-blue-100 text-blue-800',
+        icon: '⚠️',
+      };
+    case NOTIFICATION_TYPE.NEW_ORDER:
+      return {
+        label: 'New Order',
+        color: 'bg-green-100 text-green-800',
+        icon: '🛒',
+      };
+    case NOTIFICATION_TYPE.ORDER_UPDATE:
+      return {
+        label: 'Order Update',
+        color: 'bg-yellow-100 text-yellow-800',
+        icon: '📦',
+      };
+    default:
+      return {
+        label: type,
+        color: 'bg-gray-100 text-gray-800',
+        icon: '🔴',
+      };
+  }
 };
 
 export const funnelStages = [

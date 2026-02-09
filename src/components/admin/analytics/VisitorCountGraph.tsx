@@ -73,14 +73,8 @@ export default function VisitorCountGraph({ year, month, customers, guests, mont
 
   return (
     <div>
-      {/* Header Info */}
-      <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-800">Analytics Overview</h2>
-        <p className="text-sm text-gray-500">Track your visitor metrics and trends.</p>
-      </div>
-
-      {/* Top Row: Two Column Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+      {/* Two Column Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Pie Chart Card - Takes 1 column */}
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center justify-center">
           <h3 className="text-sm font-semibold text-gray-600 mb-4 self-start">Visitor Type</h3>
@@ -105,7 +99,7 @@ export default function VisitorCountGraph({ year, month, customers, guests, mont
           </div>
         </div>
 
-        {/* Monthly Line Chart Card - Takes 2 columns */}
+        {/* Line Chart Card - Takes 2 columns */}
         <div className="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-sm font-semibold text-gray-600">

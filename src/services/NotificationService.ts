@@ -38,6 +38,15 @@ class NotificationService {
       items: rows.map((notification) => notification.toJSON()),
     };
   }
+
+  async getAllUnread(): Promise<NotificationDTO[]> {
+    const notifications = await Notification.findAll({
+      where: { isRead: false },
+      order: [['createdAt', 'DESC']],
+    });
+    return notifications.map((notification) => notification.toJSON());
+  }
+
   async markAsRead(notificationId: number, userId: number): Promise<void> {
     await Notification.update(
       {

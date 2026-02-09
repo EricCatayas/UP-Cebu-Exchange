@@ -52,6 +52,7 @@ async function Reports({ searchParams }: { searchParams: { [key: string]: string
 
         <section>
           <h2 className="text-2xl font-semibold mb-4">Visitors</h2>
+          <p className="text-sm text-gray-500">Track your visitor metrics and trends.</p>
           <VisitorCountGraph
             year={year}
             month={month}
