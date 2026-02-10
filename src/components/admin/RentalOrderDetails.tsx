@@ -134,84 +134,103 @@ export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrde
   };
 
   return (
-    <div className="container px-8 py-6 max-w-7xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Rental Order Details</h1>
-      <RentalOrderDetails
-        order={order}
-        onItemClicked={navigateToInventoryDetails}
-        userButton={userButton}
-        paymentButton={paymentButton}
-      />
-      <div className="mt-6">
+    <div className="container px-4 py-8 max-w-7xl mx-auto space-y-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-6">
         <div>
-          <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-2">
-            Update Status
-          </label>
-          {prevOrderStatus === ORDER_STATUS.CANCELLED ? (
-            <p className="text-red-600 mb-2">This order has been cancelled. Status changes are not allowed.</p>
-          ) : (
-            <select
-              id="status"
-              value={orderStatus}
-              onChange={handleSelectStatus}
-              className="mt-1 block w-64 pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-            >
-              {ORDER_STATUSES.map((statusOption) => (
-                <option key={statusOption} value={statusOption}>
-                  {statusOption}
-                </option>
-              ))}
-            </select>
-          )}
+          <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">Rental Order Details</h1>
         </div>
-        <div>
-          <label htmlFor="itemsStatus" className="block text-sm font-medium text-gray-700 mb-2">
-            Update Items Status
-          </label>
-          <select
-            id="itemsStatus"
-            value={itemsStatus}
-            onChange={handleSelectItemsStatus}
-            className="mt-4 block w-64 pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-          >
-            {ARTWORK_STATUSES.map((statusOption) => (
-              <option key={statusOption} value={statusOption}>
-                {statusOption}
-              </option>
-            ))}
-          </select>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+        <div className="lg:col-span-2 space-y-6">
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+            <RentalOrderDetails
+              order={order}
+              onItemClicked={navigateToInventoryDetails}
+              userButton={userButton}
+              paymentButton={paymentButton}
+            />
+          </div>
         </div>
-        <div>
-          <label htmlFor="paymentStatus" className="block text-sm font-medium text-gray-700 mb-2">
-            Update Payment Status
-          </label>
-          <select
-            id="paymentStatus"
-            value={paymentStatus}
-            onChange={handleSelectPaymentStatus}
-            className="mt-4 block w-64 pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-          >
-            {PAYMENT_STATUSES.map((statusOption) => (
-              <option key={statusOption} value={statusOption}>
-                {statusOption}
-              </option>
-            ))}
-          </select>
+
+        <div className="space-y-6">
+          <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 shadow-sm">
+            <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-6">Admin Controls</h2>
+
+            <div className="space-y-6">
+              <div>
+                <label htmlFor="status" className="block text-xs font-semibold text-gray-500 mb-2 uppercase">
+                  Order Status
+                </label>
+                {prevOrderStatus === ORDER_STATUS.CANCELLED ? (
+                  <div className="p-3 bg-red-50 border border-gray-300 rounded-lg">
+                    <p className="text-xs text-red-600 font-medium">Order is cancelled. Status locked.</p>
+                  </div>
+                ) : (
+                  <select
+                    id="status"
+                    value={orderStatus}
+                    onChange={handleSelectStatus}
+                    className="block w-full pl-3 pr-10 py-2.5 text-sm border border-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-lg bg-white transition-shadow"
+                  >
+                    {ORDER_STATUSES.map((statusOption) => (
+                      <option key={statusOption} value={statusOption}>
+                        {statusOption}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              </div>
+
+              <div>
+                <label htmlFor="itemsStatus" className="block text-xs font-semibold text-gray-500 mb-2 uppercase">
+                  Items Status
+                </label>
+                <select
+                  id="itemsStatus"
+                  value={itemsStatus}
+                  onChange={handleSelectItemsStatus}
+                  className="block w-full pl-3 pr-10 py-2.5 text-sm border border-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-lg bg-white transition-shadow"
+                >
+                  {ARTWORK_STATUSES.map((statusOption) => (
+                    <option key={statusOption} value={statusOption}>
+                      {statusOption}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label htmlFor="paymentStatus" className="block text-xs font-semibold text-gray-500 mb-2 uppercase">
+                  Payment Status
+                </label>
+                <select
+                  id="paymentStatus"
+                  value={paymentStatus}
+                  onChange={handleSelectPaymentStatus}
+                  className="block w-full pl-3 pr-10 py-2.5 text-sm border border-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-lg bg-white transition-shadow"
+                >
+                  {PAYMENT_STATUSES.map((statusOption) => (
+                    <option key={statusOption} value={statusOption}>
+                      {statusOption}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {hasEdited && (
+              <div className="mt-8 pt-6 border-t border-gray-200">
+                <button
+                  onClick={handleSaveChanges}
+                  className="w-full px-4 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-all shadow-md active:scale-95 flex justify-center items-center gap-2"
+                >
+                  Save Changes
+                </button>
+              </div>
+            )}
+          </div>
         </div>
-        {hasEdited && (
-          <button
-            onClick={handleSaveChanges}
-            className="ml-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-          >
-            Save Changes
-          </button>
-        )}
-        <Link
-          href={`/admin/payments/${order.paymentId}`}
-          className="ml-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
-        >
-          {isOrderPaid(order) ? 'View Receipt' : 'Manage Payment'}
-        </Link>
       </div>
     </div>
   );
