@@ -12,7 +12,6 @@ interface UserMilestonesProps {
 function UserMilestones({ milestones }: UserMilestonesProps) {
   return (
     <div className="bg-white p-6">
-      <h2 className="text-xl font-semibold mb-6">User Journey Milestones</h2>
       <div className="flex items-start justify-between gap-2 overflow-x-auto pb-4">
         {funnelStages.map((stage, index) => {
           const hasReached = milestones[stage.value]?.hasReached || false;
