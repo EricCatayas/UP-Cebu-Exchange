@@ -3,7 +3,7 @@ import ArtworkService from '@/services/ArtworkService';
 
 export default async function SimilarArtworks({ artworkId }: { artworkId: number }) {
   const artworkService = new ArtworkService();
-  const similarArtworks = await artworkService.getSimilarArtworks(artworkId);
+  const similarArtworks = await artworkService.getSimilarArtworks(artworkId, { limit: 9 });
 
   return (
     <>
