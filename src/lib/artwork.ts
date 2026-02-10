@@ -17,7 +17,8 @@ export const getImageUrls = (artwork: ArtworkDTO): string[] => {
   return images.map((img) => img.imageUrl);
 };
 
-export const getDimension = (artwork: ArtworkDTO) => {
+export const getDimension = (artwork: ArtworkDTO): string => {
+  if (!artwork.heightCm || !artwork.widthCm) return '';
   return `${artwork.heightCm}cm x ${artwork.widthCm}cm`;
 };
 

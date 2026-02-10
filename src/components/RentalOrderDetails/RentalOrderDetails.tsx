@@ -1,7 +1,7 @@
 'use client';
 import { redirect } from 'next/navigation';
 import { RentalOrderDTO } from '@/models/RentalOrder';
-import { getImageUrl } from '@/lib/artwork';
+import { getDimension, getImageUrl } from '@/lib/artwork';
 import { getOrderStatus, getReturnDueDate } from '@/lib/order';
 import { fmtDate } from '@/lib/formatter';
 
@@ -177,7 +177,7 @@ export default function RentalOrderDetails({
                 )}
                 <div className="flex-1 min-w-0">
                   <h4 className="text-lg font-semibold text-gray-900 truncate">{item.artwork?.title}</h4>
-                  <p className="text-sm text-gray-600 mt-1">ID: {item.artwork?.id}</p>
+                  <p className="text-sm text-gray-600 mt-1">{getDimension(item.artwork)}</p>
                 </div>
                 <div className="flex-shrink-0 text-right ml-4">
                   <p className="text-xl font-bold text-gray-900">₱{item.amount}</p>
