@@ -1,15 +1,23 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { NotificationDTO } from '@/models/Notification';
 import { useNotification } from '@/contexts/NotificationContext';
 import { notificationApi } from '@/lib/api/notification';
 import { notificationTypeUI } from '@/lib/labels';
 import { fmtDate } from '@/lib/formatter';
 
-export default function NotificationsList({ notifications: data }: { notifications: NotificationDTO[] }) {
+export default function NotificationsList({
+  notifications: data,
+  newOnly,
+}: {
+  notifications: NotificationDTO[];
+  newOnly?: boolean;
+}) {
   const [notifications, setNotifications] = useState(data);
-  const total = notifications.length;
-  const { setHasNewNotifications } = useNotification();
+  const newNotificationCount = useMemo(() => notifications.filter((n) => !n.isRead).length, [notifications]);
+  const { hasNewNotifications, setHasNewNotifications } = useNotification();
+
+  const canDisplay = newOnly ? hasNewNotifications : true;
 
   const handleReadAllNotifications = async () => {
     try {
@@ -29,7 +37,9 @@ export default function NotificationsList({ notifications: data }: { notificatio
     <div className="flex flex-col gap-3">
       <div className="bg-gray-50 border border-gray-200 rounded-md">
         <div className="flex items-center justify-between border-b border-gray-200 px-4 py-2">
-          <h3 className="text-sm font-semibold text-gray-900">{total} New Notifications</h3>
+          <h3 className="text-sm font-semibold text-gray-900">
+            {newNotificationCount > 0 && `${newNotificationCount} New `}Notifications
+          </h3>
           <button
             onClick={handleReadAllNotifications}
             className="text-xs bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700 tGransition"
@@ -39,7 +49,7 @@ export default function NotificationsList({ notifications: data }: { notificatio
         </div>
 
         <div className="max-h-[150px] overflow-y-auto rounded-md bg-white">
-          {notifications.length > 0 ? (
+          {notifications.length > 0 && canDisplay ? (
             <ul className="divide-y divide-gray-100">
               {notifications.map((notification) => (
                 <li key={notification.id} className="flex gap-3 px-3 py-2 text-sm text-gray-700">

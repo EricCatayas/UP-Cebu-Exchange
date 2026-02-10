@@ -41,31 +41,7 @@ async function Dashboard({ searchParams }: { searchParams: { [key: string]: stri
   const { count: orderCount, currentOrders } = orderAnalytics;
 
   const notificationService = new NotificationService();
-  // const unreadNotifications = await notificationService.getAllUnread();
-
-  const unreadNotifications = [
-    {
-      id: 1,
-      title: 'New Order Received',
-      type: 'New Order',
-      message: 'You have received a new order from John Doe.',
-      createdAt: new Date(),
-    },
-    {
-      id: 2,
-      title: 'Payment Completed',
-      type: 'Order Update',
-      message: 'Payment for Order #123 has been completed.',
-      createdAt: new Date(),
-    },
-    {
-      id: 3,
-      title: 'New User Registered',
-      type: 'System Alert',
-      message: 'A new user, Jane Smith, has registered on your platform.',
-      createdAt: new Date(),
-    },
-  ];
+  const unreadNotifications = await notificationService.getAllUnread();
 
   return (
     <div className="px-8 py-6">
@@ -122,7 +98,7 @@ async function Dashboard({ searchParams }: { searchParams: { [key: string]: stri
               </div>
             </div>
             <div className="">
-              <NotificationsList notifications={unreadNotifications} />
+              <NotificationsList notifications={unreadNotifications} newOnly={true} />
             </div>
           </div>
         </section>
