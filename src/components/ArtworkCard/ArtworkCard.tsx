@@ -15,14 +15,13 @@ export default function ArtworkCard({ artwork, displayInfo = true }: { artwork: 
   if (!artwork) return null;
 
   const { user } = useAuth();
+  const router = useRouter();
 
   const primaryImageUrl = getImageUrl(artwork);
   const lowestPlan = artwork.rentalPlans ? [...artwork.rentalPlans].sort((a, b) => a.price - b.price)[0] : null;
 
   const [inCart, setInCart] = useState(artwork.isInCart);
   const [inWishlist, setInWishlist] = useState(artwork.isInWishlist);
-
-  const router = useRouter();
 
   const NavigateToArtwork = () => router.push(`/artworks/${artwork.id}`);
   const NavigateToArtist = () => router.push(`/artists/${artwork.artist?.id}`);

@@ -1,7 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import ArtworkPopularityMetricsCarousel from '@/components/admin/analytics/ArtworkPopularityMetricsCarousel';
-import AnalyticsCard from '@/components/AnalyticsCard/AnalyticsCard';
+import ArtworkPopularityCarousel from '@/components/ArtworkCarousel/ArtworkPopularityCarousel';
 import EditUser from '@/components/form/User/EditUser';
 import RentalOrderCard from '@/components/cards/RentalOrder/RentalOrder';
 import UserMilestones from '@/components/Milestones/Milestones';
@@ -36,11 +35,11 @@ export default async function UserPage({ params }: { params: { id: string } }) {
     console.log('Milestones for User:', userMilestones);
 
     return (
-      <div className="px-8 py-6">
+      <div className="container px-8 py-6 max-w-7xl mx-auto">
         <h2 className="text-3xl font-bold mb-6 slide-right-delay-600">User Milestones</h2>
         <UserMilestones milestones={userMilestones} />
         <h2 className="text-3xl font-bold mb-6 slide-right-delay-600">Interests</h2>
-        <ArtworkPopularityMetricsCarousel artworks={artworksWithScore} popularityScores={popularityScores} />
+        <ArtworkPopularityCarousel artworks={artworksWithScore} popularityScores={popularityScores} />
         <h1 className="mt-6 text-3xl font-bold text-gray-900">Customer Details</h1>
         <EditUser user={userData} canEditRole={false} />
         <h2 className="text-2xl font-semibold mt-10 mb-4">Rental Orders</h2>
