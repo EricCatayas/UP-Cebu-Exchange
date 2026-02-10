@@ -38,6 +38,43 @@ export async function orderPlacedNotification(orderId: number, user: { id: numbe
   await emailNotificationService.notifyAdminNewOrder(orderId, user);
 }
 
+export async function orderStartReminderNotification(order: RentalOrderDTO) {
+  const emailNotificationService = new EmailNotificationService();
+  const notificationService = new NotificationService();
+  const title = 'Order Start Reminder';
+  const type = NOTIFICATION_TYPE.SYSTEM_ALERT;
+  const message = `The rental order with ID ${order.id} is scheduled to start on ${fmtDate(
+    order.startDate
+  )}. Please take necessary actions.`;
+  const metadata = JSON.stringify({ orderId: order.id, userId: order.userId });
+  await notificationService.create(title, type, message, metadata);
+  await emailNotificationService.notifyAdminOrderStartReminder(order);
+}
+
+export async function orderReservedNotification(orderId: number, user: { id: number; fullName: string }) {
+  const notificationService = new NotificationService();
+  const title = 'Order Reserved';
+  const type = NOTIFICATION_TYPE.ORDER_UPDATE;
+  const message = `The order with ID ${orderId} has been reserved by ${user.fullName}.`;
+  const metadata = JSON.stringify({ orderId, userId: user.id });
+  await notificationService.create(title, type, message, metadata);
+}
+
+export async function orderToReceiveNotification(
+  order: RentalOrderDTO,
+  user: { id: number; email: string; fullName: string }
+) {
+  const orderId = order.id;
+  const notificationService = new NotificationService();
+  const title = 'Order To Receive';
+  const type = NOTIFICATION_TYPE.ORDER_UPDATE;
+  const message = `The order with ID ${orderId} is marked as to receive.`;
+  const metadata = JSON.stringify({ orderId, userId: user.id });
+  await notificationService.create(title, type, message, metadata);
+  const emailNotificationService = new EmailNotificationService();
+  await emailNotificationService.sendCustomerOrderStartReminder(user, order);
+}
+
 export async function orderCancelledNotification(orderId: number, user: { id: number; fullName: string }) {
   const emailNotificationService = new EmailNotificationService();
   const notificationService = new NotificationService();
@@ -47,6 +84,21 @@ export async function orderCancelledNotification(orderId: number, user: { id: nu
   const metadata = JSON.stringify({ orderId, userId: user.id });
   await notificationService.create(title, type, message, metadata);
   await emailNotificationService.notifyAdminOrderCancelled(orderId, user);
+}
+
+export async function orderCancelledDueToReservationNotification(
+  orderId: number,
+  reservedOrderId: number,
+  user: { id: number; email: string; fullName: string }
+) {
+  const emailNotificationService = new EmailNotificationService();
+  const notificationService = new NotificationService();
+  const title = 'Order Cancelled Due to Reservation';
+  const type = NOTIFICATION_TYPE.ORDER_UPDATE;
+  const message = `The order with ID ${orderId} has been cancelled due to reservation by order ID ${reservedOrderId}.`;
+  const metadata = JSON.stringify({ orderId, reservedOrderId, userId: user.id });
+  await notificationService.create(title, type, message, metadata);
+  await emailNotificationService.sendOrderInvalidatedDueToReservation(user, orderId, reservedOrderId);
 }
 
 export async function onlinePaymentCompletedNotification(
@@ -82,19 +134,6 @@ export async function orderPaidNotification(
   await emailNotificationService.sendPaymentReceipt(user, orderId, payment.id, payment.amount);
 }
 
-export async function orderStartReminderNotification(order: RentalOrderDTO) {
-  const emailNotificationService = new EmailNotificationService();
-  const notificationService = new NotificationService();
-  const title = 'Order Start Reminder';
-  const type = NOTIFICATION_TYPE.SYSTEM_ALERT;
-  const message = `The rental order with ID ${order.id} is scheduled to start on ${fmtDate(
-    order.startDate
-  )}. Please take necessary actions.`;
-  const metadata = JSON.stringify({ orderId: order.id, userId: order.userId });
-  await notificationService.create(title, type, message, metadata);
-  await emailNotificationService.notifyAdminOrderStartReminder(order);
-}
-
 export async function orderReceivedNotification(
   orderId: number,
   user: { id: number; fullName: string; email: string }
@@ -107,6 +146,20 @@ export async function orderReceivedNotification(
   const metadata = JSON.stringify({ orderId, userId: user.id });
   await notificationService.create(title, type, message, metadata);
   await emailNotificationService.sendOrderReceived(user, orderId);
+}
+
+export async function orderReturnRequestNotification(
+  orderId: number,
+  user: { id: number; fullName: string; email: string }
+) {
+  const emailNotificationService = new EmailNotificationService();
+  const notificationService = new NotificationService();
+  const title = 'Order Return Requested';
+  const type = NOTIFICATION_TYPE.ORDER_UPDATE;
+  const message = `A return has been requested for the order with ID ${orderId} by ${user.fullName}. Please take necessary actions.`;
+  const metadata = JSON.stringify({ orderId, userId: user.id });
+  await notificationService.create(title, type, message, metadata);
+  await emailNotificationService.notifyAdminOrderReturnRequest(orderId, user);
 }
 
 export async function orderReturnReminderNotification(
@@ -125,20 +178,6 @@ export async function orderReturnReminderNotification(
   await notificationService.create(title, type, message, metadata);
   await emailNotificationService.notifyAdminOrderReturnReminder(order);
   await emailNotificationService.sendRentalReturnReminder(user, order);
-}
-
-export async function orderReturnRequestNotification(
-  orderId: number,
-  user: { id: number; fullName: string; email: string }
-) {
-  const emailNotificationService = new EmailNotificationService();
-  const notificationService = new NotificationService();
-  const title = 'Order Return Requested';
-  const type = NOTIFICATION_TYPE.ORDER_UPDATE;
-  const message = `A return has been requested for the order with ID ${orderId} by ${user.fullName}. Please take necessary actions.`;
-  const metadata = JSON.stringify({ orderId, userId: user.id });
-  await notificationService.create(title, type, message, metadata);
-  await emailNotificationService.notifyAdminOrderReturnRequest(orderId, user);
 }
 
 export async function orderCompletedNotification(

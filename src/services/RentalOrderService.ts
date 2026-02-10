@@ -90,7 +90,6 @@ export default class RentalOrderService {
             {
               model: Artwork,
               as: 'artwork',
-              attributes: ['id', 'title', 'heightCm', 'widthCm'],
               include: ['artist', 'tags', 'style', 'rentalPlans', 'images'],
             },
           ],

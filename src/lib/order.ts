@@ -133,7 +133,7 @@ export function isOrderPaid(order: RentalOrderDTO): boolean {
 
 export function isOrderExtendable(order: RentalOrderDTO): boolean {
   const hasExtension = order.extension !== undefined && order.extension !== null;
-  return order.status !== ORDER_STATUS.CANCELLED && order.status !== ORDER_STATUS.COMPLETED && !hasExtension;
+  return !hasExtension && order.status !== ORDER_STATUS.CANCELLED && order.status !== ORDER_STATUS.COMPLETED; // && order.payment?.status === PAYMENT_STATUS.COMPLETED
 }
 
 export function isOrderExtended(order: RentalOrderDTO): boolean {

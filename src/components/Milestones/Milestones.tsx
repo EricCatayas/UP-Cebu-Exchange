@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { funnelStages } from '@/lib/labels';
 import type { MilestoneMetrics } from '@/types/analytics';
 import { FaCheckCircle, FaCircle } from 'react-icons/fa';
@@ -10,9 +10,60 @@ interface UserMilestonesProps {
 }
 
 function UserMilestones({ milestones }: UserMilestonesProps) {
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  const checkScrollability = () => {
+    if (!carouselRef.current) return;
+
+    const { scrollLeft, scrollWidth, clientWidth } = carouselRef.current;
+    setCanScrollLeft(scrollLeft > 0);
+    setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 1);
+  };
+
+  const scroll = (direction: 'left' | 'right') => {
+    if (!carouselRef.current) return;
+
+    const scrollAmount = carouselRef.current.clientWidth;
+    const newScrollLeft =
+      direction === 'left'
+        ? carouselRef.current.scrollLeft - scrollAmount
+        : carouselRef.current.scrollLeft + scrollAmount;
+
+    carouselRef.current.scrollTo({
+      left: newScrollLeft,
+      behavior: 'smooth',
+    });
+
+    setTimeout(checkScrollability, 300);
+  };
+
+  useEffect(() => {
+    checkScrollability();
+    window.addEventListener('resize', checkScrollability);
+    return () => window.removeEventListener('resize', checkScrollability);
+  }, [milestones]);
+
   return (
-    <div className="bg-white p-6">
-      <div className="flex items-start justify-between gap-2 overflow-x-auto pb-4">
+    <div className="bg-white p-6 relative">
+      {canScrollLeft && (
+        <button
+          type="button"
+          className="absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/90 shadow p-2 hover:bg-white"
+          onClick={() => scroll('left')}
+          aria-label="Scroll milestones left"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M15 18l-6-6 6-6" />
+          </svg>
+        </button>
+      )}
+      <div
+        ref={carouselRef}
+        className="flex items-start justify-between gap-2 overflow-x-auto pb-4 scroll-smooth [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']"
+        onScroll={checkScrollability}
+      >
         {funnelStages.map((stage, index) => {
           const hasReached = milestones[stage.value]?.hasReached || false;
           const reachedAt = milestones[stage.value]?.reachedAt;
@@ -39,6 +90,18 @@ function UserMilestones({ milestones }: UserMilestonesProps) {
           );
         })}
       </div>
+      {canScrollRight && (
+        <button
+          type="button"
+          className="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/90 shadow p-2 hover:bg-white"
+          onClick={() => scroll('right')}
+          aria-label="Scroll milestones right"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M9 18l6-6-6-6" />
+          </svg>
+        </button>
+      )}
     </div>
   );
 }

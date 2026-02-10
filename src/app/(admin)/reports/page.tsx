@@ -1,6 +1,6 @@
 import React from 'react';
 import AnalyticsCard from '@/components/AnalyticsCard/AnalyticsCard';
-import ArtworkPopularityMetricsCarousel from '@/components/admin/analytics/ArtworkPopularityMetricsCarousel';
+import ArtworkPopularityCarousel from '@/components/ArtworkCarousel/ArtworkPopularityCarousel';
 import ArtworkPopularityMetricsTable from '@/components/admin/analytics/ArtworkPopularityMetricsTable';
 import Header from '@/components/admin/Header';
 import ToggleSession from '@/components/admin/analytics/ToggleSession';
@@ -80,7 +80,7 @@ async function Reports({ searchParams }: { searchParams: { [key: string]: string
           <div className="container mx-auto px-4 py-8">
             <h1 className="text-3xl font-bold mb-6">Artwork Demand Reports</h1>
             <h2 className="text-2xl font-semibold mb-4">Top Artworks</h2>
-            <ArtworkPopularityMetricsCarousel artworks={topArtworks} popularityScores={popularityScores} />
+            <ArtworkPopularityCarousel artworks={topArtworks} popularityScores={popularityScores} />
             <h2 className="text-2xl font-semibold mb-4">All Artworks</h2>
             <ArtworkPopularityMetricsTable artworks={artworks} popularityScores={popularityScores} />
             <Pagination page={page} totalPages={totalPages} nextPage={nextPage} previousPage={previousPage} />

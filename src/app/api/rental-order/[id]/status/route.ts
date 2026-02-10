@@ -1,14 +1,18 @@
 import EventService from '@/services/EventService';
 import RentalOrderService from '@/services/RentalOrderService';
-import { RentalOrder, RentalOrderExtension } from '@/models/sequelize';
+import { RentalOrder, RentalOrderExtension, RentalOrderItem, User } from '@/models/sequelize';
+import { Op } from 'sequelize';
 import { getCurrentUser } from '@/lib/auth';
 import { isAdmin, canEditContent } from '@/lib/role';
 import { ARTWORK_STATUS, ORDER_STATUS, ORDER_STATUSES } from '@/lib/constants';
 import {
+  orderReservedNotification,
+  orderToReceiveNotification,
   orderReceivedNotification,
   orderReturnReminderNotification,
   orderCompletedNotification,
   orderCancelledNotification,
+  orderCancelledDueToReservationNotification,
 } from '@/lib/notifications';
 import { getCurrentSession } from '@/lib/session';
 
@@ -51,11 +55,51 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     }
     // RESERVED
     else if (status === ORDER_STATUS.RESERVED) {
+      const items = await RentalOrderItem.findAll({ where: { rentalOrderId: rentalOrder.id } });
+      const artworkIds = items.map((item) => item.artworkId);
+
+      // Check if any of the artworks exist in another pending order
+      // If exists, cancel the other pending order and notify the user
+      const conflictingOrders = await RentalOrder.findAll({
+        where: {
+          userId: {
+            [Op.ne]: rentalOrder.userId,
+          },
+          status: ORDER_STATUS.PENDING,
+        },
+        include: [
+          {
+            model: RentalOrderItem,
+            as: 'items',
+            where: {
+              artworkId: artworkIds,
+            },
+          },
+          {
+            model: User,
+            as: 'user',
+            attributes: ['id', 'fullName', 'email'],
+          },
+        ],
+      });
+
+      for (const order of conflictingOrders) {
+        await rentalOrderService.cancelRentalOrderAndExtensions(order.id);
+        await orderCancelledDueToReservationNotification(order.id, rentalOrder.id, {
+          id: currentUser.userId,
+          email: rentalOrder.user.email,
+          fullName: rentalOrder.user.fullName,
+        });
+      }
+
       await rentalOrder.update({ status: ORDER_STATUS.RESERVED });
+      await orderReservedNotification(rentalOrder.id, rentalOrder.user);
     }
     // TO RECEIVE
     else if (status === ORDER_STATUS.TORECEIVE) {
       await rentalOrder.update({ status: ORDER_STATUS.TORECEIVE });
+
+      await orderToReceiveNotification(rentalOrder, rentalOrder.user);
     }
     // ONGOING
     else if (status === ORDER_STATUS.ONGOING) {

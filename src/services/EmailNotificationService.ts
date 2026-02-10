@@ -4,6 +4,7 @@ import { APP_NAME, APP_EMAIL } from '@/lib/constants';
 import { PaymentDTO } from '@/models/Payment';
 import { RentalOrderDTO } from '@/models/RentalOrder';
 import { getReturnDueDate } from '@/lib/order';
+import { fmtDate } from '@/lib/formatter';
 
 const APP_BASE_URL = process.env.APP_BASE_URL || 'http://localhost:3000';
 const EMAIL_API = process.env.MAILJET_API_KEY || '';
@@ -622,6 +623,8 @@ class EmailNotificationService {
       config: { version: 'v3.1' },
     });
 
+    const startDate = fmtDate(order.startDate);
+
     const adminOrderLink = `${APP_BASE_URL}/orders/${order.id}`;
     const request = mailjet.post('send', { version: 'v3.1' }).request({
       Messages: [
@@ -631,10 +634,10 @@ class EmailNotificationService {
             Name: APP_NAME,
           },
           To: [{ Email: APP_EMAIL, Name: APP_NAME }],
-          Subject: `New Order Started - Order #${order.id}`,
+          Subject: `Order Start Reminded - Order #${order.id}`,
           TextPart:
             `Order Start Reminder - Order #${order.id}\n\n` +
-            `This is a reminder that an order is scheduled to start today.\n\n` +
+            `This is a reminder that an order is scheduled to start on ${startDate}.\n\n` +
             `Order Details:\n` +
             `--------------------------\n` +
             `Order ID: ${order.id}\n` +
@@ -670,7 +673,7 @@ class EmailNotificationService {
                         <tr>
                           <td style="padding: 40px 30px;">
                             <p style="margin: 0 0 20px 0; font-size: 16px; line-height: 24px; color: #333333;">
-                              This is a reminder that an order is scheduled to <strong>start today</strong>.
+                              This is a reminder that an order is scheduled to <strong>start on ${startDate}</strong>.
                             </p>
                             
                             <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #EFF6FF; border: 1px solid #DBEAFE; border-radius: 6px; margin: 20px 0;">
@@ -1355,6 +1358,128 @@ class EmailNotificationService {
       .catch((err) => {
         console.error('Mailjet error:', err?.statusCode || err);
         return { success: false, error: err?.message || 'Failed to send order received email' };
+      });
+
+    return Promise.resolve({ success: true, error: null });
+  }
+
+  // Reminder to Customer: Order Start Date
+  async sendCustomerOrderStartReminder(user: { id: number; email: string; fullName: string }, order: RentalOrderDTO) {
+    const mailjet = new Mailjet({
+      apiKey: EMAIL_API,
+      apiSecret: EMAIL_SECRET,
+      config: { version: 'v3.1' },
+    });
+
+    const startDate = fmtDate(order.startDate);
+    const orderLink = `${APP_BASE_URL}/account/rentals/${order.id}`;
+
+    const request = mailjet.post('send', { version: 'v3.1' }).request({
+      Messages: [
+        {
+          From: {
+            Email: APP_EMAIL,
+            Name: APP_NAME,
+          },
+          To: [{ Email: user.email, Name: user.fullName }],
+          Subject: `Upcoming Rental Start - Order #${order.id}`,
+          TextPart:
+            `Upcoming Rental Start - Order #${order.id}\n\n` +
+            `Hi ${user.fullName}, your unreceived items are scheduled to start on ${startDate}.\n` +
+            `Our admins will contact you soon with further details.\n\n` +
+            `Order Details:\n` +
+            `--------------------------\n` +
+            `Order ID: #${order.id}\n` +
+            `Customer: ${user.fullName}\n` +
+            `Email: ${user.email}\n` +
+            `Customer ID: ${user.id}\n\n` +
+            `Review your order here:\n` +
+            `${orderLink}\n\n` +
+            `Automated notification from ${APP_NAME}.`,
+          HTMLPart: `
+            <!DOCTYPE html>
+              <html>
+              <head>
+                <meta charset="utf-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Upcoming Rental Start</title>
+              </head>
+              <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; background-color: #f8f9fa;">
+                <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f8f9fa; padding: 40px 0;">
+                  <tr>
+                    <td align="center">
+                      <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-top: 6px solid #8E1537;">
+                        
+                        <tr>
+                          <td style="padding: 40px 30px 20px 30px; text-align: center;">
+                            <h1 style="margin: 0; color: #8E1537; font-size: 28px; font-weight: bold; letter-spacing: -0.5px;">Your rental starts soon</h1>
+                            <p style="margin: 15px 0 0 0; font-size: 16px; color: #555555; line-height: 1.5;">
+                              Hi ${user.fullName}, your unreceived items are scheduled to start on <strong>${startDate}</strong>.
+                              Our admins will contact you soon with further details.
+                            </p>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td align="center" style="padding: 0 30px;">
+                            <div style="background-color: #fcfcfc; border: 1px dashed #e0e0e0; border-radius: 8px; padding: 20px; margin: 10px 0;">
+                              <span style="display: block; font-size: 14px; color: #888888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">Order Reference</span>
+                              <span style="display: block; font-size: 32px; font-weight: bold; color: #8E1537;">#${order.id}</span>
+                            </div>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td style="padding: 30px;">
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                              <tr>
+                                <td style="padding: 12px 0; border-bottom: 1px solid #eeeeee; color: #666666; font-size: 14px;">Customer</td>
+                                <td align="right" style="padding: 12px 0; border-bottom: 1px solid #eeeeee; color: #1a1a1a; font-weight: 600; font-size: 14px;">${user.fullName}</td>
+                              </tr>
+                              <tr>
+                                <td style="padding: 12px 0; border-bottom: 1px solid #eeeeee; color: #666666; font-size: 14px;">Email</td>
+                                <td align="right" style="padding: 12px 0; border-bottom: 1px solid #eeeeee; color: #1a1a1a; font-size: 14px;">${user.email}</td>
+                              </tr>
+                              <tr>
+                                <td style="padding: 12px 0; color: #666666; font-size: 14px;">Customer ID</td>
+                                <td align="right" style="padding: 12px 0; color: #1a1a1a; font-size: 14px;">${user.id}</td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+                        
+                        <tr>
+                          <td align="center" style="padding: 10px 30px 40px 30px;">
+                            <a href="${orderLink}" target="_blank" rel="noopener" style="display: inline-block; padding: 16px 40px; background-color: #FF6F00; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold; box-shadow: 0 2px 4px rgba(255,111,0,0.3);">View Order Details</a>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td style="padding: 20px; background-color: #8E1537; text-align: center;">
+                            <p style="margin: 0; font-size: 16px; color: #eeeeee; opacity: 0.8;">
+                              Automated notification from ${APP_NAME}.
+                            </p>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </body>
+              </html>
+              `,
+          CustomID: 'order_start_reminder_customer',
+        },
+      ],
+    });
+
+    request
+      .then((result) => {
+        return { success: true, error: null };
+      })
+      .catch((err) => {
+        console.error('Mailjet error:', err?.statusCode || err);
+        return { success: false, error: err?.message || 'Failed to send order start reminder email' };
       });
 
     return Promise.resolve({ success: true, error: null });
