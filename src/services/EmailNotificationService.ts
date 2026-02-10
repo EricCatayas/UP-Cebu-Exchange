@@ -1491,6 +1491,133 @@ class EmailNotificationService {
     return Promise.resolve({ success: true, error: null });
   }
 
+  // Notify Customer: Order invalidated due to another reservation
+  async sendOrderInvalidatedDueToReservation(
+    user: { id: number; email: string; fullName: string },
+    orderId: number,
+    reservedByOrderId: number,
+    itemsSummary?: string
+  ) {
+    const mailjet = new Mailjet({
+      apiKey: EMAIL_API,
+      apiSecret: EMAIL_SECRET,
+      config: { version: 'v3.1' },
+    });
+
+    const orderLink = `${APP_BASE_URL}/account/rentals/${orderId}`;
+
+    const request = mailjet.post('send', { version: 'v3.1' }).request({
+      Messages: [
+        {
+          From: {
+            Email: APP_EMAIL,
+            Name: APP_NAME,
+          },
+          To: [{ Email: user.email, Name: user.fullName }],
+          Subject: `Order Update: Items Reserved by Another Customer (Order #${orderId})`,
+          TextPart:
+            `Order Update - Order #${orderId}\n\n` +
+            `We’re sorry, but some items in your pending order have just been reserved by another customer.\n` +
+            `As a result, your order can no longer be processed.\n\n` +
+            `Reserved By Order: #${reservedByOrderId}\n` +
+            (itemsSummary ? `Items Affected: ${itemsSummary}\n\n` : `\n`) +
+            `You can review your order here:\n` +
+            `${orderLink}\n\n` +
+            `If you need help finding alternatives, please contact support.\n` +
+            `Automated notification from ${APP_NAME}.`,
+          HTMLPart: `
+            <!DOCTYPE html>
+            <html>
+              <head>
+                <meta charset="utf-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Order Update</title>
+              </head>
+              <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
+                <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f4f4; padding: 20px 0;">
+                  <tr>
+                    <td align="center">
+                      <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <tr>
+                          <td style="background-color: #8E1537; padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
+                            <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: bold;">Order No Longer Available</h1>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 40px 30px;">
+                            <p style="margin: 0 0 20px 0; font-size: 16px; line-height: 24px; color: #333333;">
+                              Hi <strong>${user.fullName}</strong>, we’re sorry to share that some items in your pending order were just reserved by another customer.
+                              This means your order <strong>#${orderId}</strong> can no longer be processed.
+                            </p>
+
+                            <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f4f4; border: 1px solid #FEE2E2; border-radius: 6px; margin: 20px 0;">
+                              <tr>
+                                <td style="padding: 20px;">
+                                  <h2 style="margin: 0 0 15px 0; font-size: 18px; color: #991B1B;">Reservation Details</h2>
+                                  <p style="margin: 8px 0; font-size: 15px; line-height: 22px; color: #4b5563;">
+                                    <strong>Your Order:</strong> #${orderId}
+                                  </p>
+                                  <p style="margin: 8px 0; font-size: 15px; line-height: 22px; color: #4b5563;">
+                                    <strong>Reserved By Order:</strong> #${reservedByOrderId}
+                                  </p>
+                                  ${
+                                    itemsSummary
+                                      ? `<p style="margin: 8px 0; font-size: 15px; line-height: 22px; color: #4b5563;">
+                                           <strong>Items Affected:</strong> ${itemsSummary}
+                                         </p>`
+                                      : ``
+                                  }
+                                </td>
+                              </tr>
+                            </table>
+
+                            <p style="margin: 20px 0; font-size: 16px; line-height: 24px; color: #333333;">
+                              You can review your order details here:
+                            </p>
+
+                            <table width="100%" cellpadding="0" cellspacing="0" style="margin: 25px 0;">
+                              <tr>
+                                <td align="center">
+                                  <a href="${orderLink}" target="_blank" rel="noopener" style="display: inline-block; padding: 14px 32px; background-color: #8E1537; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">View Order</a>
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 20px 30px; background-color: #f9fafb; border-radius: 0 0 8px 8px; text-align: center;">
+                            <p style="margin: 0; font-size: 14px; line-height: 20px; color: #6b7280;">
+                              If you need help finding alternatives, please contact support.
+                            </p>
+                            <p style="margin: 6px 0 0 0; font-size: 12px; line-height: 18px; color: #9ca3af;">
+                              Automated notification from ${APP_NAME}.
+                            </p>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </body>
+            </html>
+          `,
+          CustomID: 'order_invalidated_due_to_reservation',
+        },
+      ],
+    });
+
+    request
+      .then(() => {
+        return { success: true, error: null };
+      })
+      .catch((err) => {
+        console.error('Mailjet error:', err?.statusCode || err);
+        return { success: false, error: err?.message || 'Failed to send order invalidation email' };
+      });
+
+    return Promise.resolve({ success: true, error: null });
+  }
+
   // Send Order Completed Confirmation to Customer
   async sendOrderCompleted(user: { id: number; email: string; fullName: string }, orderId: number) {
     const mailjet = new Mailjet({
