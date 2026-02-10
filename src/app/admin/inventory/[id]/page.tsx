@@ -46,7 +46,7 @@ async function InventoryDetails({ params }: { params: { id: string } }) {
           {isCurrentlyRented && (
             // Link to ongoing rental order details
             <Link
-              href={`/orders/${ongoingRentalOrderId}`}
+              href={`/admin/orders/${ongoingRentalOrderId}`}
               className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
             >
               <FaEdit /> View Ongoing Rental
@@ -59,7 +59,7 @@ async function InventoryDetails({ params }: { params: { id: string } }) {
             <FaEye /> Live View
           </Link>
           <Link
-            href={`/inventory/${artwork.id}/edit`}
+            href={`/admin/inventory/${artwork.id}/edit`}
             className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
           >
             <FaEdit /> Edit Artwork

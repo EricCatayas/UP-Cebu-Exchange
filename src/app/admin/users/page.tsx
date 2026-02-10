@@ -24,7 +24,10 @@ async function Users() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Users</h1>
-        <Link href="/users/create" className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+        <Link
+          href="/admin/users/create"
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+        >
           Create New User
         </Link>
       </div>
@@ -80,7 +83,10 @@ async function Users() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <div className="flex gap-2">
-                        <Link href={`/users/${user.id}`} className="text-blue-600 hover:text-blue-800 font-medium">
+                        <Link
+                          href={`/admin/users/${user.id}`}
+                          className="text-blue-600 hover:text-blue-800 font-medium"
+                        >
                           View
                         </Link>
                       </div>
@@ -137,7 +143,10 @@ async function Users() {
                     <td className="px-6 py-4 text-sm text-gray-900">{user.role.name || 'N/A'}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <div className="flex gap-2">
-                        <Link href={`/users/${user.id}`} className="text-blue-600 hover:text-blue-800 font-medium">
+                        <Link
+                          href={`/admin/users/${user.id}`}
+                          className="text-blue-600 hover:text-blue-800 font-medium"
+                        >
                           View
                         </Link>
                       </div>

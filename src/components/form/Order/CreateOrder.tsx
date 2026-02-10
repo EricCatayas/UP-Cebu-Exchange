@@ -68,17 +68,17 @@ function CreateOrderForm({ artworks, customers }: { artworks: ArtworkDTO[]; cust
   }, [artworks, selectedArtworkIds, setArtworks]);
 
   const navigateToArtwork = (artworkId: number) => {
-    router.push(`/inventory/${artworkId}`);
+    router.push(`/admin/inventory/${artworkId}`);
   };
 
   const navigateToUserProfile = () => {
     if (selectedCustomer) {
-      router.push(`/users/${selectedCustomer.id}`);
+      router.push(`/admin/users/${selectedCustomer.id}`);
     }
   };
 
   const navigateToCreateUser = () => {
-    router.push('/users/create');
+    router.push('/admin/users/create');
   };
 
   const getRentalPlanFee = (artwork: any) => {
@@ -156,7 +156,7 @@ function CreateOrderForm({ artworks, customers }: { artworks: ArtworkDTO[]; cust
       async () => {
         try {
           const newRentalOrder = await rentalOrderApi.create(rentalOrder);
-          router.push(`/orders/${newRentalOrder.id}`);
+          router.push(`/admin/orders/${newRentalOrder.id}`);
         } catch (error) {
           alert(error instanceof Error ? error.message : 'Failed to create rental order');
         }

@@ -7,7 +7,7 @@ import { Payment, RentalOrder } from '@/models/sequelize';
 import { PAYMENT_STATUS, ORDER_STATUS, ARTWORK_STATUS } from '@/lib/constants';
 
 /**
- * POST /api/payments/[id]/transaction
+ * POST /api/admin/payments/[id]/transaction
  * Record a manual payment transaction
  * Used when admin receives payment through cash, bank transfer, or other offline methods
  */

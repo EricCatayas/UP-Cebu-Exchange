@@ -26,43 +26,43 @@ const Sidebar: React.FC = () => {
       <nav className="mt-4">
         <ul>
           <li>
-            <Link href="/dashboard" className="flex items-center p-2 hover:bg-gray-700">
+            <Link href="/admin" className="flex items-center p-2 hover:bg-gray-700">
               <FaTachometerAlt className="mr-2" />
               Dashboard
             </Link>
           </li>
           <li>
-            <Link href="/calendar" className="flex items-center p-2 hover:bg-gray-700">
+            <Link href="/admin/calendar" className="flex items-center p-2 hover:bg-gray-700">
               <FaCalendarAlt className="mr-2" />
               Calendar
             </Link>
           </li>
           <li>
-            <Link href="/orders" className="flex items-center p-2 hover:bg-gray-700">
+            <Link href="/admin/orders" className="flex items-center p-2 hover:bg-gray-700">
               <FaTruck className="mr-2" />
               Orders
             </Link>
           </li>
           <li>
-            <Link href="/inventory" className="flex items-center p-2 hover:bg-gray-700">
+            <Link href="/admin/inventory" className="flex items-center p-2 hover:bg-gray-700">
               <FaBox className="mr-2" />
               Inventory
             </Link>
           </li>
           <li>
-            <Link href="/users" className="flex items-center p-2 hover:bg-gray-700">
+            <Link href="/admin/users" className="flex items-center p-2 hover:bg-gray-700">
               <FaUsers className="mr-2" />
               Users
             </Link>
           </li>
           <li>
-            <Link href="/payments" className="flex items-center p-2 hover:bg-gray-700">
+            <Link href="/admin/payments" className="flex items-center p-2 hover:bg-gray-700">
               <FaMoneyBillWave className="mr-2" />
               Payments
             </Link>
           </li>
           <li>
-            <Link href="/notifications" className="flex items-center p-2 hover:bg-gray-700">
+            <Link href="/admin/notifications" className="flex items-center p-2 hover:bg-gray-700">
               <div className="relative mr-2">
                 <FaBell />
                 {hasNewNotifications && (
@@ -73,13 +73,13 @@ const Sidebar: React.FC = () => {
             </Link>
           </li>
           <li>
-            <Link href="/reports" className="flex items-center p-2 hover:bg-gray-700">
+            <Link href="/admin/notifications" className="flex items-center p-2 hover:bg-gray-700">
               <FaChartBar className="mr-2" />
               Reports
             </Link>
           </li>
           <li>
-            <Link href="/themes" className="flex items-center p-2 hover:bg-gray-700">
+            <Link href="/admin/notifications" className="flex items-center p-2 hover:bg-gray-700">
               <FaPalette className="mr-2" />
               Themes
             </Link>

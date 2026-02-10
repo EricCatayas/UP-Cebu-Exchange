@@ -164,7 +164,7 @@ function CreateArtworkForm({
 
       await artworkApi.create(artworkData);
       alert('Artwork created successfully!');
-      router.push('/inventory');
+      router.push('/admin/inventory');
     } catch (error) {
       console.error('Error creating artwork:', error);
       alert(error instanceof Error ? error.message : 'Failed to create artwork');
@@ -587,7 +587,7 @@ function CreateArtworkForm({
         </button>
         <button
           type="button"
-          onClick={() => router.push('/inventory')}
+          onClick={() => router.push('/admin/inventory')}
           className="px-6 py-3 border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           Cancel

@@ -82,11 +82,14 @@ export default function ArtworksTable({ artworks: data }: { artworks: any[] }) {
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm">
                 <div className="flex gap-2">
-                  <Link href={`/inventory/${artwork.id}`} className="text-gray-600 hover:text-gray-800 font-medium">
+                  <Link
+                    href={`/admin/inventory/${artwork.id}`}
+                    className="text-gray-600 hover:text-gray-800 font-medium"
+                  >
                     <FaSearch />
                   </Link>
                   <Link
-                    href={`/inventory/${artwork.id}/edit`}
+                    href={`/admin/inventory/${artwork.id}/edit`}
                     className="text-blue-600 hover:text-blue-800 font-medium"
                   >
                     <FaEdit />

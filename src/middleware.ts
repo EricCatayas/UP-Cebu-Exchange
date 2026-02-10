@@ -33,22 +33,9 @@ const publicRoutes = [
   '/api/webhooks',
 ];
 
-const adminRoutes = [
-  '/admin',
-  '/login',
-  '/dashboard',
-  '/calendar',
-  '/inventory',
-  '/orders',
-  '/users',
-  '/payments',
-  '/notifications',
-  '/reports',
-  '/themes',
-];
-
 function isAdminRoute(pathname: string): boolean {
-  return adminRoutes.some((route) => pathname === route || pathname.startsWith(route + '/'));
+  // return adminRoutes.some((route) => pathname === route || pathname.startsWith(route + '/'));
+  return pathname.startsWith('/admin');
 }
 
 function isApiRoute(pathname: string): boolean {
@@ -99,7 +86,7 @@ export async function middleware(request: NextRequest) {
   }
 
   if (isAdmin(user) && !isAdminRoute(pathname) && !isApiRoute(pathname)) {
-    return NextResponse.redirect(new URL('/dashboard', request.url));
+    return NextResponse.redirect(new URL('/admin', request.url));
   }
 
   const requestHeaders = new Headers(request.headers);

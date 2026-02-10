@@ -72,9 +72,6 @@ const Navbar: React.FC = () => {
           <Link href="/about" className="font-light hover:text-gray-700">
             About
           </Link>
-          <Link href="/themes" className="font-light hover:text-gray-700">
-            Themes
-          </Link>
           {isLoggedIn ? (
             <>
               <button onClick={handleCartClick} className="font-light hover:text-gray-700">

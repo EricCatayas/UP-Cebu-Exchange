@@ -127,7 +127,7 @@ async function PaymentsPage({ searchParams }: { searchParams: { [key: string]: s
                         })}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <Link href={`/payments/${payment.id}`}>
+                        <Link href={`/admin/payments/${payment.id}`}>
                           <span className="text-indigo-600 hover:text-indigo-900">View Details</span>
                         </Link>
                       </td>

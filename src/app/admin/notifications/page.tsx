@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import Header from '@/components/admin/Header';
 import AnalyticsCard from '@/components/AnalyticsCard/AnalyticsCard';
-import ArtworksTable from '@/components/admin/inventory/ArtworksTable';
+import ArtworksTable from '@/components/admin/admin/inventory/ArtworksTable';
 import NotificationsTable from '@/components/admin/notifications/NotificationsTable';
 import NotificationService from '@/services/NotificationService';
 

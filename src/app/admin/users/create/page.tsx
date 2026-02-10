@@ -49,7 +49,7 @@ function CreateUser() {
       }
 
       console.log('User created:', data);
-      setTimeout(() => router.push('/users'), 500);
+      setTimeout(() => router.push('/admin/users'), 500);
     } catch (err) {
       console.error('Network error. Please try again.');
       setSubmitting(false);
@@ -172,7 +172,7 @@ function CreateUser() {
           <button
             type="button"
             className="px-4 py-2 rounded border border-gray-300 hover:bg-gray-50"
-            onClick={() => router.push('/users')}
+            onClick={() => router.push('/admin/users')}
           >
             Cancel
           </button>

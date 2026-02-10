@@ -41,7 +41,7 @@ export default function CreateTransaction({ paymentId, amount }: { paymentId: nu
       });
 
       // Redirect back to payment details page
-      router.push(`/payments/${paymentId}`);
+      router.push(`/admin/admin/payments/${paymentId}`);
     } catch (err: any) {
       setError(err.message || 'Failed to create payment transaction');
       setIsSubmitting(false);

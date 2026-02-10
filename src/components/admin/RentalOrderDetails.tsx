@@ -28,7 +28,7 @@ export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrde
   const { openConfirmation } = useModal();
 
   function navigateToInventoryDetails(item) {
-    redirect(`/inventory/${item.artwork.id}`);
+    redirect(`/admin/inventory/${item.artwork.id}`);
   }
 
   const handleSelectStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -103,7 +103,7 @@ export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrde
             }
             // page refresh to reflect changes
             alert(`Order has been updated`);
-            redirect('/orders');
+            redirect('/admin/orders');
           } catch (error) {
             alert(error.message);
           }
@@ -116,7 +116,7 @@ export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrde
 
   const userButtonLabel = 'View User';
   const handleUserClick = (user) => {
-    redirect(`/users/${user.id}`);
+    redirect(`/admin/users/${user.id}`);
   };
 
   const userButton = {
@@ -129,7 +129,7 @@ export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrde
     label: isOrderPaid(order) ? 'View Receipt' : 'Manage Payment',
     classes: 'bg-green-600 text-white rounded hover:bg-green-700',
     onClick: () => {
-      redirect(`/payments/${order.paymentId}`);
+      redirect(`/admin/payments/${order.paymentId}`);
     },
   };
 
@@ -207,7 +207,7 @@ export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrde
           </button>
         )}
         <Link
-          href={`/payments/${order.paymentId}`}
+          href={`/admin/payments/${order.paymentId}`}
           className="ml-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
         >
           {isOrderPaid(order) ? 'View Receipt' : 'Manage Payment'}

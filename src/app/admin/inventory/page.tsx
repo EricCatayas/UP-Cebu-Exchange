@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import AnalyticsCard from '@/components/AnalyticsCard/AnalyticsCard';
-import ArtworksTable from '@/components/admin/inventory/ArtworksTable';
+import ArtworksTable from '@/components/admin/admin/inventory/ArtworksTable';
 import ArtworkService from '@/services/ArtworkService';
 import { ARTWORK_STATUS } from '@/lib/constants';
 
@@ -29,7 +29,7 @@ async function Inventory() {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Overview</h1>
         <Link
-          href="/inventory/create"
+          href="/admin/inventory/create"
           className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
         >
           Add New Artwork

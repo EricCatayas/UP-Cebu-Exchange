@@ -19,7 +19,7 @@ export default async function UserPage({ params }: { params: { id: string } }) {
   const userData = await userService.getUserById(id);
 
   if (!userData) {
-    return <NotFound header="User not found" linkText="Back to Users" linkHref="/users" />;
+    return <NotFound header="User not found" linkText="Back to Users" linkHref="/admin/users" />;
   }
 
   if (isCustomer(userData)) {
@@ -47,11 +47,11 @@ export default async function UserPage({ params }: { params: { id: string } }) {
           {rentalOrders.map((order) => (
             <RentalOrderCard key={order.id} order={order}>
               <>
-                <Link href={`/orders/${order.id}`} className="text-blue-600 hover:underline">
+                <Link href={`/admin/orders/${order.id}`} className="text-blue-600 hover:underline">
                   View Products
                 </Link>
                 {isOrderPaid(order) && (
-                  <Link href={`/payments/${order.paymentId}`} className="text-blue-600 hover:underline">
+                  <Link href={`/admin/payments/${order.paymentId}`} className="text-blue-600 hover:underline">
                     View Receipt
                   </Link>
                 )}

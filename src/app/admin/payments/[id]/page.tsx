@@ -17,7 +17,7 @@ async function PaymentPage({ params }: { params: { id: string } }) {
       <div className="px-8 py-6">
         <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
           <p className="text-red-800 font-medium">Payment not found</p>
-          <Link href="/payments" className="text-blue-600 hover:underline mt-4 inline-block">
+          <Link href="/admin/payments" className="text-blue-600 hover:underline mt-4 inline-block">
             Back to Payments
           </Link>
         </div>
@@ -38,7 +38,7 @@ async function PaymentPage({ params }: { params: { id: string } }) {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <Link href="/payments" className="text-sm text-blue-600 hover:underline mb-2 inline-block">
+          <Link href="/admin/payments" className="text-sm text-blue-600 hover:underline mb-2 inline-block">
             ← Back to Payments
           </Link>
           <h1 className="text-3xl font-bold text-gray-900">Payment #{payment.id}</h1>
@@ -56,7 +56,7 @@ async function PaymentPage({ params }: { params: { id: string } }) {
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Transaction History</h2>
           <TransactionTable transactions={paymentTransactions} />
           <Link
-            href={`/payments/${payment.id}/transactions/create`}
+            href={`/admin/payments/${payment.id}/transactions/create`}
             className="mt-4 inline-block text-blue-600 hover:underline"
           >
             + Create New Transaction
@@ -95,7 +95,7 @@ async function PaymentPage({ params }: { params: { id: string } }) {
           </div>
           {/* View Order Details Link */}
           <div className="mt-4 text-right">
-            <Link href={`/orders/${order.id}`} className="text-blue-600 hover:underline font-medium">
+            <Link href={`/admin/orders/${order.id}`} className="text-blue-600 hover:underline font-medium">
               View Order Details →
             </Link>
           </div>

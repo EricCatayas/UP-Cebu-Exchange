@@ -13,7 +13,7 @@ export default async function CreateTransactionPage({ params }: { params: { id: 
       <div className="px-8 py-6">
         <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
           <p className="text-red-800 font-medium">Payment not found</p>
-          <Link href="/payments" className="text-blue-600 hover:underline mt-4 inline-block">
+          <Link href="/admin/payments" className="text-blue-600 hover:underline mt-4 inline-block">
             Back to Payments
           </Link>
         </div>
@@ -28,7 +28,7 @@ export default async function CreateTransactionPage({ params }: { params: { id: 
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <Link href="/payments" className="text-sm text-blue-600 hover:underline mb-2 inline-block">
+          <Link href="/admin/payments" className="text-sm text-blue-600 hover:underline mb-2 inline-block">
             ← Back to Payments
           </Link>
         </div>

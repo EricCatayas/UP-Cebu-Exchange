@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
     let callbackUrl = '/';
 
     if (isAdmin(user)) {
-      callbackUrl = '/dashboard';
+      callbackUrl = '/admin';
     } else {
       // Check for callbackUrl in referer header
       const referer = request.headers.get('referer');

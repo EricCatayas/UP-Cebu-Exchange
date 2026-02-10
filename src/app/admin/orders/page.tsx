@@ -37,7 +37,10 @@ async function OrdersPage() {
     <div className="px-8 py-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Rental Orders</h1>
-        <Link href={`/orders/create`} className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+        <Link
+          href={`/admin/orders/create`}
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+        >
           Create New Order
         </Link>
       </div>
@@ -168,7 +171,7 @@ async function OrdersPage() {
                           })}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <Link href={`/orders/${order.id}`}>
+                          <Link href={`/admin/orders/${order.id}`}>
                             <span className="text-indigo-600 hover:text-indigo-900">View Details</span>
                           </Link>
                         </td>
@@ -185,7 +188,7 @@ async function OrdersPage() {
             {rentalOrders.map((order) => (
               <RentalOrderCard key={order.id} order={order}>
                 <>
-                  <Link href={`/orders/${order.id}`} className="text-blue-600 hover:underline">
+                  <Link href={`/admin/orders/${order.id}`} className="text-blue-600 hover:underline">
                     View Details
                   </Link>
                 </>
