@@ -192,17 +192,18 @@ class ArtworkService {
   }
 
   // TODO:
-  async getSimilarArtworks(artworkId: number) {
+  async getSimilarArtworks(artworkId: number, options?: { limit: number }): Promise<ArtworkDTO[]> {
     const artwork = await ArtworkRepository.findById(artworkId);
     if (!artwork) return [];
 
     let otherSimilarArtworks: ArtworkDTO[] = [];
     let otherArtworksWithSimilarTags: ArtworkDTO[] = [];
 
+    // Get artworks with similar features (style, medium, dimensions, artist)
     const getOtherSimilarArtworksByFeatures = async () => {
       const where: any = {
         id: { [Op.ne]: artworkId },
-        status: [ARTWORK_STATUS.AVAILABLE, ARTWORK_STATUS.RENTED],
+        status: [ARTWORK_STATUS.AVAILABLE, ARTWORK_STATUS.RESERVED, ARTWORK_STATUS.RENTED],
       };
 
       where[Op.or] = [
@@ -211,11 +212,19 @@ class ArtworkService {
         { medium: artwork.medium },
       ];
 
-      let options = {
-        where,
-      };
+      // Issue: This may be too restrictive.
+      // const heightDifference = 20; // cm
+      // const widthDifference = 20; // cm
+      // if (artwork.heightCm && artwork.widthCm) {
+      //   where[Op.and] = [
+      //     { heightCm: { [Op.between]: [artwork.heightCm - heightDifference, artwork.heightCm + heightDifference] } },
+      //     { widthCm: { [Op.between]: [artwork.widthCm - widthDifference, artwork.widthCm + widthDifference] } },
+      //   ];
+      // }
 
-      const artworks = await ArtworkRepository.findAll(options);
+      const artworks = await ArtworkRepository.findAll({
+        where,
+      });
       otherSimilarArtworks = artworks;
     };
 
@@ -248,10 +257,12 @@ class ArtworkService {
 
     const uniqueArtworks = Object.values(uniqueArtworksMap);
 
+    const limit = options?.limit ?? uniqueArtworks.length;
+
     const sortedArtworks = uniqueArtworks
       .filter((entry) => entry.score > SIMILAR_ARTWORK_SCORE_THRESHOLD)
       .sort((a, b) => b.score - a.score)
-      .slice(0, 9);
+      .slice(0, limit);
 
     return sortedArtworks.map((entry) => entry.artwork);
   }
@@ -268,10 +279,60 @@ class ArtworkService {
   // todo
   async getRecommendedArtworks(userId: number, options?: { limit: number }): Promise<ArtworkDTO[]> {
     const productDemandService = new ProductDemandService();
-    // todo: these are user's current preferences. But we can use these to find similar artworks
-    const result = await productDemandService.getUserDemandArtworks(userId, options);
+    // These are user's current preferences. Use these to find similar artworks
+    const { artworksWithScore } = await productDemandService.getUserDemandAnalytics(userId);
 
-    return result.artworks;
+    console.log('User Demand Analytics - Artworks with Score:', artworksWithScore);
+
+    const recommendedArtworks: ArtworkDTO[] = [];
+    const recommendedArtworkIDs = new Set<number>();
+    const limit = options?.limit || artworksWithScore.length;
+    const randomIndices = new Set<number>();
+    for (let i = 0; i < artworksWithScore.length && recommendedArtworkIDs.size < limit; i++) {
+      function getRandomIndex() {
+        const index = Math.floor(Math.random() * artworksWithScore.length);
+        if (randomIndices.has(index)) {
+          return getRandomIndex();
+        } else {
+          randomIndices.add(index);
+          return index;
+        }
+      }
+
+      const randomIndex = getRandomIndex();
+      const randomArtwork = artworksWithScore[randomIndex];
+      const similarArtworks = await this.getSimilarArtworks(randomArtwork.id, options);
+      similarArtworks.forEach((artwork) => {
+        if (recommendedArtworkIDs.size < limit && !recommendedArtworkIDs.has(artwork.id)) {
+          recommendedArtworks.push(artwork);
+          recommendedArtworkIDs.add(artwork.id);
+        }
+      });
+    }
+
+    // If not enough similar artworks, fill in with customer's interested artworks
+    if (recommendedArtworks.length < limit) {
+      const interestedAndAvailableArtworks = artworksWithScore
+        .filter((a) => a.status === ARTWORK_STATUS.AVAILABLE && !recommendedArtworkIDs.has(a.id))
+        .sort((a, b) => b.score - a.score);
+
+      recommendedArtworks.push(...interestedAndAvailableArtworks.slice(0, limit - recommendedArtworks.length));
+    }
+
+    // If still not enough, fill in with popular artworks >:D
+    if (recommendedArtworks.length < limit) {
+      const popularArtworks = await this.getPopularArtworks({ limit: limit * 2 });
+      popularArtworks.forEach((artwork) => {
+        if (recommendedArtworks.length < limit && !recommendedArtworkIDs.has(artwork.id)) {
+          recommendedArtworks.push(artwork);
+          recommendedArtworkIDs.add(artwork.id);
+        }
+      });
+    }
+
+    console.log('Recommended Artworks:', recommendedArtworks);
+
+    return recommendedArtworks;
   }
 
   async getRandomArtworks(limit?: number): Promise<ArtworkDTO[]> {

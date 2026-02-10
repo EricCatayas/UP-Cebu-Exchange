@@ -73,7 +73,9 @@ class ProductDemandService {
           model: RentalOrder,
           as: 'rentalOrder',
           where: {
-            status: { [Op.in]: [ORDER_STATUS.ONGOING, ORDER_STATUS.TORETURN, ORDER_STATUS.COMPLETED] },
+            status: {
+              [Op.in]: [ORDER_STATUS.RESERVED, ORDER_STATUS.ONGOING, ORDER_STATUS.TORETURN, ORDER_STATUS.COMPLETED],
+            },
           },
         },
       ],
@@ -217,7 +219,7 @@ class ProductDemandService {
       this.getArtworksRentedCounts(),
     ]);
 
-    const { count, artworksWithScores, popularityScores } = await this.getPopularityScores(
+    const { count, artworks, artworksWithScore, popularityScores } = await this.getPopularityScores(
       viewCounts,
       cartCounts,
       wishlistCounts,
@@ -225,12 +227,15 @@ class ProductDemandService {
       rentedCounts
     );
 
-    const sortedArtworks =
-      sort && sort === 'popular' ? artworksWithScores.sort((a, b) => b.score - a.score) : artworksWithScores;
+    const sortedArtworks = sort && sort === 'popular' ? artworks.sort((a, b) => b.score - a.score) : artworks;
+    const sortedArtworksWithScore =
+      sort && sort === 'popular' ? artworksWithScore.sort((a, b) => b.score - a.score) : artworksWithScore;
 
     const previousPage = page && limit && page > 1 ? page - 1 : undefined;
     const paginatedArtworks = page && limit ? sortedArtworks.slice((page - 1) * limit, page * limit) : sortedArtworks;
-    const pageSize = paginatedArtworks.length;
+    const paginatedArtworksWithScore =
+      page && limit ? sortedArtworksWithScore.slice((page - 1) * limit, page * limit) : sortedArtworksWithScore;
+    const pageSize = paginatedArtworksWithScore.length;
     const totalPages = limit ? Math.ceil(count.totalArtworks / limit) : 1;
     const nextPage = page && limit && page < totalPages ? page + 1 : undefined;
 
@@ -241,11 +246,12 @@ class ProductDemandService {
       previousPage,
       totalPages,
       artworks: paginatedArtworks,
+      artworksWithScore: paginatedArtworksWithScore,
       popularityScores: popularityScores,
     };
   }
 
-  async getUserDemandArtworks(userId: number, options?: { limit: number }) {
+  async getUserDemandAnalytics(userId: number, options?: { limit: number }) {
     const sessionService = new SessionService();
     const sessionIds = await sessionService.getUserSessionIds(userId);
 
@@ -277,7 +283,7 @@ class ProductDemandService {
       }),
     ]);
 
-    const { count, artworksWithScores, popularityScores } = await this.getPopularityScores(
+    const { count, artworksWithScore, popularityScores } = await this.getPopularityScores(
       viewCounts,
       cartCounts,
       wishlistCounts,
@@ -286,9 +292,7 @@ class ProductDemandService {
     );
 
     const limit = options?.limit || count.scoredArtworks;
-    const artworks = artworksWithScores.sort((a, b) => b.score - a.score).slice(0, limit);
-    console.log('User Demand Artworks:', artworks, popularityScores);
-    return { artworks, popularityScores };
+    return { artworksWithScore: artworksWithScore.sort((a, b) => b.score - a.score).slice(0, limit), popularityScores };
   }
 
   private async getPopularityScores(
@@ -299,7 +303,8 @@ class ProductDemandService {
     rentedCounts: { [artworkId: number]: number }
   ): Promise<{
     count: { totalArtworks: number; scoredArtworks: number };
-    artworksWithScores: ArtworkWithScore[];
+    artworks: ArtworkWithScore[];
+    artworksWithScore: ArtworkWithScore[];
     popularityScores: { [artworkId: number]: PopularityScore };
   }> {
     const artworks = await ArtworkRepository.findAll();
@@ -317,7 +322,7 @@ class ProductDemandService {
       };
     });
 
-    const artworksWithScores = artworks.map((artwork) => {
+    const artworksScored = artworks.map((artwork) => {
       const artworkId = artwork.id;
       const score = calculatePopularityScore(popularityScores[artworkId], this.weights);
       return {
@@ -325,12 +330,16 @@ class ProductDemandService {
         score,
       };
     });
+
+    const artworksWithScore = artworksScored.filter((artwork) => artwork.score > 0);
+
     return {
-      artworksWithScores,
+      artworks: artworksScored,
+      artworksWithScore,
       popularityScores,
       count: {
         totalArtworks: artworks.length,
-        scoredArtworks: artworksWithScores.length,
+        scoredArtworks: artworksWithScore.length,
       },
     };
   }

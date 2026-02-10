@@ -49,7 +49,6 @@ export function similarityScore(artworkA: ArtworkDTO, artworkB: ArtworkDTO): num
   // ----- CATEGORICAL FIELDS -----
   addScore(match(artworkA.medium, artworkB.medium), 3);
   addScore(match(artworkA.styleId, artworkB.styleId), 3);
-  addScore(match(artworkA.status, artworkB.status), 1);
   addScore(match(artworkA.artistId, artworkB.artistId), 1);
 
   // ----- TAGS -----
