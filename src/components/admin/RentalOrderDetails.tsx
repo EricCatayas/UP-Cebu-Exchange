@@ -71,6 +71,14 @@ export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrde
           'Warning: Changing the items status from "UNAVAILABLE" will mark the items as not available for rent. Users will not be able to view or rent these items.';
       }
 
+      if (orderStatus === ORDER_STATUS.RESERVED && order.status !== ORDER_STATUS.RESERVED) {
+        message =
+          'Warning: Changing the order status to "RESERVED" indicates that the order has been reserved. Any users who have the same items in their pending order will be notified that their order has been cancelled.';
+      }
+      if (orderStatus === ORDER_STATUS.TORECEIVE && order.status !== ORDER_STATUS.TORECEIVE) {
+        message =
+          'Warning: Changing the order status to "TO RECEIVE" indicates that the order is ready to be received by the customer. The customer will be notified accordingly.';
+      }
       if (orderStatus === ORDER_STATUS.TORETURN && order.status !== ORDER_STATUS.TORETURN) {
         message =
           'Warning: Changing the order status to "TO RETURN" indicates that the rental period has ended and the items are due for return. Any associated extensions will also be removed.';
