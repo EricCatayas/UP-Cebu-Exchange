@@ -35,7 +35,7 @@ export default async function UserPage({ params }: { params: { id: string } }) {
     console.log('Milestones for User:', userMilestones);
 
     return (
-      <div className="container px-8 py-6 max-w-7xl mx-auto">
+      <div className="px-8 py-6">
         <h2 className="text-3xl font-bold mb-6 slide-right-delay-600">User Milestones</h2>
         <UserMilestones milestones={userMilestones} />
         <h2 className="text-3xl font-bold mb-6 slide-right-delay-600">Interests</h2>

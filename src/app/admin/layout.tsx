@@ -13,7 +13,7 @@ const AdminLayout: React.FC = async ({ children }) => {
         <Sidebar />
         <div className="flex-1 flex flex-col">
           <Navbar />
-          <main className="flex-1 overflow-y-auto">{children}</main>
+          <main className="container max-w-8xl mx-auto">{children}</main>
         </div>
       </div>
     </NotificationProvider>
