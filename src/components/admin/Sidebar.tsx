@@ -73,13 +73,13 @@ const Sidebar: React.FC = () => {
             </Link>
           </li>
           <li>
-            <Link href="/admin/notifications" className="flex items-center p-2 hover:bg-gray-700">
+            <Link href="/admin/reports" className="flex items-center p-2 hover:bg-gray-700">
               <FaChartBar className="mr-2" />
               Reports
             </Link>
           </li>
           <li>
-            <Link href="/admin/notifications" className="flex items-center p-2 hover:bg-gray-700">
+            <Link href="/admin/themes" className="flex items-center p-2 hover:bg-gray-700">
               <FaPalette className="mr-2" />
               Themes
             </Link>
