@@ -1,7 +1,8 @@
-const AnalyticsCard: React.FC<{ header: string; value: string | number; subheader?: string }> = ({
+const AnalyticsCard: React.FC<{ header: string; value: string | number; subheader?: string; description?: string }> = ({
   header,
   value,
   subheader,
+  description,
 }) => {
   const backgroundColors = [
     {
@@ -65,9 +66,11 @@ const AnalyticsCard: React.FC<{ header: string; value: string | number; subheade
           </div>
         </div>
       )}
-      <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-black bg-opacity-25 opacity-0 group-hover:opacity-100 transition-opacity">
-        <span className="text-sm font-semibold">{randomBackgroundColor.label}</span>
-      </div>
+      {description && (
+        <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-black bg-opacity-25 opacity-0 group-hover:opacity-100 transition-opacity">
+          <span className="text-sm font-semibold">{description}</span>
+        </div>
+      )}
     </div>
   );
 };
