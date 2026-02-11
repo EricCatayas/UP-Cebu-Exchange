@@ -39,7 +39,7 @@ RentalOrderItem.init(
         key: 'id',
       },
       onUpdate: 'CASCADE',
-      onDelete: 'CASCADE',
+      onDelete: 'RESTRICT',
     },
     amount: {
       type: DataTypes.DECIMAL(10, 2),
