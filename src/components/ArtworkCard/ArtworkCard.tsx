@@ -4,8 +4,8 @@ import CartIcon from '../CartIcon/CartIcon';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import { useCart } from '@/contexts/CartContext';
 import { getDimension, getImageUrl } from '@/lib/artwork';
-import { cartApi } from '@/lib/api/cart';
 import { eventApi } from '@/lib/api/event';
 import { wishlistApi } from '@/lib/api/wishlist';
 import { ARTWORK_STATUS } from '@/lib/constants';
@@ -15,6 +15,7 @@ export default function ArtworkCard({ artwork, displayInfo = true }: { artwork: 
   if (!artwork) return null;
 
   const { user } = useAuth();
+  const { addItemToCart, removeItemFromCart } = useCart();
   const router = useRouter();
 
   const primaryImageUrl = getImageUrl(artwork);
@@ -28,15 +29,11 @@ export default function ArtworkCard({ artwork, displayInfo = true }: { artwork: 
 
   const handleToggleCart = async () => {
     try {
-      if (!user) {
-        alert('You need to be signed in to add item to cart');
-        return;
-      }
       if (inCart) {
-        await cartApi.removeItem(artwork.id);
+        await removeItemFromCart(artwork.id);
         setInCart(false);
       } else {
-        await cartApi.addItem(artwork.id);
+        await addItemToCart(artwork);
         setInCart(true);
         alert('Artwork added to cart');
         eventApi.addToCart(artwork.id);

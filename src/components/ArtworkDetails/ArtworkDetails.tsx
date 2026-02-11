@@ -4,11 +4,11 @@ import HeartIcon from '../HeartIcon/HeartIcon';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import { useCart } from '@/contexts/CartContext';
 import { useSession } from '@/contexts/SessionContext';
 import { ArtworkDTO } from '@/models/Artwork';
 import { getDimension } from '@/lib/artwork';
 import { artworkApi } from '@/lib/api/artwork';
-import { cartApi } from '@/lib/api/cart';
 import { eventApi } from '@/lib/api/event';
 import { wishlistApi } from '@/lib/api/wishlist';
 import { hasOngoingRental as hasOngoingRentalOrder } from '@/lib/artwork';
@@ -27,6 +27,7 @@ function ArtworkDetails({
 
   const artist = artwork.artist;
   const { user } = useAuth();
+  const { addItemToCart, removeItemFromCart } = useCart();
   const { sessionId } = useSession();
   const [inCart, setInCart] = useState(artwork.isInCart);
   const [inWishlist, setInWishlist] = useState(artwork.isInWishlist);
@@ -37,15 +38,11 @@ function ArtworkDetails({
 
   const handleAddToCart = async () => {
     try {
-      if (!user) {
-        alert('You need to be signed in to add item to cart');
-        return;
-      }
       if (inCart) {
-        await cartApi.removeItem(artwork.id);
+        await removeItemFromCart(artwork.id);
         setInCart(false);
       } else {
-        await cartApi.addItem(artwork.id);
+        await addItemToCart(artwork);
         setInCart(true);
         alert('Artwork added to cart');
         eventApi.addToCart(artwork.id);

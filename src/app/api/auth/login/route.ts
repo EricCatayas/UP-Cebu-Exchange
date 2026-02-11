@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
       await eventService.login(user.id);
     }
 
-    let callbackUrl = '/';
+    let callbackUrl = null;
 
     if (isAdmin(user)) {
       callbackUrl = '/admin';

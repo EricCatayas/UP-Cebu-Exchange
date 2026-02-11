@@ -8,6 +8,7 @@ const publicRoutes = [
   '/about',
   '/artworks',
   '/artists',
+  '/checkout',
   '/forgot-password',
   '/login',
   '/privacy-policy',

@@ -5,14 +5,19 @@ import { ARTWORK_STATUS, ORDER_STATUS } from '@/lib/constants';
 
 class CartService {
   async addItem(userId: number, artworkId: number) {
+    return this.addItems(userId, [artworkId]);
+  }
+
+  async addItems(userId: number, artworkIds: number[]) {
     let cart = await Cart.findOne({ where: { userId } });
     if (!cart) {
       cart = await Cart.create({ userId });
     }
-    let cartItem = await CartItem.findOne({ where: { cartId: cart.id, artworkId } });
-    if (!cartItem) {
-      await CartItem.create({ cartId: cart.id, artworkId });
-    }
+    const existingCartItems = await CartItem.findAll({ where: { cartId: cart.id, artworkId: artworkIds } });
+    const existingArtworkIds = new Set(existingCartItems.map((item) => item.artworkId));
+    const newArtworkIds = artworkIds.filter((id) => !existingArtworkIds.has(id));
+    const newCartItems = newArtworkIds.map((artworkId) => ({ cartId: cart.id, artworkId }));
+    await CartItem.bulkCreate(newCartItems);
   }
 
   async removeItem(userId: number, artworkId: number) {
@@ -36,7 +41,7 @@ class CartService {
     return !!cartItem;
   }
 
-  async getCartItems(userId: number): Promise<CartItemDTO[]> {
+  async getCartItems(userId: number): Promise<{ cartId: number; items: CartItemDTO[] }> {
     const cart = await Cart.findOne({
       where: { userId },
       include: [
@@ -83,7 +88,7 @@ class CartService {
 
     false;
 
-    return cart.cartItems.map((item) => {
+    const cartItems = cart.cartItems.map((item) => {
       const cartItem = item.toJSON();
       const artwork = cartItem.artwork;
       const isAvailable = artwork.status === ARTWORK_STATUS.AVAILABLE;
@@ -105,6 +110,11 @@ class CartService {
               : CART_STATUS.UNAVAILABLE,
       };
     });
+
+    return {
+      cartId: cart.id,
+      items: cartItems,
+    };
   }
 }
 

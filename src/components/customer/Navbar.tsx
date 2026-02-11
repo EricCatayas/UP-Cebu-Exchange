@@ -72,11 +72,11 @@ const Navbar: React.FC = () => {
           <Link href="/about" className="font-light hover:text-gray-700">
             About
           </Link>
+          <button onClick={handleCartClick} className="font-light hover:text-gray-700">
+            Cart
+          </button>
           {isLoggedIn ? (
             <>
-              <button onClick={handleCartClick} className="font-light hover:text-gray-700">
-                Cart
-              </button>
               <Link href="/account/rentals" className="font-light hover:text-gray-700">
                 My Rentals
               </Link>

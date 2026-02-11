@@ -7,6 +7,7 @@ import RentalSummaryCard from '@/components/cards/RentalSummary/RentalSummary';
 import { FaExclamationTriangle } from 'react-icons/fa';
 import React, { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
 import { useCart } from '@/contexts/CartContext';
 import { useRentalOrder } from '@/contexts/RentalOrderContext';
 import { useUserAddress } from '@/contexts/UserAddressContext';
@@ -16,7 +17,8 @@ import { getUnavailableReason } from '@/lib/order';
 import { rentalOrderApi } from '@/lib/api/rentalOrder';
 
 function RentalCheckout() {
-  const { cartItems, selectedCartItemIds, toggleCartItem, toggleAllCartItems, removeFromCart } = useCart();
+  const { isLoggedIn } = useAuth();
+  const { cartItems, selectedArtworkIds, toggleCartItem, toggleAllCartItems, removeItemFromCart } = useCart();
   const { address } = useUserAddress();
 
   const {
@@ -39,9 +41,11 @@ function RentalCheckout() {
   } = useRentalOrder();
 
   useEffect(() => {
-    const selectedArtworks = cartItems.filter((item) => selectedCartItemIds.has(item.id)).map((item) => item.artwork);
+    const selectedArtworks = cartItems
+      .filter((item) => selectedArtworkIds.has(item.artworkId))
+      .map((item) => item.artwork);
     setArtworks(selectedArtworks);
-  }, [cartItems, selectedCartItemIds, setArtworks]);
+  }, [cartItems, selectedArtworkIds, setArtworks]);
 
   useEffect(() => {
     setAddress(address);
@@ -50,16 +54,16 @@ function RentalCheckout() {
   const router = useRouter();
 
   const canCheckout = useMemo(() => {
-    return selectedCartItemIds.size > 0 && contractSigned;
-  }, [selectedCartItemIds, contractSigned]);
+    return selectedArtworkIds.size > 0 && contractSigned && isLoggedIn;
+  }, [selectedArtworkIds, contractSigned, isLoggedIn]);
 
   const canSignContract = useMemo(() => {
-    return selectedCartItemIds.size > 0 && address !== null && address !== undefined;
-  }, [selectedCartItemIds, address]);
+    return selectedArtworkIds.size > 0 && address !== null && address !== undefined && isLoggedIn;
+  }, [selectedArtworkIds, address, isLoggedIn]);
 
   const selectedArtworks = useMemo(() => {
-    return cartItems.filter((item) => selectedCartItemIds.has(item.id)).map((item) => item.artwork);
-  }, [cartItems, selectedCartItemIds]);
+    return cartItems.filter((item) => selectedArtworkIds.has(item.artworkId)).map((item) => item.artwork);
+  }, [cartItems, selectedArtworkIds]);
 
   const navigateToArtwork = (artworkId: number) => {
     router.push(`/artworks/${artworkId}`);
@@ -69,32 +73,24 @@ function RentalCheckout() {
     router.push('/checkout/rental-agreement');
   };
 
+  const navigateToCreateAccount = () => {
+    router.push('/register');
+  };
+
   const navigateToAddress = () => {
     router.push('/checkout/address');
   };
 
   const handleRemoveCartItem = async (cartItem: any) => {
     const artworkId = cartItem.artworkId;
-    fetch('/api/cart', {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ artworkId }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Failed to remove item from cart');
-        }
-        console.log('Item removed from cart');
-        removeFromCart(cartItem.id);
-      })
-      .catch((error) => {
-        console.error('Error removing item from cart:', error);
-      });
+    await removeItemFromCart(artworkId);
   };
 
   const handleCheckout = async () => {
+    const selectedCartItemIds = cartItems
+      .filter((item) => selectedArtworkIds.has(item.artworkId))
+      .map((item) => item.id);
+
     const rentalOrder = {
       durationMonths: duration,
       startDate,
@@ -139,7 +135,7 @@ function RentalCheckout() {
                 <label className="flex items-center space-x-2 cursor-pointer">
                   <input
                     type="checkbox"
-                    checked={selectedCartItemIds.size === cartItems.length && cartItems.length > 0}
+                    checked={selectedArtworkIds.size === cartItems.length && cartItems.length > 0}
                     onChange={toggleAllCartItems}
                     className="w-5 h-5 rounded border-gray-300 cursor-pointer"
                   />
@@ -152,15 +148,15 @@ function RentalCheckout() {
               <div className="space-y-3">
                 {cartItems.map((item) => (
                   <div
-                    key={item.id}
+                    key={item.artworkId}
                     className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50"
                   >
                     <div className="flex items-center space-x-4 flex-1">
                       {item.isAvailable ? (
                         <input
                           type="checkbox"
-                          checked={selectedCartItemIds.has(item.id)}
-                          onChange={() => toggleCartItem(item.id)}
+                          checked={selectedArtworkIds.has(item.artworkId)}
+                          onChange={() => toggleCartItem(item.artworkId)}
                           className="w-5 h-5 rounded border-gray-300 cursor-pointer"
                         />
                       ) : (
@@ -258,7 +254,7 @@ function RentalCheckout() {
             paymentMethod={paymentMethod}
             total={total}
           >
-            {contractSigned ? (
+            {canCheckout ? (
               <button
                 onClick={handleCheckout}
                 disabled={!canCheckout}
@@ -267,13 +263,21 @@ function RentalCheckout() {
                 <span>CHECKOUT</span>
                 <span>→</span>
               </button>
-            ) : (
+            ) : isLoggedIn ? (
               <button
                 onClick={navigateToContract}
                 disabled={!canSignContract}
                 className="w-full bg-primary hover:bg-primary-dark disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-lg transition-colors flex items-center justify-center space-x-2"
               >
                 <span>SIGN CONTRACT</span>
+                <span>→</span>
+              </button>
+            ) : (
+              <button
+                onClick={navigateToCreateAccount}
+                className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-3 px-6 rounded-lg transition-colors flex items-center justify-center space-x-2"
+              >
+                <span>CREATE AN ACCOUNT</span>
                 <span>→</span>
               </button>
             )}

@@ -8,6 +8,7 @@ function Login() {
   const { login } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [redirectUrl] = useState(searchParams.get('redirect') || '');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [remember, setRemember] = useState(false);
@@ -25,15 +26,18 @@ function Login() {
         return;
       }
 
-      router.push(callbackUrl || '/');
+      router.push(callbackUrl || redirectUrl || '/');
     } catch (error) {
       console.error('Login failed:', error);
     }
   };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem', paddingTop: '5rem', paddingBottom: '10rem' }}>
-      <div className='fillup-box'
+    <div
+      style={{ display: 'flex', justifyContent: 'center', padding: '2rem', paddingTop: '5rem', paddingBottom: '10rem' }}
+    >
+      <div
+        className="fillup-box"
         style={{
           width: '100%',
           maxWidth: '380px',

@@ -1,17 +1,20 @@
 'use client';
 
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { ArtworkDTO } from '@/models/Artwork';
+import { useAuth } from '@/contexts/AuthContext';
 import { RentalPlanDTO } from '@/models/RentalPlan';
-import { CartItemDTO } from '@/models/CartItem';
+import { CART_STATUS, CartItemDTO } from '@/models/CartItem';
+import { isAvailableForRental } from '@/lib/artwork';
 
 interface CartContextType {
   cartItems: CartItemDTO[];
+  addItemToCart: (artwork: ArtworkDTO) => Promise<void>;
+  removeItemFromCart: (artworkId: number) => Promise<void>;
   setCartItems: (items: CartItemDTO[]) => void;
-  selectedCartItemIds: Set<number>;
-  toggleCartItem: (id: number) => void;
+  selectedArtworkIds: Set<number>;
+  toggleCartItem: (artworkId: number) => void;
   toggleAllCartItems: () => void;
-  removeFromCart: (id: number) => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -22,37 +25,107 @@ interface CartProviderProps {
 }
 
 export function CartProvider({ children, initialCartItems = [] }: CartProviderProps) {
+  const { user } = useAuth();
+  const [cardId, setCartId] = useState<number | null>(null);
   const [cartItems, setItemsInCart] = useState<CartItemDTO[]>(initialCartItems);
-  const [selectedCartItemIds, setSelectedCartItemIds] = useState<Set<number>>(new Set());
+  const [selectedArtworkIds, setSelectedArtworkIds] = useState<Set<number>>(new Set());
+
+  // load cart items
+  useEffect(() => {
+    if (!user) {
+      setItemsInCart([]);
+      setCartId(null);
+      return;
+    }
+
+    const fetchCartItems = async () => {
+      try {
+        const { cartId, cartItems } = await cartApi.getItems();
+        setCartId(cartId);
+        setItemsInCart(cartItems);
+      } catch (error) {
+        console.error('Error fetching cart items:', error);
+      }
+    };
+
+    if (hasUnsavedCartItems()) {
+      console.log('Syncing cart items with server...', cartItems);
+      syncCartWithServer();
+    } else {
+      console.log('Fetching cart items from server...');
+      fetchCartItems();
+    }
+  }, [user]);
+
+  const hasUnsavedCartItems = () => {
+    return cartItems.some((item) => item.id === undefined);
+  };
+
+  const syncCartWithServer = async () => {
+    try {
+      const artworkIdsInCart = cartItems.map((item) => item.artworkId);
+      const { cartId, items } = await cartApi.addItems(artworkIdsInCart);
+      setCartId(cartId);
+      setItemsInCart(items);
+    } catch (error) {
+      console.error('Error syncing cart items:', error);
+    }
+  };
 
   const setCartItems = (items: CartItemDTO[]) => {
     setItemsInCart(items);
   };
 
-  const toggleCartItem = (id: number) => {
-    setSelectedCartItemIds((prev) => {
+  const addItemToCart = async (artwork: ArtworkDTO) => {
+    try {
+      const artworkId = artwork.id;
+      setItemsInCart((prev) => [
+        ...prev,
+        { artworkId, artwork, isAvailable: isAvailableForRental(artwork) } as CartItemDTO,
+      ]);
+      if (cardId) {
+        console.log('Adding item to cart on server...', artworkId);
+        await cartApi.addItem(artworkId);
+      }
+    } catch (error) {
+      console.error('Error adding item to cart:', error);
+      throw error;
+    }
+  };
+
+  const removeItemFromCart = async (artworkId: number) => {
+    try {
+      setItemsInCart((prev) => prev.filter((item) => item.artworkId !== artworkId));
+      if (cardId) {
+        console.log('Removing item from cart on server...', artworkId);
+        await cartApi.removeItem(artworkId);
+      }
+      setSelectedArtworkIds((prev) => {
+        const next = new Set(prev);
+        if (next.has(artworkId)) next.delete(artworkId);
+        return next;
+      });
+    } catch (error) {
+      console.error('Error removing item from cart:', error);
+      throw error;
+    }
+  };
+
+  const toggleCartItem = (artworkId: number) => {
+    setSelectedArtworkIds((prev) => {
       const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
+      if (next.has(artworkId)) next.delete(artworkId);
+      else next.add(artworkId);
       return next;
     });
   };
 
   const toggleAllCartItems = () => {
-    setSelectedCartItemIds((prev) =>
+    setSelectedArtworkIds((prev) =>
       prev.size === cartItems.length
         ? new Set()
-        : new Set(cartItems.filter((item) => item.isAvailable).map((item) => item.id))
+        : new Set(cartItems.filter((item) => item.isAvailable).map((item) => item.artworkId))
     );
-  };
-
-  const removeFromCart = (id: number) => {
-    setItemsInCart((prev) => prev.filter((item) => item.id !== id));
-    setSelectedCartItemIds((prev) => {
-      const next = new Set(prev);
-      next.delete(id);
-      return next;
-    });
   };
 
   return (
@@ -60,10 +133,11 @@ export function CartProvider({ children, initialCartItems = [] }: CartProviderPr
       value={{
         cartItems,
         setCartItems,
-        selectedCartItemIds,
+        addItemToCart,
+        removeItemFromCart,
+        selectedArtworkIds,
         toggleCartItem,
         toggleAllCartItems,
-        removeFromCart,
       }}
     >
       {children}
@@ -76,3 +150,68 @@ export function useCart() {
   if (!ctx) throw new Error('useCart must be used within CartProvider');
   return ctx;
 }
+
+const cartApi = {
+  addItems: async (artworkIds: number[]) => {
+    const response = await fetch('/api/cart', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ artworkIds }),
+    });
+
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.error || 'Failed to add items to cart');
+    }
+
+    const { cartId, items } = await response.json();
+    return { cartId, items };
+  },
+
+  addItem: async (artworkId: number) => {
+    const response = await fetch('/api/cart', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ artworkIds: [artworkId] }),
+    });
+
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.error || 'Failed to add item to cart');
+    }
+
+    const { cartId, items } = await response.json();
+    return { cartId, items };
+  },
+
+  removeItem: async (artworkId: number) => {
+    const response = await fetch('/api/cart', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ artworkId }),
+    });
+
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.error || 'Failed to remove item from cart');
+    }
+
+    return response.json();
+  },
+
+  getItems: async () => {
+    const response = await fetch('/api/cart');
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.error || 'Failed to fetch cart items');
+    }
+    const { cartId, items: cartItems } = await response.json();
+    return { cartId, cartItems };
+  },
+};

@@ -3,11 +3,21 @@ import React, { useState } from 'react';
 import { useUserAddress } from '@/contexts/UserAddressContext';
 import AddAddressForm from '@/components/form/Address/AddAddress';
 import EditAddressForm from '@/components/form/Address/EditAddress';
-import { AddressDTO } from '@/models/Address';
+import { useAuth } from '@/contexts/AuthContext';
+import { useRouter } from 'next/navigation';
 import { useSession } from '@/contexts/SessionContext';
+import { AddressDTO } from '@/models/Address';
 import { eventApi } from '@/lib/api/event';
 
 export default function CheckoutAddressPage() {
+  const { isLoggedIn, isLoading } = useAuth();
+
+  if (!isLoggedIn && !isLoading) {
+    const router = useRouter();
+    router.push('/login?redirect=/checkout/address');
+    return null;
+  }
+
   const { address, setAddress } = useUserAddress();
   const { sessionId } = useSession();
 

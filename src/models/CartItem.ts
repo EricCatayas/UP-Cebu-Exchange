@@ -14,8 +14,8 @@ export enum CART_STATUS {
 }
 
 export interface CartItemDTO {
-  id: number;
-  cartId: number;
+  id?: number; // null when item is not yet saved to server
+  cartId?: number;
   artworkId: number;
   artwork: ArtworkDTO;
   createdAt: Date;

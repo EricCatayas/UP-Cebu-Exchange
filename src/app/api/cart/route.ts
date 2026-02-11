@@ -13,9 +13,9 @@ export async function GET(request: Request) {
       return new Response(JSON.stringify({ error: 'Customer access required' }), { status: 403 });
     }
 
-    const cartItems = await CartService.getCartItems(currentUser.userId);
+    const { cartId, items } = await CartService.getCartItems(currentUser.userId);
 
-    return new Response(JSON.stringify({ cartItems }), { status: 200 });
+    return new Response(JSON.stringify({ cartId, items }), { status: 200 });
   } catch (error) {
     console.error('Error fetching cart items:', error);
     return new Response(JSON.stringify({ error: 'Internal Server Error' }), { status: 500 });
@@ -31,16 +31,17 @@ export async function POST(request: Request) {
     if (!isCustomer(currentUser)) {
       return new Response(JSON.stringify({ error: 'Customer access required' }), { status: 403 });
     }
-    const { artworkId } = await request.json();
+    const { artworkIds } = await request.json();
 
-    if (!artworkId || isNaN(Number(artworkId))) {
-      return new Response(JSON.stringify({ error: 'Valid artworkId is required' }), { status: 400 });
+    if (!artworkIds || !Array.isArray(artworkIds) || artworkIds.some((id) => isNaN(Number(id)))) {
+      return new Response(JSON.stringify({ error: 'Valid artworkIds are required' }), { status: 400 });
     }
 
-    console.log('Adding artwork to cart:', artworkId);
-    await CartService.addItem(currentUser.userId, Number(artworkId));
+    console.log('Adding artwork to cart:', artworkIds);
+    await CartService.addItems(currentUser.userId, artworkIds);
+    const { cartId, items } = await CartService.getCartItems(currentUser.userId);
 
-    return new Response(JSON.stringify({ success: true }), { status: 201 });
+    return new Response(JSON.stringify({ success: true, cartId, items }), { status: 201 });
   } catch (error) {
     console.error('Error adding item to cart:', error);
     return new Response(JSON.stringify({ error: 'Internal Server Error' }), { status: 500 });
