@@ -1,20 +1,3 @@
-TODO
-[ ] Home page recommendation
-[ ] Save Cart Items for Unsigned Users
-[ ] Admin Dashboard use Real Data
-
-BACKLOG
-[ ] 403 Forbidden: model.userId !== currentUser.userId
-[ ] persist checkout state
-[ ] notifications fix unread count
-[ ] replace notFound()
-[ ] filter for inventory
-[ ] Artwork Tags Management
-[ ] Artwork Artists Management
-[ ] filter, paginate and order popular products
-[ ] System Email + Notification
-[ ] Web Responsiveness
-
 ## Setup
 
 After cloning the git repository, run gitbash command:
@@ -46,6 +29,10 @@ MAILJET_API_SECRET=mailjet-api-secret
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=stripe-publishable-key
 STRIPE_SECRET_KEY=stripe-secret-key
 STRIPE_WEBHOOK_SECRET=stripe-webhook-signing-secret
+# Optional config you can override
+APP_CONTACT_EMAIL=contactus@email.com
+APP_CONTACT_PHONE='(+63) 987 654 3210'
+APP_ADDRESS='new address'
 ```
 
 Create the database in MySQL
