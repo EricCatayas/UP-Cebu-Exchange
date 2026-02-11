@@ -17,6 +17,7 @@ const publicRoutes = [
   '/terms-of-use',
   '/verify-email',
   '/settings',
+  '/terms-of-use',
   '/team',
   '/faq',
   // api routes
