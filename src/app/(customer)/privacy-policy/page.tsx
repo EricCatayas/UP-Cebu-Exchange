@@ -1,5 +1,5 @@
 import React from 'react';
-import { APP_CONTACT_EMAIL } from '@/lib/constants';
+import { APP_CONTACT_EMAIL, APP_CONTACT_PHONE } from '@/lib/constants';
 import FAQItem from '@/components/FAQ/FAQItem';
 
 function PrivacyPolicy() {
@@ -120,6 +120,7 @@ function PrivacyPolicy() {
             >
               {APP_CONTACT_EMAIL}
             </a>
+            <p className="text-gray-700 font-semibold mt-4">{APP_CONTACT_PHONE}</p>
           </div>
         </div>
       </div>

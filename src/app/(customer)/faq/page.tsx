@@ -1,6 +1,6 @@
 import React from 'react';
 import FAQItem from '@/components/FAQ/FAQItem';
-import { APP_CONTACT_EMAIL } from '@/lib/constants';
+import { APP_CONTACT_EMAIL, APP_CONTACT_PHONE } from '@/lib/constants';
 
 const faqData = [
   {
@@ -14,13 +14,6 @@ const faqData = [
       {
         question: 'Do I need an account to use the system?',
         answer: ['Some features may be public.', 'Most functions require a registered account.'],
-      },
-      {
-        question: 'Does the system use third-party services?',
-        answer: [
-          'Yes. We may use third-party tools for hosting, analytics, or payments.',
-          'We are not responsible for their privacy practices.',
-        ],
       },
       {
         question: 'Can the policies change?',
@@ -58,16 +51,6 @@ const faqData = [
         answer:
           'We may collect your name, email, contact number, account details, and basic usage data. We only collect what is necessary.',
       },
-    ],
-  },
-  {
-    category: 'Personal Information and Privacy',
-    items: [
-      {
-        question: 'What personal information is collected?',
-        answer:
-          'We may collect your name, email, contact number, account details, and basic usage data. We only collect what is necessary.',
-      },
       {
         question: 'Why is my personal data collected?',
         answer: [
@@ -88,7 +71,7 @@ const faqData = [
         question: 'How can I update or delete my information?',
         answer: [
           'You can update most details in your account settings.',
-          'For deletion or access requests, contact test@email.com.',
+          `For deletion or access requests, contact ${APP_CONTACT_EMAIL} or call ${APP_CONTACT_PHONE}.`,
         ],
       },
       {
@@ -103,6 +86,13 @@ const faqData = [
         answer: [
           'Yes. Cookies help improve performance and user experience.',
           'You can disable cookies in your browser, but some features may not work properly.',
+        ],
+      },
+      {
+        question: 'Does the system use third-party services?',
+        answer: [
+          'Yes. We may use third-party tools for hosting, email services, or payments.',
+          'We are not responsible for their privacy practices.',
         ],
       },
     ],
