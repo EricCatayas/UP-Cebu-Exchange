@@ -9,7 +9,11 @@ interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   isLoggedIn: boolean;
-  login: (email: string, password: string, remember?: boolean) => Promise<{ success: boolean; error?: string }>;
+  login: (
+    email: string,
+    password: string,
+    remember?: boolean
+  ) => Promise<{ success: boolean; error?: string; callbackUrl?: string }>;
   register: (email: string, password: string, fullName: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
   checkSession: () => Promise<void>;

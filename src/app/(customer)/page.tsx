@@ -22,31 +22,37 @@ export default async function Page() {
 
   const categories = [
     {
+      id: null,
       name: 'Expressionism',
       imageUrl:
         'https://res.cloudinary.com/dbgolykzg/image/upload/v1763961737/UP%20Cebu%20Exchange/Expressionism_3x4_v3rsvf.jpg',
     },
     {
+      id: null,
       name: 'Realism',
       imageUrl:
         'https://res.cloudinary.com/dbgolykzg/image/upload/v1763961747/UP%20Cebu%20Exchange/Realism_4x3_yqbvq4.jpg',
     },
     {
+      id: null,
       name: 'Abstract',
       imageUrl:
         'https://res.cloudinary.com/dbgolykzg/image/upload/v1763961736/UP%20Cebu%20Exchange/abstract_1x1_clixmp.jpg',
     },
     {
+      id: null,
       name: 'Folk Art',
       imageUrl:
         'https://res.cloudinary.com/dbgolykzg/image/upload/v1763961737/UP%20Cebu%20Exchange/folkart_1x1_evgkmm.jpg',
     },
     {
+      id: null,
       name: 'Impressionism',
       imageUrl:
         'https://res.cloudinary.com/dbgolykzg/image/upload/v1763961740/UP%20Cebu%20Exchange/Landscape_2x1_p8hqta.jpg',
     },
     {
+      id: null,
       name: 'Contemporary',
       imageUrl:
         'https://res.cloudinary.com/dbgolykzg/image/upload/v1763961737/UP%20Cebu%20Exchange/contemporary_2x3_u2fzsj.jpg',

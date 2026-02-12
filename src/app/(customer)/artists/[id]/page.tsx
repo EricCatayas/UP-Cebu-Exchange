@@ -3,7 +3,7 @@ import PageHeader from '@/components/PageHeader/PageHeader';
 import ArtworkService from '@/services/ArtworkService';
 
 async function ArtistArtworks({ params }: { params: Promise<{ id: string }> }) {
-  const id = (await params).id;
+  const id = parseInt((await params).id);
   const artworkService = new ArtworkService();
   const artworks = await artworkService.getArtworksFromArtist(id);
   const artist = artworks.length > 0 ? artworks[0].artist : null;

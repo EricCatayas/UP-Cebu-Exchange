@@ -164,7 +164,7 @@ class ArtworkService {
       : null;
   }
 
-  async getArtworksFromArtist(artistId?: number) {
+  async getArtworksFromArtist(artistId?: number): Promise<ArtworkDTO[]> {
     if (!artistId) {
       return [];
     }

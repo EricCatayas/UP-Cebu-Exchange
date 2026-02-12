@@ -56,19 +56,19 @@ class ArtworkRepository {
     };
   }
 
-  async findAll(options = {}) {
+  async findAll(options = {}): Promise<ArtworkDTO[]> {
     const artworks = await Artwork.findAll({
       include: ['artist', 'tags', 'style', 'rentalPlans', 'images'],
       ...options,
     });
-    return artworks.map((artwork) => artwork.toJSON());
+    return artworks.map((artwork) => artwork.toJSON() as ArtworkDTO);
   }
 
-  async findById(id: number) {
+  async findById(id: number): Promise<ArtworkDTO | undefined> {
     const artwork = await Artwork.findByPk(id, {
       include: ['artist', 'tags', 'style', 'rentalPlans', 'images'],
     });
-    return artwork?.toJSON();
+    return artwork?.toJSON() as ArtworkDTO | undefined;
   }
 
   async findByStatus(status: string) {
