@@ -15,8 +15,8 @@ const geistSans = Geist({
 });
 
 export const metadata: Metadata = {
-  title: 'UP Cebu Art Exchange',
-  description: 'Art rental platform for UP Cebu community',
+  title: 'UP Cebu Exchange',
+  description: 'Art rental platform from the University of the Philippines Cebu',
 };
 
 export default function RootLayout({
