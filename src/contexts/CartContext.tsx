@@ -161,6 +161,10 @@ const cartApi = {
       body: JSON.stringify({ artworkIds }),
     });
 
+    if (response.status === 403) {
+      return { cartId: null, items: [] };
+    }
+
     if (!response.ok) {
       const data = await response.json();
       throw new Error(data.error || 'Failed to add items to cart');
@@ -178,6 +182,10 @@ const cartApi = {
       },
       body: JSON.stringify({ artworkIds: [artworkId] }),
     });
+
+    if (response.status === 403) {
+      return { cartId: null, items: [] };
+    }
 
     if (!response.ok) {
       const data = await response.json();
@@ -197,6 +205,10 @@ const cartApi = {
       body: JSON.stringify({ artworkId }),
     });
 
+    if (response.status === 403) {
+      return { cartId: null, items: [] };
+    }
+
     if (!response.ok) {
       const data = await response.json();
       throw new Error(data.error || 'Failed to remove item from cart');
@@ -207,6 +219,9 @@ const cartApi = {
 
   getItems: async () => {
     const response = await fetch('/api/cart');
+    if (response.status === 403) {
+      return { cartId: null, cartItems: [] };
+    }
     if (!response.ok) {
       const data = await response.json();
       throw new Error(data.error || 'Failed to fetch cart items');
