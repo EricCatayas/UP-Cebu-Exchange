@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import AnalyticsCard from '@/components/AnalyticsCard/AnalyticsCard';
-import ArtworksTable from '@/components/admin/inventory/ArtworksTable';
+import ArtworksTable from '@/components/admin/ArtworksTable';
 import ArtworkService from '@/services/ArtworkService';
 import { ARTWORK_STATUS } from '@/lib/constants';
 
