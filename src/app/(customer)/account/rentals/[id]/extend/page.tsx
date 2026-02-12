@@ -4,7 +4,7 @@ import { getCurrentUser } from '@/lib/auth';
 import { RentalOrderDTO } from '@/models/RentalOrder';
 import { notFound } from 'next/navigation';
 
-async function ExtendRentalPage({ params }: { params: { id: string } }) {
+async function ExtendRentalPage({ params }: { params: Promise<{ id: string }> }) {
   const id = parseInt((await params).id);
   const currentUser = await getCurrentUser();
   const rentalOrderService = new RentalOrderService();

@@ -11,7 +11,7 @@ import { PAYMENT_STATUS, ORDER_STATUS, ARTWORK_STATUS } from '@/lib/constants';
  * Record a manual payment transaction
  * Used when admin receives payment through cash, bank transfer, or other offline methods
  */
-export async function POST(request: Request, { params }: { params: { id: string } }) {
+export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const user = await getCurrentUser();
     if (!user) {

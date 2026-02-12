@@ -8,7 +8,7 @@ import { ORDER_STATUS, PAYMENT_STATUS } from '@/lib/constants';
 import { getCurrentSession } from '@/lib/session';
 import { orderCancelledNotification } from '@/lib/notifications';
 
-export async function POST(request: Request, { params }: { params: { id: string } }) {
+export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const currentUser = await getCurrentUser();
 

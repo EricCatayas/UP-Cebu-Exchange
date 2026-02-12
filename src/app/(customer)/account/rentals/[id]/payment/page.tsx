@@ -6,7 +6,7 @@ import { getImageUrl } from '@/lib/artwork';
 import TransactionTable from '@/components/admin/TransactionTable';
 import PaymentCard from '@/components/cards/PaymentCard';
 
-export default async function PaymentPage({ params }: { params: { id: string } }) {
+export default async function PaymentPage({ params }: { params: Promise<{ id: string }> }) {
   const id = parseInt((await params).id);
 
   const rentalOrderService = new RentalOrderService();

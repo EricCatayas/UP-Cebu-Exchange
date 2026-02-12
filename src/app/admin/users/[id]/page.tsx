@@ -12,7 +12,7 @@ import UserService from '@/services/UserService';
 import { isCustomer } from '@/lib/role';
 import { isOrderPaid } from '@/lib/order';
 
-export default async function UserPage({ params }: { params: { id: string } }) {
+export default async function UserPage({ params }: { params: Promise<{ id: string }> }) {
   const id = parseInt((await params).id);
 
   const userService = new UserService();

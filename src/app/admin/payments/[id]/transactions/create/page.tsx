@@ -2,7 +2,7 @@ import Link from 'next/link';
 import CreateTransaction from '@/components/form/PaymentTransaction/CreateTransaction';
 import PaymentService from '@/services/PaymentService';
 
-export default async function CreateTransactionPage({ params }: { params: { id: string } }) {
+export default async function CreateTransactionPage({ params }: { params: Promise<{ id: string }> }) {
   const paymentId = parseInt((await params).id);
 
   const paymentService = new PaymentService();

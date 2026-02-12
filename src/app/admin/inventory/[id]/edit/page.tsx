@@ -6,7 +6,7 @@ import TagsService from '@/services/TagsService';
 import { notFound } from 'next/navigation';
 import { ARTWORK_MEDIUMS } from '@/lib/constants';
 
-async function EditInventory({ params }: { params: { id: string } }) {
+async function EditInventory({ params }: { params: Promise<{ id: string }> }) {
   const id = parseInt((await params).id);
 
   const artworkService = new ArtworkService();

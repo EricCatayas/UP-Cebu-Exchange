@@ -6,7 +6,7 @@ import { FaCheckCircle, FaBox, FaMapMarkerAlt, FaCreditCard, FaEnvelope, FaPhone
 import { getCurrentUser } from '@/lib/auth';
 import { APP_CONTACT_EMAIL, ORDER_STATUS, PAYMENT_STATUS } from '@/lib/constants';
 
-export default async function OrderCancelledPage({ params }: { params: { id: string } }) {
+export default async function OrderCancelledPage({ params }: { params: Promise<{ id: string }> }) {
   const id = parseInt((await params).id);
   const currentUser = await getCurrentUser();
   const rentalOrderService = new RentalOrderService();

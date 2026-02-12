@@ -16,7 +16,7 @@ import {
 } from '@/lib/notifications';
 import { getCurrentSession } from '@/lib/session';
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const currentUser = await getCurrentUser();
 

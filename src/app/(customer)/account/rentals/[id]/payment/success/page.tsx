@@ -4,7 +4,7 @@ import RentalOrderService from '@/services/RentalOrderService';
 import { RentalOrderDTO } from '@/models/RentalOrder';
 import { getCurrentUser } from '@/lib/auth';
 
-export default async function PaymentSuccessPage({ params }: { params: { id: string } }) {
+export default async function PaymentSuccessPage({ params }: { params: Promise<{ id: string }> }) {
   const id = parseInt((await params).id);
   const currentUser = await getCurrentUser();
   const rentalOrderService = new RentalOrderService();

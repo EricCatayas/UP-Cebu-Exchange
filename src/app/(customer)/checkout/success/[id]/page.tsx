@@ -2,7 +2,7 @@ import RentalOrderService from '@/services/RentalOrderService';
 import CheckoutSuccess from '@/components/CheckoutSuccess/CheckoutSuccess';
 import { getCurrentUser } from '@/lib/auth';
 
-async function CheckoutSuccessPage({ params }: { params: { id: string } }) {
+async function CheckoutSuccessPage({ params }: { params: Promise<{ id: string }> }) {
   const id = parseInt((await params).id);
   const currentUser = await getCurrentUser();
 

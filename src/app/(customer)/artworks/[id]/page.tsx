@@ -8,7 +8,7 @@ import HeroBackground from '@/components/HeroBackground/HeroBackground';
 import ProductDemandService from '@/services/ProductDemandService';
 import { getCurrentUser } from '@/lib/auth';
 
-async function ArtworkDetailsPage({ params }: { params: { id: string } }) {
+async function ArtworkDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const id = parseInt((await params).id);
 
   const currentUser = await getCurrentUser();

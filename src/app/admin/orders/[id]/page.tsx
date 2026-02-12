@@ -3,7 +3,7 @@ import RentalOrderService from '@/services/RentalOrderService';
 import { RentalOrderDTO } from '@/models/RentalOrder';
 import { notFound } from 'next/navigation';
 
-async function OrdersDetails({ params }: { params: { id: string } }) {
+async function OrdersDetails({ params }: { params: Promise<{ id: string }> }) {
   const id = parseInt((await params).id);
   const rentalOrderService = new RentalOrderService();
   const order: RentalOrderDTO | null = await rentalOrderService.getOrderDetails(id);

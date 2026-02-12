@@ -2,7 +2,7 @@ import ArtworkCard from '@/components/ArtworkCard/ArtworkCard';
 import PageHeader from '@/components/PageHeader/PageHeader';
 import ArtworkService from '@/services/ArtworkService';
 
-async function ArtistArtworks({ params }: { params: { id: string } }) {
+async function ArtistArtworks({ params }: { params: Promise<{ id: string }> }) {
   const id = (await params).id;
   const artworkService = new ArtworkService();
   const artworks = await artworkService.getArtworksFromArtist(id);

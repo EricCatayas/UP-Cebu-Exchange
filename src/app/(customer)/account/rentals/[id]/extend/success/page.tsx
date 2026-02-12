@@ -10,7 +10,7 @@ async function ExtendRentalSuccessPage({
   params,
   searchParams,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   const id = parseInt((await params).id);

@@ -1,7 +1,7 @@
 import RentalOrderService from '@/services/RentalOrderService';
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const artworkId = parseInt((await params).id);
     const rentalOrderService = new RentalOrderService();

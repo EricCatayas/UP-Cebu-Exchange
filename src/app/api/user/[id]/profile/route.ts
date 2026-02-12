@@ -7,7 +7,7 @@ import { isAdmin, canEditContent } from '@/lib/role';
 
 // Both admin and the user themselves can update user info
 // but only admin can change roles
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const currentUser = await getCurrentUser();
     if (!currentUser) {

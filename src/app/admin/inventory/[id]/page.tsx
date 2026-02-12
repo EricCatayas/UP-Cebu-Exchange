@@ -10,7 +10,7 @@ import { ARTWORK_STATUS } from '@/lib/constants';
 import { notFound } from 'next/navigation';
 import { fmtMoney } from '@/lib/formatter';
 
-async function InventoryDetails({ params }: { params: { id: string } }) {
+async function InventoryDetails({ params }: { params: Promise<{ id: string }> }) {
   const id = parseInt((await params).id);
   const artworkService = new ArtworkService();
   const artwork = await artworkService.getArtworkById(id);

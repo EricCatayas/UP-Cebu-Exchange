@@ -8,7 +8,7 @@ import { ORDER_STATUS, PAYMENT_STATUS, PAYMENT_STATUSES } from '@/lib/constants'
 import { getCurrentSession } from '@/lib/session';
 import { orderPaidNotification } from '@/lib/notifications';
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const currentUser = await getCurrentUser();
 
