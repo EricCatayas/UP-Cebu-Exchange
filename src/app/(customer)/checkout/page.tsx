@@ -61,10 +61,6 @@ function RentalCheckout() {
     return selectedArtworkIds.size > 0 && address !== null && address !== undefined && isLoggedIn;
   }, [selectedArtworkIds, address, isLoggedIn]);
 
-  const selectedArtworks = useMemo(() => {
-    return cartItems.filter((item) => selectedArtworkIds.has(item.artworkId)).map((item) => item.artwork);
-  }, [cartItems, selectedArtworkIds]);
-
   const navigateToArtwork = (artworkId: number) => {
     router.push(`/artworks/${artworkId}`);
   };
@@ -246,7 +242,7 @@ function RentalCheckout() {
         {/* Right Column - Rental Summary */}
         <div className="lg:col-span-1">
           <RentalSummaryCard
-            artworks={selectedArtworks}
+            artworks={artworks}
             duration={duration}
             startDate={startDate}
             endDate={endDate}

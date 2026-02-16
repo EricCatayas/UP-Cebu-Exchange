@@ -1,19 +1,20 @@
 'use client';
-import React, { useState } from 'react';
-import { useUserAddress } from '@/contexts/UserAddressContext';
+import React from 'react';
+import Link from 'next/link';
 import AddAddressForm from '@/components/form/Address/AddAddress';
 import EditAddressForm from '@/components/form/Address/EditAddress';
-import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
+import { useUserAddress } from '@/contexts/UserAddressContext';
 import { useSession } from '@/contexts/SessionContext';
 import { AddressDTO } from '@/models/Address';
 import { eventApi } from '@/lib/api/event';
 
 export default function CheckoutAddressPage() {
   const { isLoggedIn, isLoading } = useAuth();
+  const router = useRouter();
 
   if (!isLoggedIn && !isLoading) {
-    const router = useRouter();
     router.push('/login?redirect=/checkout/address');
     return null;
   }
@@ -50,9 +51,9 @@ export default function CheckoutAddressPage() {
         </div>
       </div>
       <div className="mt-6">
-        <a href="/checkout" className="text-blue-600 hover:underline">
+        <Link href="/checkout" className="text-blue-600 hover:underline">
           &larr; Back to Checkout
-        </a>
+        </Link>
       </div>
     </div>
   );

@@ -24,10 +24,10 @@ interface CartProviderProps {
   initialCartItems?: CartItemDTO[];
 }
 
-export function CartProvider({ children, initialCartItems = [] }: CartProviderProps) {
+export function CartProvider({ children }: CartProviderProps) {
   const { user } = useAuth();
   const [cardId, setCartId] = useState<number | null>(null);
-  const [cartItems, setItemsInCart] = useState<CartItemDTO[]>(initialCartItems);
+  const [cartItems, setItemsInCart] = useState<CartItemDTO[]>([]);
   const [selectedArtworkIds, setSelectedArtworkIds] = useState<Set<number>>(new Set());
 
   // load cart items

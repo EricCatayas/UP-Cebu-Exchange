@@ -73,7 +73,7 @@ class CartService {
     });
 
     if (!cart) {
-      return [];
+      return { cartId: null, items: [] };
     }
 
     const rentalOrderService = new RentalOrderService();
