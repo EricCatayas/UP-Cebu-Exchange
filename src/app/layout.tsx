@@ -27,16 +27,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} antialiased`}>
-        <CookieProvider>
-          <AuthProvider>
+        <AuthProvider>
+          <CookieProvider>
             <SessionProvider>
               <ModalProvider>
                 <Modal />
                 {children}
               </ModalProvider>
             </SessionProvider>
-          </AuthProvider>
-        </CookieProvider>
+          </CookieProvider>
+        </AuthProvider>
       </body>
     </html>
   );

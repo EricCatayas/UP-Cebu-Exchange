@@ -22,6 +22,7 @@ import Style from './Style';
 import Tag from './Tag';
 import User from './User';
 import UserAddress from './UserAddress';
+import UserCookiePreference from './UserCookiePreference';
 import UserEmailVerification from './UserEmailVerification';
 import UserPasswordReset from './UserPasswordReset';
 import Wishlist from './Wishlist';
@@ -53,6 +54,12 @@ const initializeAssociations = () => {
   UserAddress.belongsTo(Address, {
     foreignKey: 'addressId',
     as: 'address',
+  });
+
+  // UserCookiePreference belongs to User
+  UserCookiePreference.belongsTo(User, {
+    foreignKey: 'userId',
+    as: 'user',
   });
 
   // Artist has many Artworks
@@ -320,6 +327,7 @@ export {
   Tag,
   User,
   UserAddress,
+  UserCookiePreference,
   UserEmailVerification,
   UserPasswordReset,
   Wishlist,
@@ -349,6 +357,7 @@ export default {
   Tag,
   User,
   UserAddress,
+  UserCookiePreference,
   UserEmailVerification,
   UserPasswordReset,
   Wishlist,

@@ -1,9 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState, useMemo } from 'react';
-import { useCookie } from '@/contexts/CookieContext';
 import { User } from '@/types/auth';
-import { isAdmin } from '@/lib/role';
 
 interface AuthContextType {
   user: User | null;
@@ -24,19 +22,11 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const { acceptCookies } = useCookie();
 
   // Check session on mount
   useEffect(() => {
     checkSession();
   }, []);
-
-  // Check if user is admin
-  useEffect(() => {
-    if (user && isAdmin(user)) {
-      acceptCookies();
-    }
-  }, [user, acceptCookies]);
 
   const isLoggedIn = useMemo(() => !!user, [user]);
 

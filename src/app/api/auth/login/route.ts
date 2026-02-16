@@ -1,6 +1,6 @@
 import EventService from '@/services/EventService';
 import { NextRequest, NextResponse } from 'next/server';
-import { User, Role } from '@/models/sequelize';
+import { User, Role, UserCookiePreference } from '@/models/sequelize';
 import { verifyPassword, generateAuthToken, setAuthCookie } from '@/lib/auth';
 import { isAdmin, canEditContent } from '@/lib/role';
 import { getCurrentSession, updateSessionUser } from '@/lib/session';
@@ -85,6 +85,14 @@ export async function POST(request: NextRequest) {
         }
       }
     }
+
+    //#region For now, we will not include it in the response since it's not needed on the client side at this moment.
+    // const cookiePreference = await UserCookiePreference.findOne({
+    //   where: { userId: user.userId },
+    //   attributes: ['preference'],
+    //   raw: true,
+    // });
+    //#endregion
 
     return NextResponse.json({
       message: 'Login successful',
