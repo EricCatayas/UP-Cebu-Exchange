@@ -19,9 +19,9 @@ export default function ArtworksDisplay({ artworks }: { artworks: ArtworkDTO[] }
       const newPositions: Array<{ left: number; top: number }> = [];
       let currentLeft = 0;
 
-      artworks.forEach(() => {
+      artworks.forEach((_, index) => {
         // Random vertical offset
-        const top = Math.random() * (maxTop - minTop) + minTop;
+        const top = index === 0 ? Math.random() * (60 - minTop) + minTop : Math.random() * (maxTop - minTop) + minTop;
 
         // Random gap to next card
         const gap = Math.random() * (maxGap - minGap) + minGap;
