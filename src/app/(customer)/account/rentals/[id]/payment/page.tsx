@@ -2,26 +2,32 @@ import React from 'react';
 import Link from 'next/link';
 import PaymentService from '@/services/PaymentService';
 import RentalOrderService from '@/services/RentalOrderService';
-import { getImageUrl } from '@/lib/artwork';
 import TransactionTable from '@/components/admin/TransactionTable';
 import PaymentCard from '@/components/cards/PaymentCard';
+import NotFound from '@/components/errors/NotFound';
+import Forbidden from '@/components/errors/Forbidden';
+import { getCurrentUser } from '@/lib/auth';
+import { getImageUrl } from '@/lib/artwork';
 
 export default async function PaymentPage({ params }: { params: Promise<{ id: string }> }) {
   const id = parseInt((await params).id);
+  const currentUser = await getCurrentUser();
 
   const rentalOrderService = new RentalOrderService();
   const order = await rentalOrderService.getPaymentOrderDetails(id);
 
   if (!order) {
+    return <NotFound header="Rental Order Not Found" linkText="Back to Rentals" linkHref="/account/rentals" />;
+  }
+
+  if (order.userId !== currentUser?.userId) {
     return (
-      <div className="px-8 py-6">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
-          <p className="text-red-800 font-medium">Rental Order not found</p>
-          <Link href="/account/rentals" className="text-blue-600 hover:underline mt-4 inline-block">
-            Back to My Rentals
-          </Link>
-        </div>
-      </div>
+      <Forbidden
+        header="Unauthorized Access"
+        subheader="You do not have permission to view this rental order."
+        linkText="Back to Rentals"
+        linkHref="/account/rentals"
+      />
     );
   }
 

@@ -1,8 +1,9 @@
 import ExtendRental from '@/components/ExtendRental/ExtendRental';
 import RentalOrderService from '@/services/RentalOrderService';
+import NotFound from '@/components/errors/NotFound';
+import Forbidden from '@/components/errors/Forbidden';
 import { getCurrentUser } from '@/lib/auth';
 import { RentalOrderDTO } from '@/models/RentalOrder';
-import { notFound } from 'next/navigation';
 
 async function ExtendRentalPage({ params }: { params: Promise<{ id: string }> }) {
   const id = parseInt((await params).id);
@@ -11,7 +12,18 @@ async function ExtendRentalPage({ params }: { params: Promise<{ id: string }> })
   const order: RentalOrderDTO | null = await rentalOrderService.getUserOrderDetails(currentUser?.userId, id);
 
   if (!order) {
-    return notFound();
+    return <NotFound header="Rental Order Not Found" linkText="Back to Rentals" linkHref="/account/rentals" />;
+  }
+
+  if (order.userId !== currentUser?.userId) {
+    return (
+      <Forbidden
+        header="Unauthorized Access"
+        subheader="You do not have permission to view this rental order."
+        linkText="Back to Rentals"
+        linkHref="/account/rentals"
+      />
+    );
   }
 
   const artworks = order.items.map((item) => item.artwork);

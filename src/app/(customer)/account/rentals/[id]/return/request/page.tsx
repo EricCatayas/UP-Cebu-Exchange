@@ -1,6 +1,7 @@
-import RentalOrderService from '@/services/RentalOrderService';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import NotFound from '@/components/errors/NotFound';
+import Forbidden from '@/components/errors/Forbidden';
+import RentalOrderService from '@/services/RentalOrderService';
 import { RentalOrderDTO } from '@/models/RentalOrder';
 import { FaCheckCircle, FaBox, FaMapMarkerAlt, FaCreditCard, FaEnvelope, FaPhone, FaClock } from 'react-icons/fa';
 import { getCurrentUser } from '@/lib/auth';
@@ -12,12 +13,19 @@ export default async function OrderReturnRequestPage({ params }: { params: Promi
   const rentalOrderService = new RentalOrderService();
   const order: RentalOrderDTO | null = await rentalOrderService.getUserOrderDetails(currentUser?.userId, id);
 
-  if (!order) {
-    notFound();
+  if (!order || order.status !== ORDER_STATUS.TORETURN) {
+    return <NotFound header="Rental Order Not Found" linkText="Back to Rentals" linkHref="/account/rentals" />;
   }
 
-  if (order.status !== ORDER_STATUS.TORETURN) {
-    notFound();
+  if (order.userId !== currentUser?.userId) {
+    return (
+      <Forbidden
+        header="Unauthorized Access"
+        subheader="You do not have permission to view this rental order."
+        linkText="Back to Rentals"
+        linkHref="/account/rentals"
+      />
+    );
   }
 
   return (

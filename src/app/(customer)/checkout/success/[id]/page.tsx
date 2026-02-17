@@ -1,5 +1,6 @@
 import RentalOrderService from '@/services/RentalOrderService';
 import CheckoutSuccess from '@/components/CheckoutSuccess/CheckoutSuccess';
+import NotFound from '@/components/errors/NotFound';
 import { getCurrentUser } from '@/lib/auth';
 
 async function CheckoutSuccessPage({ params }: { params: Promise<{ id: string }> }) {
@@ -10,11 +11,7 @@ async function CheckoutSuccessPage({ params }: { params: Promise<{ id: string }>
   const order = await rentalOrderService.getUserOrderDetails(currentUser?.userId, id);
 
   if (!order) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <p>Order not found</p>
-      </div>
-    );
+    return <NotFound header="Rental Order Not Found" linkText="Back to Rentals" linkHref="/account/rentals" />;
   }
 
   return <CheckoutSuccess rentalOrder={order} />;

@@ -1,9 +1,9 @@
 import EditArtworkForm from '@/components/admin/EditArtworkForm';
+import NotFound from '@/components/errors/NotFound';
 import ArtistService from '@/services/ArtistService';
 import ArtworkService from '@/services/ArtworkService';
 import StylesService from '@/services/StylesService';
 import TagsService from '@/services/TagsService';
-import { notFound } from 'next/navigation';
 import { ARTWORK_MEDIUMS } from '@/lib/constants';
 
 async function EditInventory({ params }: { params: Promise<{ id: string }> }) {
@@ -13,7 +13,7 @@ async function EditInventory({ params }: { params: Promise<{ id: string }> }) {
   const artwork = await artworkService.getArtworkById(id);
 
   if (!artwork) {
-    return notFound();
+    return <NotFound header="Artwork Not Found" linkText="Back to Inventory" linkHref="/admin/inventory" />;
   }
 
   const allArtists = await ArtistService.getAllArtists();

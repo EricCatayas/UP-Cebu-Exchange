@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import AnalyticsCard from '@/components/AnalyticsCard/AnalyticsCard';
+import NotFound from '@/components/errors/NotFound';
 import ArtworkService from '@/services/ArtworkService';
 import RentalOrderService from '@/services/RentalOrderService';
 import ProductDemandService from '@/services/ProductDemandService';
@@ -16,7 +17,7 @@ async function InventoryDetails({ params }: { params: Promise<{ id: string }> })
   const artwork = await artworkService.getArtworkById(id);
 
   if (!artwork) {
-    return notFound();
+    return <NotFound header="Artwork Not Found" linkText="Back to Inventory" linkHref="/admin/inventory" />;
   }
 
   const productDemandService = new ProductDemandService();

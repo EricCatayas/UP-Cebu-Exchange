@@ -4,7 +4,7 @@ import ArtworkPopularityCarousel from '@/components/ArtworkCarousel/ArtworkPopul
 import EditUser from '@/components/form/User/EditUser';
 import RentalOrderCard from '@/components/cards/RentalOrder/RentalOrder';
 import UserMilestones from '@/components/Milestones/Milestones';
-import NotFound from '@/components/NotFound/NotFound';
+import NotFound from '@/components/errors/NotFound';
 import ProductDemandService from '@/services/ProductDemandService';
 import FunnelAnalyticsService from '@/services/FunnelAnalyticsService';
 import RentalOrderService from '@/services/RentalOrderService';

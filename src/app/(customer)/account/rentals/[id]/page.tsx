@@ -1,6 +1,7 @@
 import RentalOrderDetailsWrapper from '@/components/customer/RentalOrderDetails';
-import { notFound } from 'next/navigation';
 import RentalOrderService from '@/services/RentalOrderService';
+import NotFound from '@/components/errors/NotFound';
+import Forbidden from '@/components/errors/Forbidden';
 import { RentalOrderDTO } from '@/models/RentalOrder';
 import { getCurrentUser } from '@/lib/auth';
 
@@ -21,7 +22,18 @@ async function UserRentalOrderDetails({
   const action = (query.action as string) || undefined;
 
   if (!order) {
-    return notFound();
+    return <NotFound header="Rental Order Not Found" linkText="Back to Rentals" linkHref="/account/rentals" />;
+  }
+
+  if (order.userId !== currentUser?.userId) {
+    return (
+      <Forbidden
+        header="Unauthorized Access"
+        subheader="You do not have permission to view this rental order."
+        linkText="Back to Rentals"
+        linkHref="/account/rentals"
+      />
+    );
   }
 
   return <RentalOrderDetailsWrapper order={order} action={action} />;

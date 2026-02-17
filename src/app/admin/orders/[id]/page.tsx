@@ -1,7 +1,7 @@
 import RentalOrderDetailsWrapper from '@/components/admin/RentalOrderDetails';
 import RentalOrderService from '@/services/RentalOrderService';
+import NotFound from '@/components/errors/NotFound';
 import { RentalOrderDTO } from '@/models/RentalOrder';
-import { notFound } from 'next/navigation';
 
 async function OrdersDetails({ params }: { params: Promise<{ id: string }> }) {
   const id = parseInt((await params).id);
@@ -9,7 +9,7 @@ async function OrdersDetails({ params }: { params: Promise<{ id: string }> }) {
   const order: RentalOrderDTO | null = await rentalOrderService.getOrderDetails(id);
 
   if (!order) {
-    return notFound();
+    return <NotFound header="Order Not Found" linkText="Back to Orders" linkHref="/admin/orders" />;
   }
 
   return <RentalOrderDetailsWrapper order={order} />;
