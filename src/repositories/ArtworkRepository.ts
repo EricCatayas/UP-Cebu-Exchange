@@ -1,11 +1,8 @@
 import { Artwork, Artist, ArtworkImage, RentalPlan, Style, Tag } from '@/models/sequelize/index';
 import { ArtworkDTO, PaginatedArtworks } from '@/models/Artwork';
-import { PAGE_SIZE } from '@/lib/constants';
 
 class ArtworkRepository {
-  async findPaginated(
-    options: { page: number; limit: number } = { page: 1, limit: PAGE_SIZE }
-  ): Promise<PaginatedArtworks> {
+  async findPaginated(options: { page: number; limit: number } = { page: 1, limit: 12 }): Promise<PaginatedArtworks> {
     const page = options.page;
     const limit = options.limit;
     const offset = (page - 1) * limit;

@@ -2,7 +2,7 @@ import React from 'react';
 import AllArtworks from '@/components/AllArtworks/AllArtworks';
 import ArtworkService from '@/services/ArtworkService';
 import StylesService from '@/services/StylesService';
-import { ARTWORK_MEDIUMS, PAGE_SIZE } from '@/lib/constants';
+import { ARTWORK_MEDIUMS } from '@/lib/constants';
 import { getCurrentUser } from '@/lib/auth';
 
 async function AllArtworksServerComponent({
@@ -34,7 +34,7 @@ async function AllArtworksServerComponent({
     styles: styleIds,
     mediums: mediumNames,
     page: params.page,
-    limit: PAGE_SIZE,
+    limit: 24,
   };
 
   const {

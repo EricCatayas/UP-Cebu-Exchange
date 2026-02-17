@@ -22,7 +22,7 @@ import {
 import { ArtworkDTO, PaginatedArtworks, ArtworkQueryParams } from '@/models/Artwork';
 import { getCurrentUser } from '@/lib/auth';
 import { similarityScore } from '@/lib/recommendations';
-import { ARTWORK_STATUS, PAGE_SIZE, SIMILAR_ARTWORK_SCORE_THRESHOLD } from '@/lib/constants';
+import { ARTWORK_STATUS, SIMILAR_ARTWORK_SCORE_THRESHOLD } from '@/lib/constants';
 
 class ArtworkService {
   userId?: number;
@@ -37,7 +37,7 @@ class ArtworkService {
     styles,
     mediums,
     page = 1,
-    limit = PAGE_SIZE,
+    limit,
   }: ArtworkQueryParams): Promise<PaginatedArtworks> {
     // Build filtering options based on params
     let options = {};
