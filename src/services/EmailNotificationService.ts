@@ -156,7 +156,7 @@ class EmailNotificationService {
             `Name: ${user.fullName}\n` +
             `Email: ${user.email}\n\n` +
             `You can view the full user profile and manage permissions in the admin panel:\n` +
-            `${APP_BASE_URL}/admin/admin/users/${user.id}\n\n` +
+            `${APP_BASE_URL}/admin/users/${user.id}\n\n` +
             `This is an automated notification from ${APP_NAME}.`,
           HTMLPart: `
                 <!DOCTYPE html>
@@ -207,7 +207,7 @@ class EmailNotificationService {
                                   <table width="100%" cellpadding="0" cellspacing="0" style="margin: 25px 0;">
                                     <tr>
                                       <td align="center">
-                                        <a href="${APP_BASE_URL}/admin/admin/users/${user.id}" target="_blank" rel="noopener" style="display: inline-block; padding: 14px 32px; background-color: #10B981; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">View User Profile</a>
+                                        <a href="${APP_BASE_URL}/admin/users/${user.id}" target="_blank" rel="noopener" style="display: inline-block; padding: 14px 32px; background-color: #10B981; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">View User Profile</a>
                                       </td>
                                     </tr>
                                   </table>
