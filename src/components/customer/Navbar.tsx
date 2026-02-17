@@ -59,8 +59,8 @@ const Navbar: React.FC = () => {
     >
       <div className="container mx-auto px-4 py-2 flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <Link href="/">
-            <h1 className="font-lora text-3xl font-bold bg-gradient-to-r from-[#a70006] to-[#ffb224] bg-clip-text text-transparent">
+          <Link href="/" className="flex items-center h-full">
+            <h1 className="font-lora text-3xl font-bold bg-gradient-to-r from-[#a70006] to-[#ffb224] bg-clip-text text-transparent leading-tight">
               UP Cebu Exchange
             </h1>
           </Link>
