@@ -64,8 +64,9 @@ export async function DELETE(request: Request) {
     }
 
     await CartService.removeItem(currentUser.userId, Number(artworkId));
+    const { cartId, items } = await CartService.getCartItems(currentUser.userId);
 
-    return new Response(JSON.stringify({ success: true }), { status: 201 });
+    return new Response(JSON.stringify({ success: true, cartId, items }), { status: 201 });
   } catch (error) {
     console.error('Error removing item from cart:', error);
     return new Response(JSON.stringify({ error: 'Internal Server Error' }), { status: 500 });

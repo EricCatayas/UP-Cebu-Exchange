@@ -26,7 +26,7 @@ interface CartProviderProps {
 
 export function CartProvider({ children }: CartProviderProps) {
   const { user } = useAuth();
-  const [cardId, setCartId] = useState<number | null>(null);
+  const [cartId, setCartId] = useState<number | null>(null);
   const [cartItems, setItemsInCart] = useState<CartItemDTO[]>([]);
   const [selectedArtworkIds, setSelectedArtworkIds] = useState<Set<number>>(new Set());
 
@@ -48,6 +48,17 @@ export function CartProvider({ children }: CartProviderProps) {
       }
     };
 
+    const syncCartWithServer = async () => {
+      try {
+        const artworkIdsInCart = cartItems.map((item) => item.artworkId);
+        const { cartId, items } = await cartApi.addItems(artworkIdsInCart);
+        setCartId(cartId);
+        setItemsInCart(items);
+      } catch (error) {
+        console.error('Error syncing cart items:', error);
+      }
+    };
+
     if (hasUnsavedCartItems()) {
       console.log('Syncing cart items with server...', cartItems);
       syncCartWithServer();
@@ -61,17 +72,6 @@ export function CartProvider({ children }: CartProviderProps) {
     return cartItems.some((item) => item.id === undefined);
   };
 
-  const syncCartWithServer = async () => {
-    try {
-      const artworkIdsInCart = cartItems.map((item) => item.artworkId);
-      const { cartId, items } = await cartApi.addItems(artworkIdsInCart);
-      setCartId(cartId);
-      setItemsInCart(items);
-    } catch (error) {
-      console.error('Error syncing cart items:', error);
-    }
-  };
-
   const setCartItems = (items: CartItemDTO[]) => {
     setItemsInCart(items);
   };
@@ -79,13 +79,15 @@ export function CartProvider({ children }: CartProviderProps) {
   const addItemToCart = async (artwork: ArtworkDTO) => {
     try {
       const artworkId = artwork.id;
-      setItemsInCart((prev) => [
-        ...prev,
-        { artworkId, artwork, isAvailable: isAvailableForRental(artwork) } as CartItemDTO,
-      ]);
-      if (cardId) {
-        console.log('Adding item to cart on server...', artworkId);
-        await cartApi.addItem(artworkId);
+      if (user) {
+        const { cartId, items } = await cartApi.addItem(artworkId);
+        setCartId(cartId);
+        setItemsInCart(items);
+      } else {
+        setItemsInCart((prev) => [
+          ...prev,
+          { artworkId, artwork, isAvailable: isAvailableForRental(artwork) } as CartItemDTO,
+        ]);
       }
     } catch (error) {
       console.error('Error adding item to cart:', error);
@@ -95,10 +97,12 @@ export function CartProvider({ children }: CartProviderProps) {
 
   const removeItemFromCart = async (artworkId: number) => {
     try {
-      setItemsInCart((prev) => prev.filter((item) => item.artworkId !== artworkId));
-      if (cardId) {
-        console.log('Removing item from cart on server...', artworkId);
-        await cartApi.removeItem(artworkId);
+      if (user) {
+        const { cartId, items } = await cartApi.removeItem(artworkId);
+        setCartId(cartId);
+        setItemsInCart(items);
+      } else {
+        setItemsInCart((prev) => prev.filter((item) => item.artworkId !== artworkId));
       }
       setSelectedArtworkIds((prev) => {
         const next = new Set(prev);
@@ -214,7 +218,8 @@ const cartApi = {
       throw new Error(data.error || 'Failed to remove item from cart');
     }
 
-    return response.json();
+    const { cartId, items } = await response.json();
+    return { cartId, items };
   },
 
   getItems: async () => {
