@@ -108,7 +108,7 @@ function RentalOrderDetailsWrapper({ order, action }: { order: RentalOrderDTO; a
       : null;
 
   return (
-    <div className="container px-8 py-6 max-w-7xl mx-auto">
+    <div className="mt-12 mb-10 max-w-6xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
       <RentalOrderDetails order={order} onItemClicked={handleRentalItemClicked} paymentButton={paymentButton} />
 
       <div className="mt-6 flex gap-4">
