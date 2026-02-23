@@ -121,7 +121,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     // Update artwork
     await artwork.update({
       title: title?.trim(),
-      artistId: artworkArtistId || undefined,
+      artistId: artworkArtistId,
       styleId: artworkStyleId,
       description: description?.trim(),
       medium: medium?.trim(),

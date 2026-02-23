@@ -73,9 +73,10 @@ function EditArtworkForm({
 
   const handleSelectArtist = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { value } = e.target;
+    console.log('Selected artist ID:', value);
     setFormData((prev) => ({
       ...prev,
-      artistId: value,
+      artistId: value === '' ? null : value,
     }));
   };
 
@@ -183,7 +184,7 @@ function EditArtworkForm({
 
       await artworkApi.edit(artworkData);
       alert('Artwork saved successfully!');
-      router.push('/admin/inventory');
+      // router.push('/admin/inventory');
     } catch (error) {
       console.error('Error creating artwork:', error);
       alert(error instanceof Error ? error.message : 'Failed to create artwork');
@@ -428,7 +429,7 @@ function EditArtworkForm({
                 onChange={handleSelectArtist}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="">Select artist</option>
+                <option value="">No artist</option>
                 {artists?.map((artist) => (
                   <option key={artist.id} value={artist.id}>
                     {artist.name}
