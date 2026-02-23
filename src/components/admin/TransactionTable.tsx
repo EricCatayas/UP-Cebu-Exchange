@@ -169,14 +169,14 @@ export default function TransactionTable({ transactions }: TransactionTableProps
                         )}
                       </div>
 
-                      {transaction.metadata && Object.keys(transaction.metadata).length > 0 && (
+                      {/* {transaction.metadata && Object.keys(transaction.metadata).length > 0 && (
                         <div className="bg-white rounded p-3 border border-gray-200">
                           <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold mb-2">Metadata</p>
                           <pre className="text-xs text-gray-900 bg-gray-50 p-2 rounded overflow-auto">
                             {JSON.stringify(transaction.metadata, null, 2)}
                           </pre>
                         </div>
-                      )}
+                      )} */}
                     </div>
                   </td>
                 </tr>
