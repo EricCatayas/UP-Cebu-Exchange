@@ -88,6 +88,15 @@ function EditArtworkForm({
     }));
   };
 
+  const handleAddTag = () => {
+    const trimmedTag = newTag.trim();
+    if (trimmedTag && !tagOptions.includes(trimmedTag)) {
+      setTagOptions((prev) => [...prev, trimmedTag]);
+      setSelectedTags((prev) => [...prev, trimmedTag]);
+      setNewTag('');
+    }
+  };
+
   const handleTagSearch = (searchTerm: string) => {
     if (searchTerm.trim() === '') {
       setFilteredTagOptions(tagOptions);
@@ -96,21 +105,30 @@ function EditArtworkForm({
     setFilteredTagOptions(tagOptions.filter((tag) => tag.toLowerCase().includes(searchTerm.toLowerCase())));
   };
 
-  const handleToggleTag = (tag: string) => {
-    setSelectedTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]));
-  };
-
   const handleTagInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewTag(e.target.value);
   };
 
-  const handleAddTag = () => {
-    const trimmedTag = newTag.trim();
-    if (trimmedTag && !tagOptions.includes(trimmedTag)) {
-      setTagOptions((prev) => [...prev, trimmedTag]);
-      setSelectedTags((prev) => [...prev, trimmedTag]);
-      setNewTag('');
-    }
+  const handleToggleArtistMode = () => {
+    setIsNewArtist(!isNewArtist);
+    setFormData((prev) => ({
+      ...prev,
+      artistId: '',
+      artistName: '',
+    }));
+  };
+
+  const handleToggleStyleMode = () => {
+    setIsNewStyle(!isNewStyle);
+    setFormData((prev) => ({
+      ...prev,
+      styleId: '',
+      styleName: '',
+    }));
+  };
+
+  const handleToggleTag = (tag: string) => {
+    setSelectedTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]));
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -403,11 +421,7 @@ function EditArtworkForm({
               <label htmlFor="artistId" className="block text-sm font-medium text-gray-700 mb-1">
                 Artist
               </label>
-              <button
-                type="button"
-                onClick={() => setIsNewArtist(!isNewArtist)}
-                className="text-blue-600 text-sm hover:underline"
-              >
+              <button type="button" onClick={handleToggleArtistMode} className="text-blue-600 text-sm hover:underline">
                 {isNewArtist ? 'Select Artist' : 'Add New Artist'}
               </button>
             </div>

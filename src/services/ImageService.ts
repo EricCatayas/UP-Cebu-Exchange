@@ -22,7 +22,7 @@ export default class ImageService {
               function (error, result) {
                 if (error) {
                   console.error('Image upload error:', error);
-                  reject({ success: false, error: 'Failed to upload images' });
+                  reject({ success: false, error: error instanceof Error ? error.message : 'Failed to upload images' });
                 } else {
                   resolve(result);
                 }
@@ -36,7 +36,7 @@ export default class ImageService {
       return { success: true, results: uploadResults };
     } catch (error) {
       console.error('Image upload error:', error);
-      return { success: false, error: 'Failed to upload images' };
+      return { success: false, error: error instanceof Error ? error.message : 'Failed to upload images' };
     }
   }
 

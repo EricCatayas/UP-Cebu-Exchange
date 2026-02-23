@@ -118,6 +118,42 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       artworkStyleId = newStyle.id;
     }
 
+    // Handle image uploads
+    const arrayBuffers = await Promise.all(images.map((file) => file.arrayBuffer()));
+    const buffers = arrayBuffers.map((buffer) => {
+      return new Uint8Array(buffer);
+    });
+
+    const imageService = new ImageService();
+    const {
+      success: imageUploadSuccess,
+      results: imageUploadResults,
+      error: imageUploadError,
+    } = await imageService.uploadImages(buffers);
+    let primaryImageID = primaryImageId;
+
+    if (!imageUploadSuccess) {
+      if (artistName) await Artist.destroy({ where: { id: artworkArtistId } });
+      if (styleName) await Style.destroy({ where: { id: artworkStyleId } });
+
+      return NextResponse.json(
+        { error: `Image upload failed. Artwork was not updated. Message: ${imageUploadError}` },
+        { status: 500 }
+      );
+    }
+
+    for (let i = 0; i < imageUploadResults!.length; i++) {
+      const result = imageUploadResults![i];
+      const isPrimary = String(i) === primaryImageID;
+      await ArtworkImage.create({
+        id: result.public_id,
+        artworkId: artworkId,
+        imageUrl: result.secure_url,
+        isPrimary: isPrimary,
+      });
+      if (isPrimary) primaryImageID = result.public_id;
+    }
+
     // Update artwork
     await artwork.update({
       title: title?.trim(),
@@ -162,30 +198,6 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
             tagId: existingTag.id,
           },
         });
-      }
-    }
-
-    // Handle image uploads
-    const arrayBuffers = await Promise.all(images.map((file) => file.arrayBuffer()));
-    const buffers = arrayBuffers.map((buffer) => {
-      return new Uint8Array(buffer);
-    });
-
-    const imageService = new ImageService();
-    const { success: imageUploadSuccess, results: imageUploadResults } = await imageService.uploadImages(buffers);
-    let primaryImageID = primaryImageId;
-
-    if (imageUploadSuccess) {
-      for (let i = 0; i < imageUploadResults!.length; i++) {
-        const result = imageUploadResults![i];
-        const isPrimary = String(i) === primaryImageID;
-        await ArtworkImage.create({
-          id: result.public_id,
-          artworkId: artworkId,
-          imageUrl: result.secure_url,
-          isPrimary: isPrimary,
-        });
-        if (isPrimary) primaryImageID = result.public_id;
       }
     }
 
