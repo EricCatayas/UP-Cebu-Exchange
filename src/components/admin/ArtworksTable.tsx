@@ -5,18 +5,21 @@ import { useModal } from '@/contexts/ModalContext';
 import { getImageUrl } from '@/lib/artwork';
 import { ARTWORK_STATUS, ARTWORK_STATUSES } from '@/lib/constants';
 import { artworkApi } from '@/lib/api/artwork';
-import { FaSearch, FaInfoCircle, FaEdit, FaTrash } from 'react-icons/fa';
+import { FaSearch, FaEdit, FaTrash, FaPaintBrush, FaEye } from 'react-icons/fa';
 
 export default function ArtworksTable({ artworks: data }: { artworks: any[] }) {
   const [artworks, setArtworks] = useState(data);
   const { openConfirmation } = useModal();
 
-  const handleStatusChange = async (artworkId: number, newStatus: string) => {
+  const handleStatusChange = async (artworkId: number, newStatus: string, prevStatus: string) => {
     try {
       await artworkApi.updateStatus(artworkId, newStatus);
     } catch (error) {
       alert(error.message);
       // Optionally, you can add an error notification
+      setArtworks((prev) =>
+        prev.map((artwork) => (artwork.id === artworkId ? { ...artwork, status: prevStatus } : artwork))
+      );
     }
   };
 
@@ -70,7 +73,7 @@ export default function ArtworksTable({ artworks: data }: { artworks: any[] }) {
               <td className="px-6 py-4 whitespace-nowrap">
                 <select
                   defaultValue={artwork.status}
-                  onChange={(e) => handleStatusChange(artwork.id, e.target.value)}
+                  onChange={(e) => handleStatusChange(artwork.id, e.target.value, artwork.status)}
                   className="text-sm border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   {ARTWORK_STATUSES.map((status) => (
@@ -81,25 +84,40 @@ export default function ArtworksTable({ artworks: data }: { artworks: any[] }) {
                 </select>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm">
-                <div className="flex gap-2">
-                  <Link
-                    href={`/admin/inventory/${artwork.id}`}
-                    className="text-gray-600 hover:text-gray-800 font-medium"
-                  >
-                    <FaSearch />
-                  </Link>
-                  <Link
-                    href={`/admin/inventory/${artwork.id}/edit`}
-                    className="text-blue-600 hover:text-blue-800 font-medium"
-                  >
-                    <FaEdit />
-                  </Link>
-                  <button
-                    onClick={() => handleDelete(artwork.id)}
-                    className="text-red-600 hover:text-red-800 font-medium"
-                  >
-                    <FaTrash />
-                  </button>
+                <div className="relative group">
+                  <button className="text-xl text-gray-600 hover:text-gray-800 px-2 py-1">...</button>
+                  <div className="absolute right-0 w-48 bg-white border border-gray-200 rounded shadow-lg hidden group-hover:block z-10">
+                    <Link
+                      href={`/admin/inventory/${artwork.id}`}
+                      className="block px-4 py-2 text-gray-600 hover:bg-gray-50 text-sm flex items-center gap-2"
+                    >
+                      <FaSearch /> View
+                    </Link>
+                    <Link
+                      href={`/artworks/${artwork.id}`}
+                      className="block px-4 py-2 text-gray-600 hover:bg-gray-50 text-sm flex items-center gap-2"
+                    >
+                      <FaEye /> Public View
+                    </Link>
+                    <Link
+                      href={`/admin/inventory/${artwork.id}/edit`}
+                      className="block px-4 py-2 text-blue-600 hover:bg-gray-50 text-sm flex items-center gap-2"
+                    >
+                      <FaEdit /> Edit
+                    </Link>
+                    <Link
+                      href={`/admin/artists/${artwork.artistId}`}
+                      className="block px-4 py-2 text-green-600 hover:bg-gray-50 text-sm flex items-center gap-2"
+                    >
+                      <FaPaintBrush /> Artist
+                    </Link>
+                    <button
+                      onClick={() => handleDelete(artwork.id)}
+                      className="w-full text-left px-4 py-2 text-red-600 hover:bg-gray-50 text-sm flex items-center gap-2"
+                    >
+                      <FaTrash /> Delete
+                    </button>
+                  </div>
                 </div>
               </td>
             </tr>
