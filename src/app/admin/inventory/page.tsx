@@ -1,19 +1,53 @@
 import Link from 'next/link';
+import ArtworksFilterBar from '@/components/ArtworksFilterBar/ArtworksFilterBar';
 import AnalyticsCard from '@/components/AnalyticsCard/AnalyticsCard';
 import ArtworksTable from '@/components/admin/ArtworksTable';
+import Pagination from '@/components/Pagination/Pagination';
 import ArtworkService from '@/services/ArtworkService';
+import StylesService from '@/services/StylesService';
 import { ARTWORK_STATUS } from '@/lib/constants';
+import { ARTWORK_MEDIUMS } from '@/lib/constants';
 
-async function Inventory() {
+async function Inventory({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) {
+  const query = await searchParams;
+
+  const params = {
+    search: (query.search as string) || undefined,
+    sort: query.sort as 'popular' | 'latest' | undefined,
+    styles: query.styles || undefined,
+    mediums: query.mediums || undefined,
+    page: Number(query.page) || 1,
+  };
+
+  // Parse comma-separated values
+  const styleIds = params.styles?.split(',').map(Number).filter(Boolean) || [];
+  const mediumNames = params.mediums?.split(',').filter(Boolean) || [];
+
+  const queryParams = {
+    search: params.search,
+    sort: params.sort,
+    styles: styleIds,
+    mediums: mediumNames,
+    page: params.page,
+    limit: 24,
+  };
+
   const artworkService = new ArtworkService();
-
-  const allArtworks = await artworkService.getAllArtworks();
+  const {
+    items: artworks,
+    pageSize,
+    nextPage,
+    previousPage,
+    totalPages,
+  } = await artworkService.getPaginatedArtworks(queryParams);
+  const artworkStyles = await StylesService.getAllStyles();
+  const artworkMediums = ARTWORK_MEDIUMS;
 
   let availableCount = 0;
   let rentedCount = 0;
   let unavailableCount = 0;
 
-  allArtworks.forEach((artwork) => {
+  artworks.forEach((artwork) => {
     if (artwork.status === ARTWORK_STATUS.AVAILABLE) {
       availableCount++;
     } else if (artwork.status === ARTWORK_STATUS.RENTED) {
@@ -56,7 +90,9 @@ async function Inventory() {
 
         {/* Artworks Table */}
         <section>
-          <ArtworksTable artworks={allArtworks} />
+          <ArtworksFilterBar mediums={artworkMediums} styles={artworkStyles} />
+          <ArtworksTable artworks={artworks} />
+          <Pagination page={params.page} totalPages={totalPages} nextPage={nextPage} previousPage={previousPage} />
         </section>
       </div>
     </div>

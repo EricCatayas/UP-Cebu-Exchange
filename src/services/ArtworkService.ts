@@ -31,7 +31,7 @@ class ArtworkService {
     this.userId = userId;
   }
 
-  async getArtworksForCustomer({
+  async getPaginatedArtworks({
     search,
     sort,
     styles,
@@ -82,6 +82,7 @@ class ArtworkService {
           : []),
       ];
     }
+
     if (styles && styles.length > 0) {
       where.styleId = { [Op.in]: styles };
     }

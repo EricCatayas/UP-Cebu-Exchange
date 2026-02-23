@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useModal } from '@/contexts/ModalContext';
 import { getImageUrl } from '@/lib/artwork';
 import { ARTWORK_STATUS, ARTWORK_STATUSES } from '@/lib/constants';
@@ -11,12 +11,15 @@ export default function ArtworksTable({ artworks: data }: { artworks: any[] }) {
   const [artworks, setArtworks] = useState(data);
   const { openConfirmation } = useModal();
 
+  useEffect(() => {
+    setArtworks(data);
+  }, [data]);
+
   const handleStatusChange = async (artworkId: number, newStatus: string, prevStatus: string) => {
     try {
       await artworkApi.updateStatus(artworkId, newStatus);
     } catch (error) {
       alert(error.message);
-      // Optionally, you can add an error notification
       setArtworks((prev) =>
         prev.map((artwork) => (artwork.id === artworkId ? { ...artwork, status: prevStatus } : artwork))
       );

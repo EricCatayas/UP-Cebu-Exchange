@@ -1,12 +1,13 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { eventApi } from '@/lib/api/event';
 import { StyleDTO } from '@/models/Style';
 
 export default function ArtworksFilterBar({ mediums, styles }: { mediums: string[]; styles: StyleDTO[] }) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
 
   const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '');
   const [sortBy, setSortBy] = useState(searchParams.get('sort') || '');
@@ -91,7 +92,7 @@ export default function ArtworksFilterBar({ mediums, styles }: { mediums: string
     setSortBy('');
     setSelectedStyleIds([]);
     setSelectedMediums([]);
-    router.push('/artworks', { scroll: false });
+    router.push(pathname, { scroll: false });
   };
 
   useEffect(() => {

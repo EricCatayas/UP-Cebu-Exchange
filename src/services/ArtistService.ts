@@ -37,8 +37,9 @@ class ArtistService {
     return artist ? (artist.toJSON() as ArtistDTO) : null;
   }
 
-  async getAllArtists(): Promise<ArtistDTO[]> {
+  async getAllArtists(options: {}): Promise<ArtistDTO[]> {
     const artists = await Artist.findAll({
+      ...options,
       include: [
         {
           model: Artwork,
