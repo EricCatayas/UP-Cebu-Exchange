@@ -40,7 +40,27 @@ export default function SettingsPage() {
   };
 
   const handleClearBrowsingData = () => {
-    // TODO: Implementation for removing browsing data
+    openConfirmation(
+      {
+        title: 'Clear Browsing Data',
+        message: 'Are you sure you want to clear your browsing data?',
+      },
+      async () => {
+        if (user && isAdmin(user)) {
+          alert('Staff members are required to accept cookies to use the application.');
+          return;
+        }
+        const response = await fetch('/api/session/clear', {
+          method: 'POST',
+        });
+        if (response.ok) {
+          alert('Your browsing data has been cleared.');
+        } else {
+          const data = await response.json();
+          alert(`Failed to clear browsing data: ${data.error}. Please try again.`);
+        }
+      }
+    );
   };
 
   return (
