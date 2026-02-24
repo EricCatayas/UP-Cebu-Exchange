@@ -17,7 +17,7 @@ import {
 const Sidebar: React.FC = () => {
   const { hasNewNotifications } = useNotification();
   return (
-    <aside className="sticky top-0 h-screen w-64 bg-gray-800 text-white">
+    <aside className="sticky top-0 h-screen w-64 bg-gray-800 text-white hidden md:block">
       <div className="p-4">
         <Link href="/">
           <h2 className="text-lg font-bold">UP Cebu Exchange</h2>
