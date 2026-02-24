@@ -1,5 +1,5 @@
 'use client';
-import React, { createContext, useContext, useState, useMemo } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 interface NotificationContextType {
   hasNewNotifications: boolean;
@@ -8,8 +8,27 @@ interface NotificationContextType {
 
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
 
-export function NotificationProvider({ children, hasNew = false }: { children: React.ReactNode; hasNew?: boolean }) {
-  const [hasNewNotifications, setHasNewNotifications] = useState(hasNew);
+export function NotificationProvider({ children }: { children: React.ReactNode }) {
+  const [hasNewNotifications, setHasNewNotifications] = useState(false);
+
+  useEffect(() => {
+    async function checkNotifications() {
+      try {
+        const response = await fetch('/api/notifications/new');
+        if (response.ok) {
+          const data = await response.json();
+          setHasNewNotifications(data.notifications.length > 0);
+          return;
+        }
+
+        console.error('Failed to check notifications:', response.statusText);
+      } catch (error) {
+        console.error('Error checking notifications:', error);
+      }
+    }
+
+    checkNotifications();
+  }, []);
 
   return (
     <NotificationContext.Provider value={{ hasNewNotifications, setHasNewNotifications }}>
