@@ -2,9 +2,10 @@ import React from 'react';
 import Link from 'next/link';
 import PaymentService from '@/services/PaymentService';
 import RentalOrderService from '@/services/RentalOrderService';
-import { getImageUrl } from '@/lib/artwork';
 import TransactionTable from '@/components/admin/TransactionTable';
 import PaymentCard from '@/components/cards/PaymentCard';
+import PrevPageLink from '@/components/ui/PrevPageLink';
+import { getImageUrl } from '@/lib/artwork';
 
 async function PaymentPage({ params }: { params: Promise<{ id: string }> }) {
   const id = parseInt((await params).id);
@@ -17,9 +18,7 @@ async function PaymentPage({ params }: { params: Promise<{ id: string }> }) {
       <div className="px-8 py-6">
         <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
           <p className="text-red-800 font-medium">Payment not found</p>
-          <Link href="/admin/payments" className="text-blue-600 hover:underline mt-4 inline-block">
-            Back to Payments
-          </Link>
+          <PrevPageLink href="/admin/payments" label="Back to Payments" classes="mt-4 inline-block" />
         </div>
       </div>
     );
@@ -34,13 +33,11 @@ async function PaymentPage({ params }: { params: Promise<{ id: string }> }) {
   const paymentTransactions = paymentData.transactions ? paymentData.transactions.map((tx) => tx.toJSON()) : [];
 
   return (
-    <div className="px-8 py-6">
+    <div className="px-8 py-6"> 
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <Link href="/admin/payments" className="text-sm text-blue-600 hover:underline mb-2 inline-block">
-            ← Back to Payments
-          </Link>
+          <PrevPageLink href="/admin/payments" label="Back to Payments" classes='text-sm mb-2 inline-block' />
           <h1 className="text-3xl font-bold text-gray-900">Payment #{payment.id}</h1>
         </div>
       </div>

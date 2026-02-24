@@ -5,6 +5,7 @@ import EditUser from '@/components/form/User/EditUser';
 import RentalOrderCard from '@/components/cards/RentalOrder/RentalOrder';
 import UserMilestones from '@/components/Milestones/Milestones';
 import NotFound from '@/components/errors/NotFound';
+import PrevPageLink from '@/components/ui/PrevPageLink';
 import ProductDemandService from '@/services/ProductDemandService';
 import FunnelAnalyticsService from '@/services/FunnelAnalyticsService';
 import RentalOrderService from '@/services/RentalOrderService';
@@ -36,6 +37,7 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
 
     return (
       <div className="px-8 py-6">
+        <PrevPageLink href="/admin/users" label="Back to Users" />
         <h2 className="text-3xl font-bold mb-6 slide-right-delay-600">User Milestones</h2>
         <UserMilestones milestones={userMilestones} />
         <h2 className="text-3xl font-bold mb-6 slide-right-delay-600">Interests</h2>

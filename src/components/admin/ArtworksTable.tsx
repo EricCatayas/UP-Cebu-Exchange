@@ -109,7 +109,7 @@ export default function ArtworksTable({ artworks: data }: { artworks: any[] }) {
                       <FaEdit /> Edit
                     </Link>
                     <Link
-                      href={`/admin/artists/${artwork.artistId}`}
+                      href={`/admin/artists/${artwork.artistId}?prev=inventory`}
                       className="block px-4 py-2 text-green-600 hover:bg-gray-50 text-sm flex items-center gap-2"
                     >
                       <FaPaintBrush /> Artist

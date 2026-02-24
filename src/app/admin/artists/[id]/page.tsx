@@ -1,10 +1,11 @@
 import Link from 'next/link';
 import ArtworkCard from '@/components/ArtworkCard/ArtworkCard';
-import ArtistService from '@/services/ArtistService';
-import NotFound from '@/components/errors/NotFound';
 import ArtistEditForm from '@/components/form/Artist/ArtistEditForm';
+import NotFound from '@/components/errors/NotFound';
+import PrevPageLink from '@/components/ui/PrevPageLink';
+import ArtistService from '@/services/ArtistService';
 
-async function ArtistDetails({ params }: { params: Promise<{ id: string }> }) {
+async function ArtistDetails({ params }: { params: Promise<{ id: string }>}) {
   const id = parseInt((await params).id);
 
   const artist = await ArtistService.getArtistById(id);
@@ -13,15 +14,12 @@ async function ArtistDetails({ params }: { params: Promise<{ id: string }> }) {
     return <NotFound header="Artist Not Found" linkText="Back to Artists" linkHref="/admin/artists" />;
   }
 
-  console.log('Artist Details:', artist);
   const artworks = artist.artworks || [];
 
   return (
     <div className="px-8 py-6">
       <div className="mb-6">
-        <Link href="/admin/artists" className="text-blue-600 hover:text-blue-800 font-medium">
-          ← Back to Artists
-        </Link>
+        <PrevPageLink href="/admin/artists" label="Back to Artists" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
