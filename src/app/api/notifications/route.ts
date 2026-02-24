@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
   }
 
   const notificationService = new NotificationService();
-  const newNotifications = await notificationService.getAllUnread();
+  const { items: notifications } = await notificationService.getAll({});
 
-  return NextResponse.json({ notifications: newNotifications });
+  return NextResponse.json({ notifications });
 }

@@ -28,4 +28,18 @@ export const notificationApi = {
       throw new Error(data.error || 'Failed to mark all notifications as read');
     }
   },
+
+  remove: async (notificationId: number) => {
+    const response = await fetch(`/api/notifications/${notificationId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.error || 'Failed to delete notification');
+    }
+  },
 };

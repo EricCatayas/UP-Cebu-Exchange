@@ -40,9 +40,6 @@ async function Dashboard({ searchParams }: { searchParams: { [key: string]: stri
   const orderAnalytics = await rentalOrderAnalyticsService.getAnalyticsData();
   const { count: orderCount, currentOrders } = orderAnalytics;
 
-  const notificationService = new NotificationService();
-  const unreadNotifications = await notificationService.getAllUnread();
-
   return (
     <div className="px-8 py-6">
       {/* Header */}
@@ -98,7 +95,7 @@ async function Dashboard({ searchParams }: { searchParams: { [key: string]: stri
               </div>
             </div>
             <div className="">
-              <NotificationsList notifications={unreadNotifications} newOnly={true} />
+              <NotificationsList newOnly={true} />
             </div>
           </div>
         </section>

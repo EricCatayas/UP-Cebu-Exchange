@@ -71,6 +71,12 @@ class NotificationService {
       }
     );
   }
+
+  async delete(notificationId: number): Promise<void> {
+    await Notification.destroy({
+      where: { id: notificationId },
+    });
+  }
 }
 
 export default NotificationService;

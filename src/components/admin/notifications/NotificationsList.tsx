@@ -2,36 +2,22 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { NotificationDTO } from '@/models/Notification';
 import { useNotification } from '@/contexts/NotificationContext';
-import { notificationApi } from '@/lib/api/notification';
 import { notificationTypeUI } from '@/lib/labels';
 import { fmtDate } from '@/lib/formatter';
 
-export default function NotificationsList({
-  notifications: data,
-  newOnly,
-}: {
-  notifications: NotificationDTO[];
-  newOnly?: boolean;
-}) {
-  const [notifications, setNotifications] = useState(data);
+export default function NotificationsList({ newOnly }: { notifications: NotificationDTO[]; newOnly?: boolean }) {
+  const { notifications, hasNewNotifications, setHasNewNotifications, read, readAll } = useNotification();
+
   const newNotificationCount = useMemo(() => notifications.filter((n) => !n.isRead).length, [notifications]);
-  const { hasNewNotifications, setHasNewNotifications } = useNotification();
 
   const canDisplay = newOnly ? hasNewNotifications : true;
 
   const handleReadAllNotifications = async () => {
     try {
-      await notificationApi.readAll();
-      setNotifications(notifications.map((n) => ({ ...n, isRead: true })));
-      setHasNewNotifications(false);
     } catch (error) {
       alert(error.message);
     }
   };
-
-  useEffect(() => {
-    setNotifications(data);
-  }, [data]);
 
   return (
     <div className="flex flex-col gap-3">
