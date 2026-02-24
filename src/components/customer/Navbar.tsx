@@ -103,6 +103,9 @@ const Navbar: React.FC = () => {
                     <Link href="/account/wishlist" role="menuitem" className="block px-4 py-2 text-sm hover:bg-gray-50">
                       Wishlist
                     </Link>
+                    <Link href="/settings" role="menuitem" className="block px-4 py-2 text-sm hover:bg-gray-50">
+                      Settings
+                    </Link>
                     <button
                       onClick={handleLogout}
                       role="menuitem"
