@@ -46,9 +46,9 @@ const AnalyticsCard: React.FC<{ header: string; value: string | number; subheade
       label: '8',
     },
   ];
-  const colorIndex = Math.abs(
-    Array.from(`${header}-${value}`).reduce((acc, char) => acc + char.charCodeAt(0), 0)
-  ) % backgroundColors.length;
+  const colorIndex =
+    Math.abs(Array.from(`${header}-${value}`).reduce((acc, char) => acc + char.charCodeAt(0), 0)) %
+    backgroundColors.length;
   const randomBackgroundColor = backgroundColors[colorIndex];
   return (
     <div
