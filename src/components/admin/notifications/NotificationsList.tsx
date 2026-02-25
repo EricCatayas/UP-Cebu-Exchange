@@ -5,8 +5,8 @@ import { useNotification } from '@/contexts/NotificationContext';
 import { notificationTypeUI } from '@/lib/labels';
 import { fmtDate } from '@/lib/formatter';
 
-export default function NotificationsList({ newOnly }: { notifications: NotificationDTO[]; newOnly?: boolean }) {
-  const { notifications, hasNewNotifications, setHasNewNotifications, read, readAll } = useNotification();
+export default function NotificationsList({ newOnly }: { newOnly?: boolean }) {
+  const { notifications, hasNewNotifications, read, readAll } = useNotification();
 
   const newNotificationCount = useMemo(() => notifications.filter((n) => !n.isRead).length, [notifications]);
 

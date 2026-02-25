@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 export default function Themes() {
   return (
-    <div className="container px-8 py-6 max-w-7xl mx-auto">
+    <div className="container px-8 py-6 max-w-8xl mx-auto">
       <section>
         {/* Home Header Section */}
         <h1 className="font-lora font-medium text-8xl mb-4 w-fit leading-tight text-primary">

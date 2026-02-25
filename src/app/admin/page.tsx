@@ -94,7 +94,7 @@ async function Dashboard({ searchParams }: { searchParams: { [key: string]: stri
                   })}
               </div>
             </div>
-            <div className="">
+            <div className="mt-4 md:mt-0">
               <NotificationsList newOnly={true} />
             </div>
           </div>
@@ -110,13 +110,11 @@ async function Dashboard({ searchParams }: { searchParams: { [key: string]: stri
           />
         </section>
         {/* Orders */}
-        <section className="grid grid-cols-[112px_1fr] items-start gap-6">
+        <section className="grid grid-cols-1 lg:grid-cols-[112px_1fr] items-start gap-6">
           <div className="w-28 text-gray-700 font-medium pt-2">Orders</div>
           <div className="flex flex-wrap gap-6">
             <AnalyticsCard header="New" value={orderCount.pending} />
-
             <AnalyticsCard header="Paid" value={orderCount.reserved} />
-
             <AnalyticsCard header="To Receive" value={orderCount.toReceive} />
             <AnalyticsCard header="Ongoing" value={orderCount.ongoing} />
             <AnalyticsCard header="To Return" value={orderCount.toReturn} />
@@ -126,7 +124,7 @@ async function Dashboard({ searchParams }: { searchParams: { [key: string]: stri
         </section>
 
         {/* Users */}
-        <section className="grid grid-cols-[112px_1fr] items-start gap-6">
+        <section className="grid grid-cols-1 lg:grid-cols-[112px_1fr] items-start gap-6">
           <div className="w-28 text-gray-700 font-medium pt-2">Users</div>
           <div className="flex flex-wrap gap-6">
             <AnalyticsCard header="Guests" value={visitorCount.guests} />

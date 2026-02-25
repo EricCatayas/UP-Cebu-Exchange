@@ -4,6 +4,7 @@ import { AuthProvider } from '@/contexts/AuthContext';
 import { CookieProvider } from '@/contexts/CookieContext';
 import { SessionProvider } from '@/contexts/SessionContext';
 import { ModalProvider } from '@/contexts/ModalContext';
+import { SidebarProvider } from '@/contexts/SidebarContext';
 import { Modal } from '@/components/Modal/Modal';
 import '@/app/globals.css';
 import '@/styles/fonts.css';
@@ -31,8 +32,10 @@ export default function RootLayout({
           <CookieProvider>
             <SessionProvider>
               <ModalProvider>
-                <Modal />
-                {children}
+                <SidebarProvider>
+                  <Modal />
+                  {children}
+                </SidebarProvider>
               </ModalProvider>
             </SessionProvider>
           </CookieProvider>

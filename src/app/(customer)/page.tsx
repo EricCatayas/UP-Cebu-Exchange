@@ -71,38 +71,44 @@ export default async function Page() {
   return (
     <>
       <HeroBackground>
-        <div className="container mx-auto pl-24 text-left">
-          <h1 className="font-lora font-medium text-8xl mb-4 w-fit leading-tight bg-gradient-to-tr from-[#e53e44] to-[#e5ca48] bg-clip-text text-transparent slide-in-delay-300">
+        <div className="container mx-auto px-4 sm:px-6 md:pl-12 lg:pl-24 text-left">
+            <h1 className="font-lora font-medium text-5xl sm:text-6xl md:text-7xl lg:text-8xl mb-2 sm:mb-3 md:mb-4 w-fit leading-tight sm:leading-tight bg-gradient-to-tr from-[#e53e44] to-[#e5ca48] bg-clip-text text-transparent slide-in-delay-300">
             Discover Art
             <br />
             from UP Cebu
-          </h1>
-          <p className="font-lora font-bold text-white text-lg md:text-xl mb-8 max-w-2xl slide-in-delay-400">
+            </h1>
+          <p className="font-lora font-bold text-white text-sm sm:text-md md:text-lg lg:text-xl mb-6 sm:mb-8 max-w-2xl slide-in-delay-400">
             We offer painting rentals crafted by the next generation of Filipino artists from the University of the
             Philippines Cebu
           </p>
           <Link
             href="/artworks"
-            className="bg-primary text-white px-8 py-3 rounded-full font-semibold transition-colors slide-in-delay-500"
+            className="inline-block bg-primary text-white px-6 sm:px-8 py-2 sm:py-3 rounded-full font-semibold transition-colors slide-in-delay-500 text-sm sm:text-base"
           >
             Explore Paintings
           </Link>
         </div>
       </HeroBackground>
-      <div className="container px-8 py-6 max-w-7xl mx-auto">
-        <section className="pb-12">
-          <h2 className="text-3xl font-bold mb-6 slide-right-delay-600">Highlights from the Gallery</h2>
+      <div className="container px-4 sm:px-6 md:px-8 py-6 sm:py-8 md:py-10 max-w-8xl mx-auto">
+        <section className="pb-8 sm:pb-10 md:pb-12">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6 slide-right-delay-600">
+            Highlights from the Gallery
+          </h2>
           <ArtworksDisplay artworks={randomArtworks} />
         </section>
-        <section className="py-12">
-          <h2 className="text-3xl font-bold mb-6 slide-right-delay-600">Curated for You</h2>
+        <section className="pb-8 sm:pb-10 md:pb-12">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6 slide-right-delay-600">
+            Curated for You
+          </h2>
           <ArtworkCarousel artworks={recommendedArtworks} />
         </section>
-        <section className="py-12">
-          <h2 className="text-3xl font-bold mb-6 slide-right-delay-600">Explore by Category</h2>
+        <section className="pb-8 sm:pb-10 md:pb-12">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6 slide-right-delay-600">
+            Explore by Category
+          </h2>
           <CategoryGrid categories={categories} />
         </section>
-        <section className="py-12">
+        <section className="pb-8 sm:pb-10 md:pb-12">
           <HomeSlider />
         </section>
       </div>

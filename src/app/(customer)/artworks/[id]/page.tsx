@@ -43,7 +43,7 @@ async function ArtworkDetailsPage({ params }: { params: Promise<{ id: string }> 
       </HeroBackground>
       {/* Description Section */}
       <div className="border-t">
-        <details className="group px-8 py-6 max-w-7xl mx-auto" open>
+        <details className="group px-8 py-6 max-w-8xl mx-auto" open>
           <summary className="flex justify-between items-center cursor-pointer list-none font-semibold text-lg mb-4">
             <span>Description</span>
             <svg
@@ -62,7 +62,7 @@ async function ArtworkDetailsPage({ params }: { params: Promise<{ id: string }> 
       </div>
 
       {/* More from the Artist */}
-      <div className="container px-8 py-6 max-w-7xl mx-auto">
+      <div className="container px-8 py-6 max-w-8xl mx-auto">
         <div className="mt-12">
           <h2 className="text-2xl font-bold mb-6">More from the Artist</h2>
           <Suspense fallback={<div>Loading...</div>}>
