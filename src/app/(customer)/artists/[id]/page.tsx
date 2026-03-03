@@ -23,16 +23,15 @@ async function ArtistArtworks({ params }: { params: Promise<{ id: string }> }) {
 
       <div className="container mx-auto px-4 pb-8">
         {/* Artwork Grid */}
-        <div className="columns-1 md:columns-2 lg:columns-3 gap-6 mt-6 space-y-6">
-          {artworks.map((artwork) => (
-            <div key={artwork.id} className="break-inside-avoid mb-6">
-              <ArtworkCard artwork={artwork} />
-            </div>
-          ))}
-        </div>
-
-        {/* No results message */}
-        {artworks.length === 0 && (
+        {artworks.length > 1 ? (
+          <div className="columns-1 md:columns-2 lg:columns-3 gap-6 mt-6 space-y-6">
+            {artworks.map((artwork) => (
+              <div key={artwork.id} className="break-inside-avoid mb-6">
+                <ArtworkCard artwork={artwork} />
+              </div>
+            ))}
+          </div>
+        ) : (
           <div className="text-center py-12">
             <p className="text-gray-500 text-lg">No artworks found by this artist.</p>
           </div>

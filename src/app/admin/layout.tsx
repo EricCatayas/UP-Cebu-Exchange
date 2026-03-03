@@ -2,13 +2,10 @@ import React from 'react';
 import Navbar from '@/components/admin/Navbar';
 import Sidebar from '@/components/admin/Sidebar';
 import { NotificationProvider } from '@/contexts/NotificationContext';
-import NotificationService from '@/services/NotificationService';
 
-const AdminLayout: React.FC = async ({ children }) => {
-  const notificationService = new NotificationService();
-  const hasNewNotifications = await notificationService.hasUnreadNotifications();
+const AdminLayout: React.FC = ({ children }: { children: React.ReactNode }) => {
   return (
-    <NotificationProvider hasNew={hasNewNotifications}>
+    <NotificationProvider>
       <div className="flex">
         <Sidebar />
         <div className="flex-1 flex flex-col">

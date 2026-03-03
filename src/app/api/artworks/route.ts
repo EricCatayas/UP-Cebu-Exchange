@@ -97,6 +97,30 @@ export async function POST(request: NextRequest) {
       artworkStyleId = newStyle.id;
     }
 
+    // Handle image uploads
+    const arrayBuffers = await Promise.all(images.map((file) => file.arrayBuffer()));
+    const buffers = arrayBuffers.map((buffer) => {
+      return new Uint8Array(buffer);
+    });
+
+    const imageService = new ImageService();
+    const {
+      success: imageUploadSuccess,
+      results: imageUploadResults,
+      error: imageUploadError,
+    } = await imageService.uploadImages(buffers);
+
+    if (!imageUploadSuccess) {
+      // Delete all created records if image upload fails
+      if (artistName) await Artist.destroy({ where: { id: artworkArtistId } });
+      if (styleName) await Style.destroy({ where: { id: artworkStyleId } });
+
+      return NextResponse.json(
+        { error: `Image upload failed. Artwork was not created. Message: ${imageUploadError}` },
+        { status: 500 }
+      );
+    }
+
     // Create artwork
     const createdArtwork = await Artwork.create({
       title: title?.trim(),
@@ -109,27 +133,15 @@ export async function POST(request: NextRequest) {
       status: status,
     });
 
-    // Handle image uploads
-    const arrayBuffers = await Promise.all(images.map((file) => file.arrayBuffer()));
-    const buffers = arrayBuffers.map((buffer) => {
-      return new Uint8Array(buffer);
-    });
-
-    const imageService = new ImageService();
-    const { success: imageUploadSuccess, results: imageUploadResults } = await imageService.uploadImages(buffers);
-
-    if (imageUploadSuccess) {
-      for (let i = 0; i < imageUploadResults!.length; i++) {
-        const result = imageUploadResults![i];
-        await ArtworkImage.create({
-          id: result.public_id,
-          artworkId: createdArtwork!.id,
-          imageUrl: result.secure_url,
-          isPrimary: i === 0,
-        });
-      }
+    for (let i = 0; i < imageUploadResults!.length; i++) {
+      const result = imageUploadResults![i];
+      await ArtworkImage.create({
+        id: result.public_id,
+        artworkId: createdArtwork!.id,
+        imageUrl: result.secure_url,
+        isPrimary: i === 0,
+      });
     }
-    // todo: handle failed image uploads
 
     await RentalPlan.bulkCreate([
       { artworkId: createdArtwork!.id, durationMonths: 3, price: rentalFee3Months },

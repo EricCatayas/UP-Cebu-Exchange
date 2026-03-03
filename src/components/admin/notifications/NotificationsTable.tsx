@@ -23,17 +23,13 @@ export default function NotificationsTable({
   previousPage?: number;
   totalPages: number;
 }) {
-  const [notifications, setNotifications] = useState(data);
   const router = useRouter();
   const { openConfirmation } = useModal();
-  const { setHasNewNotifications } = useNotification();
+  const { notifications, setNotifications, read, readAll, remove } = useNotification();
 
   const handleReadNotification = async (notificationId: number) => {
     try {
-      await notificationApi.read(notificationId);
-      setNotifications(notifications.map((n) => (n.id === notificationId ? { ...n, isRead: true } : n)));
-      const anyUnread = notifications.some((n) => n.id !== notificationId && !n.isRead);
-      setHasNewNotifications(anyUnread);
+      await read(notificationId);
     } catch (error) {
       alert(error.message);
     }
@@ -41,9 +37,7 @@ export default function NotificationsTable({
 
   const handleReadAllNotifications = async () => {
     try {
-      await notificationApi.readAll();
-      setNotifications(notifications.map((n) => ({ ...n, isRead: true })));
-      setHasNewNotifications(false);
+      await readAll();
     } catch (error) {
       alert(error.message);
     }
@@ -57,8 +51,7 @@ export default function NotificationsTable({
       },
       async () => {
         try {
-          await notificationApi.delete(notificationId);
-          setNotifications(notifications.filter((n) => n.id !== notificationId));
+          await remove(notificationId);
         } catch (error) {
           alert(error.message);
         }

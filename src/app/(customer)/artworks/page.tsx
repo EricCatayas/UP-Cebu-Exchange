@@ -43,7 +43,7 @@ async function AllArtworksServerComponent({
     nextPage,
     previousPage,
     totalPages,
-  } = await artworkService.getArtworksForCustomer(queryParams);
+  } = await artworkService.getPaginatedArtworks(queryParams);
   const artworkStyles = await StylesService.getAllStyles();
   const artworkMediums = ARTWORK_MEDIUMS;
 

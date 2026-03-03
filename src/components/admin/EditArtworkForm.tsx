@@ -73,9 +73,10 @@ function EditArtworkForm({
 
   const handleSelectArtist = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { value } = e.target;
+    console.log('Selected artist ID:', value);
     setFormData((prev) => ({
       ...prev,
-      artistId: value,
+      artistId: value === '' ? null : value,
     }));
   };
 
@@ -87,6 +88,15 @@ function EditArtworkForm({
     }));
   };
 
+  const handleAddTag = () => {
+    const trimmedTag = newTag.trim();
+    if (trimmedTag && !tagOptions.includes(trimmedTag)) {
+      setTagOptions((prev) => [...prev, trimmedTag]);
+      setSelectedTags((prev) => [...prev, trimmedTag]);
+      setNewTag('');
+    }
+  };
+
   const handleTagSearch = (searchTerm: string) => {
     if (searchTerm.trim() === '') {
       setFilteredTagOptions(tagOptions);
@@ -95,21 +105,30 @@ function EditArtworkForm({
     setFilteredTagOptions(tagOptions.filter((tag) => tag.toLowerCase().includes(searchTerm.toLowerCase())));
   };
 
-  const handleToggleTag = (tag: string) => {
-    setSelectedTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]));
-  };
-
   const handleTagInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewTag(e.target.value);
   };
 
-  const handleAddTag = () => {
-    const trimmedTag = newTag.trim();
-    if (trimmedTag && !tagOptions.includes(trimmedTag)) {
-      setTagOptions((prev) => [...prev, trimmedTag]);
-      setSelectedTags((prev) => [...prev, trimmedTag]);
-      setNewTag('');
-    }
+  const handleToggleArtistMode = () => {
+    setIsNewArtist(!isNewArtist);
+    setFormData((prev) => ({
+      ...prev,
+      artistId: '',
+      artistName: '',
+    }));
+  };
+
+  const handleToggleStyleMode = () => {
+    setIsNewStyle(!isNewStyle);
+    setFormData((prev) => ({
+      ...prev,
+      styleId: '',
+      styleName: '',
+    }));
+  };
+
+  const handleToggleTag = (tag: string) => {
+    setSelectedTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]));
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -183,7 +202,7 @@ function EditArtworkForm({
 
       await artworkApi.edit(artworkData);
       alert('Artwork saved successfully!');
-      router.push('/admin/inventory');
+      // router.push('/admin/inventory');
     } catch (error) {
       console.error('Error creating artwork:', error);
       alert(error instanceof Error ? error.message : 'Failed to create artwork');
@@ -402,11 +421,7 @@ function EditArtworkForm({
               <label htmlFor="artistId" className="block text-sm font-medium text-gray-700 mb-1">
                 Artist
               </label>
-              <button
-                type="button"
-                onClick={() => setIsNewArtist(!isNewArtist)}
-                className="text-blue-600 text-sm hover:underline"
-              >
+              <button type="button" onClick={handleToggleArtistMode} className="text-blue-600 text-sm hover:underline">
                 {isNewArtist ? 'Select Artist' : 'Add New Artist'}
               </button>
             </div>
@@ -428,7 +443,7 @@ function EditArtworkForm({
                 onChange={handleSelectArtist}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="">Select artist</option>
+                <option value="">No artist</option>
                 {artists?.map((artist) => (
                   <option key={artist.id} value={artist.id}>
                     {artist.name}

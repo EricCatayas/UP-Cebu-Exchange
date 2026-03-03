@@ -1,6 +1,5 @@
 .artwork-carousel-container {
   width: 100%;
-  margin: 2rem 0;
 }
 
 .carousel-wrapper {
@@ -24,26 +23,32 @@
 
 .carousel-item {
   flex: 0 0 calc(25% - 1.125rem);
-  min-width: 350px;
-  max-width: 450px;
+  min-width: 400px;
+  max-width: 550px;
 }
 
 /* Responsive breakpoints */
 @media (max-width: 1280px) {
   .carousel-item {
     flex: 0 0 calc(33.333% - 1rem);
+    min-width: 367px;
+    max-width: 500px;
   }
 }
 
 @media (max-width: 768px) {
   .carousel-item {
     flex: 0 0 calc(50% - 0.75rem);
+    min-width: 333px;
+    max-width: 450px;
   }
 }
 
 @media (max-width: 480px) {
   .carousel-item {
     flex: 0 0 100%;
+    min-width: 300px;
+    max-width: 400px;
   }
 }
 

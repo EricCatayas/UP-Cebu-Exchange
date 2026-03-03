@@ -82,6 +82,7 @@ export enum EVENT_NAME {
   REQUEST_RETURN_ITEMS = 'return_items',
   COMPLETE_PAYMENT = 'complete_payment',
   COMPLETE_ORDER = 'complete_order',
+  CLEAR_SESSION = 'clear_session',
 }
 
 export enum EVENT_CATEGORY {

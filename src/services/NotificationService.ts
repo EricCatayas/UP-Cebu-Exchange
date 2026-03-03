@@ -71,11 +71,11 @@ class NotificationService {
       }
     );
   }
-  async hasUnreadNotifications(): Promise<boolean> {
-    const count = await Notification.count({
-      where: { isRead: false },
+
+  async delete(notificationId: number): Promise<void> {
+    await Notification.destroy({
+      where: { id: notificationId },
     });
-    return count > 0;
   }
 }
 

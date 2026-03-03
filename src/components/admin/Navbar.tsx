@@ -1,23 +1,27 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import { FaBars } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import { useSidebar } from '@/contexts/SidebarContext';
 
 const Navbar: React.FC = () => {
   const { user, isLoggedIn, logout } = useAuth();
   const router = useRouter();
   const [accountOpen, setAccountOpen] = useState(false);
+  const { isOpen, toggle } = useSidebar();
   const accountRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (accountRef.current && !accountRef.current.contains(e.target as Node)) {
-        setAccountOpen(false);
-      }
+      if (isOpen) return toggle();
     };
     const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setAccountOpen(false);
+      if (e.key === 'Escape') {
+        setAccountOpen(false);
+        if (isOpen) toggle();
+      }
     };
     document.addEventListener('mousedown', handleClickOutside);
     document.addEventListener('keydown', handleEsc);
@@ -37,34 +41,46 @@ const Navbar: React.FC = () => {
   return (
     <nav className="sticky top-0 left-0 right-0 z-50 bg-white shadow-sm">
       <div className="container mx-auto px-4 py-2 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">{''}</h1>
-        <div className="relative" ref={accountRef}>
+        <div className="relative md:hidden">
           <button
             type="button"
             aria-haspopup="menu"
-            aria-expanded={accountOpen}
-            onClick={() => setAccountOpen((o) => !o)}
+            onClick={toggle}
             className="font-light hover:text-gray-700 flex items-center"
           >
-            {user?.name || 'Account'} <span className="ml-1">▾</span>
+            <FaBars />
           </button>
-          {accountOpen && (
-            <div
-              role="menu"
-              className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg ring-1 ring-black/5 py-1 z-50"
+        </div>
+        <span></span>
+        <div className="flex items-end gap-4">
+          <div className="relative" ref={accountRef}>
+            <button
+              type="button"
+              aria-haspopup="menu"
+              aria-expanded={accountOpen}
+              onClick={() => setAccountOpen((o) => !o)}
+              className="font-light hover:text-gray-700 flex items-center"
             >
-              <Link href="/admin/profile" role="menuitem" className="block px-4 py-2 text-sm hover:bg-gray-50">
-                Profile
-              </Link>
-              <button
-                onClick={handleLogout}
-                role="menuitem"
-                className="block px-4 py-2 text-sm text-red-600 hover:bg-gray-50"
+              {user?.name || 'Account'} <span className="ml-1">▾</span>
+            </button>
+            {accountOpen && (
+              <div
+                role="menu"
+                className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg ring-1 ring-black/5 py-1 z-50"
               >
-                Sign Out
-              </button>
-            </div>
-          )}
+                <Link href="/admin/profile" role="menuitem" className="block px-4 py-2 text-sm hover:bg-gray-50">
+                  Profile
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  role="menuitem"
+                  className="block px-4 py-2 text-sm text-red-600 hover:bg-gray-50"
+                >
+                  Sign Out
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </nav>

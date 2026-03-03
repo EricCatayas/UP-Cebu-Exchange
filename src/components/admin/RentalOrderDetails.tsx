@@ -116,7 +116,7 @@ export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrde
 
   const userButtonLabel = 'View User';
   const handleUserClick = (user) => {
-    redirect(`/admin/users/${user.id}`);
+    redirect(`/admin/users/${user.id}?prev=orders&id=${order.id}`);
   };
 
   const userButton = {
@@ -129,12 +129,12 @@ export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrde
     label: isOrderPaid(order) ? 'View Receipt' : 'Manage Payment',
     classes: 'bg-green-600 text-white rounded hover:bg-green-700',
     onClick: () => {
-      redirect(`/admin/payments/${order.paymentId}`);
+      redirect(`/admin/payments/${order.paymentId}?prev=orders&id=${order.id}`);
     },
   };
 
   return (
-    <div className="container px-4 py-8 max-w-7xl mx-auto space-y-6">
+    <div className="container px-4 py-8 max-w-8xl mx-auto space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-6">
         <div>
           <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">Rental Order Details</h1>

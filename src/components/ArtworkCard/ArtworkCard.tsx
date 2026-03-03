@@ -1,67 +1,29 @@
 'use client';
-import HeartIcon from '../HeartIcon/HeartIcon';
-import CartIcon from '../CartIcon/CartIcon';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/contexts/AuthContext';
-import { useCart } from '@/contexts/CartContext';
 import { getDimension, getImageUrl } from '@/lib/artwork';
-import { eventApi } from '@/lib/api/event';
-import { wishlistApi } from '@/lib/api/wishlist';
 import { ARTWORK_STATUS } from '@/lib/constants';
 import './ArtworkCard.css';
+import ToggleCartWishlist from './ToggleCartWishlist';
 
-export default function ArtworkCard({ artwork, displayInfo = true }: { artwork: any; displayInfo?: boolean }) {
+export default function ArtworkCard({
+  artwork,
+  displayInfo = true,
+  displayCartWishlist = true,
+}: {
+  artwork: any;
+  displayInfo?: boolean;
+  displayCartWishlist?: boolean;
+}) {
   if (!artwork) return null;
 
-  const { user } = useAuth();
-  const { addItemToCart, removeItemFromCart } = useCart();
   const router = useRouter();
 
   const primaryImageUrl = getImageUrl(artwork);
   const lowestPlan = artwork.rentalPlans ? [...artwork.rentalPlans].sort((a, b) => a.price - b.price)[0] : null;
 
-  const [inCart, setInCart] = useState(artwork.isInCart);
-  const [inWishlist, setInWishlist] = useState(artwork.isInWishlist);
-
   const NavigateToArtwork = () => router.push(`/artworks/${artwork.id}`);
   const NavigateToArtist = () => router.push(`/artists/${artwork.artist?.id}`);
-
-  const handleToggleCart = async () => {
-    try {
-      if (inCart) {
-        await removeItemFromCart(artwork.id);
-        setInCart(false);
-      } else {
-        await addItemToCart(artwork);
-        setInCart(true);
-        alert('Artwork added to cart');
-        eventApi.addToCart(artwork.id);
-      }
-    } catch (error) {
-      alert('Error toggling cart item:', error);
-    }
-  };
-
-  const handleToggleWishlist = async () => {
-    try {
-      if (!user) {
-        alert('You need to be signed in to add item to wishlist');
-        return;
-      }
-      if (inWishlist) {
-        await wishlistApi.removeItem(artwork.id);
-        setInWishlist(false);
-      } else {
-        await wishlistApi.addItem(artwork.id);
-        setInWishlist(true);
-        alert('Artwork added to wishlist');
-        eventApi.addToWishlist(artwork.id);
-      }
-    } catch (error) {
-      alert('Error toggling wishlist item:', error.message);
-    }
-  };
 
   return (
     <div className={`artwork-card status-${artwork.status}`}>
@@ -85,14 +47,7 @@ export default function ArtworkCard({ artwork, displayInfo = true }: { artwork: 
           </div>
           <div className="right">
             <div className="dimension">{getDimension(artwork)}</div>
-            <div className="flex gap-2">
-              <button onClick={handleToggleWishlist} title="Add to wishlist" type="button">
-                <HeartIcon filled={inWishlist} />
-              </button>
-              <button onClick={handleToggleCart} title="Add to cart" type="button">
-                <CartIcon filled={inCart} />
-              </button>
-            </div>
+            {displayCartWishlist && <ToggleCartWishlist artwork={artwork} />}
           </div>
         </div>
       )}

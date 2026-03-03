@@ -43,7 +43,7 @@ async function InventoryDetails({ params }: { params: Promise<{ id: string }> })
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">{artwork.title || 'Untitled Artwork'}</h1>
-        <span className="flex gap-4">
+        <span className="flex gap-2">
           {isCurrentlyRented && (
             // Link to ongoing rental order details
             <Link
@@ -57,7 +57,7 @@ async function InventoryDetails({ params }: { params: Promise<{ id: string }> })
             href={`/artworks/${artwork.id}`}
             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
           >
-            <FaEye /> Live View
+            <FaEye /> Public View
           </Link>
           <Link
             href={`/admin/inventory/${artwork.id}/edit`}

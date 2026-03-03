@@ -1,3 +1,5 @@
+import { ArtworkDTO } from './Artwork';
+
 export interface ArtistAttributes {
   id: number;
   name: string;
@@ -6,4 +8,6 @@ export interface ArtistAttributes {
   updatedAt: Date;
 }
 
-export interface ArtistDTO extends ArtistAttributes {}
+export interface ArtistDTO extends ArtistAttributes {
+  artworks?: ArtworkDTO[];
+}
