@@ -9,12 +9,13 @@ export default function RentalPeriodCard({
   endDate,
 }: {
   duration: number;
-  onDurationChange: (duration: number) => void;
+  onDurationChange?: (duration: number) => void;
   startDate: string;
   onStartDateChange?: (date: string) => void;
   endDate: string;
 }) {
   const disableStartDate = onStartDateChange === undefined;
+  const disableDuration = onDurationChange === undefined;
 
   const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (onStartDateChange) {
@@ -33,7 +34,8 @@ export default function RentalPeriodCard({
           <select
             value={duration}
             onChange={(e) => onDurationChange(Number(e.target.value))}
-            className="w-full md:w-64 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            disabled={disableDuration}
+            className="w-full md:min-w-64 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             {DURATION_OPTIONS.map((months) => (
               <option key={months} value={months}>

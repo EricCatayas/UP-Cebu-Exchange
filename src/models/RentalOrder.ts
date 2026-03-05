@@ -38,6 +38,13 @@ export interface RentalOrderCreateDTO {
   paymentMethod: string;
 }
 
+export interface RentalOrderUpdateDTO {
+  startDate?: string;
+  endDate?: string;
+  deliveryMethod?: string;
+  durationMonths?: number;
+}
+
 export interface ExtendRentalOrderDTO {
   id: number;
   durationMonths: number;
