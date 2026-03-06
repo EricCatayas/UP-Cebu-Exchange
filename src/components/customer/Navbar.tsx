@@ -16,6 +16,7 @@ const Navbar: React.FC = () => {
   const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const accountRef = useRef<HTMLDivElement>(null);
   const { isOpen, toggle } = useSidebar();
 
@@ -164,14 +165,14 @@ const Navbar: React.FC = () => {
             <button
               type="button"
               aria-haspopup="menu"
-              aria-expanded={accountOpen}
-              onClick={() => setAccountOpen((o) => !o)}
+              aria-expanded={isMobileMenuOpen}
+              onClick={() => setIsMobileMenuOpen((o) => !o)}
               className="font-light hover:text-gray-700 flex items-center"
             >
               <FaUser />
             </button>
           </div>
-          {accountOpen && (
+          {isMobileMenuOpen && (
             <div className="relative" ref={accountRef}>
               {isLoggedIn ? (
                 <div
