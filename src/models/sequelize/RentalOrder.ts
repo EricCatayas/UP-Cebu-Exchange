@@ -4,6 +4,7 @@ import { DataTypes, Model, Optional, Op } from 'sequelize';
 import { RentalOrderAttributes } from '@/models/RentalOrder';
 import { ORDER_STATUS, PAYMENT_STATUS } from '@/lib/constants';
 import { getReturnDueDate, isOrderDueReceive, isOrderOverdue, isOrderExtended } from '@/lib/order';
+import Address from './Address';
 import User from './User';
 import Payment from './Payment';
 
@@ -24,8 +25,9 @@ class RentalOrder extends Model<RentalOrderAttributes, RentalOrderCreationAttrib
   declare status: string;
   declare createdAt: Date;
   declare updatedAt: Date;
-  declare user: User;
+  declare address: Address;
   declare payment: Payment;
+  declare user: User;
   declare extension?: RentalOrderExtension;
 
   // Instance methods
@@ -76,6 +78,40 @@ class RentalOrder extends Model<RentalOrderAttributes, RentalOrderCreationAttrib
 
   public hasExtension(): boolean {
     return this.extension !== undefined;
+  }
+
+  public static async getOrdersDueStart(daysAhead: number = 0): Promise<RentalOrder[]> {
+    const today = new Date();
+    // default to tomorrow
+    const targetDate = new Date(today.getTime() + daysAhead * 24 * 60 * 60 * 1000);
+    return await RentalOrder.findAll({
+      where: {
+        startDate: {
+          [Op.between]: [today, targetDate],
+        },
+        status: {
+          [Op.in]: [ORDER_STATUS.PENDING, ORDER_STATUS.RESERVED, ORDER_STATUS.TORECEIVE],
+        },
+      },
+      include: ['address', 'user', 'payment', 'items'],
+    });
+  }
+
+  public static async getOrdersDueReturn(daysAhead: number = 0): Promise<RentalOrder[]> {
+    const today = new Date();
+    // default to tomorrow
+    const targetDate = new Date(today.getTime() + daysAhead * 24 * 60 * 60 * 1000);
+    return await RentalOrder.findAll({
+      where: {
+        endDate: {
+          [Op.between]: [today, targetDate],
+        },
+        status: {
+          [Op.in]: [ORDER_STATUS.ONGOING, ORDER_STATUS.TORETURN],
+        },
+      },
+      include: ['address', 'user', 'payment', 'items'],
+    });
   }
 }
 

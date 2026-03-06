@@ -35,8 +35,6 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     if (deliveryMethod) rentalOrder.deliveryMethod = deliveryMethod;
     await rentalOrder.save();
 
-    await onOrderUpdated(orderId, rentalOrder.toJSON(), rentalOrder.user);
-
     return NextResponse.json({ message: 'Rental order updated successfully', rentalOrder }, { status: 200 });
   } catch (error) {
     console.error('Error updating rental order:', error);

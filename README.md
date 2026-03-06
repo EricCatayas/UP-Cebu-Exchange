@@ -76,6 +76,18 @@ stripe listen --forward-to localhost:3000/api/webhooks/stripe
 
 Copy webhook signing secret, set env variable STRIPE_WEBHOOK_SECRET
 
+## Setup Cron Job
+
+Add secret to .env:
+CRON_SECRET=your_random_secret_key_here
+
+Setup on Cron-job.org:
+
+URL: https://your-app.vercel.app/api/webhooks/cron/notify-orders
+Schedule: 0 8 \* \* \* (8:00 AM daily)
+Method: POST
+Headers: Authorization: Bearer your_random_secret_key_here
+
 ## Development Phase
 
 Phase 1: Database & Authentication

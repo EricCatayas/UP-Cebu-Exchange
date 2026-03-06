@@ -49,6 +49,14 @@ export async function orderStartReminderNotification(order: RentalOrderDTO) {
   const metadata = JSON.stringify({ orderId: order.id, userId: order.userId });
   await notificationService.create(title, type, message, metadata);
   await emailNotificationService.notifyAdminOrderStartReminder(order);
+  await emailNotificationService.sendCustomerOrderStartReminder(
+    {
+      id: order.userId,
+      fullName: order.user.fullName,
+      email: order.user.email,
+    },
+    order
+  );
 }
 
 export async function orderReservedNotification(orderId: number, user: { id: number; fullName: string }) {
@@ -98,7 +106,7 @@ export async function orderCancelledDueToReservationNotification(
   const message = `The order with ID ${orderId} has been cancelled due to reservation by order ID ${reservedOrderId}.`;
   const metadata = JSON.stringify({ orderId, reservedOrderId, userId: user.id });
   await notificationService.create(title, type, message, metadata);
-  await emailNotificationService.sendOrderInvalidatedDueToReservation(user, orderId, reservedOrderId);
+  await emailNotificationService.sendCustomerOrderInvalidatedDueToReservation(user, orderId, reservedOrderId);
 }
 
 export async function onlinePaymentCompletedNotification(
@@ -115,7 +123,7 @@ export async function onlinePaymentCompletedNotification(
   const metadata = JSON.stringify({ paymentId: payment.id });
   await notificationService.create(title, type, message, metadata);
   await emailNotificationService.notifyAdminOnlinePaymentReceived(orderId, paymentReceiptId, payment.amount);
-  await emailNotificationService.sendOnlinePaymentReceipt(user, orderId, paymentReceiptId, payment.amount);
+  await emailNotificationService.sendCustomerOnlinePaymentReceipt(user, orderId, paymentReceiptId, payment.amount);
 }
 
 export async function orderPaidNotification(
@@ -131,7 +139,7 @@ export async function orderPaidNotification(
   const metadata = JSON.stringify({ paymentId: payment.id });
   await notificationService.create(title, type, message, metadata);
   await emailNotificationService.notifyAdminPaymentCompleted(orderId, payment);
-  await emailNotificationService.sendPaymentReceipt(user, orderId, payment.id, payment.amount);
+  await emailNotificationService.sendCustomerPaymentReceipt(user, orderId, payment.id, payment.amount);
 }
 
 export async function orderReceivedNotification(
@@ -145,7 +153,7 @@ export async function orderReceivedNotification(
   const message = `The order with ID ${orderId} has been marked as received by ${user.fullName}.`;
   const metadata = JSON.stringify({ orderId, userId: user.id });
   await notificationService.create(title, type, message, metadata);
-  await emailNotificationService.sendOrderReceived(user, orderId);
+  await emailNotificationService.sendCustomerOrderReceived(user, orderId);
 }
 
 export async function orderReturnRequestNotification(
@@ -177,7 +185,7 @@ export async function orderReturnReminderNotification(
   const metadata = JSON.stringify({ orderId: order.id, userId: order.userId });
   await notificationService.create(title, type, message, metadata);
   await emailNotificationService.notifyAdminOrderReturnReminder(order);
-  await emailNotificationService.sendRentalReturnReminder(user, order);
+  await emailNotificationService.sendCustomerRentalReturnReminder(user, order);
 }
 
 export async function orderCompletedNotification(
@@ -191,5 +199,5 @@ export async function orderCompletedNotification(
   const message = `The order with ID ${orderId} has been marked as completed.`;
   const metadata = JSON.stringify({ orderId, userId: user.id });
   await notificationService.create(title, type, message, metadata);
-  await emailNotificationService.sendOrderCompleted(user, orderId);
+  await emailNotificationService.sendCustomerOrderCompleted(user, orderId);
 }
