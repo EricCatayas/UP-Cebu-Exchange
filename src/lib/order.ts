@@ -97,6 +97,33 @@ export const getReturnDueDate = (order: { endDate: Date }): Date => {
   return returnDueDate;
 };
 
+export function getEndDate(startDate: string, duration: number = 12): Date {
+  const date = new Date(startDate);
+  if (duration === 12) {
+    // 364 days for 12 months
+    date.setDate(date.getDate() + 364);
+  } else {
+    date.setMonth(date.getMonth() + duration);
+  }
+  return date;
+}
+
+export const getReminderStartDate = (order: { startDate: Date }): Date => {
+  const startDate = new Date(order.startDate);
+  const reminderDate = new Date(startDate);
+  // Set reminder one day before start date
+  reminderDate.setDate(startDate.getDate() - 1);
+  return reminderDate;
+};
+
+export const getReminderReturnDate = (order: { endDate: Date }): Date => {
+  const endDate = new Date(order.endDate);
+  const reminderDate = new Date(endDate);
+  // Set reminder one day before return due date
+  reminderDate.setDate(endDate.getDate() - 1);
+  return reminderDate;
+};
+
 export function isOrderDueReceive(order: RentalOrderDTO): boolean {
   const today = new Date();
   const startDate = new Date(order.startDate);

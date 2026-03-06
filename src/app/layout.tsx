@@ -6,6 +6,7 @@ import { SessionProvider } from '@/contexts/SessionContext';
 import { ModalProvider } from '@/contexts/ModalContext';
 import { SidebarProvider } from '@/contexts/SidebarContext';
 import { Modal } from '@/components/Modal/Modal';
+import SchedulerInitializer from '@/components/SchedulerInitializer/SchedulerInitializer';
 import '@/app/globals.css';
 import '@/styles/fonts.css';
 
@@ -34,6 +35,7 @@ export default function RootLayout({
               <ModalProvider>
                 <SidebarProvider>
                   <Modal />
+                  <SchedulerInitializer />
                   {children}
                 </SidebarProvider>
               </ModalProvider>

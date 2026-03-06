@@ -1,5 +1,6 @@
 'use client';
 import RentalOrderDetails from '@/components/RentalOrderDetails/RentalOrderDetails';
+import RentalPeriodCard from '@/components/cards/RentalPeriod/RentalPeriod';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useModal } from '@/contexts/ModalContext';
@@ -8,7 +9,7 @@ import { rentalOrderApi } from '@/lib/api/rentalOrder';
 import { paymentApi } from '@/lib/api/payment';
 import { getArtworkStatus, isOrderPaid } from '@/lib/order';
 import { RentalOrderDTO } from '@/models/RentalOrder';
-import { getImageUrl } from '@/lib/artwork';
+import { getEndDate } from '@/lib/order';
 import {
   ARTWORK_STATUS,
   ARTWORK_STATUSES,
@@ -21,8 +22,12 @@ import {
 export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrderDTO }) {
   const prevItemsStatus = getArtworkStatus(order);
   const prevOrderStatus = order.status;
+  const prevStartDate = order.startDate.toISOString().split('T')[0];
+  const [startDate, setStartDate] = useState(prevStartDate);
+  const [endDate, setEndDate] = useState(order.endDate.toISOString().split('T')[0]);
+  const [duration, setDuration] = useState(order.durationMonths);
   const [itemsStatus, setItemsStatus] = useState(prevItemsStatus || '');
-  const [orderStatus, setOrderStatus] = useState(order.status || '');
+  const [orderStatus, setOrderStatus] = useState(prevOrderStatus || '');
   const [paymentStatus, setPaymentStatus] = useState(order.payment.status || '');
   const [hasEdited, setHasEdited] = useState(false);
   const { openConfirmation } = useModal();
@@ -30,6 +35,21 @@ export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrde
   function navigateToInventoryDetails(item) {
     redirect(`/admin/inventory/${item.artwork.id}`);
   }
+
+  const handleStartDateChange = (newStartDate: string) => {
+    setStartDate(newStartDate);
+    setHasEdited(true);
+
+    const newEndDate = getEndDate(newStartDate, duration);
+    setEndDate(newEndDate.toISOString().split('T')[0]);
+  };
+
+  const handleDurationChange = (newDuration: number) => {
+    setHasEdited(true);
+    setDuration(newDuration);
+    const newEndDate = getEndDate(startDate, newDuration);
+    setEndDate(newEndDate.toISOString().split('T')[0]);
+  };
 
   const handleSelectStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newStatus = e.target.value;
@@ -52,7 +72,7 @@ export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrde
   const handleSaveChanges = async () => {
     try {
       if (!order || !hasEdited) return;
-      let message = `Are you sure you want to update the order status to "${orderStatus}" and payment status to "${paymentStatus}"?`;
+      let message = `Are you sure you want to update the order details?`;
 
       if (itemsStatus === ARTWORK_STATUS.AVAILABLE && prevItemsStatus !== ARTWORK_STATUS.AVAILABLE) {
         message =
@@ -100,6 +120,13 @@ export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrde
             }
             if (order.payment.status !== paymentStatus) {
               const updatedPayment = await paymentApi.updateStatus(order.payment.id, paymentStatus);
+            }
+            if (startDate !== prevStartDate || duration !== order.durationMonths) {
+              const updatedOrder = await rentalOrderApi.update(order.id, {
+                startDate,
+                endDate,
+                durationMonths: duration,
+              });
             }
             // page refresh to reflect changes
             alert(`Order has been updated`);
@@ -155,9 +182,21 @@ export default function RentalOrderDetailsWrapper({ order }: { order: RentalOrde
 
         <div className="space-y-6">
           <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 shadow-sm">
-            <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-6">Admin Controls</h2>
+            <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-6">Edit</h2>
 
             <div className="space-y-6">
+              <div>
+                <label htmlFor="startDate" className="block text-xs font-semibold text-gray-500 mb-2 uppercase">
+                  Start Date
+                </label>
+                <RentalPeriodCard
+                  startDate={startDate}
+                  endDate={endDate}
+                  duration={duration}
+                  onStartDateChange={handleStartDateChange}
+                  onDurationChange={handleDurationChange}
+                />
+              </div>
               <div>
                 <label htmlFor="status" className="block text-xs font-semibold text-gray-500 mb-2 uppercase">
                   Order Status

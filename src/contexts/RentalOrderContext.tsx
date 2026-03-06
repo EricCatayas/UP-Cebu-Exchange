@@ -5,6 +5,7 @@ import { ArtworkDTO } from '@/models/Artwork';
 import { AddressDTO } from '@/models/Address';
 import { DELIVERY_FEE, DELIVERY_METHOD, PAYMENT_METHOD } from '@/lib/constants';
 import { getRentalFee } from '@/lib/artwork';
+import { getEndDate } from '@/lib/order';
 
 interface RentalOrderContextType {
   artworks: ArtworkDTO[];
@@ -39,13 +40,7 @@ export function RentalOrderProvider({ children }: { children: React.ReactNode })
 
   const endDate = useMemo(() => {
     if (!startDate) return '';
-    const date = new Date(startDate);
-    if (duration === 12) {
-      // 364 days for 12 months
-      date.setDate(date.getDate() + 364);
-    } else {
-      date.setMonth(date.getMonth() + duration);
-    }
+    const date = getEndDate(startDate, duration);
     return date.toISOString().split('T')[0];
   }, [startDate, duration]);
 

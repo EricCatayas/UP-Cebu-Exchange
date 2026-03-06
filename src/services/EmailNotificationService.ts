@@ -4,7 +4,7 @@ import { APP_NAME, APP_EMAIL } from '@/lib/constants';
 import { PaymentDTO } from '@/models/Payment';
 import { RentalOrderDTO } from '@/models/RentalOrder';
 import { getReturnDueDate } from '@/lib/order';
-import { fmtDate } from '@/lib/formatter';
+import { fmtAddress, fmtDate, fmtMoney } from '@/lib/formatter';
 
 const APP_BASE_URL = process.env.APP_BASE_URL || 'http://localhost:3000';
 const EMAIL_API = process.env.MAILJET_API_KEY || '';
@@ -491,7 +491,6 @@ class EmailNotificationService {
     return Promise.resolve({ success: true, error: null });
   }
 
-  // Online Payment Emails
   async notifyAdminOnlinePaymentReceived(orderId: number, paymentReceiptId: string, amount: number) {
     const mailjet = new Mailjet({
       apiKey: EMAIL_API,
@@ -615,7 +614,6 @@ class EmailNotificationService {
     return Promise.resolve({ success: true, error: null });
   }
 
-  // Reminder of Order Start Date
   async notifyAdminOrderStartReminder(order: RentalOrderDTO) {
     const mailjet = new Mailjet({
       apiKey: EMAIL_API,
@@ -641,11 +639,13 @@ class EmailNotificationService {
             `Order Details:\n` +
             `--------------------------\n` +
             `Order ID: ${order.id}\n` +
-            `Customer: ${order.user}\n` +
-            `Address: ${order.address}\n` +
+            `Customer: ${order.user.fullName}\n` +
+            `Email: ${order.user.email}\n` +
+            `Address: ${fmtAddress(order.address)}\n` +
             `Extension/Unit: ${order.extension}\n` +
-            `Payment Status: ${order.payment}\n` +
-            `Items: ${order.items}\n\n` +
+            `Payment Amount: ${fmtMoney(order.payment.amount)}\n` +
+            `Payment Status: ${order.payment.status}\n` +
+            `Items: ${order.items.length}\n\n` +
             `Please review the full order details here:\n` +
             `${adminOrderLink}\n\n` +
             `Automated Order Start Notification.`,
@@ -682,22 +682,28 @@ class EmailNotificationService {
                                   <h2 style="margin: 0 0 15px 0; font-size: 18px; color: #1E40AF;">Order Details</h2>
                                   
                                   <p style="margin: 8px 0; font-size: 15px; line-height: 22px; color: #4b5563;">
-                                    <strong>Customer:</strong> ${order.id}
+                                    <strong>Order ID:</strong> ${order.id}
                                   </p>
                                   <p style="margin: 8px 0; font-size: 15px; line-height: 22px; color: #4b5563;">
-                                    <strong>Customer:</strong> ${order.user}
+                                    <strong>Customer:</strong> ${order.user.fullName}
                                   </p>
                                   <p style="margin: 8px 0; font-size: 15px; line-height: 22px; color: #4b5563;">
-                                    <strong>Address:</strong> ${order.address}
+                                    <strong>Customer Email:</strong> ${order.user.email}
+                                  </p>
+                                  <p style="margin: 8px 0; font-size: 15px; line-height: 22px; color: #4b5563;">
+                                    <strong>Address:</strong> ${fmtAddress(order.address)}
                                   </p>
                                   <p style="margin: 8px 0; font-size: 15px; line-height: 22px; color: #4b5563;">
                                     <strong>Extension/Unit:</strong> ${order.extension}
                                   </p>
                                   <p style="margin: 8px 0; font-size: 15px; line-height: 22px; color: #4b5563;">
-                                    <strong>Payment Status:</strong> ${order.payment}
+                                    <strong>Payment Amount:</strong> ${fmtMoney(order.payment.amount)}
                                   </p>
                                   <p style="margin: 8px 0; font-size: 15px; line-height: 22px; color: #4b5563;">
-                                    <strong>Items:</strong> ${order.items}
+                                    <strong>Payment Status:</strong> ${order.payment.status}
+                                  </p>
+                                  <p style="margin: 8px 0; font-size: 15px; line-height: 22px; color: #4b5563;">
+                                    <strong>Items:</strong> ${order.items.length}
                                   </p>
                                 </td>
                               </tr>
@@ -746,7 +752,6 @@ class EmailNotificationService {
     return Promise.resolve({ success: true, error: null });
   }
 
-  // Reminder of Order Return/End Date
   async notifyAdminOrderReturnReminder(order: RentalOrderDTO) {
     const mailjet = new Mailjet({
       apiKey: EMAIL_API,
@@ -771,9 +776,9 @@ class EmailNotificationService {
             `Return Details:\n` +
             `--------------------------\n` +
             `Order ID: #${order.id}\n` +
-            `Customer: ${order.user}\n` +
-            `Payment: ${order.payment}\n` +
-            `Address: ${order.address}\n\n` +
+            `Customer: ${order.user.email}\n` +
+            `Payment Amount: ${fmtMoney(order.payment.amount)}\n` +
+            `Address: ${fmtAddress(order.address)}\n\n` +
             `View the returned order details here:\n` +
             `${adminOrderLink}\n\n` +
             `This is an automated notification from ${APP_NAME}.`,
@@ -811,13 +816,13 @@ class EmailNotificationService {
                                         <strong>Order ID:</strong> #${order.id}
                                       </p>
                                       <p style="margin: 8px 0; font-size: 15px; line-height: 22px; color: #4b5563;">
-                                        <strong>Customer:</strong> ${order.user}
+                                        <strong>Customer:</strong> ${order.user.email}
                                       </p>
                                       <p style="margin: 8px 0; font-size: 15px; line-height: 22px; color: #4b5563;">
-                                        <strong>Payment:</strong> ${order.payment}
+                                        <strong>Payment Amount:</strong> ${fmtMoney(order.payment.amount)}
                                       </p>
                                       <p style="margin: 8px 0; font-size: 15px; line-height: 22px; color: #4b5563;">
-                                        <strong>Address:</strong>${order.address}
+                                        <strong>Address:</strong> ${fmtAddress(order.address)}
                                       </p>
                                     </td>
                                   </tr>
@@ -869,7 +874,6 @@ class EmailNotificationService {
     return Promise.resolve({ success: true, error: null });
   }
 
-  // Notify Admin of Return Request from Customer
   async notifyAdminOrderReturnRequest(orderId: number, user: { id: number; fullName: string }) {
     const mailjet = new Mailjet({
       apiKey: EMAIL_API,
@@ -987,8 +991,7 @@ class EmailNotificationService {
     return Promise.resolve({ success: true, error: null });
   }
 
-  // Send Online Payment Receipt to Customer
-  async sendOnlinePaymentReceipt(
+  async sendCustomerOnlinePaymentReceipt(
     user: { email: string; fullName: string },
     orderId: number,
     paymentReceiptId: string,
@@ -1000,7 +1003,6 @@ class EmailNotificationService {
       config: { version: 'v3.1' },
     });
 
-    // todo: link to order details or payment receipt page
     const paymentReceiptLink = `${APP_BASE_URL}/account/payments/${paymentReceiptId}`;
 
     const request = mailjet.post('send', { version: 'v3.1' }).request({
@@ -1117,8 +1119,7 @@ class EmailNotificationService {
     return Promise.resolve({ success: true, error: null });
   }
 
-  // Send Payment Receipt to Customer (Manual Payment)
-  async sendPaymentReceipt(
+  async sendCustomerPaymentReceipt(
     user: { id: number; email: string; fullName: string },
     orderId: number,
     paymentId: number,
@@ -1244,8 +1245,7 @@ class EmailNotificationService {
     return Promise.resolve({ success: true, error: null });
   }
 
-  // Send Order Received Confirmation to Customer
-  async sendOrderReceived(user: { id: number; email: string; fullName: string }, orderId: number) {
+  async sendCustomerOrderReceived(user: { id: number; email: string; fullName: string }, orderId: number) {
     const mailjet = new Mailjet({
       apiKey: EMAIL_API,
       apiSecret: EMAIL_SECRET,
@@ -1363,7 +1363,6 @@ class EmailNotificationService {
     return Promise.resolve({ success: true, error: null });
   }
 
-  // Reminder to Customer: Order Start Date
   async sendCustomerOrderStartReminder(user: { id: number; email: string; fullName: string }, order: RentalOrderDTO) {
     const mailjet = new Mailjet({
       apiKey: EMAIL_API,
@@ -1485,8 +1484,7 @@ class EmailNotificationService {
     return Promise.resolve({ success: true, error: null });
   }
 
-  // Todo: Send Rental Return Reminder to Customer
-  async sendRentalReturnReminder(user: { id: number; email: string; fullName: string }, order: RentalOrderDTO) {
+  async sendCustomerRentalReturnReminder(user: { id: number; email: string; fullName: string }, order: RentalOrderDTO) {
     const mailjet = new Mailjet({
       apiKey: EMAIL_API,
       apiSecret: EMAIL_SECRET,
@@ -1514,7 +1512,7 @@ class EmailNotificationService {
             `Order ID: #${order.id}\n` +
             `Customer: ${user.fullName}\n` +
             `Email: ${user.email}\n` +
-            `Address: ${order.address}\n` +
+            `Address: ${fmtAddress(order.address)}\n` +
             `Customer ID: ${user.id}\n\n` +
             `View the order details here:\n` +
             `${orderLink}\n\n` +
@@ -1564,7 +1562,7 @@ class EmailNotificationService {
                               </tr>
                               <tr>
                                 <td style="padding: 12px 0; color: #666666; font-size: 14px;">Pickup Address</td>
-                                <td align="right" style="padding: 12px 0; color: #1a1a1a; font-size: 14px;">${order.address}</td>
+                                <td align="right" style="padding: 12px 0; color: #1a1a1a; font-size: 14px;">${fmtAddress(order.address)}</td>
                               </tr>
                             </table>
                           </td>
@@ -1616,8 +1614,7 @@ class EmailNotificationService {
     return Promise.resolve({ success: true, error: null });
   }
 
-  // Notify Customer: Order invalidated due to another reservation
-  async sendOrderInvalidatedDueToReservation(
+  async sendCustomerOrderInvalidatedDueToReservation(
     user: { id: number; email: string; fullName: string },
     orderId: number,
     reservedByOrderId: number,
@@ -1743,8 +1740,7 @@ class EmailNotificationService {
     return Promise.resolve({ success: true, error: null });
   }
 
-  // Send Order Completed Confirmation to Customer
-  async sendOrderCompleted(user: { id: number; email: string; fullName: string }, orderId: number) {
+  async sendCustomerOrderCompleted(user: { id: number; email: string; fullName: string }, orderId: number) {
     const mailjet = new Mailjet({
       apiKey: EMAIL_API,
       apiSecret: EMAIL_SECRET,

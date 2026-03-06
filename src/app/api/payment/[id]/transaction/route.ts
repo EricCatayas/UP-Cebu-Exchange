@@ -2,7 +2,7 @@ import PaymentTransactionService from '@/services/PaymentTransactionService';
 import ImageService from '@/services/ImageService';
 import { NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth';
-import { isAdmin } from '@/lib/role';
+import { isAdmin, canEditContent } from '@/lib/role';
 import { Payment, RentalOrder } from '@/models/sequelize';
 import { PAYMENT_STATUS, ORDER_STATUS, ARTWORK_STATUS } from '@/lib/constants';
 
@@ -21,6 +21,10 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     // Check if user is admin
     if (!isAdmin(user)) {
       return NextResponse.json({ error: 'Forbidden: Admin access required' }, { status: 403 });
+    }
+
+    if (!canEditContent(user)) {
+      return NextResponse.json({ error: 'Forbidden: Insufficient permissions' }, { status: 403 });
     }
 
     const paymentId = parseInt((await params).id);

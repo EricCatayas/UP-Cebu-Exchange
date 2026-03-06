@@ -1,4 +1,10 @@
-import { CheckoutDTO, RentalOrderDTO, RentalOrderCreateDTO, ExtendRentalOrderDTO } from '@/models/RentalOrder';
+import {
+  CheckoutDTO,
+  RentalOrderDTO,
+  RentalOrderCreateDTO,
+  RentalOrderUpdateDTO,
+  ExtendRentalOrderDTO,
+} from '@/models/RentalOrder';
 
 export const rentalOrderApi = {
   checkout: async (data: CheckoutDTO): Promise<RentalOrderDTO> => {
@@ -26,6 +32,20 @@ export const rentalOrderApi = {
     if (!response.ok) {
       const data = await response.json();
       throw new Error(data.error || 'Failed to create rental order');
+    }
+    return (await response.json()).rentalOrder;
+  },
+  update: async (orderId: number, data: RentalOrderUpdateDTO): Promise<RentalOrderDTO> => {
+    const response = await fetch(`/api/rental-order/${orderId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      const resData = await response.json();
+      throw new Error(resData.error || 'Failed to update rental order');
     }
     return (await response.json()).rentalOrder;
   },

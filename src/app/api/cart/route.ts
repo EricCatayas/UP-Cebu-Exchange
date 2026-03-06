@@ -37,7 +37,6 @@ export async function POST(request: Request) {
       return new Response(JSON.stringify({ error: 'Valid artworkIds are required' }), { status: 400 });
     }
 
-    console.log('Adding artwork to cart:', artworkIds);
     await CartService.addItems(currentUser.userId, artworkIds);
     const { cartId, items } = await CartService.getCartItems(currentUser.userId);
 

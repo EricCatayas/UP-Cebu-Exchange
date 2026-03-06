@@ -1,7 +1,7 @@
 import NotificationService from '@/services/NotificationService';
 import { NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth';
-import { isAdmin } from '@/lib/role';
+import { isAdmin, canEditContent } from '@/lib/role';
 
 export async function PUT() {
   const currentUser = await getCurrentUser();
@@ -9,7 +9,10 @@ export async function PUT() {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
   if (!isAdmin(currentUser)) {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    return NextResponse.json({ error: 'Forbidden: Admin access required' }, { status: 403 });
+  }
+  if (!canEditContent(currentUser)) {
+    return NextResponse.json({ error: 'Forbidden: Insufficient permissions' }, { status: 403 });
   }
 
   const notificationService = new NotificationService();
