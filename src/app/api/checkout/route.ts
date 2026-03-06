@@ -18,12 +18,16 @@ import { getCurrentSession } from '@/lib/session';
 import { ORDER_STATUS, PAYMENT_STATUS } from '@/lib/constants';
 import { fmtDate } from '@/lib/formatter';
 import { orderPlacedNotification } from '@/lib/notifications';
+import { isAdmin } from '@/lib/role';
 
 export async function POST(request: NextRequest) {
   try {
     const currentUser = await getCurrentUser();
     if (!currentUser) {
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+    }
+    if (isAdmin(currentUser)) {
+      return NextResponse.json({ error: 'Admin users cannot place orders' }, { status: 403 });
     }
     const {
       durationMonths,
