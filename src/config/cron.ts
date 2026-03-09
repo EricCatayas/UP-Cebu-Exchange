@@ -14,6 +14,19 @@ export async function initializeCronJobs() {
   }
 
   try {
+    // ┌───────────── minute (0-59)
+    // │ ┌─────────── hour (0-23)
+    // │ │ ┌───────── day of month (1-31)
+    // │ │ │ ┌─────── month (1-12)
+    // │ │ │ │ ┌───── day of week (0-6, 0=Sunday)
+    // │ │ │ │ │
+    // * * * * *
+    // Common Scheduling Patterns
+    // * * * * * — Every minute.
+    // 0 * * * * — Every hour at the start (minute 0).
+    // 0 8 * * * — Every day at 8:00 AM.
+    // */15 * * * * — Every 15 minutes.
+    // 0 0 1 * * — On the first day of every month at midnight.
     // Job 1: Check for orders due to start - runs once daily at 8:00 AM
     cron.schedule('0 8 * * *', async () => {
       await notifyOrdersDueStart();
