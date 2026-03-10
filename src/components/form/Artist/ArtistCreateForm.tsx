@@ -59,8 +59,8 @@ export default function ArtistCreateForm({ artworks }: ArtistCreateFormProps) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-8 max-w-2xl">
-      <h2 className="text-2xl font-bold mb-6">Edit Artist</h2>
+    <div className="bg-white rounded-lg shadow-md p-8 max-w-2xl mx-auto">
+      <h2 className="text-2xl font-bold mb-6">Create Artist</h2>
 
       {message && (
         <div
