@@ -135,7 +135,7 @@ function Register() {
 
           <button
             type="submit"
-            className="bg-primary"
+            className="bg-primary hover:bg-primary-dark"
             style={{
               marginTop: '0.4rem',
               padding: '0.65rem 0.9rem',

@@ -129,7 +129,9 @@ export default function ArtworksFilterBar({ mediums, styles }: { mediums: string
               <button
                 onClick={() => handleSelectSortBy(SORTBY.POPULAR)}
                 className={`px-3 py-2 text-sm rounded-md transition ${
-                  sortBy === SORTBY.POPULAR ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  sortBy === SORTBY.POPULAR
+                    ? 'bg-primary hover:bg-primary-dark text-white'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
                 Popular
@@ -137,7 +139,9 @@ export default function ArtworksFilterBar({ mediums, styles }: { mediums: string
               <button
                 onClick={() => handleSelectSortBy(SORTBY.LATEST)}
                 className={`px-3 py-2 text-sm rounded-md transition ${
-                  sortBy === SORTBY.LATEST ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  sortBy === SORTBY.LATEST
+                    ? 'bg-primary hover:bg-primary-dark text-white'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
                 Latest
