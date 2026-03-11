@@ -42,6 +42,7 @@ import {
   ARTWORK_STATUS,
 } from '@/lib/constants';
 import { getRentalFee } from '@/lib/artwork';
+import { getTotalAmount } from '@/lib/payment';
 
 export async function seedEvents() {
   try {
@@ -153,7 +154,7 @@ class VisitorFactory {
                       const deliveryMethod = generateDeliveryMethod();
                       const isDelivery = deliveryMethod === DELIVERY_METHOD.DELIVERY;
                       const rentalFee = getRentalFee(artwork, durationMonths);
-                      const paymentAmount = this.getTotalAmount({ rentalFee, deliveryMethod });
+                      const paymentAmount = getTotalAmount({ rentalFee, deliveryMethod });
 
                       const address1 = await Address.create({
                         city: generateRandomString(6),
@@ -314,7 +315,7 @@ class VisitorFactory {
                     const deliveryMethod = generateDeliveryMethod();
                     const isDelivery = deliveryMethod === DELIVERY_METHOD.DELIVERY;
                     const rentalFee = getRentalFee(artwork, durationMonths);
-                    const paymentAmount = this.getTotalAmount({ rentalFee, deliveryMethod });
+                    const paymentAmount = getTotalAmount({ rentalFee, deliveryMethod });
 
                     const payment = await Payment.create({
                       userId: user.id,
@@ -393,13 +394,5 @@ class VisitorFactory {
         }
       }
     }
-  }
-
-  private getTotalAmount({ rentalFee, deliveryMethod }: { rentalFee: number; deliveryMethod: string }): number {
-    let totalAmount = rentalFee;
-    if (deliveryMethod === DELIVERY_METHOD.DELIVERY) {
-      totalAmount += DELIVERY_FEE;
-    }
-    return totalAmount;
   }
 }
