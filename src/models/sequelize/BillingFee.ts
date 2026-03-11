@@ -2,13 +2,15 @@ import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '@/config/database';
 import { BillingFeeAttributes } from '@/models/BillingFee';
 
-interface BillingFeeCreationAttributes extends Optional<BillingFeeAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
+interface BillingFeeCreationAttributes extends Optional<
+  BillingFeeAttributes,
+  'id' | 'type' | 'createdAt' | 'updatedAt'
+> {}
 
 class BillingFee extends Model<BillingFeeAttributes, BillingFeeCreationAttributes> implements BillingFeeAttributes {
   declare id: number;
-  declare rentalOrderId?: number | null;
-  declare paymentId?: number | null;
-  declare type: string;
+  declare rentalOrderId: number;
+  declare type?: string;
   declare label: string;
   declare amount: number;
   declare createdAt: Date;
@@ -34,7 +36,7 @@ BillingFee.init(
     },
     type: {
       type: DataTypes.STRING(50),
-      allowNull: false,
+      allowNull: true,
     },
     label: {
       type: DataTypes.STRING(120),
@@ -66,9 +68,6 @@ BillingFee.init(
     indexes: [
       {
         fields: ['rentalOrderId'],
-      },
-      {
-        fields: ['type'],
       },
     ],
   }
