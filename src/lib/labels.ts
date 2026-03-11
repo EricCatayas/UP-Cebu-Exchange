@@ -142,10 +142,10 @@ export const transactionTypes = [
 ];
 
 export const billingFeeTypes = [
-  { value: 'Delivery', label: 'Delivery' },
-  { value: 'Insurance', label: 'Insurance' },
-  { value: 'Damage', label: 'Damage' },
-  { value: 'Late Return', label: 'Late Return' },
-  { value: 'Processing', label: 'Processing' },
-  { value: 'Other', label: 'Other' },
+  { value: 'delivery', label: 'Delivery Fee' },
+  { value: 'insurance', label: 'Insurance Fee' },
+  { value: 'damage', label: 'Damage Fee' },
+  { value: 'late_return', label: 'Late Return Penalty' },
+  { value: 'processing', label: 'Processing' },
+  { value: 'other', label: 'Other' },
 ];

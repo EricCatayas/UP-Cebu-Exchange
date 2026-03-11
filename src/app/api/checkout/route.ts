@@ -19,8 +19,7 @@ import { getCurrentSession } from '@/lib/session';
 import { fmtDate } from '@/lib/formatter';
 import { orderPlacedNotification } from '@/lib/notifications';
 import { isAdmin } from '@/lib/role';
-import { getTotalAmount } from '@/lib/payment';
-import { DELIVERY_FEE, DELIVERY_METHOD, ORDER_STATUS, PAYMENT_STATUS } from '@/lib/constants';
+import { ORDER_STATUS, PAYMENT_STATUS } from '@/lib/constants';
 
 export async function POST(request: NextRequest) {
   try {
@@ -31,8 +30,16 @@ export async function POST(request: NextRequest) {
     if (isAdmin(currentUser)) {
       return NextResponse.json({ error: 'Admin users cannot place orders' }, { status: 403 });
     }
-    const { durationMonths, startDate, endDate, deliveryMethod, paymentMethod, cartItemIds, addressId }: CheckoutDTO =
-      await request.json();
+    const {
+      durationMonths,
+      startDate,
+      endDate,
+      deliveryMethod,
+      paymentMethod,
+      cartItemIds,
+      addressId,
+      fees,
+    }: CheckoutDTO = await request.json();
     const cart = await Cart.findOne({
       where: {
         userId: currentUser.userId,
@@ -104,11 +111,23 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Verify if additional fees
+    if (fees && fees.length > 0) {
+      for (const fee of fees) {
+        if (!fee.label || fee.label.trim() === '') {
+          return NextResponse.json({ error: 'Each additional fee must have a label' }, { status: 400 });
+        }
+        if (fee.amount === undefined || fee.amount === null) {
+          return NextResponse.json({ error: 'Each additional fee must have a valid amount' }, { status: 400 });
+        }
+      }
+    }
+
     const rentalFee = cartItems.reduce((total, item) => {
       return total + getRentalFee(item.artwork, durationMonths);
     }, 0);
-
-    const totalAmount = getTotalAmount({ rentalFee, deliveryMethod });
+    const additionalFees = fees ? fees.reduce((total, fee) => total + fee.amount, 0) : 0;
+    const totalAmount = rentalFee + additionalFees;
 
     // Create new copy of address
     const newAddress = await Address.create({
@@ -146,13 +165,16 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    if (deliveryMethod === DELIVERY_METHOD.DELIVERY) {
-      await BillingFee.create({
-        rentalOrderId: newRentalOrder.id,
-        type: 'Delivery',
-        label: 'Delivery Fee',
-        amount: DELIVERY_FEE,
-      });
+    // Create billing fees
+    if (fees && fees.length > 0) {
+      for (const fee of fees) {
+        await BillingFee.create({
+          rentalOrderId: newRentalOrder.id,
+          label: fee.label,
+          type: fee.type,
+          amount: fee.amount,
+        });
+      }
     }
 
     // Clear cart items

@@ -3,6 +3,7 @@ import DeliveryMethodCard from '@/components/cards/DeliveryMethod/DeliveryMethod
 import RentalPeriodCard from '@/components/cards/RentalPeriod/RentalPeriod';
 import PaymentMethodCard from '@/components/cards/PaymentMethod/PaymentMethod';
 import RentalSummaryCard from '@/components/cards/RentalSummary/RentalSummary';
+import AdditionalFeesCard from '@/components/cards/AdditionalFees/AdditionalFees';
 import SetAddressForm from '@/components/form/Address/SetAddress';
 import React, { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
@@ -11,7 +12,7 @@ import { useModal } from '@/contexts/ModalContext';
 import { ArtworkDTO } from '@/models/Artwork';
 import { UserDTO } from '@/models/User';
 import { getDimension, getImageUrl, getRentalFee } from '@/lib/artwork';
-import { fmtDate, fmtMoney } from '@/lib/formatter';
+import { fmtMoney } from '@/lib/formatter';
 import { addressApi } from '@/lib/api/address';
 import { rentalOrderApi } from '@/lib/api/rentalOrder';
 
@@ -38,6 +39,8 @@ function CreateOrderForm({ artworks, customers }: { artworks: ArtworkDTO[]; cust
     setDeliveryMethod,
     paymentMethod,
     setPaymentMethod,
+    additionalFees,
+    setAdditionalFees,
     subtotal,
     total,
   } = useRentalOrder();
@@ -144,6 +147,7 @@ function CreateOrderForm({ artworks, customers }: { artworks: ArtworkDTO[]; cust
       totalAmount: total,
       address: address,
       customerId: selectedCustomerId,
+      fees: additionalFees,
     };
 
     console.log('handleSubmit: ', rentalOrder);
@@ -301,6 +305,8 @@ function CreateOrderForm({ artworks, customers }: { artworks: ArtworkDTO[]; cust
         </DeliveryMethodCard>
 
         <PaymentMethodCard selectedMethod={paymentMethod} onMethodChange={setPaymentMethod} />
+
+        <AdditionalFeesCard fees={additionalFees} onFeesChange={setAdditionalFees} />
       </div>
 
       {/* Right Column - Rental Summary */}
@@ -311,6 +317,7 @@ function CreateOrderForm({ artworks, customers }: { artworks: ArtworkDTO[]; cust
           startDate={startDate}
           endDate={endDate}
           deliveryMethod={deliveryMethod}
+          additionalFees={additionalFees}
           paymentMethod={paymentMethod}
           total={total}
           customer={selectedCustomer}

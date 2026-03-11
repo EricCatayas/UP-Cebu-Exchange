@@ -193,7 +193,7 @@ class VisitorFactory {
                       if (isDelivery) {
                         await BillingFee.create({
                           rentalOrderId: rentalOrder.id,
-                          type: 'Delivery',
+                          type: 'delivery',
                           label: 'Delivery Fee',
                           amount: DELIVERY_FEE,
                         });
@@ -344,7 +344,7 @@ class VisitorFactory {
                     if (isDelivery) {
                       await BillingFee.create({
                         rentalOrderId: rentalOrder.id,
-                        type: 'Delivery',
+                        type: 'delivery',
                         label: 'Delivery Fee',
                         amount: DELIVERY_FEE,
                       });
