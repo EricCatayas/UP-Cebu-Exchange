@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import PaymentService from '@/services/PaymentService';
 import RentalOrderService from '@/services/RentalOrderService';
+import BillingFeesManager from '@/components/cards/BillingFeesManager/BillingFeesManager';
 import TransactionTable from '@/components/admin/TransactionTable';
 import PaymentCard from '@/components/cards/PaymentCard';
 import PrevPageLink from '@/components/ui/PrevPageLink';
@@ -44,7 +45,7 @@ async function PaymentPage({ params }: { params: Promise<{ id: string }> }) {
 
       <div className="space-y-6">
         {/* Payment Summary Card */}
-        <div>
+        <div className="bg-white rounded-lg shadow-sm p-6 border-l-4 border-blue-500">
           <PaymentCard payment={payment} />
         </div>
 
@@ -97,31 +98,11 @@ async function PaymentPage({ params }: { params: Promise<{ id: string }> }) {
             </Link>
           </div>
         </div>
-      </div>
-      {/* Billing Fees */}
-      {order.fees && order.fees.length > 0 && (
-        <div className="bg-white rounded-lg shadow-md p-6 mt-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Additional Billing Fees</h3>
-          <div className="space-y-3">
-            {order.fees.map((fee) => (
-              <div
-                key={fee.id}
-                className="flex items-center p-4 bg-gray-50 hover:bg-blue-50 rounded-lg cursor-pointer transition-colors border border-gray-200 hover:border-blue-300"
-              >
-                <div className="flex-1 min-w-0">
-                  <h4 className="text-lg font-semibold text-gray-900 truncate">{fee.label}</h4>
-                  <p className="text-sm text-gray-600 mt-1">ID: {fee.id}</p>
-                  <p className="text-sm text-gray-600 mt-1">Type: {fee.type}</p>
-                </div>
-                <div className="flex-shrink-0 text-right ml-4">
-                  <p className="text-xl font-bold text-gray-900">₱{fee.amount}</p>
-                  <p className="text-xs text-gray-500 mt-1">Fee Amount</p>
-                </div>
-              </div>
-            ))}
-          </div>
+        {/* Billing Fees */}
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <BillingFeesManager orderId={order.id} fees={order.fees || []} />
         </div>
-      )}
+      </div>
     </div>
   );
 }

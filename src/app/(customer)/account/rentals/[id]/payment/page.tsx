@@ -67,7 +67,9 @@ export default async function PaymentPage({ params }: { params: Promise<{ id: st
       <div className="space-y-8">
         {/* 1. Payment Summary Card */}
         <section className="bg-white rounded-2xl border border-gray-400 shadow-md overflow-hidden">
-          <PaymentCard payment={payment} isReadOnly={true} />
+          <div className="p-6 border-l-4 border-blue-500">
+            <PaymentCard payment={payment} isReadOnly={true} />
+          </div>
         </section>
 
         {/* 2. Transactions Table Card */}
