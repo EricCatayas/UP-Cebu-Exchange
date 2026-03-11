@@ -42,7 +42,7 @@ export const ARTWORK_STATUSES = [
 
 export const CURRENCY_SYMBOL = '₱';
 
-export const DELIVERY_FEE = 50;
+export const DELIVERY_FEE = 200;
 
 export enum DELIVERY_METHOD {
   DELIVERY = 'Delivery',

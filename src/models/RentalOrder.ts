@@ -1,4 +1,5 @@
 import { AddressDTO, AddressCreateDTO } from '@/models/Address';
+import { BillingFeeDTO } from '@/models/BillingFee';
 import { PaymentDTO } from '@/models/Payment';
 import { RentalOrderItemDTO } from '@/models/RentalOrderItem';
 import { RentalOrderExtensionDTO } from '@/models/RentalOrderExtension';
@@ -24,6 +25,7 @@ export interface RentalOrderDTO extends RentalOrderAttributes {
   payment?: PaymentDTO;
   user?: UserDTO;
   items?: RentalOrderItemDTO[];
+  fees?: BillingFeeDTO[];
 }
 
 export interface RentalOrderCreateDTO {
