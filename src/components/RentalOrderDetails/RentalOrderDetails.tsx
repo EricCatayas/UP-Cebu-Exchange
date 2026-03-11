@@ -190,6 +190,23 @@ export default function RentalOrderDetails({
           )}
         </div>
       </div>
+      {/* Billing Fees */}
+      {order.fees?.length > 0 && (
+        <div className="bg-white rounded-lg shadow-md p-6 mt-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Additional Billing Fees</h3>
+          <div className="space-y-3">
+            {order.fees.map((fee) => (
+              <div
+                key={fee.id}
+                className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200"
+              >
+                <p className="text-gray-900 font-medium">{fee.label}</p>
+                <p className="text-gray-900 font-bold">₱{fee.amount}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -10,6 +10,7 @@ import {
   Payment,
   ArtworkImage,
   RentalPlan,
+  BillingFee,
 } from '@/models/sequelize';
 import { ARTWORK_STATUS, ORDER_STATUS } from '@/lib/constants';
 
@@ -101,6 +102,10 @@ export default class RentalOrderService {
         {
           model: RentalOrderExtension,
           as: 'extension',
+        },
+        {
+          model: BillingFee,
+          as: 'fees',
         },
       ],
       order: [['createdAt', 'DESC']],

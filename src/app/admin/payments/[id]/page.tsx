@@ -8,10 +8,10 @@ import PrevPageLink from '@/components/ui/PrevPageLink';
 import { getImageUrl } from '@/lib/artwork';
 
 async function PaymentPage({ params }: { params: Promise<{ id: string }> }) {
-  const id = parseInt((await params).id);
+  const paymentId = parseInt((await params).id);
 
   const paymentService = new PaymentService();
-  const paymentData = await paymentService.getPaymentById(id);
+  const paymentData = await paymentService.getPaymentById(paymentId);
 
   if (!paymentData) {
     return (
@@ -25,7 +25,7 @@ async function PaymentPage({ params }: { params: Promise<{ id: string }> }) {
   }
 
   const rentalOrderService = new RentalOrderService();
-  const order = await rentalOrderService.getPaymentOrderDetails(id);
+  const order = await rentalOrderService.getPaymentOrderDetails(paymentId);
 
   // Serialize payment data to plain object for client component
   const payment = JSON.parse(JSON.stringify(paymentData));
@@ -33,11 +33,11 @@ async function PaymentPage({ params }: { params: Promise<{ id: string }> }) {
   const paymentTransactions = paymentData.transactions ? paymentData.transactions.map((tx) => tx.toJSON()) : [];
 
   return (
-    <div className="px-8 py-6"> 
+    <div className="px-8 py-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <PrevPageLink href="/admin/payments" label="Back to Payments" classes='text-sm mb-2 inline-block' />
+          <PrevPageLink href="/admin/payments" label="Back to Payments" classes="text-sm mb-2 inline-block" />
           <h1 className="text-3xl font-bold text-gray-900">Payment #{payment.id}</h1>
         </div>
       </div>
@@ -98,6 +98,30 @@ async function PaymentPage({ params }: { params: Promise<{ id: string }> }) {
           </div>
         </div>
       </div>
+      {/* Billing Fees */}
+      {order.fees && order.fees.length > 0 && (
+        <div className="bg-white rounded-lg shadow-md p-6 mt-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Additional Billing Fees</h3>
+          <div className="space-y-3">
+            {order.fees.map((fee) => (
+              <div
+                key={fee.id}
+                className="flex items-center p-4 bg-gray-50 hover:bg-blue-50 rounded-lg cursor-pointer transition-colors border border-gray-200 hover:border-blue-300"
+              >
+                <div className="flex-1 min-w-0">
+                  <h4 className="text-lg font-semibold text-gray-900 truncate">{fee.label}</h4>
+                  <p className="text-sm text-gray-600 mt-1">ID: {fee.id}</p>
+                  <p className="text-sm text-gray-600 mt-1">Type: {fee.type}</p>
+                </div>
+                <div className="flex-shrink-0 text-right ml-4">
+                  <p className="text-xl font-bold text-gray-900">₱{fee.amount}</p>
+                  <p className="text-xs text-gray-500 mt-1">Fee Amount</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
