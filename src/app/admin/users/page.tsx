@@ -5,7 +5,7 @@ import { USER_ROLE, USER_STATUS } from '@/lib/constants';
 
 async function Users() {
   const userService = new UserService();
-  const staffUsers = await userService.getUsersByRole(USER_ROLE.STAFF);
+  const adminUsers = await userService.getAdminUsers();
   const customerUsers = await userService.getUsersByRole(USER_ROLE.CUSTOMER);
 
   let activeCustomerCount = 0;
@@ -49,7 +49,6 @@ async function Users() {
             <table className="w-full border-collapse bg-white shadow-sm rounded-lg">
               <thead>
                 <tr className="bg-gray-50 border-b">
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Name
                   </th>
@@ -67,7 +66,6 @@ async function Users() {
               <tbody className="divide-y divide-gray-200">
                 {customerUsers.map((user) => (
                   <tr key={user.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.id}</td>
                     <td className="px-6 py-4 text-sm text-gray-900">{user.fullName || 'N/A'}</td>
                     <td className="px-6 py-4 text-sm text-gray-900">{user.email || 'N/A'}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -98,14 +96,13 @@ async function Users() {
           </div>
         </section>
 
-        {/* Staff Table */}
+        {/* Admin Table */}
         <section>
-          <h2 className="text-xl font-semibold mb-4">Staff Members</h2>
+          <h2 className="text-xl font-semibold mb-4">Admin Users</h2>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse bg-white shadow-sm rounded-lg">
               <thead>
                 <tr className="bg-gray-50 border-b">
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Name
                   </th>
@@ -124,9 +121,8 @@ async function Users() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {staffUsers.map((user) => (
+                {adminUsers.map((user) => (
                   <tr key={user.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.id}</td>
                     <td className="px-6 py-4 text-sm text-gray-900">{user.fullName || 'N/A'}</td>
                     <td className="px-6 py-4 text-sm text-gray-900">{user.email || 'N/A'}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
