@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 function Register() {
   const { register } = useAuth();
@@ -12,6 +13,8 @@ function Register() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -100,37 +103,83 @@ function Register() {
 
           <label style={{ display: 'grid', gap: '0.4rem' }}>
             <span style={{ fontSize: '.9rem', fontWeight: 600 }}>Password</span>
-            <input
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              style={{
-                padding: '0.55rem 0.7rem',
-                border: '1px solid #bbb',
-                borderRadius: '4px',
-                fontSize: '.95rem',
-              }}
-            />
+            <div style={{ position: 'relative' }}>
+              <input
+                type={showPassword ? 'text' : 'password'}
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                style={{
+                  width: '100%',
+                  padding: '0.55rem 2.2rem 0.55rem 0.7rem',
+                  border: '1px solid #bbb',
+                  borderRadius: '4px',
+                  fontSize: '.95rem',
+                }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                style={{
+                  position: 'absolute',
+                  right: '0.55rem',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'transparent',
+                  border: 'none',
+                  padding: 0,
+                  cursor: 'pointer',
+                  color: '#555',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
             <p className="mt-1 text-xs text-gray-500">Must be at least 6 characters</p>
           </label>
 
           <label style={{ display: 'grid', gap: '0.4rem' }}>
             <span style={{ fontSize: '.9rem', fontWeight: 600 }}>Confirm Password</span>
-            <input
-              type="password"
-              required
-              value={confirm}
-              onChange={(e) => setConfirm(e.target.value)}
-              placeholder="••••••••"
-              style={{
-                padding: '0.55rem 0.7rem',
-                border: '1px solid #bbb',
-                borderRadius: '4px',
-                fontSize: '.95rem',
-              }}
-            />
+            <div style={{ position: 'relative' }}>
+              <input
+                type={showConfirmPassword ? 'text' : 'password'}
+                required
+                value={confirm}
+                onChange={(e) => setConfirm(e.target.value)}
+                placeholder="••••••••"
+                style={{
+                  width: '100%',
+                  padding: '0.55rem 2.2rem 0.55rem 0.7rem',
+                  border: '1px solid #bbb',
+                  borderRadius: '4px',
+                  fontSize: '.95rem',
+                }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword((prev) => !prev)}
+                aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
+                style={{
+                  position: 'absolute',
+                  right: '0.55rem',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'transparent',
+                  border: 'none',
+                  padding: 0,
+                  cursor: 'pointer',
+                  color: '#555',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
           </label>
 
           <button
