@@ -133,9 +133,6 @@ function RentalCheckout() {
       isHomeAddress,
     };
 
-    console.log('Checkout Data:', rentalOrder);
-    return;
-
     try {
       const newRentalOrder = await rentalOrderApi.checkout(rentalOrder);
       router.push(`/checkout/success/${newRentalOrder.id}`);
