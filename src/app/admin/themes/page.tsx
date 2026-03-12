@@ -72,7 +72,10 @@ export default function Themes() {
         </h2>
       </section>
       <section className="mb-6">
-        <Link href="/artworks" className="bg-primary text-white px-8 py-3 rounded-full font-semibold transition-colors">
+        <Link
+          href="/artworks"
+          className="bg-primary hover:bg-primary-dark text-white px-8 py-3 rounded-full font-semibold transition-colors"
+        >
           Explore Paintings
         </Link>
         <Link

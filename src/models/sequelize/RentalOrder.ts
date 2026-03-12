@@ -7,6 +7,7 @@ import { getReturnDueDate, isOrderDueReceive, isOrderOverdue, isOrderExtended } 
 import Address from './Address';
 import User from './User';
 import Payment from './Payment';
+import type BillingFee from './BillingFee';
 
 interface RentalOrderCreationAttributes extends Optional<
   RentalOrderAttributes,
@@ -29,6 +30,7 @@ class RentalOrder extends Model<RentalOrderAttributes, RentalOrderCreationAttrib
   declare payment: Payment;
   declare user: User;
   declare extension?: RentalOrderExtension;
+  declare fees?: BillingFee[];
 
   // Instance methods
 
@@ -93,7 +95,7 @@ class RentalOrder extends Model<RentalOrderAttributes, RentalOrderCreationAttrib
           [Op.in]: [ORDER_STATUS.PENDING, ORDER_STATUS.RESERVED, ORDER_STATUS.TORECEIVE],
         },
       },
-      include: ['address', 'user', 'payment', 'items'],
+      include: ['address', 'user', 'payment', 'items', 'fees'],
     });
   }
 
@@ -110,7 +112,7 @@ class RentalOrder extends Model<RentalOrderAttributes, RentalOrderCreationAttrib
           [Op.in]: [ORDER_STATUS.ONGOING, ORDER_STATUS.TORETURN],
         },
       },
-      include: ['address', 'user', 'payment', 'items'],
+      include: ['address', 'user', 'payment', 'items', 'fees'],
     });
   }
 }

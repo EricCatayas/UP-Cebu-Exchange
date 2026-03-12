@@ -16,7 +16,7 @@ class PaymentAnalyticsService {
     const totalPayments = allPayments.length;
     const totalRevenueResult = allPayments
       .filter((payment) => payment.status === PAYMENT_STATUS.COMPLETED)
-      .reduce((sum, payment) => sum + payment.amount, 0);
+      .reduce<number>((sum, payment) => sum + Number(payment.amount), 0);
     const pendingPayments = allPayments.filter((payment) => payment.status === PAYMENT_STATUS.PENDING).length;
     const totalRevenue = totalRevenueResult || 0;
     const completedPayments = allPayments.filter((payment) => payment.status === PAYMENT_STATUS.COMPLETED).length;

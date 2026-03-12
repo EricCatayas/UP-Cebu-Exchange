@@ -1,7 +1,7 @@
 import { getDimension, getImageUrl, getRentalFee } from '@/lib/artwork';
-import { DELIVERY_FEE } from '@/lib/constants';
 import { fmtDate, fmtMoney } from '@/lib/formatter';
 import { ArtworkDTO } from '@/models/Artwork';
+import { BillingFeeCreateDTO } from '@/models/BillingFee';
 import { UserDTO } from '@/models/User';
 export default function RentalSummaryCard({
   artworks,
@@ -12,16 +12,18 @@ export default function RentalSummaryCard({
   paymentMethod,
   total,
   customer,
+  additionalFees,
   children,
 }: {
   artworks: ArtworkDTO[];
   duration: number;
   startDate: string | Date;
   endDate: string | Date;
-  deliveryMethod?: string;
+  deliveryMethod: string;
   paymentMethod: string;
   total: number;
   customer?: UserDTO;
+  additionalFees?: BillingFeeCreateDTO[];
   children?: React.ReactNode;
 }) {
   return (
@@ -41,12 +43,10 @@ export default function RentalSummaryCard({
           <span className="text-gray-600">End Date:</span>
           <span className="font-semibold">{fmtDate(endDate)}</span>
         </div>
-        {deliveryMethod && (
-          <div className="flex justify-between">
-            <span className="text-gray-600">Delivery Method:</span>
-            <span className="font-semibold">{deliveryMethod}</span>
-          </div>
-        )}
+        <div className="flex justify-between">
+          <span className="text-gray-600">Delivery Method:</span>
+          <span className="font-semibold">{deliveryMethod}</span>
+        </div>
         <div className="flex justify-between">
           <span className="text-gray-600">Payment Method:</span>
           <span className="font-semibold">{paymentMethod}</span>
@@ -68,10 +68,14 @@ export default function RentalSummaryCard({
             ))}
         </div>
 
-        {deliveryMethod === 'Delivery' && (
-          <div className="flex justify-between">
-            <span className="text-gray-600">Delivery Fee</span>
-            <span className="font-semibold">₱{DELIVERY_FEE}</span>
+        {additionalFees?.length > 0 && (
+          <div className="border-t pt-3 mt-3">
+            {additionalFees.map((fee, index) => (
+              <div key={index} className="flex justify-between mb-2">
+                <span className="text-gray-600">{fee.label}</span>
+                <span className="font-semibold">₱{fee.amount}</span>
+              </div>
+            ))}
           </div>
         )}
       </div>

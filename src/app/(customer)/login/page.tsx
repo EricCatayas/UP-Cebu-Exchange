@@ -1,6 +1,7 @@
 'use client';
 import React, { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useAuth } from '@/contexts/AuthContext';
 import { ERROR_MESSAGE } from '@/lib/constants';
 
@@ -11,6 +12,7 @@ function Login() {
   const [redirectUrl] = useState(searchParams.get('redirect') || '');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -66,19 +68,42 @@ function Login() {
 
           <label style={{ display: 'grid', gap: '0.4rem' }}>
             <span style={{ fontSize: '.9rem', fontWeight: 600 }}>Password</span>
-            <input
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              style={{
-                padding: '0.55rem 0.7rem',
-                border: '1px solid #bbb',
-                borderRadius: '4px',
-                fontSize: '.95rem',
-              }}
-            />
+            <div style={{ position: 'relative' }}>
+              <input
+                type={showPassword ? 'text' : 'password'}
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                style={{
+                  width: '100%',
+                  padding: '0.55rem 2.2rem 0.55rem 0.7rem',
+                  border: '1px solid #bbb',
+                  borderRadius: '4px',
+                  fontSize: '.95rem',
+                }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                style={{
+                  position: 'absolute',
+                  right: '0.55rem',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'transparent',
+                  border: 'none',
+                  padding: 0,
+                  cursor: 'pointer',
+                  color: '#555',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
           </label>
 
           <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '.85rem' }}>
@@ -93,7 +118,7 @@ function Login() {
 
           <button
             type="submit"
-            className="bg-primary"
+            className="bg-primary hover:bg-primary-dark"
             style={{
               marginTop: '0.4rem',
               padding: '0.65rem 0.9rem',

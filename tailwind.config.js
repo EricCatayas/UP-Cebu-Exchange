@@ -8,9 +8,18 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#8E1537',
-        secondary: '#FF6F00',
-        tertiary: '#FAAF40',
+        primary: {
+          DEFAULT: '#8E1537',
+          dark: '#821332',
+        },
+        secondary: {
+          DEFAULT: '#FF6F00',
+          dark: '#cc5a00',
+        },
+        tertiary: {
+          DEFAULT: '#FAAF40',
+          dark: '#e8a034',
+        },
       },
       fontFamily: {
         rajdhani: ['Rajdhani', 'sans-serif'],

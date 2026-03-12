@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import {
   Address,
   Artwork,
+  BillingFee,
   Cart,
   CartItem,
   RentalOrder,
@@ -13,6 +14,7 @@ import { RentalOrderCreateDTO } from '@/models/RentalOrder';
 import { getCurrentUser } from '@/lib/auth';
 import { isAdmin, canEditContent } from '@/lib/role';
 import { getRentalFee } from '@/lib/artwork';
+import { getTotalAmount } from '@/lib/payment';
 import { ORDER_STATUS, PAYMENT_STATUS } from '@/lib/constants';
 
 export async function POST(request: NextRequest) {
@@ -22,20 +24,24 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
     }
 
-    if (!isAdmin(currentUser) || !canEditContent(currentUser)) {
+    if (!isAdmin(currentUser)) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+    }
+
+    if (!canEditContent(currentUser)) {
+      return NextResponse.json({ error: 'Admin editor access required' }, { status: 403 });
     }
 
     const {
       durationMonths,
       startDate,
       endDate,
-      totalAmount,
       deliveryMethod,
       paymentMethod,
       artworkIds,
       address,
       customerId,
+      fees,
     }: RentalOrderCreateDTO = await request.json();
 
     if (!address) {
@@ -56,15 +62,36 @@ export async function POST(request: NextRequest) {
     if (!startDate || !endDate) {
       return NextResponse.json({ error: 'Start and end dates are required' }, { status: 400 });
     }
-    if (!totalAmount || totalAmount <= 0) {
-      return NextResponse.json({ error: 'Valid total amount is required' }, { status: 400 });
-    }
     if (!deliveryMethod) {
       return NextResponse.json({ error: 'Delivery method is required' }, { status: 400 });
     }
     if (!paymentMethod) {
       return NextResponse.json({ error: 'Payment method is required' }, { status: 400 });
     }
+
+    // Verify if additional fees
+    if (fees && fees.length > 0) {
+      for (const fee of fees) {
+        if (!fee.label || fee.label.trim() === '') {
+          return NextResponse.json({ error: 'Each additional fee must have a label' }, { status: 400 });
+        }
+        if (fee.amount === undefined || fee.amount === null) {
+          return NextResponse.json({ error: 'Each additional fee must have a valid amount' }, { status: 400 });
+        }
+      }
+    }
+
+    const artworks = await Artwork.findAll({
+      where: {
+        id: artworkIds,
+      },
+      include: ['rentalPlans'],
+    });
+
+    const rentalFee = artworks.reduce((total, artwork) => total + getRentalFee(artwork, durationMonths), 0);
+    const additionalFees = fees ? fees.reduce((total, fee) => total + fee.amount, 0) : 0;
+    const totalAmount = rentalFee + additionalFees;
+
     // Create new address record
     const newAddress = await Address.create({
       city: address.city,
@@ -92,13 +119,6 @@ export async function POST(request: NextRequest) {
       status: ORDER_STATUS.PENDING,
     });
 
-    const artworks = await Artwork.findAll({
-      where: {
-        id: artworkIds,
-      },
-      include: ['rentalPlans'],
-    });
-
     // Create rental order items
     for (const artwork of artworks) {
       await RentalOrderItem.create({
@@ -106,6 +126,17 @@ export async function POST(request: NextRequest) {
         artworkId: artwork.id,
         amount: getRentalFee(artwork, durationMonths),
       });
+    }
+    // Create billing fees
+    if (fees && fees.length > 0) {
+      for (const fee of fees) {
+        await BillingFee.create({
+          rentalOrderId: newRentalOrder.id,
+          label: fee.label,
+          amount: fee.amount,
+          type: fee.type,
+        });
+      }
     }
 
     return NextResponse.json(

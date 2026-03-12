@@ -78,7 +78,7 @@ function EditUser({ user, canEditRole = true }: { user: UserDTO; canEditRole?: b
   const sectionCls = 'grid gap-4';
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl w-full space-y-8 bg-white p-10 rounded-xl shadow-md border border-gray-100">
         {/* Header */}
         <div className="border-b border-gray-100 pb-6">

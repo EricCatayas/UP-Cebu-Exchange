@@ -42,7 +42,7 @@ export const ARTWORK_STATUSES = [
 
 export const CURRENCY_SYMBOL = '₱';
 
-export const DELIVERY_FEE = 50;
+export const DELIVERY_FEE = 200;
 
 export enum DELIVERY_METHOD {
   DELIVERY = 'Delivery',
@@ -196,7 +196,7 @@ export const PAYMENT_TRANSACTION_KEYS = {
 };
 
 export enum USER_ROLE {
-  // ADMIN = 'admin',
+  ADMIN = 'admin',
   HEAD = 'head',
   STAFF = 'staff',
   CUSTOMER = 'customer',
@@ -210,9 +210,9 @@ export enum USER_STATUS {
 
 export const USER_STATUSES = [USER_STATUS.ACTIVE, USER_STATUS.PENDING, USER_STATUS.INACTIVE];
 
-export const ADMIN_ROLES = [USER_ROLE.HEAD, USER_ROLE.STAFF];
+export const ADMIN_ROLES = [USER_ROLE.ADMIN, USER_ROLE.HEAD, USER_ROLE.STAFF];
 
-export const ADMIN_EDITOR_ROLES = [USER_ROLE.STAFF];
+export const ADMIN_EDITOR_ROLES = [USER_ROLE.ADMIN, USER_ROLE.STAFF];
 
 export const USER_ROLES = [USER_ROLE.HEAD, USER_ROLE.STAFF, USER_ROLE.CUSTOMER];
 

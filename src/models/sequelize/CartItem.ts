@@ -1,5 +1,6 @@
-import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '@/config/database';
+import Artwork from './Artwork';
+import { DataTypes, Model, Optional } from 'sequelize';
 import { CartItemAttributes } from '@/models/CartItem';
 
 interface CartItemCreationAttributes extends Optional<CartItemAttributes, 'id' | 'createdAt'> {}
@@ -9,6 +10,7 @@ class CartItem extends Model<CartItemAttributes, CartItemCreationAttributes> imp
   declare cartId: number;
   declare artworkId: number;
   declare createdAt: Date;
+  declare artwork: Artwork;
 }
 
 CartItem.init(

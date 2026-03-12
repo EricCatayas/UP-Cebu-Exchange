@@ -71,7 +71,7 @@ export default function PaymentCard({ payment, isReadOnly = false }: { payment: 
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-500">
+    <div>
       <h2 className="text-xl font-semibold text-gray-900 mb-4">Payment Summary</h2>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div>

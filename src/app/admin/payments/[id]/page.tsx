@@ -2,16 +2,17 @@ import React from 'react';
 import Link from 'next/link';
 import PaymentService from '@/services/PaymentService';
 import RentalOrderService from '@/services/RentalOrderService';
+import BillingFeesManager from '@/components/cards/BillingFeesManager/BillingFeesManager';
 import TransactionTable from '@/components/admin/TransactionTable';
 import PaymentCard from '@/components/cards/PaymentCard';
 import PrevPageLink from '@/components/ui/PrevPageLink';
 import { getImageUrl } from '@/lib/artwork';
 
 async function PaymentPage({ params }: { params: Promise<{ id: string }> }) {
-  const id = parseInt((await params).id);
+  const paymentId = parseInt((await params).id);
 
   const paymentService = new PaymentService();
-  const paymentData = await paymentService.getPaymentById(id);
+  const paymentData = await paymentService.getPaymentById(paymentId);
 
   if (!paymentData) {
     return (
@@ -25,7 +26,7 @@ async function PaymentPage({ params }: { params: Promise<{ id: string }> }) {
   }
 
   const rentalOrderService = new RentalOrderService();
-  const order = await rentalOrderService.getPaymentOrderDetails(id);
+  const order = await rentalOrderService.getPaymentOrderDetails(paymentId);
 
   // Serialize payment data to plain object for client component
   const payment = JSON.parse(JSON.stringify(paymentData));
@@ -33,18 +34,18 @@ async function PaymentPage({ params }: { params: Promise<{ id: string }> }) {
   const paymentTransactions = paymentData.transactions ? paymentData.transactions.map((tx) => tx.toJSON()) : [];
 
   return (
-    <div className="px-8 py-6"> 
+    <div className="px-8 py-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <PrevPageLink href="/admin/payments" label="Back to Payments" classes='text-sm mb-2 inline-block' />
+          <PrevPageLink href="/admin/payments" label="Back to Payments" classes="text-sm mb-2 inline-block" />
           <h1 className="text-3xl font-bold text-gray-900">Payment #{payment.id}</h1>
         </div>
       </div>
 
       <div className="space-y-6">
         {/* Payment Summary Card */}
-        <div>
+        <div className="bg-white rounded-lg shadow-sm p-6 border-l-4 border-blue-500">
           <PaymentCard payment={payment} />
         </div>
 
@@ -96,6 +97,10 @@ async function PaymentPage({ params }: { params: Promise<{ id: string }> }) {
               View Order Details →
             </Link>
           </div>
+        </div>
+        {/* Billing Fees */}
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <BillingFeesManager orderId={order.id} fees={order.fees || []} />
         </div>
       </div>
     </div>

@@ -12,7 +12,12 @@ interface AuthContextType {
     password: string,
     remember?: boolean
   ) => Promise<{ success: boolean; error?: string; callbackUrl?: string }>;
-  register: (email: string, password: string, fullName: string) => Promise<{ success: boolean; error?: string }>;
+  register: (newAccount: {
+    email: string;
+    fullName: string;
+    password: string;
+    phoneNumber: string;
+  }) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
   checkSession: () => Promise<void>;
 }

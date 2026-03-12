@@ -72,18 +72,18 @@ export default async function Page() {
     <>
       <HeroBackground>
         <div className="container mx-auto px-4 sm:px-6 md:pl-12 lg:pl-24 text-left">
-            <h1 className="font-lora font-medium text-5xl sm:text-6xl md:text-7xl lg:text-8xl mb-2 sm:mb-3 md:mb-4 w-fit leading-tight sm:leading-tight bg-gradient-to-tr from-[#e53e44] to-[#e5ca48] bg-clip-text text-transparent slide-in-delay-300">
+          <h1 className="font-lora font-medium text-5xl sm:text-6xl md:text-7xl lg:text-8xl mb-2 sm:mb-3 md:mb-4 w-fit leading-tight sm:leading-tight bg-gradient-to-tr from-[#e53e44] to-[#e5ca48] bg-clip-text text-transparent slide-in-delay-300">
             Discover Art
             <br />
             from UP Cebu
-            </h1>
+          </h1>
           <p className="font-lora font-bold text-white text-sm sm:text-md md:text-lg lg:text-xl mb-6 sm:mb-8 max-w-2xl slide-in-delay-400">
             We offer painting rentals crafted by the next generation of Filipino artists from the University of the
             Philippines Cebu
           </p>
           <Link
             href="/artworks"
-            className="inline-block bg-primary text-white px-6 sm:px-8 py-2 sm:py-3 rounded-full font-semibold transition-colors slide-in-delay-500 text-sm sm:text-base"
+            className="inline-block bg-primary hover:bg-primary-dark text-white px-6 sm:px-8 py-2 sm:py-3 rounded-full font-semibold transition-colors slide-in-delay-500 text-sm sm:text-base"
           >
             Explore Paintings
           </Link>

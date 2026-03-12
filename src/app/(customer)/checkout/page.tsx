@@ -15,6 +15,7 @@ import { getDimension, getImageUrl, getRentalFee } from '@/lib/artwork';
 import { fmtDate, fmtMoney } from '@/lib/formatter';
 import { getUnavailableReason } from '@/lib/order';
 import { rentalOrderApi } from '@/lib/api/rentalOrder';
+import { DELIVERY_FEE, DELIVERY_METHOD } from '@/lib/constants';
 
 function RentalCheckout() {
   const { isLoggedIn } = useAuth();
@@ -34,6 +35,8 @@ function RentalCheckout() {
     setDeliveryMethod,
     paymentMethod,
     setPaymentMethod,
+    additionalFees,
+    setAdditionalFees,
     contractSigned,
     setContractSigned,
     subtotal,
@@ -82,6 +85,15 @@ function RentalCheckout() {
     await removeItemFromCart(artworkId);
   };
 
+  const handleDeliveryMethodChange = (method: string) => {
+    setDeliveryMethod(method);
+    if (method === DELIVERY_METHOD.DELIVERY) {
+      setAdditionalFees([{ rentalOrderId: null, type: 'delivery', label: 'Delivery Fee', amount: DELIVERY_FEE }]);
+    } else {
+      setAdditionalFees([]);
+    }
+  };
+
   const handleCheckout = async () => {
     const selectedCartItemIds = cartItems
       .filter((item) => selectedArtworkIds.has(item.artworkId))
@@ -96,6 +108,7 @@ function RentalCheckout() {
       paymentMethod,
       totalAmount: total,
       addressId: address?.id,
+      fees: additionalFees,
     };
 
     try {
@@ -209,7 +222,9 @@ function RentalCheckout() {
             </div>
           )}
 
-          <DeliveryMethodCard onMethodChange={setDeliveryMethod} selectedMethod={deliveryMethod}>
+          <PaymentMethodCard selectedMethod={paymentMethod} onMethodChange={setPaymentMethod} />
+
+          <DeliveryMethodCard onMethodChange={handleDeliveryMethodChange} selectedMethod={deliveryMethod}>
             <div className="mt-6 pt-4 border-t">
               <span className="font-semibold text-lg">Customer Address:</span>
               <div className="mt-2 text-gray-700">
@@ -235,8 +250,6 @@ function RentalCheckout() {
               </div>
             </div>
           </DeliveryMethodCard>
-
-          <PaymentMethodCard selectedMethod={paymentMethod} onMethodChange={setPaymentMethod} />
         </div>
 
         {/* Right Column - Rental Summary */}
@@ -248,6 +261,7 @@ function RentalCheckout() {
             endDate={endDate}
             deliveryMethod={deliveryMethod}
             paymentMethod={paymentMethod}
+            additionalFees={additionalFees}
             total={total}
           >
             {canCheckout ? (

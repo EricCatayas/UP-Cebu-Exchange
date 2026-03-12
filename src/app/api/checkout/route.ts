@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import {
   Address,
   Artwork,
+  BillingFee,
   Cart,
   CartItem,
   RentalOrder,
@@ -15,10 +16,10 @@ import { CheckoutDTO } from '@/models/RentalOrder';
 import { getCurrentUser } from '@/lib/auth';
 import { getRentalFee, hasOngoingRental, isUnavailableForRental } from '@/lib/artwork';
 import { getCurrentSession } from '@/lib/session';
-import { ORDER_STATUS, PAYMENT_STATUS } from '@/lib/constants';
 import { fmtDate } from '@/lib/formatter';
 import { orderPlacedNotification } from '@/lib/notifications';
 import { isAdmin } from '@/lib/role';
+import { ORDER_STATUS, PAYMENT_STATUS } from '@/lib/constants';
 
 export async function POST(request: NextRequest) {
   try {
@@ -33,11 +34,11 @@ export async function POST(request: NextRequest) {
       durationMonths,
       startDate,
       endDate,
-      totalAmount,
       deliveryMethod,
       paymentMethod,
       cartItemIds,
       addressId,
+      fees,
     }: CheckoutDTO = await request.json();
     const cart = await Cart.findOne({
       where: {
@@ -55,9 +56,6 @@ export async function POST(request: NextRequest) {
     }
     if (!startDate || !endDate) {
       return NextResponse.json({ error: 'Start and end dates are required' }, { status: 400 });
-    }
-    if (!totalAmount || totalAmount <= 0) {
-      return NextResponse.json({ error: 'Valid total amount is required' }, { status: 400 });
     }
     if (!deliveryMethod) {
       return NextResponse.json({ error: 'Delivery method is required' }, { status: 400 });
@@ -113,6 +111,24 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Verify if additional fees
+    if (fees && fees.length > 0) {
+      for (const fee of fees) {
+        if (!fee.label || fee.label.trim() === '') {
+          return NextResponse.json({ error: 'Each additional fee must have a label' }, { status: 400 });
+        }
+        if (fee.amount === undefined || fee.amount === null) {
+          return NextResponse.json({ error: 'Each additional fee must have a valid amount' }, { status: 400 });
+        }
+      }
+    }
+
+    const rentalFee = cartItems.reduce((total, item) => {
+      return total + getRentalFee(item.artwork, durationMonths);
+    }, 0);
+    const additionalFees = fees ? fees.reduce((total, fee) => total + fee.amount, 0) : 0;
+    const totalAmount = rentalFee + additionalFees;
+
     // Create new copy of address
     const newAddress = await Address.create({
       city: existingAddress.city,
@@ -147,6 +163,18 @@ export async function POST(request: NextRequest) {
         artworkId: cartItem.artworkId,
         amount: getRentalFee(cartItem.artwork, durationMonths),
       });
+    }
+
+    // Create billing fees
+    if (fees && fees.length > 0) {
+      for (const fee of fees) {
+        await BillingFee.create({
+          rentalOrderId: newRentalOrder.id,
+          label: fee.label,
+          type: fee.type,
+          amount: fee.amount,
+        });
+      }
     }
 
     // Clear cart items

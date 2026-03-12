@@ -9,6 +9,7 @@ import {
   generateFullName,
   generatePhoneNumber,
   generateRandomDuration,
+  generateDeliveryMethod,
   generateRandomNumber,
   generateRandomString,
   generateStartAndEndDates,
@@ -17,6 +18,7 @@ import {
 import {
   Artwork,
   Address,
+  BillingFee,
   Event,
   Session,
   User,
@@ -35,10 +37,12 @@ import {
   PAYMENT_STATUS,
   PAYMENT_METHOD,
   DELIVERY_METHOD,
+  DELIVERY_FEE,
   ORDER_STATUS,
   ARTWORK_STATUS,
 } from '@/lib/constants';
 import { getRentalFee } from '@/lib/artwork';
+import { getTotalAmount } from '@/lib/payment';
 
 export async function seedEvents() {
   try {
@@ -147,7 +151,10 @@ class VisitorFactory {
 
                     if (eventNumber > 8) {
                       const durationMonths = generateRandomDuration();
+                      const deliveryMethod = generateDeliveryMethod();
+                      const isDelivery = deliveryMethod === DELIVERY_METHOD.DELIVERY;
                       const rentalFee = getRentalFee(artwork, durationMonths);
+                      const paymentAmount = getTotalAmount({ rentalFee, deliveryMethod });
 
                       const address1 = await Address.create({
                         city: generateRandomString(6),
@@ -159,7 +166,7 @@ class VisitorFactory {
 
                       const payment = await Payment.create({
                         userId: user.id,
-                        amount: rentalFee,
+                        amount: paymentAmount,
                         status: PAYMENT_STATUS.PENDING,
                         method: PAYMENT_METHOD.ONLINE,
                       });
@@ -173,7 +180,7 @@ class VisitorFactory {
                         startDate: startDate,
                         endDate: endDate,
                         durationMonths: durationMonths,
-                        deliveryMethod: DELIVERY_METHOD.DELIVERY,
+                        deliveryMethod: deliveryMethod,
                         status: ORDER_STATUS.PENDING,
                       });
 
@@ -182,6 +189,15 @@ class VisitorFactory {
                         artworkId: artwork.id,
                         amount: rentalFee,
                       });
+
+                      if (isDelivery) {
+                        await BillingFee.create({
+                          rentalOrderId: rentalOrder.id,
+                          type: 'delivery',
+                          label: 'Delivery Fee',
+                          amount: DELIVERY_FEE,
+                        });
+                      }
 
                       await eventService.placeOrder(rentalOrder.id);
 
@@ -294,15 +310,19 @@ class VisitorFactory {
                       addressLine2: generateRandomString(12),
                     });
 
+                    const durationMonths = generateRandomDuration();
+                    const { startDate, endDate } = generateStartAndEndDates(durationMonths);
+                    const deliveryMethod = generateDeliveryMethod();
+                    const isDelivery = deliveryMethod === DELIVERY_METHOD.DELIVERY;
+                    const rentalFee = getRentalFee(artwork, durationMonths);
+                    const paymentAmount = getTotalAmount({ rentalFee, deliveryMethod });
+
                     const payment = await Payment.create({
                       userId: user.id,
-                      amount: generateRandomNumber(100, 1000),
+                      amount: paymentAmount,
                       status: PAYMENT_STATUS.PENDING,
                       method: PAYMENT_METHOD.ONLINE,
                     });
-
-                    const durationMonths = generateRandomDuration();
-                    const { startDate, endDate } = generateStartAndEndDates(durationMonths);
 
                     const rentalOrder = await RentalOrder.create({
                       userId: user.id,
@@ -311,20 +331,44 @@ class VisitorFactory {
                       startDate: startDate,
                       endDate: endDate,
                       durationMonths: durationMonths,
-                      deliveryMethod: DELIVERY_METHOD.DELIVERY,
+                      deliveryMethod: deliveryMethod,
                       status: ORDER_STATUS.PENDING,
                     });
 
                     const rentalOrderItem = await RentalOrderItem.create({
                       rentalOrderId: rentalOrder.id,
                       artworkId: artwork.id,
-                      amount: getRentalFee(artwork, durationMonths),
+                      amount: rentalFee,
                     });
+
+                    if (isDelivery) {
+                      await BillingFee.create({
+                        rentalOrderId: rentalOrder.id,
+                        type: 'delivery',
+                        label: 'Delivery Fee',
+                        amount: DELIVERY_FEE,
+                      });
+                    }
 
                     await eventService.placeOrder(rentalOrder.id);
 
                     if (eventNumber > 9) {
                       await eventService.completePayment(payment.id);
+                      const paymentIntentId = generatePaymentIntentId();
+
+                      const paymentTransactionService = new PaymentTransactionService();
+                      await paymentTransactionService.createStripeTransaction({
+                        paymentId: payment.id,
+                        amount: payment.amount,
+                        currency: 'PHP',
+                        metadata: {
+                          paymentIntentId: paymentIntentId,
+                          paymentMethod: 'card',
+                          browserSessionId: session.sessionId,
+                        },
+                        transactionDate: new Date(),
+                      });
+
                       await payment.update({ status: PAYMENT_STATUS.COMPLETED });
                       await rentalOrder.update({ status: ORDER_STATUS.RESERVED });
                       await artwork.update({ status: ARTWORK_STATUS.RESERVED });

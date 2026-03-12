@@ -6,9 +6,10 @@ export async function seedDefaultRoles() {
     console.log('🌱 Seeding default roles...');
 
     const defaultRoles = [
-      { name: USER_ROLE.HEAD, description: 'Administrator with read-only access' },
+      { name: USER_ROLE.ADMIN, description: 'Administrator with full access' },
       { name: USER_ROLE.STAFF, description: 'Staff who can modify content' },
       { name: USER_ROLE.CUSTOMER, description: 'Customer who can rent artworks' },
+      { name: USER_ROLE.HEAD, description: 'Administrator with read-only access' },
     ];
 
     for (const roleData of defaultRoles) {

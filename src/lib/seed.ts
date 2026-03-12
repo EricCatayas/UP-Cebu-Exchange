@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import { hashPassword } from '@/lib/auth';
-import { DURATION_OPTIONS } from './constants';
+import { DELIVERY_METHOD, DELIVERY_METHODS, DURATION_OPTIONS } from './constants';
 
 export function generateSessionId(): string {
   return crypto.randomBytes(32).toString('hex');
@@ -33,6 +33,11 @@ export function generatePhoneNumber(): string {
 
 export function generateRandomDuration(): number {
   return DURATION_OPTIONS[Math.floor(Math.random() * DURATION_OPTIONS.length)];
+}
+
+export function generateDeliveryMethod(): string {
+  const deliveryMethods = DELIVERY_METHODS;
+  return deliveryMethods[Math.floor(Math.random() * deliveryMethods.length)];
 }
 
 export function generateStartAndEndDates(durationMonths: number): { startDate: Date; endDate: Date } {

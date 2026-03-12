@@ -67,7 +67,9 @@ export default async function PaymentPage({ params }: { params: Promise<{ id: st
       <div className="space-y-8">
         {/* 1. Payment Summary Card */}
         <section className="bg-white rounded-2xl border border-gray-400 shadow-md overflow-hidden">
-          <PaymentCard payment={payment} isReadOnly={true} />
+          <div className="p-6 border-l-4 border-blue-500">
+            <PaymentCard payment={payment} isReadOnly={true} />
+          </div>
         </section>
 
         {/* 2. Transactions Table Card */}
@@ -140,6 +142,24 @@ export default async function PaymentPage({ params }: { params: Promise<{ id: st
             </div>
           </div>
         </section>
+
+        {/* Billing Fees (If Any) */}
+        {order.fees?.length > 0 && (
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+            <h3 className="font-semibold text-yellow-800 mb-2">Additional Billing Fees</h3>
+            <ul className="list-disc list-inside text-yellow-700 text-sm">
+              {order.fees.map((fee) => (
+                <li key={fee.id}>
+                  <span className="font-medium">{fee.label}:</span> ₱{fee.amount}
+                </li>
+              ))}
+            </ul>
+            <p className="text-yellow-600 text-xs mt-2">
+              These fees may include late return penalties, damage fees, or other additional charges related to your
+              rental order.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

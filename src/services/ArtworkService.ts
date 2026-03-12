@@ -165,10 +165,7 @@ class ArtworkService {
       : null;
   }
 
-  async getArtworksFromArtist(artistId?: number): Promise<ArtworkDTO[]> {
-    if (!artistId) {
-      return [];
-    }
+  async getArtworksFromArtist(artistId: number): Promise<ArtworkDTO[]> {
     return await ArtworkRepository.findAll({ where: { artistId } });
   }
 

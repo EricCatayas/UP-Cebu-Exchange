@@ -9,6 +9,7 @@ import ArtworkTag from './ArtworkTag';
 import Cart from './Cart';
 import CartItem from './CartItem';
 import Event from './Event';
+import BillingFee from './BillingFee';
 import Notification from './Notification';
 import Payment from './Payment';
 import PaymentTransaction from './PaymentTransaction';
@@ -239,6 +240,12 @@ const initializeAssociations = () => {
     as: 'items',
   });
 
+  // RentalOrder has many BillingFees
+  RentalOrder.hasMany(BillingFee, {
+    foreignKey: 'rentalOrderId',
+    as: 'fees',
+  });
+
   // RentalOrderItem belongs to RentalOrder
   RentalOrderItem.belongsTo(RentalOrder, {
     foreignKey: 'rentalOrderId',
@@ -249,6 +256,12 @@ const initializeAssociations = () => {
   RentalOrderItem.belongsTo(Artwork, {
     foreignKey: 'artworkId',
     as: 'artwork',
+  });
+
+  // BillingFee belongs to RentalOrder
+  BillingFee.belongsTo(RentalOrder, {
+    foreignKey: 'rentalOrderId',
+    as: 'rentalOrder',
   });
 
   // User has many Payments
@@ -314,6 +327,7 @@ export {
   Cart,
   CartItem,
   Event,
+  BillingFee,
   Notification,
   Payment,
   PaymentTransaction,
@@ -344,6 +358,7 @@ export default {
   Cart,
   CartItem,
   Event,
+  BillingFee,
   Notification,
   Payment,
   PaymentTransaction,

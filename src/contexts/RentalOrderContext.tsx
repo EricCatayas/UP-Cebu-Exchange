@@ -3,7 +3,8 @@
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { ArtworkDTO } from '@/models/Artwork';
 import { AddressDTO } from '@/models/Address';
-import { DELIVERY_FEE, DELIVERY_METHOD, PAYMENT_METHOD } from '@/lib/constants';
+import { BillingFeeCreateDTO } from '@/models/BillingFee';
+import { DELIVERY_METHOD, PAYMENT_METHOD } from '@/lib/constants';
 import { getRentalFee } from '@/lib/artwork';
 import { getEndDate } from '@/lib/order';
 
@@ -21,6 +22,8 @@ interface RentalOrderContextType {
   setDeliveryMethod: (method: string) => void;
   paymentMethod: string;
   setPaymentMethod: (method: string) => void;
+  additionalFees: BillingFeeCreateDTO[];
+  setAdditionalFees: (fees: BillingFeeCreateDTO[]) => void;
   contractSigned: boolean;
   setContractSigned: React.Dispatch<React.SetStateAction<boolean>>;
   subtotal: number;
@@ -36,6 +39,7 @@ export function RentalOrderProvider({ children }: { children: React.ReactNode })
   const [startDate, setStartDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [deliveryMethod, setDeliveryMethod] = useState<string>(DELIVERY_METHOD.PICKUP);
   const [paymentMethod, setPaymentMethod] = useState<string>(PAYMENT_METHOD.CASH);
+  const [additionalFees, setAdditionalFees] = useState<BillingFeeCreateDTO[]>([]);
   const [contractSigned, setContractSigned] = useState<boolean>(false);
 
   const endDate = useMemo(() => {
@@ -63,8 +67,9 @@ export function RentalOrderProvider({ children }: { children: React.ReactNode })
   }, [artworks, duration]);
 
   const total = useMemo(() => {
-    return subtotal + (deliveryMethod === DELIVERY_METHOD.DELIVERY ? DELIVERY_FEE : 0);
-  }, [subtotal, deliveryMethod]);
+    const totalAdditionalFees = additionalFees.reduce((sum, fee) => sum + fee.amount, 0);
+    return subtotal + totalAdditionalFees;
+  }, [subtotal, deliveryMethod, additionalFees]);
 
   return (
     <RentalOrderContext.Provider
@@ -82,6 +87,8 @@ export function RentalOrderProvider({ children }: { children: React.ReactNode })
         setDeliveryMethod,
         paymentMethod,
         setPaymentMethod,
+        additionalFees,
+        setAdditionalFees,
         contractSigned,
         setContractSigned,
         subtotal,

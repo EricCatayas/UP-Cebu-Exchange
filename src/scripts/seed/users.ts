@@ -9,7 +9,7 @@ export async function seedUsers() {
       where: { name: USER_ROLE.CUSTOMER },
     });
     const adminRole = await Role.findOne({
-      where: { name: USER_ROLE.STAFF },
+      where: { name: USER_ROLE.ADMIN },
     });
 
     // customer account
