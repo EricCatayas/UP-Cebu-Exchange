@@ -60,37 +60,6 @@ export default function Page() {
       onClick: () => {},
     },
   ];
-  // TODO: About Us
-  const team = [
-    {
-      name: 'Eric Jay Catayas',
-      role: 'Full Stack Developer',
-      imageUrl:
-        'https://res.cloudinary.com/dbgolykzg/image/upload/v1763972672/UP%20Cebu%20Exchange/placeholder-img-1x1_ihvqvy.png',
-      github: 'https://github.com/EricCatayas',
-    },
-    {
-      name: 'Dexter Duane Sebes',
-      role: 'Frontend Developer',
-      imageUrl:
-        'https://res.cloudinary.com/dbgolykzg/image/upload/v1763972672/UP%20Cebu%20Exchange/placeholder-img-1x1_ihvqvy.png',
-      github: 'https://github.com/ShanVich',
-    },
-    {
-      name: 'Jomar Baculi',
-      role: 'Database Administrator',
-      imageUrl:
-        'https://res.cloudinary.com/dbgolykzg/image/upload/v1763972672/UP%20Cebu%20Exchange/placeholder-img-1x1_ihvqvy.png',
-      github: 'https://github.com/hubGitjomar',
-    },
-    {
-      name: 'Joselito Lucabon Jr.',
-      role: 'UI/UX Designer',
-      imageUrl:
-        'https://res.cloudinary.com/dbgolykzg/image/upload/v1763972672/UP%20Cebu%20Exchange/placeholder-img-1x1_ihvqvy.png',
-      github: 'https://github.com/Baderp1',
-    },
-  ];
   return (
     <>
       <HeroBackground backgroundImage="/images/gallery-3.jpg">
@@ -136,14 +105,14 @@ export default function Page() {
                   by and explore our collection of student-made artworks!
                 </p>
                 <br />
-                <p className="text-lg text-gray-700">
+                {/* <p className="text-lg text-gray-700">
                   Meet the young individuals behind UP Cebu Exchange. Our diverse team of developers and designers work
                   together to bring this platform to life.{' '}
                   <a href="/team" className="text-blue-600 hover:underline">
                     Learn more about our team
                   </a>
                   .
-                </p>
+                </p> */}
               </div>
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d488.8298232100851!2d123.89924642239608!3d10.323536688458992!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33a999a963982bd1%3A0x11c2f0cefd67f0b2!2sUP%20Cebu%20Business%20Incubator%20for%20Information%20Technology%20(inIT)!5e0!3m2!1sen!2sph!4v1768976953961!5m2!1sen!2sph"
