@@ -4,6 +4,7 @@ import DeliveryMethodCard from '@/components/cards/DeliveryMethod/DeliveryMethod
 import RentalPeriodCard from '@/components/cards/RentalPeriod/RentalPeriod';
 import PaymentMethodCard from '@/components/cards/PaymentMethod/PaymentMethod';
 import RentalSummaryCard from '@/components/cards/RentalSummary/RentalSummary';
+import SetAddressForm from '@/components/form/Address/SetAddress';
 import { FaExclamationTriangle } from 'react-icons/fa';
 import React, { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
@@ -16,15 +17,18 @@ import { fmtDate, fmtMoney } from '@/lib/formatter';
 import { getUnavailableReason } from '@/lib/order';
 import { rentalOrderApi } from '@/lib/api/rentalOrder';
 import { DELIVERY_FEE, DELIVERY_METHOD } from '@/lib/constants';
+import { AddressCreateDTO } from '@/models/Address';
 
 function RentalCheckout() {
   const { isLoggedIn } = useAuth();
   const { cartItems, selectedArtworkIds, toggleCartItem, toggleAllCartItems, removeItemFromCart } = useCart();
-  const { address } = useUserAddress();
+  const { address: customerAddress, isHomeAddress, setIsHomeAddress } = useUserAddress();
+  const [useCustomerAddress, setUseCustomerAddress] = useState<boolean>(false);
 
   const {
     artworks,
     setArtworks,
+    address,
     setAddress,
     duration,
     setDuration,
@@ -49,10 +53,6 @@ function RentalCheckout() {
       .map((item) => item.artwork);
     setArtworks(selectedArtworks);
   }, [cartItems, selectedArtworkIds, setArtworks]);
-
-  useEffect(() => {
-    setAddress(address);
-  }, [address, setAddress]);
 
   const router = useRouter();
 
@@ -80,9 +80,30 @@ function RentalCheckout() {
     router.push('/checkout/address');
   };
 
+  const toggleUseCustomerAddress = () => {
+    if (customerAddress && !useCustomerAddress) {
+      setAddress({
+        province: customerAddress.province,
+        city: customerAddress.city,
+        postalCode: customerAddress.postalCode,
+        addressLine1: customerAddress.addressLine1,
+        addressLine2: customerAddress.addressLine2,
+      });
+      setIsHomeAddress(false);
+    } else {
+      setAddress(null);
+    }
+    setUseCustomerAddress((prev) => !prev);
+  };
+
   const handleRemoveCartItem = async (cartItem: any) => {
     const artworkId = cartItem.artworkId;
     await removeItemFromCart(artworkId);
+  };
+
+  const handleAddressInputChange = (address: AddressCreateDTO) => {
+    setAddress(address);
+    setUseCustomerAddress(false);
   };
 
   const handleDeliveryMethodChange = (method: string) => {
@@ -100,6 +121,7 @@ function RentalCheckout() {
       .map((item) => item.id);
 
     const rentalOrder = {
+      address,
       durationMonths: duration,
       startDate,
       endDate,
@@ -107,9 +129,12 @@ function RentalCheckout() {
       deliveryMethod,
       paymentMethod,
       totalAmount: total,
-      addressId: address?.id,
       fees: additionalFees,
+      isHomeAddress,
     };
+
+    console.log('Checkout Data:', rentalOrder);
+    return;
 
     try {
       const newRentalOrder = await rentalOrderApi.checkout(rentalOrder);
@@ -226,28 +251,62 @@ function RentalCheckout() {
 
           <DeliveryMethodCard onMethodChange={handleDeliveryMethodChange} selectedMethod={deliveryMethod}>
             <div className="mt-6 pt-4 border-t">
-              <span className="font-semibold text-lg">Customer Address:</span>
-              <div className="mt-2 text-gray-700">
-                {address ? (
-                  <>
-                    <p>{address.addressLine1}</p>
-                    {address.addressLine2 && <p>{address.addressLine2}</p>}
-                    <p>
-                      {address.city}, {address.province}, {address.postalCode}
-                    </p>
-                    <button onClick={navigateToAddress} className="text-blue-600 hover:underline mt-2">
-                      Edit Address
+              <div className="flex justify-between">
+                <span className="font-semibold text-lg">Shipping Address:</span>
+                {customerAddress ? (
+                  <div className="text-sm space-y-2">
+                    <div className="flex items-end">
+                      <input
+                        type="checkbox"
+                        checked={useCustomerAddress}
+                        disabled={!customerAddress}
+                        onChange={toggleUseCustomerAddress}
+                        className="w-4 h-4 rounded border-gray-300 cursor-pointer"
+                      />
+                      <span className="ml-2">Use Home Address</span>
+                    </div>
+                    <button onClick={navigateToAddress} className="text-blue-600 hover:underline block">
+                      Edit Home Address
                     </button>
-                  </>
+                  </div>
                 ) : (
-                  <>
-                    <p>Address is required</p>
+                  <div>
                     <button onClick={navigateToAddress} className="text-blue-600 hover:underline mt-2">
-                      Add Address
+                      Add Home Address
                     </button>
-                  </>
+                  </div>
                 )}
               </div>
+              <div className="mt-2 text-gray-700">
+                <SetAddressForm initialData={address} onInputChange={handleAddressInputChange} />
+              </div>
+              {!customerAddress && (
+                <div className="mt-2 text-gray-700">
+                  <p className="text-sm mb-2">Is this also your home address?</p>
+                  <div className="flex items-center space-x-4">
+                    <label className="flex items-center space-x-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="homeAddress"
+                        checked={isHomeAddress}
+                        onChange={() => setIsHomeAddress(true)}
+                        className="w-4 h-4 cursor-pointer"
+                      />
+                      <span>Yes</span>
+                    </label>
+                    <label className="flex items-center space-x-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="homeAddress"
+                        checked={!isHomeAddress}
+                        onChange={() => setIsHomeAddress(false)}
+                        className="w-4 h-4 cursor-pointer"
+                      />
+                      <span>No</span>
+                    </label>
+                  </div>
+                </div>
+              )}
             </div>
           </DeliveryMethodCard>
         </div>
