@@ -1,8 +1,11 @@
 'use client';
+import { Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 
-export default function PrevPageLink({ href, label, classes }: { href: string; label: string; classes?: string }) {
+type PrevPageLinkProps = { href: string; label: string; classes?: string };
+
+function PrevPageLinkContent({ href, label, classes }: PrevPageLinkProps) {
   const searchParams = useSearchParams();
 
   const pages: Record<string, { href: string; label: any }> = {
@@ -60,5 +63,21 @@ export default function PrevPageLink({ href, label, classes }: { href: string; l
     <Link href={href} className={`text-blue-600 hover:text-blue-800 font-medium ${classes || ''}`}>
       ← {label}
     </Link>
+  );
+}
+
+export default function PrevPageLink(props: PrevPageLinkProps) {
+  const { href, label, classes } = props;
+
+  return (
+    <Suspense
+      fallback={
+        <Link href={href} className={`text-blue-600 hover:text-blue-800 font-medium ${classes || ''}`}>
+          ← {label}
+        </Link>
+      }
+    >
+      <PrevPageLinkContent {...props} />
+    </Suspense>
   );
 }
