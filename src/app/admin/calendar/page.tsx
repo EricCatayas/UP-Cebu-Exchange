@@ -41,7 +41,7 @@ async function CalendarPage() {
             <RentalOrderCard key={order.id} order={order}>
               <>
                 <Link href={`/admin/orders/${order.id}`} className="text-blue-600 hover:underline">
-                  View Products
+                  View Details
                 </Link>
               </>
             </RentalOrderCard>
