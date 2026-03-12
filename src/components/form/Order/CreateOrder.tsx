@@ -283,7 +283,7 @@ function CreateOrderForm({ artworks, customers }: { artworks: ArtworkDTO[]; cust
           </div>
         </div>
 
-        <DeliveryMethodCard selectedMethod={deliveryMethod} onMethodChange={setDeliveryMethod}>
+        <DeliveryMethodCard selectedMethod={deliveryMethod} onMethodChange={setDeliveryMethod} showInstructions={false}>
           <div className="mt-6 pt-4 border-t">
             <div className="flex justify-between">
               <span className="font-semibold text-lg">Address:</span>

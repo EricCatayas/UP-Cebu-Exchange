@@ -222,6 +222,8 @@ function RentalCheckout() {
             </div>
           )}
 
+          <PaymentMethodCard selectedMethod={paymentMethod} onMethodChange={setPaymentMethod} />
+
           <DeliveryMethodCard onMethodChange={handleDeliveryMethodChange} selectedMethod={deliveryMethod}>
             <div className="mt-6 pt-4 border-t">
               <span className="font-semibold text-lg">Customer Address:</span>
@@ -248,8 +250,6 @@ function RentalCheckout() {
               </div>
             </div>
           </DeliveryMethodCard>
-
-          <PaymentMethodCard selectedMethod={paymentMethod} onMethodChange={setPaymentMethod} />
         </div>
 
         {/* Right Column - Rental Summary */}
