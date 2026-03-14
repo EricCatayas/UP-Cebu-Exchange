@@ -3,7 +3,7 @@ import { User, Role } from '@/models/sequelize';
 import { hashPassword } from '@/lib/auth';
 import { USER_ROLE, USER_STATUS } from '@/lib/constants';
 import { getCurrentUser } from '@/lib/auth';
-import { isAdmin, canEditContent } from '@/lib/role';
+import { isAdmin, canManageUsers } from '@/lib/role';
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,8 +12,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    if (!canEditContent(currentUser)) {
-      return NextResponse.json({ error: 'Admin editor access required' }, { status: 403 });
+    if (!canManageUsers(currentUser)) {
+      return NextResponse.json({ error: 'Admin full privileges required' }, { status: 403 });
     }
 
     const { email, password, fullName, phoneNumber, role } = await request.json();

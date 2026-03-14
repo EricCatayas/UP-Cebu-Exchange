@@ -15,3 +15,8 @@ export const canEditContent = (user: JWTPayload | User | null): boolean => {
   const roleName = user?.roleName?.toLowerCase() || user?.role?.name?.toLowerCase();
   return ADMIN_EDITOR_ROLES.includes(roleName || '');
 };
+
+export const canManageUsers = (user: JWTPayload | User | null): boolean => {
+  const roleName = user?.roleName?.toLowerCase() || user?.role?.name?.toLowerCase() || '';
+  return roleName === USER_ROLE.ADMIN.toLowerCase();
+};
