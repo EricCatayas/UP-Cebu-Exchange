@@ -328,8 +328,6 @@ class ArtworkService {
       });
     }
 
-    console.log('Recommended Artworks:', recommendedArtworks);
-
     return recommendedArtworks;
   }
 
