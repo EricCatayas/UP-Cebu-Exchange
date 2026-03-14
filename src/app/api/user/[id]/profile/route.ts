@@ -3,10 +3,8 @@ import { User, Role } from '@/models/sequelize';
 import { hashPassword } from '@/lib/auth';
 import { USER_ROLES, USER_STATUS } from '@/lib/constants';
 import { getCurrentUser } from '@/lib/auth';
-import { isAdmin, canEditContent } from '@/lib/role';
 
-// Both admin and the user themselves can update user info
-// but only admin can change roles
+// User update their own profile, including password change
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const currentUser = await getCurrentUser();
@@ -15,7 +13,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     }
     const userId = parseInt((await params).id);
 
-    if (currentUser.userId != userId && !canEditContent(currentUser)) {
+    if (currentUser.userId != userId) {
       return NextResponse.json({ error: 'Unauthorized to update user' }, { status: 401 });
     }
 
@@ -25,14 +23,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    const { fullName, phoneNumber, password, newPassword, role } = await request.json();
-
-    if (role && !canEditContent(currentUser)) {
-      return NextResponse.json({ error: 'Unauthorized to change role' }, { status: 401 });
-    }
-    if (role && !USER_ROLES.includes(role)) {
-      return NextResponse.json({ error: 'Invalid role' }, { status: 400 });
-    }
+    const { fullName, phoneNumber, password, newPassword } = await request.json();
 
     // Validate password strength
     if (newPassword && newPassword.length < 6) {
