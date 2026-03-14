@@ -10,7 +10,7 @@ npm run install
 
 Create .env.local file in root folder, set the following config values:
 
-```bash
+```env
 APP_BASE_URL=http://localhost:3000
 APP_EMAIL=example@email.com
 DB_HOST=localhost
@@ -29,6 +29,7 @@ MAILJET_API_SECRET=mailjet-api-secret
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=stripe-publishable-key
 STRIPE_SECRET_KEY=stripe-secret-key
 STRIPE_WEBHOOK_SECRET=stripe-webhook-signing-secret
+CRON_SECRET=your_random_secret_key_here
 # Optional config you can override
 APP_CONTACT_EMAIL=contactus@email.com
 APP_CONTACT_PHONE='(+63) 987 654 3210'
@@ -67,6 +68,7 @@ admin: admin@test.com, password: admin123
 
 ## Test Stripe Payment Local Development
 
+Stripe is used for handling online payments in the app
 Install Stripe CLI, then run command:
 
 ```bash
@@ -86,7 +88,7 @@ Setup on Cron-job.org:
 URL: https://your-app.vercel.app/api/webhooks/cron/notify-orders
 Schedule: 0 8 \* \* \* (8:00 AM daily)
 Method: POST
-Headers: Authorization: Bearer your_random_secret_key_here
+Headers: Authorization: Bearer {process.env.CRON_SECRET}
 
 ## Development Phase
 
