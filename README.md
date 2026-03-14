@@ -171,8 +171,6 @@ Route (app)
 ├ ƒ /api/rental-order/[id]/pay/stripe
 ├ ƒ /api/rental-order/[id]/return
 ├ ƒ /api/rental-order/[id]/status
-├ ƒ /api/scheduler/init
-├ ƒ /api/scheduler/status
 ├ ƒ /api/session
 ├ ƒ /api/session/clear
 ├ ƒ /api/session/end
