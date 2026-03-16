@@ -42,6 +42,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Password must contain at least one letter and one number' }, { status: 400 });
     }
 
+    // Validate phone number
+    const phoneRegex = /^[0-9+\-() ]{7,20}$/;
+    if (!phoneRegex.test(phoneNumber)) {
+      return NextResponse.json({ error: 'Invalid phone number format' }, { status: 400 });
+    }
+
     // Check if user already exists
     const existingUser = await User.findOne({
       where: { email: email.toLowerCase() },
