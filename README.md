@@ -1,3 +1,5 @@
+update rebuild
+
 ## Setup
 
 After cloning the git repository, run gitbash command:
