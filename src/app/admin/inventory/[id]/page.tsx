@@ -5,6 +5,7 @@ import NotFound from '@/components/errors/NotFound';
 import ArtworkService from '@/services/ArtworkService';
 import RentalOrderService from '@/services/RentalOrderService';
 import ProductDemandService from '@/services/ProductDemandService';
+import { DeleteArtworkButton } from '@/components/admin/inventory/DeleteArtworkButton';
 import { FaEye, FaEdit } from 'react-icons/fa';
 import { ArtworkDTO } from '@/models/Artwork';
 import { ARTWORK_STATUS } from '@/lib/constants';
@@ -48,23 +49,24 @@ async function InventoryDetails({ params }: { params: Promise<{ id: string }> })
             // Link to ongoing rental order details
             <Link
               href={`/admin/orders/${ongoingRentalOrderId}`}
-              className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+              className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
             >
               <FaEdit /> View Ongoing Rental
             </Link>
           )}
           <Link
             href={`/artworks/${artwork.id}`}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
           >
             <FaEye /> Public View
           </Link>
           <Link
             href={`/admin/inventory/${artwork.id}/edit`}
-            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+            className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
           >
-            <FaEdit /> Edit Artwork
+            <FaEdit /> Edit
           </Link>
+          <DeleteArtworkButton artworkId={artwork.id} />
         </span>
       </div>
 

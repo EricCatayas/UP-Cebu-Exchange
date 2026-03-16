@@ -4,7 +4,7 @@ import ArtistService from '@/services/ArtistService';
 import ArtistsTable from '@/components/admin/ArtistsTable';
 
 async function Artists() {
-  const artists = await ArtistService.getAllArtists();
+  const artists = await ArtistService.getAllArtists({});
 
   return (
     <div className="px-8 py-6">

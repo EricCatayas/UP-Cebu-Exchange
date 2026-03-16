@@ -71,4 +71,5 @@ export interface ArtworkQueryParams {
   mediums?: string[];
   page?: number;
   limit: number;
+  status?: string[];
 }

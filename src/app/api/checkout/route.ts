@@ -11,6 +11,7 @@ import {
   RentalOrderItem,
   Payment,
   RentalPlan,
+  UserAddress,
 } from '@/models/sequelize';
 import { CheckoutDTO } from '@/models/RentalOrder';
 import { getCurrentUser } from '@/lib/auth';
@@ -31,20 +32,27 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Admin users cannot place orders' }, { status: 403 });
     }
     const {
+      address,
       durationMonths,
       startDate,
       endDate,
       deliveryMethod,
       paymentMethod,
       cartItemIds,
-      addressId,
       fees,
+      isHomeAddress,
     }: CheckoutDTO = await request.json();
     const cart = await Cart.findOne({
       where: {
         userId: currentUser.userId,
       },
     });
+    if (!address) {
+      return NextResponse.json({ error: 'Address is required for order' }, { status: 400 });
+    }
+    if (!address.addressLine1 || !address.city || !address.province || !address.postalCode) {
+      return NextResponse.json({ error: 'Incomplete address information' }, { status: 400 });
+    }
     if (!cart) {
       return NextResponse.json({ error: 'Cart not found' }, { status: 404 });
     }
@@ -62,15 +70,6 @@ export async function POST(request: NextRequest) {
     }
     if (!paymentMethod) {
       return NextResponse.json({ error: 'Payment method is required' }, { status: 400 });
-    }
-    if (!addressId) {
-      return NextResponse.json({ error: 'Address is required for order' }, { status: 400 });
-    }
-    const existingAddress = await Address.findOne({
-      where: { id: addressId },
-    });
-    if (!existingAddress) {
-      return NextResponse.json({ error: 'Address not found' }, { status: 404 });
     }
     const cartItems = await CartItem.findAll({
       where: {
@@ -129,13 +128,13 @@ export async function POST(request: NextRequest) {
     const additionalFees = fees ? fees.reduce((total, fee) => total + fee.amount, 0) : 0;
     const totalAmount = rentalFee + additionalFees;
 
-    // Create new copy of address
+    // Create new Shipping address
     const newAddress = await Address.create({
-      city: existingAddress.city,
-      province: existingAddress.province,
-      postalCode: existingAddress.postalCode,
-      addressLine1: existingAddress.addressLine1,
-      addressLine2: existingAddress.addressLine2,
+      city: address.city,
+      province: address.province,
+      postalCode: address.postalCode,
+      addressLine1: address.addressLine1,
+      addressLine2: address.addressLine2,
     });
     // Create Payment here
     const newPayment = await Payment.create({
@@ -184,6 +183,28 @@ export async function POST(request: NextRequest) {
         cartId: cart.id,
       },
     });
+
+    if (isHomeAddress) {
+      // Create home address for user
+      const existingHomeAddress = await UserAddress.findOne({
+        where: {
+          userId: currentUser.userId,
+        },
+      });
+      if (!existingHomeAddress) {
+        const newHomeAddress = await Address.create({
+          city: address.city,
+          province: address.province,
+          postalCode: address.postalCode,
+          addressLine1: address.addressLine1,
+          addressLine2: address.addressLine2,
+        });
+        await UserAddress.create({
+          userId: currentUser.userId,
+          addressId: newHomeAddress.id,
+        });
+      }
+    }
 
     await orderPlacedNotification(newRentalOrder.id, { id: currentUser.userId, fullName: currentUser.email });
 

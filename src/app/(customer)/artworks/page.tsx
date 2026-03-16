@@ -2,7 +2,7 @@ import React from 'react';
 import AllArtworks from '@/components/AllArtworks/AllArtworks';
 import ArtworkService from '@/services/ArtworkService';
 import StylesService from '@/services/StylesService';
-import { ARTWORK_MEDIUMS } from '@/lib/constants';
+import { ARTWORK_MEDIUMS, ARTWORK_STATUS } from '@/lib/constants';
 import { getCurrentUser } from '@/lib/auth';
 
 async function AllArtworksServerComponent({
@@ -35,6 +35,7 @@ async function AllArtworksServerComponent({
     mediums: mediumNames,
     page: params.page,
     limit: 24,
+    status: [ARTWORK_STATUS.AVAILABLE, ARTWORK_STATUS.RESERVED, ARTWORK_STATUS.RENTED],
   };
 
   const {

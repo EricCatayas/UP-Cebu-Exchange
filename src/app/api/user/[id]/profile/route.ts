@@ -3,10 +3,8 @@ import { User, Role } from '@/models/sequelize';
 import { hashPassword } from '@/lib/auth';
 import { USER_ROLES, USER_STATUS } from '@/lib/constants';
 import { getCurrentUser } from '@/lib/auth';
-import { isAdmin, canEditContent } from '@/lib/role';
 
-// Both admin and the user themselves can update user info
-// but only admin can change roles
+// User update their own profile, including password change
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const currentUser = await getCurrentUser();
@@ -15,24 +13,19 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     }
     const userId = parseInt((await params).id);
 
-    if (currentUser.userId != userId && !canEditContent(currentUser)) {
+    if (currentUser.userId != userId) {
       return NextResponse.json({ error: 'Unauthorized to update user' }, { status: 401 });
     }
 
-    const user = await User.findByPk(userId);
+    const user = await User.findByPk(userId, {
+      include: ['role'],
+    });
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    const { fullName, phoneNumber, password, newPassword, role } = await request.json();
-
-    if (role && !canEditContent(currentUser)) {
-      return NextResponse.json({ error: 'Unauthorized to change role' }, { status: 401 });
-    }
-    if (role && !USER_ROLES.includes(role)) {
-      return NextResponse.json({ error: 'Invalid role' }, { status: 400 });
-    }
+    const { fullName, phoneNumber, password, newPassword } = await request.json();
 
     // Validate password strength
     if (newPassword && newPassword.length < 6) {
@@ -52,17 +45,10 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 
     const hashedNewPassword = await hashPassword(newPassword);
 
-    const userRole = role
-      ? await Role.findOne({
-          where: { name: role },
-        })
-      : await Role.findByPk(user.roleId);
-
     const updatedUser = await user.update({
       fullName: fullName || user.fullName,
       phoneNumber: phoneNumber || user.phoneNumber,
       password: newPassword ? hashedNewPassword : user.password,
-      roleId: userRole ? userRole.id : user.roleId,
     });
 
     return NextResponse.json(
@@ -72,7 +58,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
           id: updatedUser.id,
           email: updatedUser.email,
           fullName: updatedUser.fullName,
-          roleName: userRole.name,
+          roleName: user.role.name,
         },
       },
       { status: 201 }

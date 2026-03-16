@@ -13,10 +13,7 @@ export default function NotificationsList({ newOnly }: { newOnly?: boolean }) {
   const canDisplay = newOnly ? hasNewNotifications : true;
 
   const handleReadAllNotifications = async () => {
-    try {
-    } catch (error) {
-      alert(error.message);
-    }
+    await readAll();
   };
 
   return (
