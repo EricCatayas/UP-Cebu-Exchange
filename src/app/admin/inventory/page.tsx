@@ -13,7 +13,7 @@ async function Inventory({ searchParams }: { searchParams: { [key: string]: stri
 
   const params = {
     search: (query.search as string) || undefined,
-    sort: (query.sort as 'popular' | 'latest') || 'latest',
+    sort: (query.sort as 'popular' | 'latest') || undefined,
     styles: query.styles || undefined,
     mediums: query.mediums || undefined,
     page: Number(query.page) || 1,
@@ -43,19 +43,11 @@ async function Inventory({ searchParams }: { searchParams: { [key: string]: stri
   const artworkStyles = await StylesService.getAllStyles();
   const artworkMediums = ARTWORK_MEDIUMS;
 
-  let availableCount = 0;
-  let rentedCount = 0;
-  let unavailableCount = 0;
-
-  artworks.forEach((artwork) => {
-    if (artwork.status === ARTWORK_STATUS.AVAILABLE) {
-      availableCount++;
-    } else if (artwork.status === ARTWORK_STATUS.RENTED) {
-      rentedCount++;
-    } else if (artwork.status === ARTWORK_STATUS.UNAVAILABLE) {
-      unavailableCount++;
-    }
-  });
+  const {
+    available: availableCount,
+    rented: rentedCount,
+    unavailable: unavailableCount,
+  } = await artworkService.getStatusCounts();
 
   return (
     <div className="px-8 py-6">

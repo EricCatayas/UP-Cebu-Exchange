@@ -348,6 +348,14 @@ class ArtworkService {
     return { total, available, rented };
   }
 
+  async getStatusCounts(): Promise<{ available: number; reserved: number; rented: number; unavailable: number }> {
+    const available = await ArtworkRepository.count({ where: { status: ARTWORK_STATUS.AVAILABLE } });
+    const reserved = await ArtworkRepository.count({ where: { status: ARTWORK_STATUS.RESERVED } });
+    const rented = await ArtworkRepository.count({ where: { status: ARTWORK_STATUS.RENTED } });
+    const unavailable = await ArtworkRepository.count({ where: { status: ARTWORK_STATUS.UNAVAILABLE } });
+    return { available, reserved, rented, unavailable };
+  }
+
   private async getUserCartArtworkIds() {
     if (!this.userId) return [];
     const cart = await Cart.findOne({
