@@ -1,5 +1,6 @@
-import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '@/config/database';
+import Role from './Role';
+import { DataTypes, Model, Optional } from 'sequelize';
 import { UserAttributes } from '@/models/User';
 
 // Define creation attributes (optional fields during creation)
@@ -16,6 +17,8 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
   declare createdAt: Date;
   declare updatedAt: Date;
   declare roleId: number;
+
+  declare role: Role;
 
   // Association methods will be added here later
 }

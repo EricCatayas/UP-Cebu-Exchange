@@ -43,15 +43,15 @@ function CreateUser() {
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        console.error(data?.error || 'Failed to create user.');
+        alert(data.error || 'Failed to create user.');
         setSubmitting(false);
         return;
       }
 
-      console.log('User created:', data);
+      alert('User created successfully.');
       setTimeout(() => router.push('/admin/users'), 500);
     } catch (err) {
-      console.error('Network error. Please try again.');
+      alert('Network error. Please try again.');
       setSubmitting(false);
     }
   };

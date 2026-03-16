@@ -17,7 +17,9 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ error: 'Unauthorized to update user' }, { status: 401 });
     }
 
-    const user = await User.findByPk(userId);
+    const user = await User.findByPk(userId, {
+      include: ['role'],
+    });
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
@@ -43,17 +45,10 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 
     const hashedNewPassword = await hashPassword(newPassword);
 
-    const userRole = role
-      ? await Role.findOne({
-          where: { name: role },
-        })
-      : await Role.findByPk(user.roleId);
-
     const updatedUser = await user.update({
       fullName: fullName || user.fullName,
       phoneNumber: phoneNumber || user.phoneNumber,
       password: newPassword ? hashedNewPassword : user.password,
-      roleId: userRole ? userRole.id : user.roleId,
     });
 
     return NextResponse.json(
@@ -63,7 +58,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
           id: updatedUser.id,
           email: updatedUser.email,
           fullName: updatedUser.fullName,
-          roleName: userRole.name,
+          roleName: user.role.name,
         },
       },
       { status: 201 }

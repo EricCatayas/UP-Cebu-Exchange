@@ -1,6 +1,5 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { USER_ROLES } from '@/lib/constants';
 import type { UserDTO, UserUpdateDTO } from '@/models/User';
 
 function EditProfileForm({ user }: { user: UserDTO }) {
