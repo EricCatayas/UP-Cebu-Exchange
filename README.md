@@ -1,5 +1,8 @@
 PREPARE
-[ ] Download Artwork image
+[ ] Download Artwork Image
+[ ] Download Invoice Image
+[ ] Sign In Gmail
+[ ] Empty Spam Inbox
 [ ] DB RESET
 [ ] User1 Completes Order
 [ ] Stripe Payment
