@@ -1,4 +1,5 @@
 PREPARE
+[ ] Download Artwork image
 [ ] DB RESET
 [ ] User1 Completes Order
 [ ] Stripe Payment
