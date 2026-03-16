@@ -13,7 +13,7 @@ async function Inventory({ searchParams }: { searchParams: { [key: string]: stri
 
   const params = {
     search: (query.search as string) || undefined,
-    sort: query.sort as 'popular' | 'latest' | undefined,
+    sort: (query.sort as 'popular' | 'latest') || 'latest',
     styles: query.styles || undefined,
     mediums: query.mediums || undefined,
     page: Number(query.page) || 1,
