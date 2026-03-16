@@ -3,7 +3,7 @@ import EventService from '@/services/EventService';
 import { NextRequest, NextResponse } from 'next/server';
 import { UserEmailVerification } from '@/models/sequelize';
 import { User, Role } from '@/models/sequelize';
-import { hashPassword, generateToken } from '@/lib/auth';
+import { hashPassword, generateVerificationToken } from '@/lib/auth';
 import { USER_ROLE, USER_STATUS } from '@/lib/constants';
 import { getCurrentSession } from '@/lib/session';
 import { newCustomerNotification } from '@/lib/notifications';
@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Send verification email
-    const verificationToken = generateToken();
+    const verificationToken = generateVerificationToken();
 
     await UserEmailVerification.create({
       userId: newUser.id,

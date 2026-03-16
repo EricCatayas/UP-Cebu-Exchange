@@ -27,6 +27,10 @@ export const generateToken = (): string => {
   return Array.from(array, (byte) => byte.toString(16).padStart(2, '0')).join('');
 };
 
+export const generateVerificationToken = (): string => {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+};
+
 // export const verifyToken = (token: string): JWTPayload | null => {
 //   try {
 //     return jwt.verify(token, JWT_SECRET) as JWTPayload;
