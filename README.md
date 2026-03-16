@@ -1,3 +1,8 @@
+PREPARE
+[ ] DB RESET
+[ ] User1 Completes Order
+[ ] Stripe Payment
+
 ## Setup
 
 After cloning the git repository, run gitbash command:
