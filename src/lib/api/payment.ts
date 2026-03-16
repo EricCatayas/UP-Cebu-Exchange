@@ -1,17 +1,17 @@
 export const paymentApi = {
-  update: async (paymentId: number, data: { amount: number; method: string; status: string }) => {
+  update: async (paymentId: number, params: { amount: number; method: string; status: string }) => {
     const response = await fetch(`/api/payment/${paymentId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(params),
     });
+    const data = await response.json();
     if (!response.ok) {
-      throw new Error('Failed to update payment');
+      throw new Error(data.error || 'Failed to update payment');
     }
-    console.log('Payment updated successfully');
-    return response.json();
+    return data;
   },
   updateStatus: async (paymentId: number, status: string) => {
     const response = await fetch(`/api/payment/${paymentId}/status`, {
@@ -21,11 +21,11 @@ export const paymentApi = {
       },
       body: JSON.stringify({ status }),
     });
+    const data = await response.json();
     if (!response.ok) {
-      throw new Error('Failed to update payment status');
+      throw new Error(data.error || 'Failed to update payment status');
     }
-    console.log('Payment status updated successfully');
-    return response.json();
+    return data;
   },
   createPaymentTransaction: async (data: {
     paymentId: number;
@@ -60,11 +60,12 @@ export const paymentApi = {
       method: 'POST',
       body: formData,
     });
+
+    const responseData = await response.json();
+
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ error: 'Failed to create payment transaction' }));
-      throw new Error(errorData.error || 'Failed to create payment transaction');
+      throw new Error(responseData.error || 'Failed to create payment transaction');
     }
-    console.log('Payment transaction created successfully');
-    return response.json();
+    return responseData;
   },
 };

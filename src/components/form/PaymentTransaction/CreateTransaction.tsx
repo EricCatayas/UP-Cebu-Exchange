@@ -40,7 +40,7 @@ export default function CreateTransaction({ paymentId, amount }: { paymentId: nu
         transactionDate: formData.transactionDate,
       });
 
-      // Redirect back to payment details page
+      alert('Payment transaction created successfully');
       router.push(`/admin/payments/${paymentId}`);
     } catch (err: any) {
       setError(err.message || 'Failed to create payment transaction');
