@@ -10,6 +10,7 @@ npm run install
 
 Create .env.local file in root folder, set the following config values:
 
+````env
 ```env
 APP_BASE_URL=http://localhost:3000
 APP_EMAIL=example@email.com
@@ -33,7 +34,7 @@ CRON_SECRET=your_random_secret_key_here
 APP_CONTACT_EMAIL=contactus@email.com
 APP_CONTACT_PHONE='(+63) 987 654 3210'
 APP_ADDRESS='new address'
-```
+````
 
 Create the database in MySQL
 
