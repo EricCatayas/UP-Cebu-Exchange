@@ -18,6 +18,7 @@ export default function ArtworksTable({ artworks: data }: { artworks: any[] }) {
   const handleStatusChange = async (artworkId: number, newStatus: string, prevStatus: string) => {
     try {
       await artworkApi.updateStatus(artworkId, newStatus);
+      alert('Artwork status updated successfully.');
     } catch (error) {
       alert(error.message);
       setArtworks((prev) =>

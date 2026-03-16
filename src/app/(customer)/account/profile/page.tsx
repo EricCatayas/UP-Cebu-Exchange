@@ -2,7 +2,6 @@ import AddressProfileForm from '@/components/form/Profile/AddressProfile';
 import EditProfileForm from '@/components/form/Profile/EditProfile';
 import AddressService from '@/services/AddressService';
 import UserService from '@/services/UserService';
-import { USER_ROLES } from '@/lib/constants';
 import { getCurrentUser } from '@/lib/auth';
 import type { UserDTO, UserUpdateDTO } from '@/models/User';
 
