@@ -42,7 +42,7 @@ async function RentalsPage() {
             <RentalOrderCard key={order.id} order={order}>
               <>
                 <Link href={`/account/rentals/${order.id}`} className="text-blue-600 hover:underline">
-                  View Products
+                  View Details
                 </Link>
                 {isPaymentDue(order) && (
                   <Link href={`/account/rentals/${order.id}?action=pay`} className="text-blue-600 hover:underline">

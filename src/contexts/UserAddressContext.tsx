@@ -6,6 +6,8 @@ import { AddressDTO } from '@/models/Address';
 interface UserAddressContextType {
   address: AddressDTO | null;
   setAddress: (address: AddressDTO | null) => void;
+  isHomeAddress: boolean;
+  setIsHomeAddress: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const UserAddressContext = createContext<UserAddressContextType | undefined>(undefined);
@@ -17,11 +19,16 @@ interface UserAddressProviderProps {
 
 export function UserAddressProvider({ children, userAddress = null }: UserAddressProviderProps) {
   const [address, setAddressState] = useState<AddressDTO | null>(userAddress);
+  const [isHomeAddress, setIsHomeAddress] = useState<boolean>(!!userAddress);
   const setAddress = (address: AddressDTO | null) => {
     setAddressState(address);
   };
 
-  return <UserAddressContext.Provider value={{ address, setAddress }}>{children}</UserAddressContext.Provider>;
+  return (
+    <UserAddressContext.Provider value={{ address, setAddress, isHomeAddress, setIsHomeAddress }}>
+      {children}
+    </UserAddressContext.Provider>
+  );
 }
 
 export function useUserAddress() {

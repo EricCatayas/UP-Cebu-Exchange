@@ -58,7 +58,7 @@ export interface ExtendRentalOrderDTO {
 }
 
 export interface CheckoutDTO {
-  addressId: number;
+  address: AddressCreateDTO;
   cartItemIds: number[];
   durationMonths: number;
   startDate: string;
@@ -67,4 +67,5 @@ export interface CheckoutDTO {
   deliveryMethod: string;
   paymentMethod: string;
   fees?: BillingFeeCreateDTO[];
+  isHomeAddress?: boolean;
 }

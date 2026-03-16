@@ -12,14 +12,14 @@ npm run install
 
 Create .env.local file in root folder, set the following config values:
 
-```bash
+````env
+```env
 APP_BASE_URL=http://localhost:3000
 APP_EMAIL=example@email.com
 DB_HOST=localhost
 DB_PORT=3306
 DB_NAME=up_cebu_exchange
 DB_USERNAME=root
-DB_USER=root
 DB_PASSWORD=your_mysql_password
 DB_DIALECT=mysql
 NODE_ENV=development
@@ -31,11 +31,12 @@ MAILJET_API_SECRET=mailjet-api-secret
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=stripe-publishable-key
 STRIPE_SECRET_KEY=stripe-secret-key
 STRIPE_WEBHOOK_SECRET=stripe-webhook-signing-secret
+CRON_SECRET=your_random_secret_key_here
 # Optional config you can override
 APP_CONTACT_EMAIL=contactus@email.com
 APP_CONTACT_PHONE='(+63) 987 654 3210'
 APP_ADDRESS='new address'
-```
+````
 
 Create the database in MySQL
 
@@ -69,6 +70,7 @@ admin: admin@test.com, password: admin123
 
 ## Test Stripe Payment Local Development
 
+Stripe is used for handling online payments in the app
 Install Stripe CLI, then run command:
 
 ```bash
@@ -88,7 +90,7 @@ Setup on Cron-job.org:
 URL: https://your-app.vercel.app/api/webhooks/cron/notify-orders
 Schedule: 0 8 \* \* \* (8:00 AM daily)
 Method: POST
-Headers: Authorization: Bearer your_random_secret_key_here
+Headers: Authorization: Bearer {process.env.CRON_SECRET}
 
 ## Development Phase
 
@@ -99,92 +101,110 @@ Phase 4: Product Recommendation Engine
 Phase 5: Analytics
 
 project-root/
-│
-├── app/ # Next.js App Router base
-│ │
-│ ├── (customer)/ # CUSTOMER-facing routes
-│ │ ├── layout.tsx # Layout for customer-facing pages
-│ │ ├── page.tsx # Home page
-│ │ │
-│ │ ├── artworks/
-│ │ │ ├── page.tsx # All Artworks
-│ │ │ └── [id]/page.tsx # Artwork Details
-│ │ │
-│ │ ├── about/
-│ │ │ └── page.tsx # About Us
-│ │ │
-│ │ ├── privacy-policy/
-│ │ │ └── page.tsx # Privacy Policy
-│ │ │
-│ │ ├── terms-and-conditions/
-│ │ │ └── page.tsx # Terms and Conditions
-│ │ │
-│ │ ├── account/
-│ │ │ ├── layout.tsx # Account layout (sidebar, etc.)
-│ │ │ ├── profile/page.tsx # Profile
-│ │ │ ├── wishlist/page.tsx # My Wishlist
-│ │ │ ├── rentals/page.tsx # My Rentals
-│ │ │
-│ │ ├── login/page.tsx # Login
-│ │ ├── register/page.tsx # Register
-│ │ ├── forgot-password/page.tsx# Forgot Password
-│ │ ├── reset-password/page.tsx # Reset Password
-│ │ └── verify-email/page.tsx # Verify Email
-│ │ │
-│ │ ├── checkout/
-│ │ │ ├── page.tsx # Checkout
-│ │ │ ├── rental-agreement/page.tsx # Rental Agreement
-│ │ │ └── success/page.tsx # Checkout Successful
-│ │
-│ ├── (admin)/ # ADMIN panel routes
-│ │ ├── layout.tsx # Admin layout (sidebar, navbar, etc.)
-│ │ ├── dashboard/page.tsx # Dashboard
-│ │ │
-│ │ ├── orders/
-│ │ │ ├── page.tsx # Orders list
-│ │ │ ├── create/page.tsx # Create Order
-│ │ │ └── [id]/edit/page.tsx # Update Order
-│ │ │
-│ │ ├── inventory/
-│ │ │ ├── page.tsx # Inventory list
-│ │ │ ├── create/page.tsx # Create Product
-│ │ │ └── [id]/edit/page.tsx # Update Product
-│ │ │
-│ │ ├── users/
-│ │ │ ├── page.tsx # Users list
-│ │ │ ├── create/page.tsx # Create User
-│ │ │ └── [id]/edit/page.tsx # Update User
-│ │ │
-│ │ ├── notifications/page.tsx # Notifications
-│ │ ├── themes/page.tsx # Themes
-│ │ └── reports/page.tsx # Reports
-│ │
-│ ├── api/ # Next.js Route Handlers (API endpoints)
-│ │ ├── auth/
-│ │ │ ├── login/route.ts
-│ │ │ ├── register/route.ts
-│ │ │ ├── forgot-password/route.ts
-│ │ │ ├── reset-password/route.ts
-│ │ │ └── verify-email/route.ts
-│ │ ├── artworks/route.ts
-│ │ ├── rentals/route.ts
-│ │ ├── wishlist/route.ts
-│ │ ├── orders/route.ts
-│ │ └── payments/route.ts
-│
-├── components/ # Shared UI components
-│
-├── lib/ # Utility logic
-│
-├── store/ # State management
-│
-├── public/ # Static assets
-│ ├── images/
-│ ├── icons/
-│ └── uploads/
-│
-├── middleware.ts # Middleware (auth checks, redirects)
-├── next.config.js
-├── tailwind.config.js
-├── tsconfig.json
-└── package.json
+Route (app)
+┌ ƒ /
+├ ○ /\_not-found
+├ ○ /about
+├ ƒ /account/profile
+├ ƒ /account/rentals
+├ ƒ /account/rentals/[id]
+├ ƒ /account/rentals/[id]/cancelled
+├ ƒ /account/rentals/[id]/extend
+├ ƒ /account/rentals/[id]/extend/rental-agreement
+├ ƒ /account/rentals/[id]/extend/success
+├ ƒ /account/rentals/[id]/payment
+├ ƒ /account/rentals/[id]/payment/cancelled
+├ ƒ /account/rentals/[id]/payment/success
+├ ƒ /account/rentals/[id]/return/request
+├ ƒ /account/wishlist
+├ ƒ /admin
+├ ○ /admin/artists
+├ ƒ /admin/artists/[id]
+├ ○ /admin/artists/create
+├ ○ /admin/calendar
+├ ƒ /admin/inventory
+├ ƒ /admin/inventory/[id]
+├ ƒ /admin/inventory/[id]/edit
+├ ○ /admin/inventory/create
+├ ƒ /admin/notifications
+├ ○ /admin/orders
+├ ƒ /admin/orders/[id]
+├ ○ /admin/orders/create
+├ ƒ /admin/payments
+├ ƒ /admin/payments/[id]
+├ ƒ /admin/payments/[id]/transactions/create
+├ ƒ /admin/profile
+├ ƒ /admin/reports
+├ ○ /admin/themes
+├ ○ /admin/users
+├ ƒ /admin/users/[id]
+├ ○ /admin/users/create
+├ ƒ /api/address
+├ ƒ /api/artists
+├ ƒ /api/artists/[id]
+├ ƒ /api/artworks
+├ ƒ /api/artworks/[id]
+├ ƒ /api/artworks/[id]/available-date
+├ ƒ /api/artworks/[id]/image
+├ ƒ /api/artworks/[id]/status
+├ ƒ /api/auth/forgot-password
+├ ƒ /api/auth/login
+├ ƒ /api/auth/logout
+├ ƒ /api/auth/register
+├ ƒ /api/auth/resend-verification
+├ ƒ /api/auth/reset-password
+├ ƒ /api/auth/session
+├ ƒ /api/auth/verify-email
+├ ƒ /api/cart
+├ ƒ /api/checkout
+├ ƒ /api/cookie-preference
+├ ƒ /api/event/log
+├ ƒ /api/notifications
+├ ƒ /api/notifications/[id]
+├ ƒ /api/notifications/[id]/read
+├ ƒ /api/notifications/read-all
+├ ƒ /api/payment/[id]
+├ ƒ /api/payment/[id]/status
+├ ƒ /api/payment/[id]/transaction
+├ ƒ /api/rental-order
+├ ƒ /api/rental-order/[id]
+├ ƒ /api/rental-order/[id]/cancel
+├ ƒ /api/rental-order/[id]/extend
+├ ƒ /api/rental-order/[id]/fees
+├ ƒ /api/rental-order/[id]/pay/stripe
+├ ƒ /api/rental-order/[id]/return
+├ ƒ /api/rental-order/[id]/status
+├ ƒ /api/session
+├ ƒ /api/session/clear
+├ ƒ /api/session/end
+├ ƒ /api/user
+├ ƒ /api/user/[id]
+├ ƒ /api/user/[id]/address
+├ ƒ /api/user/[id]/profile
+├ ƒ /api/webhooks/cron/notify-orders
+├ ƒ /api/webhooks/stripe
+├ ƒ /api/wishlist
+├ ƒ /artists/[id]
+├ ƒ /artworks
+├ ƒ /artworks/[id]
+├ ƒ /checkout
+├ ƒ /checkout/address
+├ ƒ /checkout/rental-agreement
+├ ƒ /checkout/success/[id]
+├ ○ /faq
+├ ○ /forgot-password
+├ ○ /icon.svg
+├ ○ /login
+├ ○ /privacy-policy
+├ ○ /register
+├ ƒ /reset-password
+├ ○ /settings
+├ ○ /team
+├ ○ /terms-of-use
+├ ƒ /verify-email
+└ ƒ /verify-email/redirect
+
+ƒ Proxy (Middleware)
+
+○ (Static) prerendered as static content
+ƒ (Dynamic) server-rendered on demand

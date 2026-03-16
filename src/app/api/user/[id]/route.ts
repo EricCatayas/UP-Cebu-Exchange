@@ -3,8 +3,9 @@ import { User, Role } from '@/models/sequelize';
 import { hashPassword } from '@/lib/auth';
 import { USER_ROLE, USER_STATUS } from '@/lib/constants';
 import { getCurrentUser } from '@/lib/auth';
-import { isAdmin, canEditContent } from '@/lib/role';
+import { isAdmin, canManageUsers } from '@/lib/role';
 
+// Admin edit user info, including role and status
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const currentUser = await getCurrentUser();
@@ -12,8 +13,8 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    if (!canEditContent(currentUser)) {
-      return NextResponse.json({ error: 'Admin editor access required' }, { status: 403 });
+    if (!canManageUsers(currentUser)) {
+      return NextResponse.json({ error: 'Admin full privileges required' }, { status: 403 });
     }
 
     const userId = parseInt((await params).id);
@@ -79,8 +80,8 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     if (!currentUser || !isAdmin(currentUser)) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-    if (!canEditContent(currentUser)) {
-      return NextResponse.json({ error: 'Admin editor access required' }, { status: 403 });
+    if (!canManageUsers(currentUser)) {
+      return NextResponse.json({ error: 'Admin full privileges required' }, { status: 403 });
     }
 
     const userId = parseInt((await params).id);

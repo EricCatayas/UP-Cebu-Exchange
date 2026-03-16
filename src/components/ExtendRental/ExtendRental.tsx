@@ -96,7 +96,7 @@ function ExtendRental({
   };
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="mt-12 mb-10 max-w-6xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
       <h1 className="text-3xl font-bold mb-6">Extend Rental Plan</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

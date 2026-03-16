@@ -50,7 +50,7 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
             <RentalOrderCard key={order.id} order={order}>
               <>
                 <Link href={`/admin/orders/${order.id}`} className="text-blue-600 hover:underline">
-                  View Products
+                  View Details
                 </Link>
                 {isOrderPaid(order) && (
                   <Link href={`/admin/payments/${order.paymentId}`} className="text-blue-600 hover:underline">

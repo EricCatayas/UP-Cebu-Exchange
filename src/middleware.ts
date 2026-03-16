@@ -32,7 +32,6 @@ const publicRoutes = [
   '/api/artworks/:id/available-date',
   '/api/event',
   '/api/session',
-  '/api/scheduler',
   '/api/webhooks',
 ];
 

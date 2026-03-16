@@ -2,13 +2,14 @@
 
 import Link from 'next/link';
 import React, { useState, useEffect, useRef } from 'react';
+import { FaCartShopping } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSession } from '@/contexts/SessionContext';
 import { useSidebar } from '@/contexts/SidebarContext';
 import { FaBars, FaUser } from 'react-icons/fa';
+import { isAdmin, isCustomer } from '@/lib/role';
 import { eventApi } from '@/lib/api/event';
-import { FaCartShopping } from 'react-icons/fa6';
 
 const Navbar: React.FC = () => {
   const { user, isLoggedIn, logout } = useAuth();
@@ -94,9 +95,15 @@ const Navbar: React.FC = () => {
 
             {isLoggedIn ? (
               <>
-                <Link href="/account/rentals" className="font-light hover:text-gray-700">
-                  My Rentals
-                </Link>
+                {isAdmin(user) ? (
+                  <Link href="/admin" className="font-light hover:text-gray-700">
+                    Dashboard
+                  </Link>
+                ) : (
+                  <Link href="/account/rentals" className="font-light hover:text-gray-700">
+                    My Rentals
+                  </Link>
+                )}
 
                 {/* Account dropdown */}
                 <div className="relative" ref={accountRef}>
@@ -115,19 +122,21 @@ const Navbar: React.FC = () => {
                       className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg ring-1 ring-black/5 py-1 z-50"
                     >
                       <Link
-                        href="/account/profile"
+                        href={isAdmin(user) ? '/admin/profile' : '/account/profile'}
                         role="menuitem"
                         className="block px-4 py-2 text-sm hover:bg-gray-50"
                       >
                         Profile
                       </Link>
-                      <Link
-                        href="/account/wishlist"
-                        role="menuitem"
-                        className="block px-4 py-2 text-sm hover:bg-gray-50"
-                      >
-                        Wishlist
-                      </Link>
+                      {isCustomer(user) && (
+                        <Link
+                          href="/account/wishlist"
+                          role="menuitem"
+                          className="block px-4 py-2 text-sm hover:bg-gray-50"
+                        >
+                          Wishlist
+                        </Link>
+                      )}
                       <Link href="/settings" role="menuitem" className="block px-4 py-2 text-sm hover:bg-gray-50">
                         Settings
                       </Link>

@@ -39,15 +39,15 @@ function EditUser({ user, canEditRole = true }: { user: UserDTO; canEditRole?: b
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        console.error(data?.error || 'Failed to update user.');
+        alert(data?.error || 'Failed to update user.');
         setSubmitting(false);
         return;
       }
 
-      console.log('User updated:', data);
+      alert('User updated successfully.');
       setTimeout(() => router.push('/admin/users'), 500);
     } catch (err) {
-      console.error('Network error. Please try again.');
+      alert('Network error. Please try again.');
       setSubmitting(false);
     }
   };
@@ -65,8 +65,15 @@ function EditUser({ user, canEditRole = true }: { user: UserDTO; canEditRole?: b
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
           });
+          if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            alert(data?.error || 'Failed to delete user.');
+            return;
+          }
+          alert('User deleted successfully.');
+          setTimeout(() => router.push('/admin/users'), 500);
         } catch (err) {
-          console.error('Network error. Please try again.');
+          alert('Network error. Please try again.');
         }
       }
     );

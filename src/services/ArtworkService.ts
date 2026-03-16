@@ -38,13 +38,15 @@ class ArtworkService {
     mediums,
     page = 1,
     limit,
+    status,
   }: ArtworkQueryParams): Promise<PaginatedArtworks> {
     // Build filtering options based on params
     let options = {};
     const offset = (page - 1) * limit;
-    const where: any = {
-      status: { [Op.in]: [ARTWORK_STATUS.AVAILABLE, ARTWORK_STATUS.RESERVED, ARTWORK_STATUS.RENTED] },
-    };
+    const where: any = {};
+    if (status && status.length > 0) {
+      where.status = { [Op.in]: status };
+    }
     let order: any = [];
 
     if (search) {
@@ -327,8 +329,6 @@ class ArtworkService {
         }
       });
     }
-
-    console.log('Recommended Artworks:', recommendedArtworks);
 
     return recommendedArtworks;
   }
