@@ -1,7 +1,7 @@
 'use client';
 import { AddressDTO } from '@/models/Address';
 import React, { useState } from 'react';
-import { getProvinces, getCitiesByProvince } from '@/lib/address/address';
+import { getProvinces, getCitiesByProvince } from '@/lib/address/utils';
 
 export default function EditAddress({
   address,

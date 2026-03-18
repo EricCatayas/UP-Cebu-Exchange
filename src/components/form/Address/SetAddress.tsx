@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { AddressCreateDTO } from '@/models/Address';
-import { getProvinces, getCitiesByProvince } from '@/lib/address/address';
+import { getProvinces, getCitiesByProvince } from '@/lib/address/utils';
 
 export default function SetAddressForm({
   initialData,
