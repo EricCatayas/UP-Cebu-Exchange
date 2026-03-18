@@ -61,7 +61,7 @@ const Navbar: React.FC = () => {
               onClick={() => setAccountOpen((o) => !o)}
               className="font-light hover:text-gray-700 flex items-center"
             >
-              {user?.name || 'Account'} <span className="ml-1">▾</span>
+              Account <span className="ml-1">▾</span>
             </button>
             {accountOpen && (
               <div
