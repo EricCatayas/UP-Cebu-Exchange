@@ -2,7 +2,7 @@
 import { AddressDTO } from '@/models/Address';
 import React, { useState } from 'react';
 import { addressApi } from '@/lib/api/address';
-import { getProvinces, getCitiesByProvince } from '@/lib/address/address';
+import { getProvinces, getCitiesByProvince } from '@/lib/address/utils';
 
 export default function AddAddressForm({ handleSetAddress }: { handleSetAddress: (address: AddressDTO) => void }) {
   const [city, setCity] = useState('');
