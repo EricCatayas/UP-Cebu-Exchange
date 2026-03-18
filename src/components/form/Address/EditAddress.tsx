@@ -1,6 +1,7 @@
 'use client';
 import { AddressDTO } from '@/models/Address';
 import React, { useState } from 'react';
+import { getProvinces, getCitiesByProvince } from '@/lib/address/address';
 
 export default function EditAddress({
   address,
@@ -19,6 +20,12 @@ export default function EditAddress({
     addressLine2: address?.addressLine2 || '',
   });
 
+  const provinces = getProvinces();
+  const [editProvinceCode, setEditProvinceCode] = useState(
+    () => provinces.find((p) => p.name === (address?.province || ''))?.code || ''
+  );
+  const cities = getCitiesByProvince(editProvinceCode);
+
   React.useEffect(() => {
     if (address) {
       setEditedAddress({
@@ -28,8 +35,16 @@ export default function EditAddress({
         addressLine1: address.addressLine1,
         addressLine2: address.addressLine2 || '',
       });
+      setEditProvinceCode(provinces.find((p) => p.name === address.province)?.code || '');
     }
   }, [address]);
+
+  const handleEditProvinceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const code = e.target.value;
+    const name = provinces.find((p) => p.code === code)?.name || '';
+    setEditProvinceCode(code);
+    setEditedAddress((prev) => ({ ...prev, province: name, city: '' }));
+  };
 
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,6 +79,7 @@ export default function EditAddress({
         addressLine1: address.addressLine1,
         addressLine2: address.addressLine2 || '',
       });
+      setEditProvinceCode(provinces.find((p) => p.name === address.province)?.code || '');
     }
     setIsEditing(false);
   };
@@ -109,23 +125,36 @@ export default function EditAddress({
           <form onSubmit={handleEditSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium mb-1">Province:</label>
-              <input
-                type="text"
-                value={editedAddress.province}
-                onChange={(e) => setEditedAddress({ ...editedAddress, province: e.target.value })}
+              <select
+                value={editProvinceCode}
+                onChange={handleEditProvinceChange}
                 className="w-full border border-gray-300 rounded-md px-3 py-2"
                 required
-              />
+              >
+                <option value="">Select a province</option>
+                {provinces.map((p) => (
+                  <option key={p.code} value={p.code}>
+                    {p.name}
+                  </option>
+                ))}
+              </select>
             </div>
             <div>
               <label className="block text-sm font-medium mb-1">City:</label>
-              <input
-                type="text"
+              <select
                 value={editedAddress.city}
                 onChange={(e) => setEditedAddress({ ...editedAddress, city: e.target.value })}
                 className="w-full border border-gray-300 rounded-md px-3 py-2"
                 required
-              />
+                disabled={!editProvinceCode}
+              >
+                <option value="">Select a city/municipality</option>
+                {cities.map((c) => (
+                  <option key={c.name} value={c.name}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
             </div>
             <div>
               <label className="block text-sm font-medium mb-1">Postal Code:</label>
