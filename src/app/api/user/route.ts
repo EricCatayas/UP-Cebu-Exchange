@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
       phoneNumber,
       fullName,
       roleId: userRole.id,
-      status: USER_STATUS.ACTIVE,
+      status: USER_STATUS.PENDING,
     });
 
     return NextResponse.json(

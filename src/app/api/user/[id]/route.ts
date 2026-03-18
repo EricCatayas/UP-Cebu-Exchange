@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { User, Role } from '@/models/sequelize';
+import { User, Role, RentalOrder } from '@/models/sequelize';
 import { hashPassword } from '@/lib/auth';
 import { USER_ROLE, USER_STATUS } from '@/lib/constants';
 import { getCurrentUser } from '@/lib/auth';
@@ -91,6 +91,12 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     const user = await User.findByPk(userId);
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+    const hasAnyOrders = await RentalOrder.findOne({
+      where: { userId },
+    });
+    if (hasAnyOrders) {
+      return NextResponse.json({ error: 'Cannot delete user with existing rental orders' }, { status: 400 });
     }
     await user.destroy();
     return NextResponse.json({ message: 'User deleted successfully' }, { status: 200 });

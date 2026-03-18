@@ -10,7 +10,8 @@ import ProductDemandService from '@/services/ProductDemandService';
 import FunnelAnalyticsService from '@/services/FunnelAnalyticsService';
 import RentalOrderService from '@/services/RentalOrderService';
 import UserService from '@/services/UserService';
-import { isCustomer } from '@/lib/role';
+import { canManageUsers, isCustomer } from '@/lib/role';
+import { getCurrentUser } from '@/lib/auth';
 import { isOrderPaid } from '@/lib/order';
 
 export default async function UserPage({ params }: { params: Promise<{ id: string }> }) {
@@ -18,6 +19,9 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
 
   const userService = new UserService();
   const userData = await userService.getUserById(id);
+
+  const currentUser = await getCurrentUser();
+  const isSystemAdmin = canManageUsers(currentUser);
 
   if (!userData) {
     return <NotFound header="User not found" linkText="Back to Users" linkHref="/admin/users" />;
@@ -43,7 +47,7 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
         <h2 className="text-3xl font-bold mb-6 slide-right-delay-600">Interests</h2>
         <ArtworkPopularityCarousel artworks={artworksWithScore} popularityScores={popularityScores} />
         <h1 className="mt-6 text-3xl font-bold text-gray-900">Customer Details</h1>
-        <EditUser user={userData} canEditRole={false} />
+        <EditUser user={userData} canEditRole={false} canEditStatus={isSystemAdmin} canDelete={isSystemAdmin} />
         <h2 className="text-2xl font-semibold mt-10 mb-4">Rental Orders</h2>
         <div className="mt-10 mb-10 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {rentalOrders.map((order) => (
@@ -70,7 +74,7 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
     return (
       <div className="px-8 py-6">
         <h1 className="text-3xl font-bold text-gray-900">User Details</h1>
-        <EditUser user={userData} canEditRole={true} />
+        <EditUser user={userData} canEditRole={isSystemAdmin} canEditStatus={isSystemAdmin} canDelete={isSystemAdmin} />
       </div>
     );
   }

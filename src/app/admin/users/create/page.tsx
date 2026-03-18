@@ -1,10 +1,23 @@
 'use client';
 import React, { useState } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import { USER_ROLES } from '@/lib/constants';
 import type { UserCreateDTO } from '@/models/User';
+import { canManageUsers } from '@/lib/role';
 
 function CreateUser() {
+  const { user } = useAuth();
+
+  if (!user || !canManageUsers(user)) {
+    return (
+      <div className="px-8 py-6">
+        <h1 className="text-2xl font-semibold">Unauthorized</h1>
+        <p className="mt-4 text-gray-600">You do not have permission to access this page.</p>
+      </div>
+    );
+  }
+
   const router = useRouter();
   const roles = USER_ROLES;
 
