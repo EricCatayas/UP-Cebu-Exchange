@@ -5,6 +5,18 @@ import { useRouter } from 'next/navigation';
 import { USER_ROLES } from '@/lib/constants';
 import type { UserCreateDTO } from '@/models/User';
 import { canManageUsers } from '@/lib/role';
+import {
+  validateEmail,
+  validateFullName,
+  validatePassword,
+  validateConfirmPassword,
+  validatePhoneNumber,
+} from '@/lib/validators';
+
+type FormErrors = Partial<Record<'fullName' | 'email' | 'phoneNumber' | 'password' | 'confirmPassword', string>>;
+interface UserCreateForm extends UserCreateDTO {
+  confirmPassword: string;
+}
 
 function CreateUser() {
   const { user } = useAuth();
@@ -21,31 +33,54 @@ function CreateUser() {
   const router = useRouter();
   const roles = USER_ROLES;
 
-  const [formData, setFormData] = useState<UserCreateDTO>({
+  const [formData, setFormData] = useState<UserCreateForm>({
     fullName: '',
     email: '',
     phoneNumber: '',
     password: '',
     role: roles[0] || '',
+    confirmPassword: '',
   });
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [errors, setErrors] = useState<FormErrors>({});
+
+  const validateField = (name: keyof FormErrors, value: string) => {
+    const validationResult =
+      name === 'fullName'
+        ? validateFullName(value)
+        : name === 'email'
+          ? validateEmail(value)
+          : name === 'phoneNumber'
+            ? validatePhoneNumber(value)
+            : name === 'password'
+              ? validatePassword(value)
+              : validateConfirmPassword(formData.password, value);
+
+    setErrors((prev) => ({
+      ...prev,
+      [name]: validationResult.isValid ? undefined : validationResult.message,
+    }));
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (
+      name === 'fullName' ||
+      name === 'email' ||
+      name === 'phoneNumber' ||
+      name === 'password' ||
+      name === 'confirmPassword'
+    ) {
+      validateField(name, value);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
     try {
-      if (formData.password !== confirmPassword) {
-        alert('Passwords do not match');
-        setSubmitting(false);
-        return;
-      }
-
       const res = await fetch('/api/user', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -72,6 +107,7 @@ function CreateUser() {
   const labelCls = 'block text-sm font-medium text-gray-700 mb-1';
   const inputCls =
     'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500';
+  const errorTextCls = 'mt-1 text-sm text-red-600';
   const sectionCls = 'grid gap-4';
 
   return (
@@ -94,6 +130,7 @@ function CreateUser() {
             value={formData.fullName}
             onChange={handleChange}
           />
+          {errors.fullName && <p className={errorTextCls}>{errors.fullName}</p>}
         </div>
 
         <div>
@@ -110,6 +147,7 @@ function CreateUser() {
             value={formData.email}
             onChange={handleChange}
           />
+          {errors.email && <p className={errorTextCls}>{errors.email}</p>}
         </div>
 
         <div>
@@ -126,6 +164,7 @@ function CreateUser() {
             value={formData.phoneNumber}
             onChange={handleChange}
           />
+          {errors.phoneNumber && <p className={errorTextCls}>{errors.phoneNumber}</p>}
         </div>
 
         <div>
@@ -142,6 +181,7 @@ function CreateUser() {
             value={formData.password}
             onChange={handleChange}
           />
+          {errors.password && <p className={errorTextCls}>{errors.password}</p>}
         </div>
 
         <div>
@@ -155,9 +195,10 @@ function CreateUser() {
             required
             className={inputCls}
             placeholder="••••••••"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            value={formData.confirmPassword}
+            onChange={handleChange}
           />
+          {errors.confirmPassword && <p className={errorTextCls}>{errors.confirmPassword}</p>}
         </div>
 
         <div>

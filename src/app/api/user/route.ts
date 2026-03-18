@@ -4,6 +4,7 @@ import { hashPassword } from '@/lib/auth';
 import { USER_ROLE, USER_STATUS } from '@/lib/constants';
 import { getCurrentUser } from '@/lib/auth';
 import { isAdmin, canManageUsers } from '@/lib/role';
+import { validateEmail, validatePassword, validatePhoneNumber } from '@/lib/validators';
 
 export async function POST(request: NextRequest) {
   try {
@@ -27,25 +28,21 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return NextResponse.json({ error: 'Invalid email format' }, { status: 400 });
+    const emailValidation = validateEmail(email);
+    if (!emailValidation.isValid) {
+      return NextResponse.json({ error: emailValidation.message }, { status: 400 });
     }
 
     // Validate password strength
-    if (password.length < 6) {
-      return NextResponse.json({ error: 'Password must be at least 6 characters long' }, { status: 400 });
-    }
-    // Password must contain at least one letter and one number
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).+$/;
-    if (!passwordRegex.test(password)) {
-      return NextResponse.json({ error: 'Password must contain at least one letter and one number' }, { status: 400 });
+    const passwordValidation = validatePassword(password);
+    if (!passwordValidation.isValid) {
+      return NextResponse.json({ error: passwordValidation.message }, { status: 400 });
     }
 
     // Validate phone number
-    const phoneRegex = /^[0-9+\-() ]{7,20}$/;
-    if (!phoneRegex.test(phoneNumber)) {
-      return NextResponse.json({ error: 'Invalid phone number format' }, { status: 400 });
+    const phoneValidation = validatePhoneNumber(phoneNumber);
+    if (!phoneValidation.isValid) {
+      return NextResponse.json({ error: phoneValidation.message }, { status: 400 });
     }
 
     // Check if user already exists

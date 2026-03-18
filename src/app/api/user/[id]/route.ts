@@ -4,6 +4,7 @@ import { hashPassword } from '@/lib/auth';
 import { USER_ROLE, USER_STATUS } from '@/lib/constants';
 import { getCurrentUser } from '@/lib/auth';
 import { isAdmin, canManageUsers } from '@/lib/role';
+import { validateFullName, validatePhoneNumber } from '@/lib/validators';
 
 // Admin edit user info, including role and status
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -28,6 +29,18 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     // Validate input
     if (!fullName || !phoneNumber || !status || !role) {
       return NextResponse.json({ error: 'Full name, phone number, status, and role are required' }, { status: 400 });
+    }
+
+    // Validate full name
+    const fullNameValidation = validateFullName(fullName);
+    if (!fullNameValidation.isValid) {
+      return NextResponse.json({ error: fullNameValidation.message }, { status: 400 });
+    }
+
+    // Validate phone number
+    const phoneValidation = validatePhoneNumber(phoneNumber);
+    if (!phoneValidation.isValid) {
+      return NextResponse.json({ error: phoneValidation.message }, { status: 400 });
     }
 
     // Find user
