@@ -67,11 +67,11 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    if (isNaN(Number(heightCm)) || isNaN(Number(widthCm))) {
+    if (heightCm && widthCm && (isNaN(Number(heightCm)) || isNaN(Number(widthCm)))) {
       return NextResponse.json({ error: 'Height and width must be valid numbers' }, { status: 400 });
     }
 
-    if (Number(heightCm) <= 0 || Number(widthCm) <= 0) {
+    if (heightCm && widthCm && (Number(heightCm) <= 0 || Number(widthCm) <= 0)) {
       return NextResponse.json({ error: 'Height and width must be positive numbers' }, { status: 400 });
     }
 

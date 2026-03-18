@@ -2,6 +2,7 @@
 import { AddressDTO } from '@/models/Address';
 import React, { useState } from 'react';
 import { addressApi } from '@/lib/api/address';
+import { getProvinces, getCitiesByProvince } from '@/lib/address/address';
 
 export default function AddAddressForm({ handleSetAddress }: { handleSetAddress: (address: AddressDTO) => void }) {
   const [city, setCity] = useState('');
@@ -10,6 +11,18 @@ export default function AddAddressForm({ handleSetAddress }: { handleSetAddress:
   const [addressLine1, setAddressLine1] = useState('');
   const [addressLine2, setAddressLine2] = useState('');
   const [submitting, setSubmitting] = useState(false);
+
+  const provinces = getProvinces();
+  const [selectedProvinceCode, setSelectedProvinceCode] = useState('');
+  const cities = getCitiesByProvince(selectedProvinceCode);
+
+  const handleProvinceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const code = e.target.value;
+    const name = provinces.find((p) => p.code === code)?.name || '';
+    setSelectedProvinceCode(code);
+    setProvince(name);
+    setCity('');
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,23 +43,36 @@ export default function AddAddressForm({ handleSetAddress }: { handleSetAddress:
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
         <label className="block text-sm font-medium mb-1">Province:</label>
-        <input
-          type="text"
-          value={province}
-          onChange={(e) => setProvince(e.target.value)}
+        <select
+          value={selectedProvinceCode}
+          onChange={handleProvinceChange}
           className="w-full border border-gray-300 rounded-md px-3 py-2"
           required
-        />
+        >
+          <option value="">Select a province</option>
+          {provinces.map((p) => (
+            <option key={p.code} value={p.code}>
+              {p.name}
+            </option>
+          ))}
+        </select>
       </div>
       <div>
         <label className="block text-sm font-medium mb-1">City:</label>
-        <input
-          type="text"
+        <select
           value={city}
           onChange={(e) => setCity(e.target.value)}
           className="w-full border border-gray-300 rounded-md px-3 py-2"
           required
-        />
+          disabled={!selectedProvinceCode}
+        >
+          <option value="">Select a city/municipality</option>
+          {cities.map((c) => (
+            <option key={c.name} value={c.name}>
+              {c.name}
+            </option>
+          ))}
+        </select>
       </div>
       <div>
         <label className="block text-sm font-medium mb-1">Postal Code:</label>

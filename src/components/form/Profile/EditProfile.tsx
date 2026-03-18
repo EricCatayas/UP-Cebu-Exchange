@@ -1,6 +1,9 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import type { UserDTO, UserUpdateDTO } from '@/models/User';
+import { validateFullName, validatePassword, validatePhoneNumber } from '@/lib/validators';
+
+type FormErrors = Partial<Record<'fullName' | 'phoneNumber' | 'password' | 'newPassword' | 'confirmPassword', string>>;
 
 function EditProfileForm({ user }: { user: UserDTO }) {
   const [formData, setFormData] = useState<UserUpdateDTO>({
@@ -12,6 +15,7 @@ function EditProfileForm({ user }: { user: UserDTO }) {
 
   const [confirmPassword, setConfirmPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [errors, setErrors] = useState<FormErrors>({});
 
   useEffect(() => {
     if (user) {
@@ -23,9 +27,48 @@ function EditProfileForm({ user }: { user: UserDTO }) {
     }
   }, [user]);
 
+  const validatePasswordField = (field: 'password' | 'newPassword', value: string) => {
+    setErrors((prev) => ({
+      ...prev,
+      [field]: value ? (validatePassword(value).isValid ? undefined : validatePassword(value).message) : undefined,
+    }));
+  };
+
+  const validateConfirmPassword = (nextConfirmPassword: string, nextNewPassword = formData.newPassword || '') => {
+    setErrors((prev) => ({
+      ...prev,
+      confirmPassword:
+        nextConfirmPassword && nextConfirmPassword !== nextNewPassword ? 'New passwords do not match' : undefined,
+    }));
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (name === 'fullName') {
+      const validationResult = validateFullName(value);
+      setErrors((prev) => ({
+        ...prev,
+        fullName: validationResult.isValid ? undefined : validationResult.message,
+      }));
+    }
+
+    if (name === 'phoneNumber') {
+      const validationResult = validatePhoneNumber(value);
+      setErrors((prev) => ({
+        ...prev,
+        phoneNumber: validationResult.isValid ? undefined : validationResult.message,
+      }));
+    }
+
+    if (name === 'password' || name === 'newPassword') {
+      validatePasswordField(name, value);
+
+      if (name === 'newPassword') {
+        validateConfirmPassword(confirmPassword, value);
+      }
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -67,6 +110,7 @@ function EditProfileForm({ user }: { user: UserDTO }) {
   const labelCls = 'block text-sm font-medium text-gray-700 mb-1';
   const inputCls =
     'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500';
+  const errorTextCls = 'mt-1 text-sm text-red-600';
   const sectionCls = 'grid gap-4';
 
   return (
@@ -84,6 +128,7 @@ function EditProfileForm({ user }: { user: UserDTO }) {
           value={formData.fullName}
           onChange={handleChange}
         />
+        {errors.fullName && <p className={errorTextCls}>{errors.fullName}</p>}
       </div>
 
       <div>
@@ -106,6 +151,7 @@ function EditProfileForm({ user }: { user: UserDTO }) {
           value={formData.phoneNumber}
           onChange={handleChange}
         />
+        {errors.phoneNumber && <p className={errorTextCls}>{errors.phoneNumber}</p>}
       </div>
 
       <div>
@@ -121,6 +167,7 @@ function EditProfileForm({ user }: { user: UserDTO }) {
           value={formData.password}
           onChange={handleChange}
         />
+        {errors.password && <p className={errorTextCls}>{errors.password}</p>}
       </div>
 
       <div>
@@ -136,6 +183,7 @@ function EditProfileForm({ user }: { user: UserDTO }) {
           value={formData.newPassword}
           onChange={handleChange}
         />
+        {errors.newPassword && <p className={errorTextCls}>{errors.newPassword}</p>}
       </div>
 
       <div>
@@ -149,8 +197,13 @@ function EditProfileForm({ user }: { user: UserDTO }) {
           className={inputCls}
           placeholder="••••••••"
           value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
+          onChange={(e) => {
+            const value = e.target.value;
+            setConfirmPassword(value);
+            validateConfirmPassword(value);
+          }}
         />
+        {errors.confirmPassword && <p className={errorTextCls}>{errors.confirmPassword}</p>}
       </div>
 
       <div className="flex gap-3 pt-2">

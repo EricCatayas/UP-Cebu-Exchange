@@ -1,12 +1,15 @@
 import Link from 'next/link';
 import AnalyticsCard from '@/components/AnalyticsCard/AnalyticsCard';
 import UserService from '@/services/UserService';
+import { getCurrentUser } from '@/lib/auth';
+import { canManageUsers } from '@/lib/role';
 import { USER_ROLE, USER_STATUS } from '@/lib/constants';
 
 async function Users() {
   const userService = new UserService();
   const adminUsers = await userService.getAdminUsers();
   const customerUsers = await userService.getUsersByRole(USER_ROLE.CUSTOMER);
+  const currentUser = await getCurrentUser();
 
   let activeCustomerCount = 0;
   let pendingCustomerCount = 0;
@@ -24,12 +27,14 @@ async function Users() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Users</h1>
-        <Link
-          href="/admin/users/create"
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-        >
-          Create New User
-        </Link>
+        {canManageUsers(currentUser) && (
+          <Link
+            href="/admin/users/create"
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+          >
+            Create New User
+          </Link>
+        )}
       </div>
 
       <div className="mt-8 space-y-8">
@@ -98,7 +103,7 @@ async function Users() {
 
         {/* Admin Table */}
         <section>
-          <h2 className="text-xl font-semibold mb-4">Admin Users</h2>
+          <h2 className="text-xl font-semibold mb-4">Admin/Staff Members</h2>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse bg-white shadow-sm rounded-lg">
               <thead>

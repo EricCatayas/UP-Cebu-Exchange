@@ -5,11 +5,22 @@ import { useRouter } from 'next/navigation';
 import { USER_ROLES, USER_STATUSES } from '@/lib/constants';
 import type { UserEditDTO, UserDTO } from '@/models/User';
 
-function EditUser({ user, canEditRole = true }: { user: UserDTO; canEditRole?: boolean }) {
+function EditUser({
+  user,
+  canEditRole = true,
+  canEditStatus = true,
+  canDelete = true,
+}: {
+  user: UserDTO;
+  canEditRole?: boolean;
+  canEditStatus?: boolean;
+  canDelete?: boolean;
+}) {
   const router = useRouter();
   const { openConfirmation } = useModal();
 
   const roles = USER_ROLES;
+  const statuses = USER_STATUSES;
   const email = user.email;
 
   const [formData, setFormData] = useState<UserEditDTO>({
@@ -18,37 +29,50 @@ function EditUser({ user, canEditRole = true }: { user: UserDTO; canEditRole?: b
     status: user.status || '',
     role: user.role.name || '',
   });
+  const [hasEdited, setHasEdited] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    setHasEdited(true);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
-    try {
-      const res = await fetch(`/api/user/${user.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify(formData),
-      });
 
-      const data = await res.json().catch(() => ({}));
+    openConfirmation(
+      {
+        title: 'Confirm Update',
+        message: `Are you sure you want to update user ${user.fullName}'s information?`,
+      },
+      submitData
+    );
 
-      if (!res.ok) {
-        alert(data?.error || 'Failed to update user.');
+    async function submitData() {
+      try {
+        const res = await fetch(`/api/user/${user.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify(formData),
+        });
+
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+          alert(data?.error || 'Failed to update user.');
+          setSubmitting(false);
+          return;
+        }
+
+        alert('User updated successfully.');
+        setTimeout(() => router.push('/admin/users'), 500);
+      } catch (err) {
+        alert('Network error. Please try again.');
         setSubmitting(false);
-        return;
       }
-
-      alert('User updated successfully.');
-      setTimeout(() => router.push('/admin/users'), 500);
-    } catch (err) {
-      alert('Network error. Please try again.');
-      setSubmitting(false);
     }
   };
 
@@ -105,10 +129,10 @@ function EditUser({ user, canEditRole = true }: { user: UserDTO; canEditRole?: b
                 name="fullName"
                 type="text"
                 required
-                className={inputCls}
+                className={`${inputCls} bg-gray-100 cursor-not-allowed`}
                 placeholder="Enter full name"
                 value={formData.fullName}
-                onChange={handleChange}
+                readOnly={true}
               />
             </div>
 
@@ -138,10 +162,10 @@ function EditUser({ user, canEditRole = true }: { user: UserDTO; canEditRole?: b
                 name="phoneNumber"
                 type="tel"
                 required
-                className={inputCls}
+                className={`${inputCls} bg-gray-100 cursor-not-allowed`}
                 placeholder="+1234567890"
                 value={formData.phoneNumber}
-                onChange={handleChange}
+                readOnly={true}
               />
             </div>
 
@@ -158,11 +182,15 @@ function EditUser({ user, canEditRole = true }: { user: UserDTO; canEditRole?: b
                 value={formData.status}
                 onChange={handleChange}
               >
-                {USER_STATUSES.map((s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
-                ))}
+                {canEditStatus ? (
+                  statuses.map((s) => (
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
+                  ))
+                ) : (
+                  <option value={formData.status}>{formData.status}</option>
+                )}
               </select>
             </div>
 
@@ -201,32 +229,38 @@ function EditUser({ user, canEditRole = true }: { user: UserDTO; canEditRole?: b
 
           {/* Footer Actions */}
           <div className="flex items-center justify-between pt-8 border-t border-gray-100">
-            <button
-              type="button"
-              disabled={submitting}
-              onClick={handleDelete}
-              className="text-sm text-red-600 hover:text-red-800 font-semibold transition"
-            >
-              Delete User Account
-            </button>
-
-            <div className="flex gap-4">
+            {canDelete && (
               <button
                 type="button"
-                className="px-6 py-2 rounded-lg border border-gray-300 font-medium text-gray-700 hover:bg-gray-50 transition"
-                onClick={() => router.push('/admin/users')}
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
                 disabled={submitting}
-                className={`px-8 py-2 rounded-lg font-medium text-white transition ${
-                  submitting ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
-                }`}
+                onClick={handleDelete}
+                className="text-sm text-red-600 hover:text-red-800 font-semibold transition"
               >
-                {submitting ? 'Updating…' : 'Update User'}
+                Delete User Account
               </button>
+            )}
+
+            <div className="flex gap-4">
+              {hasEdited && (
+                <>
+                  <button
+                    type="button"
+                    className="px-6 py-2 rounded-lg border border-gray-300 font-medium text-gray-700 hover:bg-gray-50 transition"
+                    onClick={() => router.push('/admin/users')}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className={`px-8 py-2 rounded-lg font-medium text-white transition ${
+                      submitting ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+                    }`}
+                  >
+                    {submitting ? 'Updating…' : 'Update User'}
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </form>

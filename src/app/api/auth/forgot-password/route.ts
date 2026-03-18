@@ -1,7 +1,7 @@
 import EmailService from '@/services/EmailService';
 import { NextRequest, NextResponse } from 'next/server';
 import { User, UserPasswordReset } from '@/models/sequelize';
-import { generateToken } from '@/lib/auth';
+import { generateVerificationToken } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
   try {
@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    const token = generateToken();
+    const token = generateVerificationToken();
 
     await UserPasswordReset.create({
       userId: user.id,

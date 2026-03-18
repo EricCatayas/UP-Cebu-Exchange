@@ -1,210 +1,230 @@
-update rebuild
+# UP Cebu Exchange
 
-## Setup
+Next.js ecommerce/rental platform for managing artworks, rentals, checkout, admin operations, notifications, and reporting.
 
-After cloning the git repository, run gitbash command:
+## Stack
+
+- Next.js 16 (App Router)
+- React 19
+- TypeScript
+- MySQL + Sequelize
+- Stripe (payments)
+- Cloudinary (image storage)
+- Mailjet (email)
+
+## Prerequisites
+
+- Node.js 20+ (LTS recommended)
+- npm 10+
+- MySQL 8+
+- Stripe account (for payment flows)
+- Cloudinary account (for media uploads)
+- Mailjet account (for email delivery)
+
+## Quick Start (Local Development)
+
+1. Install dependencies.
 
 ```bash
-npm run install
+npm install
 ```
 
-## Setup database:
+2. Create local environment file.
 
-Create .env.local file in root folder, set the following config values:
+```bash
+cp .env.example .env.local
+```
 
-````env
+If `cp` is not available on your shell (Windows), create `.env.local` manually using the template in the Environment Variables section below.
+
+3. Create the database.
+
+```sql
+DROP DATABASE IF EXISTS up_cebu_exchange;
+CREATE DATABASE up_cebu_exchange;
+```
+
+4. Initialize schema and seed data.
+
+```bash
+npm run db:init
+```
+
+5. Start the app.
+
+```bash
+npm run dev
+```
+
+6. Open `http://localhost:3000`.
+
+## Environment Variables
+
+The app uses different `.env` files depending on environment:
+
+- Local development: `.env.local`
+- Production runtime: environment variables configured in your hosting platform
+
+### Local `.env.local` Template
+
 ```env
+# Application
+NODE_ENV=development
 APP_BASE_URL=http://localhost:3000
-APP_EMAIL=example@email.com
+APP_EMAIL=email.receiver@example.com
+APP_CONTACT_EMAIL=contactus@email.com
+APP_CONTACT_PHONE=(+63) 987 654 3210
+APP_ADDRESS=Your full business address
+
+# Database
 DB_HOST=localhost
 DB_PORT=3306
 DB_NAME=up_cebu_exchange
 DB_USERNAME=root
 DB_PASSWORD=your_mysql_password
 DB_DIALECT=mysql
-NODE_ENV=development
-JWT_SECRET=your-secret-jwt-key
-NEXTAUTH_SECRET=your-secret-key-here
+
+# Authentication
+JWT_SECRET=replace-with-strong-random-string
+NEXTAUTH_SECRET=replace-with-strong-random-string
 NEXTAUTH_URL=http://localhost:3000
-MAILJET_API_KEY=mailjet-api-key
-MAILJET_API_SECRET=mailjet-api-secret
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=stripe-publishable-key
-STRIPE_SECRET_KEY=stripe-secret-key
-STRIPE_WEBHOOK_SECRET=stripe-webhook-signing-secret
-CRON_SECRET=your_random_secret_key_here
-# Optional config you can override
-APP_CONTACT_EMAIL=contactus@email.com
-APP_CONTACT_PHONE='(+63) 987 654 3210'
-APP_ADDRESS='new address'
-````
 
-Create the database in MySQL
+# Mailjet
+MAILJET_API_KEY=your_mailjet_api_key
+MAILJET_API_SECRET=your_mailjet_api_secret
 
-```sql
-    DROP DATABASE IF EXISTS up_cebu_exchange;
-    CREATE DATABASE up_cebu_exchange;
+# Cloudinary
+CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+CLOUDINARY_FOLDER_NAME=up-cebu-exchange
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+
+# Stripe
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+
+# Cron webhook auth
+CRON_SECRET=replace-with-strong-random-string
 ```
 
-Initialize Database
+### Production Variables Checklist
+
+Set all variables above in your production host, with these required production-specific values:
+
+- `NODE_ENV=production`
+- `APP_BASE_URL=https://your-domain.com`
+- `NEXTAUTH_URL=https://your-domain.com`
+- Production database credentials (`DB_*`)
+- Production Stripe keys (`pk_live_*`, `sk_live_*`) and live `STRIPE_WEBHOOK_SECRET`
+- Strong secrets for `JWT_SECRET`, `NEXTAUTH_SECRET`, and `CRON_SECRET`
+
+Security notes:
+
+- Never commit `.env.local` or production secrets.
+- Rotate leaked secrets immediately.
+- Do not reuse test Stripe keys in production.
+
+## Database Commands
+
+- Initialize DB and seed data:
 
 ```bash
 npm run db:init
 ```
 
-Reset Database
+- Reset DB (drops/recreates/seeds via script):
 
 ```bash
 npm run db:reset
 ```
 
-## Run the development server:
+Seed files are in `src/scripts/seed/`.
 
-```bash
-npm run dev
-```
+## Scripts
 
-## Test Accounts:
+- `npm run dev` - start dev server
+- `npm run build` - create production build
+- `npm run start` - run production server
+- `npm run lint` - run ESLint
+- `npm run db:init` - initialize DB and seed
+- `npm run db:reset` - reset DB and reseed
 
-customer: user1@test.com, password: user123
-admin: admin@test.com, password: admin123
+## Local Integrations
 
-## Test Stripe Payment Local Development
-
-Stripe is used for handling online payments in the app
-Install Stripe CLI, then run command:
+### Stripe Webhook (Local)
 
 ```bash
 stripe login
 stripe listen --forward-to localhost:3000/api/webhooks/stripe
 ```
 
-Copy webhook signing secret, set env variable STRIPE_WEBHOOK_SECRET
+Copy the webhook signing secret from Stripe CLI output and set `STRIPE_WEBHOOK_SECRET` in `.env.local`.
 
-## Setup Cron Job
+### Mailjet
 
-Add secret to .env:
-CRON_SECRET=your_random_secret_key_here
+1. Create a Mailjet account.
+2. Configure sender domain/DNS in Mailjet.
+3. Set `MAILJET_API_KEY` and `MAILJET_API_SECRET`.
 
-Setup on Cron-job.org:
+### Cron Job
 
-URL: https://your-app.vercel.app/api/webhooks/cron/notify-orders
-Schedule: 0 8 \* \* \* (8:00 AM daily)
-Method: POST
-Headers: Authorization: Bearer {process.env.CRON_SECRET}
+Endpoint:
 
-## Development Phase
+- `POST /api/webhooks/cron/notify-orders`
 
-Phase 1: Database & Authentication
-Phase 2: Core Backend APIs
-Phase 3: UI Foundation
-Phase 4: Product Recommendation Engine
-Phase 5: Analytics
+Auth header:
 
-project-root/
-Route (app)
-┌ ƒ /
-├ ○ /\_not-found
-├ ○ /about
-├ ƒ /account/profile
-├ ƒ /account/rentals
-├ ƒ /account/rentals/[id]
-├ ƒ /account/rentals/[id]/cancelled
-├ ƒ /account/rentals/[id]/extend
-├ ƒ /account/rentals/[id]/extend/rental-agreement
-├ ƒ /account/rentals/[id]/extend/success
-├ ƒ /account/rentals/[id]/payment
-├ ƒ /account/rentals/[id]/payment/cancelled
-├ ƒ /account/rentals/[id]/payment/success
-├ ƒ /account/rentals/[id]/return/request
-├ ƒ /account/wishlist
-├ ƒ /admin
-├ ○ /admin/artists
-├ ƒ /admin/artists/[id]
-├ ○ /admin/artists/create
-├ ○ /admin/calendar
-├ ƒ /admin/inventory
-├ ƒ /admin/inventory/[id]
-├ ƒ /admin/inventory/[id]/edit
-├ ○ /admin/inventory/create
-├ ƒ /admin/notifications
-├ ○ /admin/orders
-├ ƒ /admin/orders/[id]
-├ ○ /admin/orders/create
-├ ƒ /admin/payments
-├ ƒ /admin/payments/[id]
-├ ƒ /admin/payments/[id]/transactions/create
-├ ƒ /admin/profile
-├ ƒ /admin/reports
-├ ○ /admin/themes
-├ ○ /admin/users
-├ ƒ /admin/users/[id]
-├ ○ /admin/users/create
-├ ƒ /api/address
-├ ƒ /api/artists
-├ ƒ /api/artists/[id]
-├ ƒ /api/artworks
-├ ƒ /api/artworks/[id]
-├ ƒ /api/artworks/[id]/available-date
-├ ƒ /api/artworks/[id]/image
-├ ƒ /api/artworks/[id]/status
-├ ƒ /api/auth/forgot-password
-├ ƒ /api/auth/login
-├ ƒ /api/auth/logout
-├ ƒ /api/auth/register
-├ ƒ /api/auth/resend-verification
-├ ƒ /api/auth/reset-password
-├ ƒ /api/auth/session
-├ ƒ /api/auth/verify-email
-├ ƒ /api/cart
-├ ƒ /api/checkout
-├ ƒ /api/cookie-preference
-├ ƒ /api/event/log
-├ ƒ /api/notifications
-├ ƒ /api/notifications/[id]
-├ ƒ /api/notifications/[id]/read
-├ ƒ /api/notifications/read-all
-├ ƒ /api/payment/[id]
-├ ƒ /api/payment/[id]/status
-├ ƒ /api/payment/[id]/transaction
-├ ƒ /api/rental-order
-├ ƒ /api/rental-order/[id]
-├ ƒ /api/rental-order/[id]/cancel
-├ ƒ /api/rental-order/[id]/extend
-├ ƒ /api/rental-order/[id]/fees
-├ ƒ /api/rental-order/[id]/pay/stripe
-├ ƒ /api/rental-order/[id]/return
-├ ƒ /api/rental-order/[id]/status
-├ ƒ /api/session
-├ ƒ /api/session/clear
-├ ƒ /api/session/end
-├ ƒ /api/user
-├ ƒ /api/user/[id]
-├ ƒ /api/user/[id]/address
-├ ƒ /api/user/[id]/profile
-├ ƒ /api/webhooks/cron/notify-orders
-├ ƒ /api/webhooks/stripe
-├ ƒ /api/wishlist
-├ ƒ /artists/[id]
-├ ƒ /artworks
-├ ƒ /artworks/[id]
-├ ƒ /checkout
-├ ƒ /checkout/address
-├ ƒ /checkout/rental-agreement
-├ ƒ /checkout/success/[id]
-├ ○ /faq
-├ ○ /forgot-password
-├ ○ /icon.svg
-├ ○ /login
-├ ○ /privacy-policy
-├ ○ /register
-├ ƒ /reset-password
-├ ○ /settings
-├ ○ /team
-├ ○ /terms-of-use
-├ ƒ /verify-email
-└ ƒ /verify-email/redirect
+- `Authorization: Bearer <CRON_SECRET>`
 
-ƒ Proxy (Middleware)
+Example schedule (daily at 8:00 AM):
 
-○ (Static) prerendered as static content
-ƒ (Dynamic) server-rendered on demand
+- Cron expression: `0 8 * * *`
+
+## Production Deployment Guide
+
+This app can be deployed to any Node.js host (VPS, container, managed platforms).
+
+1. Provision a production MySQL database.
+2. Configure all production environment variables.
+3. Build and run:
+
+```bash
+npm ci
+npm run build
+npm run start
+```
+
+4. Route HTTPS traffic to your app (reverse proxy/load balancer).
+5. Configure Stripe webhook endpoint:
+
+- `https://your-domain.com/api/webhooks/stripe`
+
+6. Configure cron caller to trigger:
+
+- `https://your-domain.com/api/webhooks/cron/notify-orders`
+
+7. Verify critical flows:
+
+- login/register
+- checkout/payment
+- email notifications
+- admin dashboard pages
+
+## Test Accounts (Seeded)
+
+- Customer: `user1@test.com` / `user123`
+- Admin: `admin@test.com` / `admin123`
+
+Defined in `src/scripts/seed/users.ts`.
+
+## Troubleshooting
+
+- `ECONNREFUSED` to DB: verify `DB_HOST`, `DB_PORT`, MySQL service state, and DB user access.
+- Auth/session issues: ensure `NEXTAUTH_URL`, `NEXTAUTH_SECRET`, and `APP_BASE_URL` match runtime domain.
+- Stripe webhook verification failed: check `STRIPE_WEBHOOK_SECRET` and endpoint URL.
+- Missing images upload: verify all `CLOUDINARY_*` variables.
+
+## License
+
+Use according to your project/organization licensing policy.

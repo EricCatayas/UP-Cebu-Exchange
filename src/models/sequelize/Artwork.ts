@@ -106,6 +106,15 @@ Artwork.init(
       {
         fields: ['styleId'],
       },
+      {
+        fields: ['status'],
+      },
+      {
+        fields: ['medium'],
+      },
+      {
+        fields: ['createdAt'],
+      },
     ],
   }
 );

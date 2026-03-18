@@ -3,6 +3,15 @@ import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import {
+  validateEmail,
+  validateFullName,
+  validatePassword,
+  validateConfirmPassword,
+  validatePhoneNumber,
+} from '@/lib/validators';
+
+type FormErrors = Partial<Record<'fullName' | 'email' | 'phoneNumber' | 'password' | 'confirmPassword', string>>;
 
 function Register() {
   const { register } = useAuth();
@@ -15,17 +24,32 @@ function Register() {
   const [confirm, setConfirm] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [errors, setErrors] = useState<FormErrors>({});
+
+  const validateField = (field: keyof FormErrors, value: string) => {
+    const validationResult =
+      field === 'fullName'
+        ? validateFullName(value)
+        : field === 'email'
+          ? validateEmail(value)
+          : field === 'phoneNumber'
+            ? validatePhoneNumber(value)
+            : field === 'password'
+              ? validatePassword(value)
+              : validateConfirmPassword(value, password);
+
+    setErrors((prev) => ({
+      ...prev,
+      [field]: validationResult.isValid ? undefined : validationResult.message,
+    }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password !== confirm) {
-      alert('Passwords do not match');
-      return;
-    }
 
     const newAccount = { fullName, email, phoneNumber, password };
     const result = await register(newAccount);
-    console.log('result', result);
+
     if (result.success) {
       console.log('Registration successful');
       alert('Registration successful! A verification email has been sent to your email address.');
@@ -56,7 +80,11 @@ function Register() {
               type="text"
               required
               value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value;
+                setFullName(value);
+                validateField('fullName', value);
+              }}
               placeholder="Enter your full name"
               style={{
                 padding: '0.55rem 0.7rem',
@@ -65,6 +93,7 @@ function Register() {
                 fontSize: '.95rem',
               }}
             />
+            {errors.fullName && <p className="mt-1 text-sm text-red-600">{errors.fullName}</p>}
           </label>
 
           <label style={{ display: 'grid', gap: '0.4rem' }}>
@@ -73,7 +102,11 @@ function Register() {
               type="email"
               required
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value;
+                setEmail(value);
+                validateField('email', value);
+              }}
               placeholder="Enter your email address"
               style={{
                 padding: '0.55rem 0.7rem',
@@ -82,6 +115,7 @@ function Register() {
                 fontSize: '.95rem',
               }}
             />
+            {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
           </label>
 
           <label style={{ display: 'grid', gap: '0.4rem' }}>
@@ -90,7 +124,11 @@ function Register() {
               type="tel"
               required
               value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value;
+                setPhoneNumber(value);
+                validateField('phoneNumber', value);
+              }}
               placeholder="Enter your phone number"
               style={{
                 padding: '0.55rem 0.7rem',
@@ -99,6 +137,7 @@ function Register() {
                 fontSize: '.95rem',
               }}
             />
+            {errors.phoneNumber && <p className="mt-1 text-sm text-red-600">{errors.phoneNumber}</p>}
           </label>
 
           <label style={{ display: 'grid', gap: '0.4rem' }}>
@@ -108,7 +147,12 @@ function Register() {
                 type={showPassword ? 'text' : 'password'}
                 required
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setPassword(value);
+                  validateField('password', value);
+                  validateConfirmPassword(confirm, value);
+                }}
                 placeholder="••••••••"
                 style={{
                   width: '100%',
@@ -139,6 +183,7 @@ function Register() {
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
             </div>
+            {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password}</p>}
             <p className="mt-1 text-xs text-gray-500">Must be at least 6 characters</p>
           </label>
 
@@ -149,7 +194,11 @@ function Register() {
                 type={showConfirmPassword ? 'text' : 'password'}
                 required
                 value={confirm}
-                onChange={(e) => setConfirm(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setConfirm(value);
+                  validateField('confirmPassword', value);
+                }}
                 placeholder="••••••••"
                 style={{
                   width: '100%',
@@ -180,6 +229,7 @@ function Register() {
                 {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
             </div>
+            {errors.confirmPassword && <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>}
           </label>
 
           <button

@@ -1,7 +1,7 @@
 import EmailService from '@/services/EmailService';
 import { NextRequest, NextResponse } from 'next/server';
 import { User, UserEmailVerification } from '@/models/sequelize';
-import { generateToken } from '@/lib/auth';
+import { generateVerificationToken } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
   try {
@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
       where: { userId: user.id },
     });
 
-    const verificationToken = generateToken();
+    const verificationToken = generateVerificationToken();
 
     await UserEmailVerification.create({
       userId: user.id,

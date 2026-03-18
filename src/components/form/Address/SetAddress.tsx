@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { AddressCreateDTO } from '@/models/Address';
+import { getProvinces, getCitiesByProvince } from '@/lib/address/address';
 
 export default function SetAddressForm({
   initialData,
@@ -19,6 +20,12 @@ export default function SetAddressForm({
     addressLine2: initialData?.addressLine2 || '',
   });
 
+  const provinces = getProvinces();
+  const [selectedProvinceCode, setSelectedProvinceCode] = useState(
+    () => provinces.find((p) => p.name === (initialData?.province || ''))?.code || ''
+  );
+  const cities = getCitiesByProvince(selectedProvinceCode);
+
   useEffect(() => {
     setFormData(
       initialData || {
@@ -29,7 +36,18 @@ export default function SetAddressForm({
         addressLine2: '',
       }
     );
+    setSelectedProvinceCode(provinces.find((p) => p.name === (initialData?.province || ''))?.code || '');
   }, [initialData]);
+
+  const handleProvinceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const code = e.target.value;
+    const name = provinces.find((p) => p.code === code)?.name || '';
+    setSelectedProvinceCode(code);
+    setFormData((prev) => ({ ...prev, province: name, city: '' }));
+    if (onInputChange) {
+      onInputChange({ ...formData, province: name, city: '' });
+    }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -57,27 +75,40 @@ export default function SetAddressForm({
         <label className="block text-sm font-medium mb-1" htmlFor="province">
           Province:
         </label>
-        <input
-          type="text"
-          value={formData.province}
+        <select
+          value={selectedProvinceCode}
           name="province"
-          onChange={handleChange}
+          onChange={handleProvinceChange}
           className="w-full border border-gray-300 rounded-md px-3 py-2"
           required
-        />
+        >
+          <option value="">Select a province</option>
+          {provinces.map((p) => (
+            <option key={p.code} value={p.code}>
+              {p.name}
+            </option>
+          ))}
+        </select>
       </div>
       <div>
         <label className="block text-sm font-medium mb-1" htmlFor="city">
           City:
         </label>
-        <input
-          type="text"
+        <select
           value={formData.city}
           name="city"
           onChange={handleChange}
           className="w-full border border-gray-300 rounded-md px-3 py-2"
           required
-        />
+          disabled={!selectedProvinceCode}
+        >
+          <option value="">Select a city/municipality</option>
+          {cities.map((c) => (
+            <option key={c.name} value={c.name}>
+              {c.name}
+            </option>
+          ))}
+        </select>
       </div>
       <div>
         <label className="block text-sm font-medium mb-1" htmlFor="postalCode">
