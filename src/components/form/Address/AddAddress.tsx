@@ -2,7 +2,7 @@
 import { AddressDTO } from '@/models/Address';
 import React, { useState } from 'react';
 import { addressApi } from '@/lib/api/address';
-import { getProvinces, getCitiesByProvince } from '@/lib/address/utils';
+import { getProvinces, getCitiesByProvince, getZipCodeByCity } from '@/lib/address/utils';
 
 export default function AddAddressForm({ handleSetAddress }: { handleSetAddress: (address: AddressDTO) => void }) {
   const [city, setCity] = useState('');
@@ -22,7 +22,17 @@ export default function AddAddressForm({ handleSetAddress }: { handleSetAddress:
     setSelectedProvinceCode(code);
     setProvince(name);
     setCity('');
+    setPostalCode('');
   };
+  
+    const handleCityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+      const cityName = e.target.value;
+      const postalCode = getZipCodeByCity(cityName) || '';
+      setCity(cityName);
+      if (postalCode) {
+        setPostalCode(postalCode);
+      }
+    };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,7 +71,7 @@ export default function AddAddressForm({ handleSetAddress }: { handleSetAddress:
         <label className="block text-sm font-medium mb-1">City:</label>
         <select
           value={city}
-          onChange={(e) => setCity(e.target.value)}
+          onChange={handleCityChange}
           className="w-full border border-gray-300 rounded-md px-3 py-2"
           required
           disabled={!selectedProvinceCode}

@@ -7,12 +7,10 @@ import type { UserEditDTO, UserDTO } from '@/models/User';
 
 function EditUser({
   user,
-  canEditRole = true,
   canEditStatus = true,
   canDelete = true,
 }: {
   user: UserDTO;
-  canEditRole?: boolean;
   canEditStatus?: boolean;
   canDelete?: boolean;
 }) {
@@ -199,22 +197,6 @@ function EditUser({
               <label className={labelCls} htmlFor="role">
                 Role
               </label>
-              {canEditRole ? (
-                <select
-                  id="role"
-                  name="role"
-                  required
-                  className={inputCls}
-                  value={formData.role}
-                  onChange={handleChange}
-                >
-                  {roles.map((r) => (
-                    <option key={r} value={r}>
-                      {r.charAt(0).toUpperCase() + r.slice(1)}
-                    </option>
-                  ))}
-                </select>
-              ) : (
                 <input
                   id="role"
                   name="role"
@@ -223,7 +205,6 @@ function EditUser({
                   className={`${inputCls} bg-gray-100 cursor-not-allowed`}
                   value={formData.role}
                 />
-              )}
             </div>
           </div>
 

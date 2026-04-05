@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { AddressCreateDTO } from '@/models/Address';
-import { getProvinces, getCitiesByProvince } from '@/lib/address/utils';
+import { getProvinces, getCitiesByProvince, getZipCodeByCity } from '@/lib/address/utils';
 
 export default function SetAddressForm({
   initialData,
@@ -43,9 +43,18 @@ export default function SetAddressForm({
     const code = e.target.value;
     const name = provinces.find((p) => p.code === code)?.name || '';
     setSelectedProvinceCode(code);
-    setFormData((prev) => ({ ...prev, province: name, city: '' }));
+    setFormData((prev) => ({ ...prev, province: name, city: '', postalCode: '' }));
     if (onInputChange) {
-      onInputChange({ ...formData, province: name, city: '' });
+      onInputChange({ ...formData, province: name, city: '', postalCode: '' });
+    }
+  };
+
+  const handleCityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const cityName = e.target.value;
+    const postalCode = getZipCodeByCity(cityName) || '';
+    setFormData((prev) => ({ ...prev, city: cityName, postalCode }));
+    if (onInputChange) {
+      onInputChange({ ...formData, city: cityName, postalCode });
     }
   };
 
@@ -97,7 +106,7 @@ export default function SetAddressForm({
         <select
           value={formData.city}
           name="city"
-          onChange={handleChange}
+          onChange={handleCityChange}
           className="w-full border border-gray-300 rounded-md px-3 py-2"
           required
           disabled={!selectedProvinceCode}

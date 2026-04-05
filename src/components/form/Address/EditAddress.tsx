@@ -1,7 +1,7 @@
 'use client';
 import { AddressDTO } from '@/models/Address';
 import React, { useState } from 'react';
-import { getProvinces, getCitiesByProvince } from '@/lib/address/utils';
+import { getProvinces, getCitiesByProvince, getZipCodeByCity } from '@/lib/address/utils';
 
 export default function EditAddress({
   address,
@@ -43,7 +43,13 @@ export default function EditAddress({
     const code = e.target.value;
     const name = provinces.find((p) => p.code === code)?.name || '';
     setEditProvinceCode(code);
-    setEditedAddress((prev) => ({ ...prev, province: name, city: '' }));
+    setEditedAddress((prev) => ({ ...prev, province: name, city: '', postalCode: '' }));
+  };
+
+  const handleEditCityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const cityName = e.target.value;
+    const postalCode = getZipCodeByCity(cityName) || '';
+    setEditedAddress((prev) => ({ ...prev, city: cityName, postalCode }));
   };
 
   const handleEditSubmit = async (e: React.FormEvent) => {
@@ -143,7 +149,7 @@ export default function EditAddress({
               <label className="block text-sm font-medium mb-1">City:</label>
               <select
                 value={editedAddress.city}
-                onChange={(e) => setEditedAddress({ ...editedAddress, city: e.target.value })}
+                onChange={handleEditCityChange}
                 className="w-full border border-gray-300 rounded-md px-3 py-2"
                 required
                 disabled={!editProvinceCode}
