@@ -39,7 +39,7 @@ export default function AllArtworks({
 
   return (
     <>
-      <PageHeader title="All Artworks" />
+      <PageHeader title="All Artworks" minHeight="400px" />
 
       <div className="container mx-auto px-4 pb-8">
         <ArtworksFilterBar mediums={artworkMediums} styles={artworkStyles} />
