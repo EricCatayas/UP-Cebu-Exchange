@@ -92,16 +92,15 @@ class ArtworkService {
       where.medium = { [Op.in]: mediums };
     }
 
-    if (sort) {
-      if (sort === 'popular') {
-        const productDemandService = new ProductDemandService();
-        const { artworks: sortedArtworks } = await productDemandService.getArtworksPopularityScores({});
-        const sortedArtworkIds = sortedArtworks.map((a) => a.id);
-        order = [[sequelize.literal(`FIELD(\`Artwork\`.\`id\`, ${sortedArtworkIds.join(',')})`), 'ASC']];
-      }
-      if (sort === 'latest') {
-        order = [['createdAt', 'DESC']];
-      }
+    if (sort === 'popular') {
+      const productDemandService = new ProductDemandService();
+      const { artworks: sortedArtworks } = await productDemandService.getArtworksPopularityScores({});
+      const sortedArtworkIds = sortedArtworks.map((a) => a.id);
+      order = [[sequelize.literal(`FIELD(\`Artwork\`.\`id\`, ${sortedArtworkIds.join(',')})`), 'ASC']];
+    } else if (sort === 'latest') {
+      order = [['createdAt', 'DESC']];
+    } else {
+      order = [['title', 'ASC']];
     }
 
     options = { where, order, page, limit, offset };
