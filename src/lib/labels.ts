@@ -16,7 +16,7 @@ export const recentTimeframe = timeframes[3]; // Past 3 months
 
 export const orderStatus = {
   [ORDER_STATUS.PENDING]: { label: 'Pending', value: ORDER_STATUS.PENDING, color: 'bg-yellow-100 text-yellow-800' },
-  [ORDER_STATUS.RESERVED]: { label: 'Reserved', value: ORDER_STATUS.RESERVED, color: 'bg-blue-100 text-blue-800' },
+  [ORDER_STATUS.RESERVED]: { label: 'Reserved', value: ORDER_STATUS.RESERVED, color: 'bg-red-100 text-blue-800' },
   [ORDER_STATUS.TORECEIVE]: {
     label: 'To Receive',
     value: ORDER_STATUS.TORECEIVE,
