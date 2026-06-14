@@ -144,6 +144,10 @@ function Login() {
               Sign Up
             </a>
           </div>
+          <div style={{ fontSize: '.8rem', color: '#666' }}>
+            <p><strong>Customer Account:</strong> user1@test.com / user123</p>
+            <p><strong>Staff Account:</strong> staff1@test.com / staff123</p>
+          </div>
         </div>
       </div>
     </div>
