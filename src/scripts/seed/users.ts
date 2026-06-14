@@ -8,6 +8,9 @@ export async function seedUsers() {
     const customerRole = await Role.findOne({
       where: { name: USER_ROLE.CUSTOMER },
     });
+    const staffRole = await Role.findOne({
+      where: { name: USER_ROLE.STAFF },
+    });
     const adminRole = await Role.findOne({
       where: { name: USER_ROLE.ADMIN },
     });
@@ -22,6 +25,19 @@ export async function seedUsers() {
         password: userPassword,
         phoneNumber: '123-456-7890',
         roleId: customerRole.id,
+        status: 'Active',
+      },
+    });
+    // staff account
+    const staffPassword = await hashPassword('staff123');
+    await User.findOrCreate({
+      where: { email: 'staff1@test.com' },
+      defaults: {
+        email: 'staff1@test.com',
+        fullName: 'Staff User',
+        password: staffPassword,
+        phoneNumber: '555-1234',
+        roleId: staffRole.id,
         status: 'Active',
       },
     });
