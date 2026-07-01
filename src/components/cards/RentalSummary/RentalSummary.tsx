@@ -27,67 +27,105 @@ export default function RentalSummaryCard({
   children?: React.ReactNode;
 }) {
   return (
-    <div className="bg-white border-2 border-gray-300 rounded-lg p-6 shadow-sm sticky top-6">
-      <h2 className="text-xl font-bold mb-4">Rental Summary</h2>
+    <aside className="sticky top-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_20px_40px_-20px_rgba(15,23,42,0.22)]">
+      <div className="border-b border-slate-200 bg-gradient-to-r from-amber-50 via-white to-sky-50 p-6">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Checkout</p>
+        <h2 className="mt-2 text-2xl font-bold text-slate-900">Rental Summary</h2>
+        <p className="mt-1 text-sm text-slate-600">Review your booking details before placing the order.</p>
+      </div>
 
-      <div className="space-y-3 mb-6">
-        <div className="flex justify-between">
-          <span className="text-gray-600">Duration:</span>
-          <span className="font-semibold">{duration} months</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-gray-600">Start Date:</span>
-          <span className="font-semibold">{fmtDate(startDate)}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-gray-600">End Date:</span>
-          <span className="font-semibold">{fmtDate(endDate)}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-gray-600">Delivery Method:</span>
-          <span className="font-semibold">{deliveryMethod}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-gray-600">Payment Method:</span>
-          <span className="font-semibold">{paymentMethod}</span>
-        </div>
-        {customer && (
-          <div className="flex justify-between">
-            <span className="text-gray-600">Customer:</span>
-            <span className="font-semibold">{customer.fullName}</span>
+      <div className="space-y-5 p-6">
+        <div className="grid grid-cols-2 gap-2 text-sm">
+          <div className="rounded-lg bg-slate-100 px-3 py-2">
+            <p className="text-xs uppercase tracking-wide text-slate-500">Duration</p>
+            <p className="mt-1 font-semibold text-slate-900">{duration} months</p>
           </div>
-        )}
+          <div className="rounded-lg bg-slate-100 px-3 py-2">
+            <p className="text-xs uppercase tracking-wide text-slate-500">Items</p>
+            <p className="mt-1 font-semibold text-slate-900">{artworks.length}</p>
+          </div>
+        </div>
 
-        <div className="border-t pt-3 mt-3">
-          {artworks.length > 0 &&
-            artworks.map((artwork) => (
-              <div key={artwork.id} className="flex justify-between mb-2">
-                <span className="text-gray-600">{artwork.title}</span>
-                <span className="font-semibold">{fmtMoney(getRentalFee(artwork, duration))}</span>
-              </div>
-            ))}
+        <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-4">
+          <div className="flex items-center justify-between py-1 text-sm">
+            <span className="text-slate-600">Start date</span>
+            <span className="font-semibold text-slate-900">{fmtDate(startDate)}</span>
+          </div>
+          <div className="flex items-center justify-between py-1 text-sm">
+            <span className="text-slate-600">End date</span>
+            <span className="font-semibold text-slate-900">{fmtDate(endDate)}</span>
+          </div>
+          <div className="flex items-center justify-between py-1 text-sm">
+            <span className="text-slate-600">Delivery</span>
+            <span className="rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-slate-700 shadow-sm">
+              {deliveryMethod}
+            </span>
+          </div>
+          <div className="flex items-center justify-between py-1 text-sm">
+            <span className="text-slate-600">Payment</span>
+            <span className="rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-slate-700 shadow-sm">
+              {paymentMethod}
+            </span>
+          </div>
+          {customer && (
+            <div className="flex items-center justify-between py-1 text-sm">
+              <span className="text-slate-600">Customer</span>
+              <span className="font-semibold text-slate-900">{customer.fullName}</span>
+            </div>
+          )}
+        </div>
+
+        <div>
+          <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">Artworks</p>
+          <div className="space-y-3">
+            {artworks.length > 0 &&
+              artworks.map((artwork) => (
+                <div
+                  key={artwork.id}
+                  className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-3 shadow-sm"
+                >
+                  <div className="flex min-w-0 items-center gap-3">
+                    <img
+                      src={getImageUrl(artwork)}
+                      alt={artwork.title}
+                      className="h-12 w-12 rounded-lg object-cover"
+                    />
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold text-slate-900">{artwork.title}</p>
+                      <p className="truncate text-xs text-slate-500">{getDimension(artwork)}</p>
+                    </div>
+                  </div>
+                  <span className="shrink-0 text-sm font-bold text-slate-900">
+                    {fmtMoney(getRentalFee(artwork, duration))}
+                  </span>
+                </div>
+              ))}
+          </div>
         </div>
 
         {additionalFees?.length > 0 && (
-          <div className="border-t pt-3 mt-3">
-            {additionalFees.map((fee, index) => (
-              <div key={index} className="flex justify-between mb-2">
-                <span className="text-gray-600">{fee.label}</span>
-                <span className="font-semibold">₱{fee.amount}</span>
-              </div>
-            ))}
+          <div>
+            <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-500">Additional Fees</p>
+            <div className="space-y-2 rounded-xl border border-slate-200 bg-slate-50 p-3">
+              {additionalFees.map((fee, index) => (
+                <div key={index} className="flex items-center justify-between text-sm">
+                  <span className="text-slate-600">{fee.label}</span>
+                  <span className="font-semibold text-slate-900">{fmtMoney(fee.amount)}</span>
+                </div>
+              ))}
+            </div>
           </div>
         )}
-      </div>
 
-      <div className="border-t pt-4 mb-6">
-        <div className="flex justify-between items-center">
-          <span className="font-bold text-lg">Total Rental Cost</span>
-          <span className="font-bold text-2xl text-primary">₱{total}</span>
+        <div className="rounded-xl p-4">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-semibold uppercase tracking-wide text-slate-500">Total Rental Cost</span>
+            <span className="text-2xl font-bold text-primary">{fmtMoney(total)}</span>
+          </div>
         </div>
-      </div>
 
-      {children}
-    </div>
+        {children}
+      </div>
+    </aside>
   );
 }
