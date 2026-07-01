@@ -1,4 +1,6 @@
 import React, { Suspense } from 'react';
+import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import ArtworkDetails from '@/components/ArtworkDetails/ArtworkDetails';
 import ArtworksFromArtist from '@/components/ArtworkDetails/ArtworksFromArtist';
 import ArtworkGallery from '@/components/ArtworkGallery/ArtworkGallery';
@@ -7,9 +9,67 @@ import SimilarArtworks from '@/components/ArtworkDetails/SimilarArtworks';
 import HeroBackground from '@/components/HeroBackground/HeroBackground';
 import ProductDemandService from '@/services/ProductDemandService';
 import { getCurrentUser } from '@/lib/auth';
+import { absoluteUrl } from '@/lib/seo';
+import { getImageUrl } from '@/lib/artwork';
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const id = Number((await params).id);
+
+  if (!Number.isInteger(id) || id <= 0) {
+    return {
+      title: 'Artwork Not Found',
+      robots: {
+        index: false,
+        follow: false,
+      },
+    };
+  }
+
+  const artworkService = new ArtworkService();
+  const artwork = await artworkService.getArtworkById(id);
+
+  if (!artwork) {
+    return {
+      title: 'Artwork Not Found',
+      robots: {
+        index: false,
+        follow: false,
+      },
+    };
+  }
+
+  const artworkUrl = `/artworks/${artwork.id}`;
+  const imageUrl = getImageUrl(artwork);
+  const description = artwork.description || `View ${artwork.title} by ${artwork.artist?.name || 'UP Cebu artist'}.`;
+
+  return {
+    title: artwork.title,
+    description,
+    alternates: {
+      canonical: artworkUrl,
+    },
+    openGraph: {
+      title: artwork.title,
+      description,
+      type: 'article',
+      url: absoluteUrl(artworkUrl),
+      images: imageUrl ? [{ url: imageUrl }] : undefined,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: artwork.title || undefined,
+      description,
+      images: imageUrl ? [imageUrl] : undefined,
+    },
+  };
+}
 
 async function ArtworkDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const id = parseInt((await params).id);
+
+  if (!Number.isInteger(id) || id <= 0) {
+    notFound();
+  }
 
   const currentUser = await getCurrentUser();
   const artworkService = new ArtworkService(currentUser?.userId);
@@ -17,11 +77,7 @@ async function ArtworkDetailsPage({ params }: { params: Promise<{ id: string }> 
   const productDemandService = new ProductDemandService();
 
   if (!artwork) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <p>Artwork not found</p>
-      </div>
-    );
+    notFound();
   }
 
   const [viewCount, wishlistCount] = await Promise.all([

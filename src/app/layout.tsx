@@ -6,6 +6,8 @@ import { SessionProvider } from '@/contexts/SessionContext';
 import { ModalProvider } from '@/contexts/ModalContext';
 import { SidebarProvider } from '@/contexts/SidebarContext';
 import { Modal } from '@/components/Modal/Modal';
+import { APP_NAME } from '@/lib/constants';
+import { getMetadataBase } from '@/lib/seo';
 import '@/app/globals.css';
 import '@/styles/fonts.css';
 
@@ -16,8 +18,33 @@ const geistSans = Geist({
 });
 
 export const metadata: Metadata = {
-  title: 'UP Cebu Exchange',
-  description: 'Art rental platform from the University of the Philippines Cebu',
+  metadataBase: getMetadataBase(),
+  title: {
+    default: APP_NAME,
+    template: `%s | ${APP_NAME}`,
+  },
+  description: 'Discover and rent student-made artworks from the University of the Philippines Cebu.',
+  applicationName: APP_NAME,
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    type: 'website',
+    title: APP_NAME,
+    description: 'Discover and rent student-made artworks from the University of the Philippines Cebu.',
+    siteName: APP_NAME,
+    locale: 'en_PH',
+    url: '/',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: APP_NAME,
+    description: 'Discover and rent student-made artworks from the University of the Philippines Cebu.',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
