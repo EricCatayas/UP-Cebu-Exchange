@@ -1,14 +1,57 @@
 import React from 'react';
+import type { Metadata } from 'next';
 import AllArtworks from '@/components/AllArtworks/AllArtworks';
 import ArtworkService from '@/services/ArtworkService';
 import StylesService from '@/services/StylesService';
 import { ARTWORK_MEDIUMS, ARTWORK_STATUS } from '@/lib/constants';
 import { getCurrentUser } from '@/lib/auth';
+import { absoluteUrl } from '@/lib/seo';
+
+type SearchParams = {
+  [key: string]: string | string[] | undefined;
+};
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}): Promise<Metadata> {
+  const query = await searchParams;
+
+  const searchTerm = typeof query.search === 'string' ? query.search.trim() : '';
+  const page = Math.max(1, Number(query.page) || 1);
+
+  const pageSuffix = page > 1 ? ` - Page ${page}` : '';
+  const title = searchTerm
+    ? `Artworks matching "${searchTerm}"${pageSuffix}`
+    : `Browse Artworks${pageSuffix}`;
+
+  const canonicalPath = page > 1 ? `/artworks?page=${page}` : '/artworks';
+
+  return {
+    title,
+    description: 'Browse available, reserved, and rented artworks from UP Cebu student artists.',
+    alternates: {
+      canonical: canonicalPath,
+    },
+    openGraph: {
+      title,
+      description: 'Browse available, reserved, and rented artworks from UP Cebu student artists.',
+      type: 'website',
+      url: absoluteUrl(canonicalPath),
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description: 'Browse available, reserved, and rented artworks from UP Cebu student artists.',
+    },
+  };
+}
 
 async function AllArtworksServerComponent({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<SearchParams>;
 }) {
   const currentUser = await getCurrentUser();
   const artworkService = new ArtworkService(currentUser?.userId);
