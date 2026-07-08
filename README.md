@@ -225,6 +225,15 @@ Defined in `src/scripts/seed/users.ts`.
 - Stripe webhook verification failed: check `STRIPE_WEBHOOK_SECRET` and endpoint URL.
 - Missing images upload: verify all `CLOUDINARY_*` variables.
 
+Use this exact recovery sequence any time you move the project between PCs:
+# from project root
+```bash
+if (Test-Path .next) { Remove-Item -Recurse -Force .next }
+if (Test-Path node_modules) { Remove-Item -Recurse -Force node_modules }
+npm.cmd ci
+npm.cmd run dev
+```
+
 ## License
 
 Use according to your project/organization licensing policy.
