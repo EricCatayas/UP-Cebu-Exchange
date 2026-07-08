@@ -10,10 +10,12 @@ export default function ArtworkCard({
   artwork,
   displayInfo = true,
   displayCartWishlist = true,
+  classes = '',
 }: {
   artwork: any;
   displayInfo?: boolean;
   displayCartWishlist?: boolean;
+  classes?: string;
 }) {
   if (!artwork) return null;
 
@@ -26,7 +28,7 @@ export default function ArtworkCard({
   const NavigateToArtist = () => router.push(`/artists/${artwork.artist?.id}`);
 
   return (
-    <div className={`artwork-card status-${artwork.status}`}>
+    <div className={`artwork-card status-${artwork.status} ${classes}`}>
       <button type="button" className="image-wrapper" onClick={NavigateToArtwork} aria-label={`View ${artwork.title}`}>
         {artwork.status === ARTWORK_STATUS.RESERVED && <div className="badge badge-reserved">Reserved</div>}
         {artwork.status === ARTWORK_STATUS.RENTED && <div className="badge badge-rented">Rented</div>}

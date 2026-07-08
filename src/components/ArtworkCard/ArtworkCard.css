@@ -6,6 +6,10 @@
   overflow: hidden;
 }
 
+.artwork-card.shadow {
+  box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.40);
+}
+
 .info-row {
   display: flex;
   padding: 10px 12px 14px;

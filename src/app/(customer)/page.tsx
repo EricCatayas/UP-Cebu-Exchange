@@ -3,6 +3,7 @@ import CategoryGrid from '@/components/CategoryGrid/CategoryGrid';
 import ArtworkCarousel from '@/components/ArtworkCarousel/ArtworkCarousel';
 import HeroBackground from '@/components/HeroBackground/HeroBackground';
 import ArtworksDisplay from '@/components/ArtworksDisplay/ArtworksDisplay';
+import EmailNewsletter from '@/components/EmailNewsLetter/EmailNewsletter'
 import HomeSlider from '@/components/Slider/HomeSlider';
 import ArtworkService from '@/services/ArtworkService';
 import StylesService from '@/services/StylesService';
@@ -89,7 +90,7 @@ export default async function Page() {
           </Link>
         </div>
       </HeroBackground>
-      <div className="container px-4 sm:px-6 md:px-8 py-6 sm:py-8 md:py-10 max-w-8xl mx-auto">
+      <div className="section-container">
         <section className="pb-8 sm:pb-10 md:pb-12">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6 slide-right-delay-600">
             Highlights from the Gallery
@@ -108,6 +109,11 @@ export default async function Page() {
           </h2>
           <CategoryGrid categories={categories} />
         </section>
+      </div>
+      <section className="pb-8 sm:pb-10 md:pb-12">
+        <EmailNewsletter />
+      </section>
+      <div className="section-container">
         <section className="pb-8 sm:pb-10 md:pb-12">
           <HomeSlider />
         </section>
