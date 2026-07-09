@@ -67,7 +67,7 @@ export default function Slider({ images }: SliderProps) {
                 <h2 className="text-white font-bold text-3xl md:text-5xl mb-4 leading-tight">{image.title}</h2>
                 <button
                   onClick={() => image.onClick()}
-                  className="px-6 py-3 bg-white text-black font-semibold rounded-lg transition-all duration-300 hover:bg-gray-200 hover:scale-105 active:scale-95 shadow-lg"
+                  className="px-6 py-3 bg-tertiary text-white font-semibold rounded-lg transition-all duration-300 hover:bg-gray-200 hover:scale-105 active:scale-95 shadow-lg"
                 >
                   {image.buttonText}
                 </button>
