@@ -33,6 +33,7 @@ const publicRoutes = [
   '/api/event',
   '/api/session',
   '/api/webhooks',
+  '/api/newsletter',
 ];
 
 function isAdminRoute(pathname: string): boolean {

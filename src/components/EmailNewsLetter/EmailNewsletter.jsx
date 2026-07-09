@@ -1,5 +1,6 @@
 import ArtworkCard from '@/components/ArtworkCard/ArtworkCard';
 import ArtworkService from '@/services/ArtworkService';
+import NewsletterForm from './NewsletterForm';
 
 const EmailNewsletter = async () => {
   const artworkService = new ArtworkService();
@@ -11,36 +12,18 @@ const EmailNewsletter = async () => {
       <div className="container mx-auto px-4 sm:px-6 max-w-6xl min-h-[500px] md:min-h-[600px]">
         <div className="rounded-lg p-6 md:p-12 lg:p-16 flex flex-col-reverse md:flex-row items-stretch gap-6">
           {/* Left column */}
-          <div className="md:w-1/2">
+          <div className="md:w-1/3">
             <h2 className="font-lora font-medium text-4xl sm:text-5xl md:text-6xl leading-tight bg-gradient-to-tr from-[#e53e44] to-[#e5ca48] bg-clip-text text-transparent">
               Bring Art
               <br />
               to Your Space
             </h2>
-            <p className="text-gray-700 mt-4">
+            <p className="text-gray-700 mt-4 bg-white bg-opacity-80 p-3 rounded-md">
               Receive updates on the latest artwork rentals perfect for business displays, events, and creative
               spaces. Sign up to discover new collections from UP Cebu’s emerging artists.
             </p>
 
-            <form action="#" method="post" className="mt-6 flex flex-col sm:flex-row gap-3">
-              <label htmlFor="newsletter-email" className="sr-only">
-                Email address
-              </label>
-              <input
-                id="newsletter-email"
-                name="email"
-                type="email"
-                required
-                placeholder="your@email.com"
-                className="px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary flex-1"
-              />
-              <button
-                type="submit"
-                className="btn bg-primary hover:bg-primary-dark text-white px-5 py-3 rounded-md font-semibold transition-colors w-auto self-start"
-              >
-                Subscribe
-              </button>
-            </form>
+            <NewsletterForm />
 
           </div>
           {/* Right column */}

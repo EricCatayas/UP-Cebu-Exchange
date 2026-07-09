@@ -27,6 +27,15 @@ export async function verifiedEmailNotification(user: { id: number; fullName: st
   await notificationService.create(title, type, message, metadata);
 }
 
+export async function newsletterSubscriptionNotification(email: string) {
+  const notificationService = new NotificationService();
+  const title = 'New Newsletter Subscription';
+  const type = NOTIFICATION_TYPE.SYSTEM_ALERT;
+  const message = `A new user has subscribed to the newsletter with the email address: ${email}.`;
+  const metadata = JSON.stringify({ email });
+  await notificationService.create(title, type, message, metadata);
+}
+
 export async function orderPlacedNotification(orderId: number, user: { id: number; fullName: string }) {
   const notificationService = new NotificationService();
   const title = 'Order Placed';

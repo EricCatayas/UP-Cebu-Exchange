@@ -195,6 +195,69 @@ class EmailService {
     console.log(`Sending password reset to ${email} with token ${token}`);
     return Promise.resolve({ success: true, error: null });
   }
+
+  sendNewsletterSubscription(email: string): Promise<{ success: boolean; error: string | null }> {
+    const mailjet = new Mailjet({
+      apiKey: EMAIL_API,
+      apiSecret: EMAIL_SECRET,
+      config: { version: 'v3.1' },
+    });
+    const request = mailjet.post('send', { version: 'v3.1' }).request({
+      Messages: [
+        {
+          From: {
+            Email: APP_EMAIL,
+            Name: APP_NAME,
+          },
+          To: [{ Email: email, Name: email }],
+          Subject: `Subscribed to ${APP_NAME} Newsletter`,
+          TextPart: `You have been subscribed to the ${APP_NAME} newsletter. Thank you!`,
+          HTMLPart: `
+            <!doctype html>
+            <html lang="en">
+              <body style="margin:0;padding:0;background:#f7f7f8;font-family:Segoe UI, Arial, sans-serif;color:#111827;">
+                <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background:#f7f7f8;">
+                  <tr>
+                    <td align="center" style="padding:32px 16px;">
+                      <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="max-width:560px;background:#ffffff;border:1px solid #eaeaea;border-radius:12px;overflow:hidden;">
+                        <tr>
+                          <td style="padding:28px 28px 0 28px;font-family:Segoe UI, Arial, sans-serif;color:#111827;">
+                            <h1 style="margin:0 0 12px;font-size:20px;line-height:28px;">You're subscribed!</h1>
+                            <p style="margin:0 0 20px;font-size:14px;line-height:22px;color:#374151;">Thanks — you've been subscribed to the <strong>${APP_NAME}</strong> newsletter. We'll send updates about new artwork rentals, collections, and events from UP Cebu.</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="padding:0 28px 24px 28px;" align="left">
+                            <div style="display:inline-block;background:#e9f2ff;color:#0f172a;text-decoration:none;font-family:Segoe UI, Arial, sans-serif;font-size:14px;line-height:20px;padding:12px 18px;border-radius:8px;border:1px solid #d0e4ff;">Subscribed</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="padding:0 28px 24px 28px;font-family:Segoe UI, Arial, sans-serif;">
+                            <p style="margin:0 0 8px;font-size:12px;line-height:18px;color:#6b7280;">If you don't see the confirmation, please check your spam folder.</p>
+                          </td>
+                        </tr>
+                      </table>
+                      <p style="margin:12px 0 0;font-size:11px;line-height:16px;color:#9ca3af;font-family:Segoe UI, Arial, sans-serif;">© ${new Date().getFullYear()} ${APP_NAME}</p>
+                    </td>
+                  </tr>
+                </table>
+              </body>
+            </html>
+          `,
+          CustomID: 'newsletter_subscription',
+        },
+      ],
+    });
+
+    return request
+      .then(() => {
+        return { success: true, error: null };
+      })
+      .catch((err) => {
+        console.error('Mailjet error (newsletter):', err?.statusCode || err);
+        return { success: false, error: err?.message || 'Failed to send newsletter subscription' };
+      });
+  }
 }
 
 export default EmailService;
