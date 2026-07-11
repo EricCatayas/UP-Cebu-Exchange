@@ -18,7 +18,7 @@ const EmailNewsletter = async () => {
               <br />
               to Your Space
             </h2>
-            <p className="text-gray-700 mt-4 bg-white bg-opacity-80 p-3 rounded-md">
+            <p className="font-lora text-gray-700 mt-4 bg-white bg-opacity-80 p-3 rounded-md">
               Receive updates on the latest artwork rentals perfect for business displays, events, and creative
               spaces. Sign up to discover new collections from UP Cebu’s emerging artists.
             </p>
